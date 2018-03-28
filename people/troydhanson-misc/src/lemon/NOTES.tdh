@@ -1,0 +1,109 @@
+Notes on using the Lemon parser generator.
+Troy D. Hanson
+6 Dec 2010
+
+1.0 Write the grammar
+================================================================================
+The grammer goes in the ".y" file, which in our case is cfg.y. It's a list of
+grammar rules from which the parse tree will be constructed when tokens are 
+passed to the generated parser.  Some rules have actions in curly braces. The
+actions can refer to the terminal or non-terminals in the rule using a (SYMBOL)
+notation as you can see in cfg.y. When a line of grammar is recognized it is "reduced" 
+and its rule is executed. (It's "executed" by being literally present in the
+generated parser, in some sub-function of Parse, having access to the extra
+argument [read on], and with some way to set its own "non-terminal" value and
+access the "values" of the terminals and non-terminals on the right-hand-side of
+its rule). By the way that "extra argument" feature is a nice way to pass your
+whole parsing state between the main program and the generated parsing
+functions, without using globals (and thus enabling multiple instances of your
+parser to coexist if you keep everything clean). In our case we defined parse_t
+to hold the line number, file name, and a parsing status, as well as a pointer
+to the current top of our scratch space.
+
+1.1 Bottom up parsing
+-------------------------------------------------------------------------------
+Naturally the lower-level grammar rules contained within another grammar rule
+must be recognized first. So, from a parse tree viewpoint, the leaf nodes are
+created before the higher level grammatical nodes. This means the grammar actions
+must have a strategy for passing the leaf values up to the higher level nodes.
+This could be done by using a generic node structure that can be inserted as a 
+child when a parent node is created. This is more complexity than we need for
+our example.
+
+1.2 Simplified fill-in parsing
+-------------------------------------------------------------------------------
+If what you're parsing are essentially "records" (instead of some complicated
+tree structured input like a C program) you can use a simpler approach.
+
+Just create a "scratch record" (your workspace). All the lower-level rules will
+just "fill in" their values in that scratch record, as their grammar action.
+When the higher level rule is reduced, that scratch record is just validated and
+pushed onto the list of parsed records.
+
+In our example, the scratch record is just the top of the vector of servers. So
+at the program startup we push a scratch top (using the newtop macro). Whenever
+we finish parsing a record, we push a new top which is always the scratch space.
+At the end of parsing we throw away (pop) the top because it was our scratch
+space.
+
+2.0 Lexical analyzer
+================================================================================
+The first step to parsing anything is to break it into lexical tokens. You can
+do this in any way you want (Lemon does not help you here, it only produces a
+integer "token id", for each terminal in your grammar [see cfg.h]. It wants you
+to pass these id's sequentially to represent the "token stream" being parsed).
+The lexer/tokenizer's job is simple: produce a list of tokens. Each token is
+identified by its integer id. E.g. TOK_LCURLY, TOK_SERVER, etc. Each token a
+value in addition to its id. For example a token with id TOK_NUMBER might have
+the value "1234". The tokens (terminals) all have the same data type determined
+by the %token_type directive [default int]. In our example code we use a char*
+for our tokens.  Whenever a token is identified, we make a string from it and
+pass that char* and its associated integer token id into the lemon-generated
+Parse function.
+
+2.1 PCRE
+-------------------------------------------------------------------------------
+A nice way to tokenize the input would be to define a bunch of regular
+expressions and then apply them (in a specified order) til one hits. But this
+example doesn't need that complexity.
+
+2.2 Simple custom lexer
+-------------------------------------------------------------------------------
+See the tok.c file for our simple lexical analyzer. It just reads a minimal
+number of characters until a keyword is recognized or a whitespace-delimited
+number or dotted-alphanumeric string is found. As a bonus feature it also keeps
+track of our line number so that we can print nice error messages during
+lexing/parsing.
+
+3.0 Careful memory management of the terminals
+================================================================================
+This bit me once or twice while learning how to write parsers. Recognize that
+lemon has a stack internally that keeps its state as it shifts and reduces
+rules. The token that your lexer passes in to Parse, will persist on that Lemon
+stack (maybe a long time) while other tokens are shifted. So, whatever token
+values you pass in, _cannot_ be overwritten or reused while parsing proceeds. 
+
+In other words, don't just re-use the same char* as your token value and keep
+passing it into Lemon for each token-- you need a unique char* for each one. If
+you're lazy you can just strndup() every token before calling Parse
+(and then you could define the %token_destructor to free() each one). There's
+nothing wrong with that approach. I prefer a more visible approach so I strndup
+each token and throw it onto a vector of tokens before passing it into Parse. At
+the conclusion of parsing I iterate over that token vector and free all of them.
+
+Within my grammar actions in cfg.y, the "value" of each terminal is a pointer
+to one of those strings in my token vector. I write my grammar actions so that
+they, in turn, make their own copies of any tokens (strings) they want to "keep
+around" for inclusion in the final parsing result. This way I can free my token
+vector without worrying about whether the parsing result has remaining pointers
+into the token vector.
+
+4.0 Misc notes
+================================================================================
+As a side note you could "lex" the whole input into tokens (keeping the string
+and the integer id for each token, and if you want to be friendly, the line
+number it was on) prior to doing any parsing at all. I.e. the parsing could be
+done in an entirely separate phase using the pre-prepared token vector.
+But doing the lexing and the parsing in concert means that you can avoid the
+cost of further lexical analysis if you encounter a grammar error.
+

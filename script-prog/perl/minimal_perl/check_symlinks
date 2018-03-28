@@ -1,0 +1,80 @@
+#! /usr/bin/perl -wl
+
+use strict;
+use File::Find;
+
+{ # Special scope for Main + check_slinks
+
+   my $Bad=0;     # file scope; used in sub check_slinks()
+   my $Total=0;   # ditto
+
+   my $Usage="Usage: $0 dir1 [dir2 ...]\n";
+   @ARGV  or  die "$Usage";
+
+   my $start_time=time;       # for run-time calculation at end
+
+   foreach my $startdir( @ARGV ){
+      -d $startdir  and  -r _  and  -x _  or
+         warn "$0: Bad directory argument: $startdir\n"  and
+            next;
+
+      # find broken symlinks in or under $startdir
+
+      print "REPORTING BROKEN SYMLINKS UNDER: \E$startdir";
+      find \&check_slinks, $startdir;   # call the function
+      print "";                         # blank line
+   }
+
+   # Print final statistics, including program's run time
+   print "FILES BROKEN/EXAMINED: ",
+      commafy ($Bad), "/", commafy ($Total);
+   show_times ($start_time);
+
+   sub check_slinks {
+      my  $isbad=0;            # whether current symlink is bad
+      my  $target;             # where current symlink points
+      my $name=$File::Find::name;       # make a shorter name
+
+      if ( -l ) { # if file (in $_) is a sym-link,
+                  #  find what it's pointing to
+         $target=readlink $_;
+         if (! defined  $target  or  $target  eq  "") {
+            warn "$0: check_slinks(): bad readlink value",
+               " on \"$name\": $!\n";
+            $isbad=1;
+         }
+         elsif ( ! -e $target ) {
+            # target missing; broken link, OR NFS down!
+            print "\t$name -> $target";
+            $isbad=1;
+         }
+      }
+      # $Bad and $Total are still in scope
+      $isbad  and  $Bad++;        # count another bad symlink
+      $Total++;                   # count another file examined
+      return; # goes back to "find", to be called for next file
+   }
+
+} # end of special scope for Main + check_slinks
+
+sub commafy {          # insert commas into number strings
+   my $number=shift;
+
+   defined $number  or  die "$0: commafy(): no argument!";
+   while ($number =~ s/^(-?\d+)(\d{3})/$1,$2/) { ; }
+   return $number;
+}
+
+sub show_times {
+   # argument is program's start time
+   my $stime=shift  or
+      die "$0: show_times(): bad argument";
+   my $etime=time;                 # current (ending) time
+   my $dtime=$etime - $stime;      # elapsed time
+
+   printf "\UTime:%2d:%02d HR:MN ",
+      int ( ( $dtime / 3600 ) + .5 ),
+      ( ( $dtime % 3600 ) / 60 ) + .5;
+   print "\nSTART: ", scalar localtime $stime,
+      "  END: ", scalar localtime $etime;
+}

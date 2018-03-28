@@ -1,0 +1,55 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 8 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $sales_data = \*DATA;
+my @sales;
+
+sub translate_ID {
+    my ($id) = @_;
+    return $id;
+}
+
+# Specify field locations...
+Readonly my %FIELD_POS => (ident=>0,  sales=>6,   price=>16); 
+Readonly my %FIELD_LEN => (ident=>6,  sales=>10,  price=>8);
+
+# Grab each line/record...
+while (my $record = <$sales_data>) {
+
+    # Extract each field...
+    my $ident = substr($record, $FIELD_POS{ident}, $FIELD_LEN{ident});
+    my $sales = substr($record, $FIELD_POS{sales}, $FIELD_LEN{sales});
+    my $price = substr($record, $FIELD_POS{price}, $FIELD_LEN{price});
+ 
+    # Append each record, translating ID codes and
+    # normalizing sales (which are stored in 1000s)...
+
+    push @sales, {
+        ident => translate_ID($ident),
+        sales => $sales * 1000,
+        price => $price,
+    };
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @sales ];
+
+
+__DATA__
+X123-S000001324700000199
+SFG-AT000000010200009099
+Y811-Q000010030000000033

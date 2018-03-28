@@ -1,0 +1,29 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 18 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub is_monotonic_increasing {
+    my ($data_ref) = @_;
+    for my $i (1..$#{$data_ref}) {
+        return 0 unless $data_ref->[$i-1] > $data_ref->[$i];
+    }
+    return 1;
+}
+
+
+carp 'Oops! [1,2,2,3]' if  is_monotonic_increasing( [1,2,2,3] );
+carp 'Oops! [1,2,3,4]' if !is_monotonic_increasing( [1,2,3,4] );
+carp 'Oops! [3,2,1,0]' if  is_monotonic_increasing( [3,2,1,0] );

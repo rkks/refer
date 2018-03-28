@@ -1,0 +1,23 @@
+sic NEWS - History of user visible changes.		-*- indented-text -*-
+Copyright (C) 2000 Gary V. Vaughan
+
+New in 1.0b; 2000-03-26; Gary V. Vaughan:
+* Use libltdl for dynamic module loading.
+* Support for $HOME/.sicrc startup script.
+* Support for compiling with libdmalloc.
+* `$' syntax for variable and command substitution.
+* Bigger test suite.
+
+New in 0.7; 2000-03-21; Gary V. Vaughan:
+* Installed headers no longer make reference to config.h.
+* Use libtool to build (shared) libraries.
+* Documentation.
+* Test suite.
+
+New in 0.5: 2000-03-05; Gary V. Vaughan:
+* First release of sic.
+
+
+Local Variables:
+fill-column: 72
+End:

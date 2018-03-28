@@ -1,0 +1,117 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="StopWatch.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:local="clr-namespace:StopWatch"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot contains the root grid where all other page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="STOPWATCH" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            
+            <!-- Stopwatch display -->
+            <Grid VerticalAlignment="Center"
+                  Margin="25 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Name="elapsedText"
+                           Text="0"
+                           Grid.Row="0"
+                           FontFamily="Arial"
+                           FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                           TextAlignment="Center"
+                           Margin="0 0 0 50"/>
+                
+                <ToggleButton Name="startStopToggle"
+                              Content="Start"
+                              Grid.Row="1"
+                              Checked="OnToggleButtonChecked"
+                              Unchecked="OnToggleButtonChecked" />
+            </Grid>
+            
+            <!-- Rectangle to simulate disabling -->
+            <Rectangle Name="disableRect" 
+                       Fill="#80000000"
+                       Visibility="Collapsed" />
+            
+            <!-- "Dialog Box" to select TimeSpan formatting -->
+            <Border Name="formatDialog"
+                    Background="{StaticResource PhoneChromeBrush}"
+                    BorderBrush="{StaticResource PhoneForegroundBrush}"
+                    BorderThickness="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Name="radioButtonPanel"
+                                Grid.Row="0" 
+                                Grid.Column="0" 
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center">
+
+                        <RadioButton Content="Hour/Minute/Seconds"
+                                     Tag="HourMinuteSecond" />
+
+                        <RadioButton Content="Seconds"
+                                     Tag="Seconds" />
+
+                        <RadioButton Content="Milliseconds"
+                                     Tag="Milliseconds" />
+                    </StackPanel>
+
+                    <Button Grid.Row="1" Grid.Column="0"
+                            Content="ok"
+                            Click="OnOkButtonClick" />
+
+                    <Button Grid.Row="1" Grid.Column="1"
+                            Content="cancel"
+                            Click="OnCancelButtonClick" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+    
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.settings.rest.png" 
+                                            Text="format"
+                                            Click="OnAppbarFormatClick" />
+            
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.refresh.rest.png" 
+                                            Text="reset"
+                                            Click="OnAppbarResetClick" />
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+</phone:PhoneApplicationPage>

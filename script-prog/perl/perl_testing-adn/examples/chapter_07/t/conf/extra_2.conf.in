@@ -1,0 +1,13 @@
+<IfModule mod_perl.c>
+
+    <Perl>
+        use lib '@SERVERROOT@/../lib';
+        use Thumbnail ();
+    </Perl>
+
+    <Location /images>
+        SetHandler perl-script
+        PerlHandler Thumbnail
+    </Location>
+
+</IfModule>

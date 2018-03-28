@@ -1,0 +1,38 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Customer;
+ 
+use Perl6::Export::Attrs;
+ 
+# State variables...
+my %customer;
+my %opt;
+ 
+# use Reporter;
+ 
+sub set_terse {
+    return Reporter::set_terseness_for({ name => 1 });
+}
+ 
+sub list_customers : Export {
+    for my $id (sort keys %customer) {
+        Reporter::report({ name => $customer{$id} });
+    }
+    return;
+}
+

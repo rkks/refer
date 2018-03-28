@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    addcolumn - add a column of numbers
+#
+# SYNOPSIS
+#    addcolumn [column]
+#
+# DESCRIPTION
+#    This command will read its standard input and add the
+#    numbers in the specified column.  If column is omitted,
+#    the first column is added.
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Error condition occurred
+#
+############################################################
+CMDNAME=`basename $0`
+if [ $# -gt 1 ]; then
+     echo "Usage: $CMDNAME [column]" 1>&2
+     exit 1
+fi
+
+COLUMN=${1:-1}
+
+expr "$COLUMN" + 1 >/dev/null 2>&1
+if [ $? -ge 2 ]; then
+     echo "Usage: $CMDNAME argument is not numeric." 1>&2
+     exit 1
+fi
+
+awk '{total+=$'$COLUMN'} END {print total}'

@@ -1,0 +1,31 @@
+:
+
+recdir ()
+{
+    tab=$tab$singletab
+
+  for file in "$@"; do
+    echo -e $tab$file
+    dir=$dir/$file
+    if [ -d $dir ]; then
+      recdir $(command ls $dir)
+    fi
+    dir=${dir%/*}
+  done
+  tab=${tab%\\t}
+}
+
+
+recls ()
+{
+
+    singletab="\t"
+    for tryfile in "$@"; do
+    echo $tryfile
+    if [ -d $tryfile ]; then
+      dir=$tryfile
+      recdir $(command ls $tryfile)
+    fi
+    done
+    unset dir singletab tab
+}

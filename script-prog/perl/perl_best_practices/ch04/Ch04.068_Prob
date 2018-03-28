@@ -1,0 +1,38 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 4 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $name     = 'Jess';
+my $from     = 1;
+my $len      = 2;
+my $new_name = 'os';
+
+my $signal  = 1;
+my $process = 12345;
+sub send_signal {}
+
+my $file_name = 'ZZ2ZA';
+
+
+# The substring of $name becomes whatever's in $newname
+
+substr $name, $from, $len => $new_name;
+ 
+# Send this signal to this process
+send_signal($signal => $process);
+ 
+# Open a handle to a particular file
+open my $binary => '<:raw', $file_name 
+    or croak $OS_ERROR;

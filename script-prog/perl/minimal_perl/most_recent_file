@@ -1,0 +1,29 @@
+#! /usr/bin/perl -wnl 
+# From pathname inputs, emits name of one most recently modified
+# Gives correct answer where pipelines of this form may not:
+#   find . -print | xargs ls -lrdt | tail -1
+
+# NOTE: Use find or locate to provide input, or ls -d dir/*,
+# but *not* simply "ls dir" (dir won't be present in pathname)
+
+# Sample invocations:
+#      locate '*.c' | most_recent_file
+#      ls -d /etc/* | most_recent_file
+#      find /local -name 'somescript' | most_recent_file
+#      most_recent_file < filelist
+
+BEGIN {
+        $newest=0;  # initialize modification-time reference point
+}
+# Get file's numeric modification time; 10th value from stat
+$mtime=(stat $_)[9];     # indexing into output of stat
+if (defined $mtime and $mtime > $newest) { # defined handles failed stat's
+        # Remember mod-time for comparison to others,
+        #   and remember filename for final report
+        $newest=$mtime;
+        $name=$_;
+}
+
+END {
+       print $name;
+}

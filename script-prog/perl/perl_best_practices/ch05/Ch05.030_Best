@@ -1,0 +1,50 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $error_mesg   = '    Oops!    ';
+my @diagnostics = (
+    '     Something is wrong!     ',
+    '     Very wrong!     ',
+);
+
+sub trim_str {
+    croak 'Useless use of trim_str() in non-void context'
+        if defined wantarray;
+
+ 
+    for my $orig_arg ( @_ ? @_ : $_ ) {               # all args or just $_
+        $orig_arg =~ s{\A \s* (.*?) \s* \z}{$1}xms;   # change the actual args
+    }
+ 
+    return;
+}
+
+
+trim_str($error_mesg);
+ 
+for (@diagnostics) {
+    trim_str;
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    $error_mesg,
+    @diagnostics,
+];
+
+eval { my $str = trim_str() }; warn $EVAL_ERROR if $EVAL_ERROR;
+eval { print trim_str() };     warn $EVAL_ERROR if $EVAL_ERROR;
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<project name="jspbook" default="build" basedir=".">
+  <target name="build">
+    <echo>Starting Build [JSP Book - http://www.jspbook.com]</echo>
+    <!-- Turn Tomcat Off -->
+    <antcall target="tomcatOff"/>
+    <!-- Compile Everything -->
+    <antcall target="compile"/>
+    <!-- Turn Tomcat On -->
+    <antcall target="tomcatOn"/>
+    <echo>Build Finished [JSP Book - http://www.jspbook.com]</echo>
+  </target>
+
+  <target name="tomcatOff">
+    <echo>Turning Off Tomcat [http://www.jspbook.com]</echo>
+    <exec executable="bash" os="Windows">
+      <arg value="../../bin/shutdown.bat"/>
+    </exec>
+    <exec executable="bash" os="Linux">
+      <arg value="../../bin/shutdown.sh"/>
+    </exec>
+  </target>
+
+  <target name="tomcatOn">
+    <echo>Starting Tomcat [http://www.jspbook.com]</echo>
+    <exec executable="bash" os="Windows">
+      <arg value="../../bin/startup.bat"/>
+    </exec>
+    <exec executable="bash" os="Linux">
+      <arg value="../../bin/startup.sh"/>
+    </exec>
+  </target>
+
+  <target name="compile">
+    <echo>Compiling Book's Examples [http://www.jspbook.com]</echo>
+    <javac
+      srcdir="WEB-INF/classes"
+      extdirs="WEB-INF/lib:../../common/lib"
+      classpath="../../common/lib/servlet.jar"
+      deprecation="yes"
+      verbose="no">
+      <include name="com/jspbook/**"/>
+    </javac>
+  </target>
+</project>

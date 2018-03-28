@@ -1,0 +1,29 @@
+TODO
+----
+
+
+api:
+* changer nom: refresh_depends -> update_maps
+
+
+front:
+* faire les free/del ftrace_clean.
+* detach sur sleep marche pas ... (en stepping)
+
+
+freebsd:
+* recup les struct en arg :)
+* valeur de retour -> double, long double, struct
+
+
+solaris:
+* proc_get_dependload_addr
+
+* proc_set_brk -> dans brkp.c avec le list_add brk->set == 0 !
+
+* proc_backtrace
+* proc_dump_registers
+* core
+
+
+

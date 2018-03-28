@@ -1,0 +1,127 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="rotcmd"
+       HTML_="change command sequence"
+    PURPOSE_="rotate commands listed in a file if file execution has been interrupted"
+   SYNOPSIS_="$NAME_ [-hlm] <file>"
+   REQUIRES_="standard GNU commands"
+    VERSION_="1.0"
+       DATE_="2003-04-12; last update: 2004-04-12"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="misc"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage() {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     <file>, file with the commands
+     -h, usage and options (this help)
+     -m, manual
+     -l, see this script"
+    exit 1
+}
+
+manual() { echo >&2 "
+
+NAME
+
+    $NAME_ $VERSION_ - $PURPOSE_
+
+SYNOPSIS
+
+    $SYNOPSIS_
+
+DESCRIPTION
+
+    This script is useful in a situation when one has to regularly run
+    multiple commands that are listed in a file and may have to stop the
+    execution of the file before all commands are done executing. Upon
+    next execution of the file, to avoid re-running the already run
+    commands, one would have to manually re-arrange the commands.
+
+    This script eliminates the need for that, as it acts as a wrapper to
+    the commands listed in a file.
+
+    If the execution of this script is interrupted, the commands stored in a
+    file get rotated, so the commands which have already been executed will
+    be appended to the end of the file. The only command that will be re
+    executed is the one which did not finish running when the file execution
+    was interrupted.
+
+NOTE
+
+    The last command in file must be terminated by a new line character.
+
+AUTHOR
+
+    $AUTHOR_ Suggestions and bug reports are welcome.
+    For updates and more scripts visit $URL_
+
+"; exit 1; }
+
+# local funcs
+rotate() {
+
+    c=$(wc -l $tmp_1 | { read a b ; echo $a; } )
+    c2=0
+    while read line;do
+
+        if (( c2 >= c ));then
+
+            echo $line >> $tmp_2
+
+        fi
+        ((c2++))
+
+    done < $a
+    cat $tmp_2 $tmp_1 > $a
+    rm -f $tmp_1 $tmp_2
+
+}
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# tmp file set up
+tmp_1=/tmp/tmp.${RANDOM}$$
+tmp_2=/tmp/tmp.${RANDOM}$$
+
+# signal trapping and tmp file removal
+trap 'rotate >/dev/null 2>&1' 0
+trap "exit 1" 1 2 3 15
+
+# arg handling and execution
+case $1 in
+
+    -h) usage ;;
+    -m) manual ;;
+    -l) more $0; exit 1 ;;
+     *) # main execution
+
+        for a in "$@";do
+            if [ -f "$a" ]; then
+
+                while read line;do
+
+                    $line
+                    echo $line >> $tmp_1
+
+                done < $a
+
+            else
+                echo file $a does not exist
+            fi
+        done ;;
+
+esac
+rm -f $tmp_1

@@ -1,0 +1,13 @@
+install nodejs
+// npm install optimist
+// npm install express
+// npm install websocket
+
+node example.js
+
+This is an example skeleton for a node.js based http server
+supporting a restful API and a websocket on an adjacent port.
+
+Some files are missing (jquery, d3, etc) that would be filled
+into the static/ directory in a real application.
+

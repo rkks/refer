@@ -1,0 +1,108 @@
+\input texinfo   @c -*-texinfo-*-
+@c @start 1
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename sic.info
+@settitle Dynamic Modular Interpreter Prototyping
+@setchapternewpage odd
+@c %**end of header
+@c @finalout
+@headings 	    double
+
+@include version.texi
+
+@dircategory Programming
+@direntry
+* sic: (sic).    The dynamic, modular, interpreter prototyping tool.
+@end direntry
+
+@ifinfo
+This file documents sic.
+
+@c @end 1
+Copyright (C) 2000 Gary V. Vaughan
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission notice
+identical to this one except for the removal of this paragraph
+
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Foundation.
+@c @start 1
+@end ifinfo
+
+@titlepage
+@sp 10
+@title Sic
+@subtitle Edition @value{EDITION}, @value{UPDATED}
+@subtitle $Id: sic.texi,v 1.4 2000/05/23 09:07:00 bje Exp $
+@author Gary V. Vaughan
+@author @email{gvv@@techie.com}
+
+@page
+@vskip 0pt plus 1filll
+@c @end 1
+Copyright @copyright{} 2000 Gary V. Vaughan
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Authors.
+@c @start 1
+@end titlepage
+@c @end 1
+
+@ifnottex
+@c    name next   previous  up
+@node Top, Introduction, (dir), (dir)
+@top  Dynamic Modular Interpreter Prototyping
+@end ifnottex
+
+@iftex
+@unnumbered Forward
+@end iftex
+
+This is Sic.
+
+@menu
+* Introduction::
+* Index::
+@end menu
+
+@node Introduction
+@chapter Introduction
+
+Sic Is Cumulative.
+
+@page
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@c summarycontents
+@contents
+@bye

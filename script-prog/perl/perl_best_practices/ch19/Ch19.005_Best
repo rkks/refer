@@ -1,0 +1,73 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 19 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+#  Example 19-5. The configuration file, reloaded
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+use Config::Std;
+use Data::Dumper 'Dumper';
+
+my $data = do { local $/; <DATA> };
+ 
+# Read in the config file...
+read_config \$data => my %config;
+ 
+warn Dumper [ \%config ];
+
+# Update the library path and disclaimer...
+$config{Internals}{lib} = ['~/.plugins', '/lib/share/plugins'];
+$config{Interface}{Disclaimer} = 'Whatever, dude!';
+ 
+# Delete the verbose option...
+delete $config{verbose};
+ 
+# Add a "Limits" section...
+$config{Limits}{max_time}  = 1000;
+$config{Limits}{max_space} = 1e6;
+ 
+my $updated;
+# Write back config file...
+write_config %config => \$updated;
+
+print $updated;
+
+
+__DATA__
+
+# Example 19-3. A simple configuration language
+
+[Interface]
+# Configurable bits that others will see...
+ 
+Author: Jan-Yu Eyrie
+E-mail: eju@calnet
+ 
+Disclaimer: This code is provided AS IS, and comes with 
+          : ABSOLUTELY NO WARRANTY OF ANY KIND WHATSOEVER!
+          : It's buggy, slow, and will almost certainly
+          : break your computer. Use at your own risk!
+ 
+[Internals]
+# Stuff no-one else sees...
+ 
+# Look-up path for plug-ins...
+lib: ~/lib/perl5
+lib: ~/lib/perl
+lib: /usr/share/lib/perl
+ 
+[strict]    # Don't allow malformed inputs
+[verbose]   # Report every step
+[log]       # And log every transaction
+

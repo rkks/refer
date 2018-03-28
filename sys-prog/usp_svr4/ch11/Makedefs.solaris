@@ -1,0 +1,21 @@
+#
+# $Header$
+#
+# Solaris 2.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -Xa
+
+#CC=		gcc
+#CFLAGS=	-O
+
+#
+# Location of the -lgen library.
+#
+GENLIBS=	-lgen

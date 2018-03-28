@@ -1,0 +1,61 @@
+##############################################################################
+##   Example 15.10 (Recommended) from Chapter 15 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-10. A bit-string class with a more useful interface
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+
+
+package Bit::String;
+use Class::Std::Utils;
+use Readonly;
+{
+    Readonly my $EMPTY_STR   => q{};
+
+    Readonly my $BIT_PACKING => 'b*';    # i.e. vec() compatible binary
+    Readonly my $BIT_DENSITY => 1;       # i.e. 1 bit/bit
+ 
+    # Attributes...
+    my %bitset_of;
+ 
+    sub new {
+        # [As in  REF XREF90313_Example_159_ \h Example 15-9  08D0C9EA79F9BACE118C8200AA004BA90B0200000008000000170000005800520045004600390030003300310033005F004500780061006D0070006C0065005F003100350039005F000000 ]
+    }
+ 
+    sub get_bit {
+        # [As in  REF XREF90313_Example_159_ \h Example 15-9  08D0C9EA79F9BACE118C8200AA004BA90B0200000008000000170000005800520045004600390030003300310033005F004500780061006D0070006C0065005F003100350039005F000000 ]
+    }
+ 
+    sub set_bit {
+        # [As in  REF XREF90313_Example_159_ \h Example 15-9  08D0C9EA79F9BACE118C8200AA004BA90B0200000008000000170000005800520045004600390030003300310033005F004500780061006D0070006C0065005F003100350039005F000000 ]
+    }
+ 
+    # Convenience method to flip individual bits...
+    sub flip_bit {
+        my ($self, $bitnum) = @_;
+ 
+        vec($bitset_of{it $self}, $bitnum, $BIT_DENSITY)
+            = !vec($bitset_of{ident $self}, $bitnum, $BIT_DENSITY);
+ 
+        return;
+    }
+ 
+    # Convenience method to provide a string representation of the bits...
+    sub as_string {
+        my ($self) = @_;
+ 
+        return join $EMPTY_STR, unpack $BIT_PACKING, $bitset_of{ident $self};
+    }
+}
+

@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpinPaint", "SpinPaint\SpinPaint\SpinPaint.csproj", "{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpinPaintContent", "SpinPaint\SpinPaintContent\SpinPaintContent.contentproj", "{5AA9002D-043F-4CDD-9DD4-65BAD623F56C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{57B9DFC1-A570-47D9-BAFE-D917AF471AE5}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{5AA9002D-043F-4CDD-9DD4-65BAD623F56C}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{5AA9002D-043F-4CDD-9DD4-65BAD623F56C}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{5AA9002D-043F-4CDD-9DD4-65BAD623F56C}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

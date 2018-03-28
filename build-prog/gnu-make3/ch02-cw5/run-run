@@ -1,0 +1,3 @@
+#! /bin/bash 
+echo '$ src/count_words < src/lexer.l'
+src/count_words < src/lexer.l

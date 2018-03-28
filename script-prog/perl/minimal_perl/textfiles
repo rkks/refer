@@ -1,0 +1,3 @@
+#! /usr/bin/perl -wnl
+# If file named on input line contains text, print its name
+-T  and  print;

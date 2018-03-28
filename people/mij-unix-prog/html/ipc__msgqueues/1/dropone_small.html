@@ -1,0 +1,92 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  dropone.c
+ *  
+ *  drops a message into a #defined queue, creating it if user
+ *  requested. The message is associated a priority still user
+ *  defined
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 07/08/05.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* mq_* functions */</span>
+<span class="cpdr">#include &lt;mqueue.h&gt;
+#include &lt;sys/stat.h&gt;
+</span><span class="ccom">/* exit() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span><span class="ccom">/* getopt() */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+</span><span class="ccom">/* ctime() and time() */</span>
+<span class="cpdr">#include &lt;time.h&gt;
+</span><span class="ccom">/* strlen() */</span>
+<span class="cpdr">#include &lt;string.h&gt;
+</span>
+
+<span class="ccom">/* name of the POSIX object referencing the queue */</span>
+<span class="cpdr">#define MSGQOBJ_NAME    "/myqueue123"
+</span><span class="ccom">/* max length of a message (just for this process) */</span>
+<span class="cpdr">#define MAX_MSG_LEN     </span><span class="cval">70</span><span class="cpdr">
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    mqd_t msgq_id;
+    <span class="ctyp">unsigned</span> <span class="ctyp">int</span> msgprio = <span class="cval">0</span>;
+    pid_t my_pid = <span class="cfun">getpid</span>();
+    <span class="ctyp">char</span> msgcontent[MAX_MSG_LEN];
+    <span class="ctyp">int</span> create_queue = <span class="cval">0</span>;
+    <span class="ctyp">char</span> ch;            <span class="ccom">/* for getopt() */</span>
+    time_t currtime;
+    
+    
+    <span class="ccom">/* accepting "-q" for "create queue", requesting "-p prio" for message priority */</span>
+    <span class="ctyp">while</span><span class="cfun"> </span>((ch = <span class="cfun">getopt</span>(argc, argv, <span class="cstr">"qi:"</span>)) != -<span class="cval">1</span>) {
+        <span class="ctyp">switch</span><span class="cfun"> </span>(ch) {
+            <span class="ctyp">case</span> <span class="cval">'q'</span>:   <span class="ccom">/* create the queue */</span>
+                create_queue = <span class="cval">1</span>;
+                <span class="ctyp">break</span>;
+            <span class="ctyp">case</span> <span class="cval">'p'</span>:   <span class="ccom">/* specify client id */</span>
+                msgprio = (<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)<span class="cfun">strtol</span>(optarg, (<span class="ctyp">char</span> **)<span class="ctyp">NULL</span>, <span class="cval">10</span>);
+                <span class="cfun">printf</span>(<span class="cstr">"I (%d) will use priority %d\n"</span>, my_pid, msgprio);
+                <span class="ctyp">break</span>;
+            <span class="ctyp">default</span>:
+                <span class="cfun">printf</span>(<span class="cstr">"Usage: %s [-q] -p msg_prio\n"</span>, argv[<span class="cval">0</span>]);
+                <span class="cfun">exit</span>(<span class="cval">1</span>);
+        }
+    }
+    
+    <span class="ccom">/* forcing specification of "-i" argument */</span>
+    <span class="ctyp">if</span><span class="cfun"> </span>(msgprio == <span class="cval">0</span>) {
+        <span class="cfun">printf</span>(<span class="cstr">"Usage: %s [-q] -p msg_prio\n"</span>, argv[<span class="cval">0</span>]);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    
+    <span class="ccom">/* opening the queue        --  mq_open() */</span>
+    <span class="ctyp">if</span><span class="cfun"> </span>(create_queue) {
+        <span class="ccom">/* mq_open() for creating a new queue (using default attributes) */</span>
+        msgq_id = <span class="cfun">mq_open</span>(MSGQOBJ_NAME, O_RDWR | O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, <span class="ctyp">NULL</span>);
+    } <span class="ctyp">else</span> {
+        <span class="ccom">/* mq_open() for opening an existing queue */</span>
+        msgq_id = <span class="cfun">mq_open</span>(MSGQOBJ_NAME, O_RDWR);
+    }
+    <span class="ctyp">if</span><span class="cfun"> </span>(msgq_id == (mqd_t)-<span class="cval">1</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In mq_open()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="ccom">/* producing the message */</span>
+    currtime = <span class="cfun">time</span>(<span class="ctyp">NULL</span>);
+    <span class="cfun">snprintf</span>(msgcontent, MAX_MSG_LEN, <span class="cstr">"Hello from process %u (at %s)."</span>, my_pid, <span class="cfun">ctime</span>(&amp;currtime));
+    
+    <span class="ccom">/* sending the message      --  mq_send() */</span>
+    <span class="cfun">mq_send</span>(msgq_id, msgcontent, <span class="cfun">strlen</span>(msgcontent)+<span class="cval">1</span>, msgprio);
+    
+    <span class="ccom">/* closing the queue        -- mq_close() */</span>
+    <span class="cfun">mq_close</span>(msgq_id);
+    
+        
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

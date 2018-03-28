@@ -1,0 +1,53 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="xbreak"
+       HTML_="remind to take a break"
+    PURPOSE_="display an X window message when it's time to take a break"
+   SYNOPSIS_="$NAME_ [-hl] <n>"
+   REQUIRES_="standard GNU commands"
+    VERSION_="1.0"
+       DATE_="2004-06-23; last update: 2004-07-01"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="desk"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     <n>, an integer in minutes; for every n minutes a break message is displayed
+     -h, usage and options (this help)
+     -l, see this script"
+    exit 1
+}
+
+# enabling extended globbing
+shopt -s extglob 
+
+# option handling
+case $1 in
+    -h) usage ;;
+    -l) more $0; exit 1 ;;
+    +([0-9])) # arg1 can only be an integer
+
+        while :;do
+
+            sleep ${1}m
+            # display windowed message if x is running
+            ps -aux | grep -q xinit
+            [ $? = 0 ] && xmessage -center Time for a break!
+
+        done ;;
+
+    *) echo invalid argument, type $NAME_ -h for help; exit 1 ;;
+
+esac

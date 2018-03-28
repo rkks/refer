@@ -1,0 +1,58 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 2 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+my $sigil    = '$';
+my $subsigil = '?';
+my $var_name = '$?foo';
+my $var_ref;
+
+my $internal_count;
+my $external_count;
+my %has_internal;
+my %has_external;
+
+my %sym_table = ( $var_name => 42 );
+
+if ($sigil eq '$') {
+    if ($subsigil eq '?') {                        
+        $sym_table{ substr($var_name,2) } = delete $sym_table{$var_name};
+ 
+        $internal_count++;
+        $has_internal{$var_name}++;
+
+    }
+    else {
+        ${$var_ref} = q{$sym_table{$var_name}};
+ 
+        $external_count++;
+        $has_external{$var_name}++;
+    }
+}
+elsif ($sigil eq '@' && $subsigil eq '?') {
+    @{ $sym_table{$var_name} } 
+        = grep {defined $_} @{$sym_table{$var_name}};
+}
+elsif ($sigil eq '%' && $subsigil eq '?') {
+    delete $sym_table{$var_name}{$EMPTY_STR};
+}
+else {
+    ${$var_ref} = q{$sym_table{$var_name}};
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%sym_table ];

@@ -1,0 +1,36 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Perl6::Slurp;
+my $text = slurp $PROGRAM_NAME;
+
+# Find the end of a Perl program...
+croak 'matched!' if
+ 
+$text =~ m{ [^\0]*?     # any non-nulls
+            ^__END__$   # until an end-marker line
+          }xm;
+
+$text =~ m{ [^\0]*?     # match the minimal number of chars
+            ^           # until the start of any line (/m mode)
+            __END__     # then match the end-marker
+            $           # then match the end of a line (/m mode)
+          }xm;
+
+
+
+__END__
+Data here

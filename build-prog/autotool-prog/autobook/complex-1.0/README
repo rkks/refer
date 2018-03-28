@@ -1,0 +1,24 @@
+-*- indented-text -*-
+
+This is `sic', a bare interpreter which is defined by runtime loadable
+modules.  The name is a recursive acronym for "sic is cumulative", which
+refers to the fact that it accumulates functionality at runtime.  It is
+wrapped around Thomas Tanner's libltdl implementation from libtool-1.4,
+so is able to load modules on just about any platform with a C compiler, 
+and a reasonable C library.
+
+Sic itself consists of the library, libsic.la, and the headers installed
+in `/usr/local/include/sic', and is little more than a a syntax table
+mechanism for associating parts of an input stream with consumer
+functions.
+
+This distribution also includes a sample shell, which reads input from
+the command line and feeds it to this syntax mechanism, and a bunch of
+modules to provide basic shell functionality.  You could easily make it
+work entirely differently by changing the way the input stream is
+collected, and/or the set of modules it loads.
+
+
+Local Variables:
+fill-column: 72
+End:

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_layout_file>
+<CodeBlocks_layout_file>
+	<File name="DirCache.cpp" open="0" top="0">
+		<Cursor position="2942" topLine="102"/>
+	</File>
+	<File name="DirCache.h" open="0" top="0">
+		<Cursor position="777" topLine="16"/>
+	</File>
+	<File name="DirHandling.cpp" open="0" top="0">
+		<Cursor position="2850" topLine="99"/>
+	</File>
+	<File name="DirHandling.h" open="0" top="0">
+		<Cursor position="918" topLine="19"/>
+	</File>
+	<File name="FileInfo.h" open="0" top="0">
+		<Cursor position="496" topLine="5"/>
+	</File>
+	<File name="IDirHandling.h" open="0" top="0">
+		<Cursor position="958" topLine="15"/>
+	</File>
+</CodeBlocks_layout_file>

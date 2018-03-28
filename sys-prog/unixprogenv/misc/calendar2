@@ -1,0 +1,6 @@
+# calendar:  version 2 -- today only, no quotes
+(date; cat $HOME/calendar) |
+awk '
+  NR == 1    { mon = $2; day = $3 } # set the date
+  NR > 1 && $1 == mon && $2 == day  # print calendar lines
+' | mail $NAME

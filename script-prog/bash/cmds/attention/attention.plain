@@ -1,0 +1,26 @@
+:
+##########################################################################
+# Shellscript:	attention - notification program
+# Autor      :	Heiner Steven (heiner.steven@odn.de)
+# Erstellung :	22.04.94
+# Category   :	Desktop
+# $Id: attention,v 1.1 2000/02/06 19:55:35 heiner Exp $
+##########################################################################
+PN=`basename "$0"`			# Program name
+: ${SOUNDPATH:=/usr/demo/SOUND/sounds}
+: ${AUDIODEV:=/dev/audio}
+Sound=$SOUNDPATH/gong.au
+[ -n "${Tty:=`tty`}" -a -c "$Tty" ] || Tty=/dev/console
+if [ -c $AUDIODEV -a -r $Sound ]
+then
+    cp $Sound $AUDIODEV
+else
+    Beep=`tput -T${TERM:-xterm} bel`
+    : ${Beep:=''}
+    echo "$Beep$Beep$Beep$Beep$Beep" > $Tty
+fi
+[ $# -lt 1 ] && set -- "Don't forget!"
+for i
+do
+    echo "$PN: $i" > $Tty
+done

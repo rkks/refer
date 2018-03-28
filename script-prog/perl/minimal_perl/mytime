@@ -1,0 +1,10 @@
+#! /bin/sh
+# Sample output from date:  Thu Apr  6 16:12:05 PST 2006
+#    Index numbers for @F:   0   1   2     3     4   5
+date | 
+  perl -wnla -e '$hms=$F[3];  # copy time field into named variable
+                 ($hour, $minute)=split /:/, $hms;  # no $seconds
+                 $am_pm='AM';
+                 $hour > 12  and  $am_pm='PM'  and  $hour=$hour-12;
+                 print "The time is $hour:$minute $am_pm.";
+                '

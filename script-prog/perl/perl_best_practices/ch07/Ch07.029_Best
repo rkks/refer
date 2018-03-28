@@ -1,0 +1,33 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 7 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+=begin Optimization:
+ 
+     This parser would almost certainly benefit from the use of  
+     progressive matching with m/\G.../gcxms, as in:
+ 
+        while (pos $text < length $text) {
+            if (m/\G ($TYPENAME)/gcxms) {
+                push @tokens, Token::Type->new({ name => $1 });
+            }
+            elsif (m/\G ($VARNAME)/gcxms) {
+                push @tokens, Token::Var->new({ alias => $1 });
+            }
+            # etc.
+            else {
+                croak q{Don't understand '}, 
+                      substr($text, pos $text, 20),
+                      "'\n";
+            }
+         }
+ 
+     Reconsider when everyone is using at least Perl 5.6.1.
+ 
+=end Optimization
+ 
+=cut
+

@@ -1,0 +1,9 @@
+
+function testopt {
+    if [[ -o $1 ]] ; then
+        print Option $1 is on.
+    else
+        print Option $1 is off.
+    fi
+}
+

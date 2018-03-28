@@ -1,0 +1,51 @@
+:
+##########################################################################
+# Title      :	hilit - highlight text
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-01-11
+# Requires   :	tput
+# Category   :	Text Utilities
+# SCCS-Id.   :	@(#) hilit	1.2 03/12/19
+##########################################################################
+# Description
+#	The following attributes are recognized:
+# 		*reverse*	_underline_
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.2'
+usage () {
+    echo >&2 "$PN - highlight text, $VER (stv '94)
+usage: $PN [file ...]
+$PN displays text attributes on the terminal, like *bold* and _underline_."
+    exit 1
+}
+msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+: ${SMSO:="`tput smso`"} ${RMSO:="`tput rmso`"}
+: ${SMUL:="`tput smul`"} ${RMUL:="`tput rmul`"}
+# Always turn off text attributes at exit.
+trap 'echo -n $RMSO$RMUL' 0
+sed -e '
+    s/^_\([a-zA-Z0-0][a-zA-Z0-0]*\)/'$SMUL'\1/g;
+    s/\([ 	][ 	]*\)_\([a-zA-Z0-0][a-zA-Z0-0]*\)/\1'$SMUL'\2/g;
+    s/_\([ 	][ 	]*\)/'$RMUL'\1/g;
+    s/_\([\.\!\?]*\)$/'$RMUL'\1/g;
+    s/^\*\([a-zA-Z0-0][a-zA-Z0-0]*\)/'$SMSO'\1/g;
+    s/\([ 	][ 	]*\)\*\([a-zA-Z0-0][a-zA-Z0-0]*\)/\1'$SMSO'\2/g;
+    s/\*\([ 	][ 	]*\)/'$RMSO'\1/g;
+    s/\*\([\.\!\?]*\)$/'$RMSO'\1/g
+' "$@"

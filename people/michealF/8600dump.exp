@@ -1,0 +1,179 @@
+#!/usr/bin/expect -f
+#
+# Filename: /usr/local/etc/8600dump.exp
+#
+# Purpose:  Dump technical information from Nortel Ethernet Routing Switch
+#           via telneting to the device and issuing various "show" cmds.
+#           The output will then be saving to the working directory using
+#           a filename based on the switch name used to call the script.
+#
+# Language: Expect
+#
+# Author:   Michael McNamara
+#
+# Date:     May 6, 2003
+#
+# Changes:
+#
+#   Sept 29, 2006: cleaned up script/updated documenation
+#    Dec 30, 2005: added command line arguements for portability
+#    Mar 18, 2005: added file logging for troubleshooting and monitoring
+#    May 20, 2003: fine tuned script removing a great many "expect" commands.
+#    May  6, 2003: original Expect script generated from auto_expect
+#
+# Notes:
+#        Command Line Reference;
+#          ./8600dump.exp <switch> <username> <password>
+#
+# This Expect script should run on just about any system so long as there
+# is a "telnet" binary available. There are no requirement for SNMP mibs
+# or other external files. All you should need is Expect and a telnet app.
+#
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#
+# Declare Global Variables
+#
+set PATH "/usr/local/etc/mlh/"
+set TELNET "/usr/bin/telnet"
+set USERNAME "Manager"
+set PASSWD "nortel"
+
+#
+# Assign Command Line Variablbes
+#
+set SWITCH [lindex $argv 0]
+set USERNAME [lindex $argv 1]
+set PASSWD [lindex $argv 2]
+
+#
+# Time Date Stamp
+#
+set TODAY [timestamp -format %y%m%d ]
+set WEEKDAY [timestamp -format %a ]
+set DATE [timestamp -format %c ]
+
+set send_human {.1 .3 1 .05 2}
+
+######################################################################
+# proc usage
+#
+# Purpose: display the usage information to the enduser.
+######################################################################
+proc usage {} {
+	send_user "\n"
+	send_user "ERROR: command line paramaters incorrect\n"
+	send_user "\n"
+	send_user "usage: 8600dump.exp <switch> <username> <password>\n"
+	send_user "\n"
+	send_user "    switch		the DNS or IP address of switch	\n"
+	send_user "    username		the username for login to the switch	\n"
+	send_user "    password		the password for username\n"
+	send_user "\n"
+	send_user "\n"
+	exit
+}
+#######################################################################
+
+
+#######################################################################
+# M A I N    P R O G R A M
+#######################################################################
+
+# If we don't have the proper number of arguements let's quit
+if {[llength $argv]!=3} usage
+
+log_file $PATH/$SWITCH.dump.log
+log_user 0      # Disable logging to STDOUT
+#log_user 1     # Enable logging to STDOUT
+
+# Useful information out to logfile
+send_log "***************************************************************\r\n"
+send_log "* STARTING LOGFILE FOR $SWITCH ON $DATE \r\n"
+send_log "***************************************************************\r\n"
+
+#
+# We'll issue the following commands to the switch and record the output
+#
+# date
+# show tech
+# show sys topo
+# show port error main
+# show port error ext
+# show config verbose
+# date
+#
+
+# Disable timeout
+set timeout -1
+
+# Launch telnet
+spawn $TELNET $SWITCH
+match_max 100000
+
+# Wait until we're connected
+expect "Connected to"
+
+# Wait until we have a login prompt
+expect "Login: "
+
+# Send the username
+send -- "$USERNAME\r"
+
+# Wait for the password prompt
+expect "Password: "
+
+# Send the password
+send -- "$PASSWD\r"
+
+# Wait for the system prompt
+expect -re "\:.\#|> "
+
+# DATE
+send -- "date\r"
+expect -re "\:.\#|> "
+
+# CONFIG CLI MORE FALSE
+send -- "config cli more false\r"
+expect -re "\:.\#|> "
+
+# SHOW TECH
+send -- "show tech\r"
+expect -re "\:.\#|> "
+
+# SHOW SYS TOPO
+send -- "show sys topo\r"
+expect -re "\:.\#|> "
+
+# SHOW PORT ERROR MAIN
+send -- "show port error main\r"
+expect -re "\:.\#|> "
+
+# SHOW PORT ERROR EXT
+send -- "show port error ext\r"
+expect -re "\:.\#|> "
+
+# SHOW CONFIG VERBOSE
+send -- "show config verbose\r"
+expect -re "\:.\#|> "
+
+# DATE
+send -- "date\r"
+expect -re "\:.\#|> "
+
+# Logout of switch
+send -- "logout\r"
+expect eof
+
+#######################################################################
+# E N D    P R O G R A M
+#######################################################################

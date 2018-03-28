@@ -1,0 +1,32 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $MIN_ASSESSABLE => 10_000;
+
+my @tax_form_sequence;
+my $total_paid;
+
+FORM:
+for my $tax_form (@tax_form_sequence) {
+    my $notional_tax_paid 
+        = $tax_form->{reported_income}  * $tax_form->{effective_tax_rate};
+ 
+    next FORM if $notional_tax_paid  < $MIN_ASSESSABLE;
+ 
+    $total_paid  
+        += $notional_tax_paid - $tax_form->{allowed_deductions}; 
+}
+

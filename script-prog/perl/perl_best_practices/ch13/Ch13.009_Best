@@ -1,0 +1,25 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $results = "good\n";
+my $filename = '';
+
+use Fatal qw( open close );
+ 
+open my $fh, '>', $filename;
+print {$fh} $results;
+close $fh;
+

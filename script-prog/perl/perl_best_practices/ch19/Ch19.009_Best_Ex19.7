@@ -1,0 +1,52 @@
+##############################################################################
+##   Example 19.7 (Recommended) from Chapter 19 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 19-7. Building a report with Perl6::Form
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $search_string;
+
+use Perl6::Form;
+ 
+my ($ID, $name, $age, $comments_ref) = get_contact($search_string);
+ 
+print form  {bullet=>'*'},
+    ' =================================== ',
+    '| NAME            | AGE | ID NUMBER |',
+    '|-----------------+-----+-----------|',
+    '| {[[[[[[[[[[[[[} | {|} | {>>>>>>>} |',
+       $name,            $age, $ID,
+    '|===================================|',
+    '| COMMENTS                          |',
+    '|-----------------------------------|',
+    '| * {[[[[[[[[[[[[[[[[[[[[[[[[[[[[[} |',
+         $comments_ref,
+    ' =================================== ',
+;
+
+
+sub get_contact {
+    return (
+        869942,
+        'Damian M. Conway',
+        40,
+        [
+            'Do not feed after midnight.',
+            'Do not mix with quantum physics.',
+            'Do not allow subject to talk for "as long as he likes".',
+        ],
+    );
+}

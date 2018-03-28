@@ -1,0 +1,2908 @@
+%!
+%%BoundingBox: (atend)
+%%Pages: (atend)
+%%DocumentFonts: (atend)
+%%EndComments
+%
+% FrameMaker PostScript Prolog 3.0, for use with FrameMaker 3.0
+% Copyright (c) 1986,87,89,90,91 by Frame Technology Corporation.
+% All rights reserved.
+%
+% Known Problems:
+%	Due to bugs in Transcript, the 'PS-Adobe-' is omitted from line 1
+/FMversion (3.0) def 
+% Set up Color vs. Black-and-White
+	/FMPrintInColor systemdict /colorimage known
+		systemdict /currentcolortransfer known or def
+% Uncomment this line to force b&w on color printer
+       /FMPrintInColor false def
+/FrameDict 195 dict def 
+systemdict /errordict known not {/errordict 10 dict def
+		errordict /rangecheck {stop} put} if
+% The readline in 23.0 doesn't recognize cr's as nl's on AppleTalk
+FrameDict /tmprangecheck errordict /rangecheck get put 
+errordict /rangecheck {FrameDict /bug true put} put 
+FrameDict /bug false put 
+mark 
+% Some PS machines read past the CR, so keep the following 3 lines together!
+currentfile 5 string readline
+00
+0000000000
+cleartomark 
+errordict /rangecheck FrameDict /tmprangecheck get put 
+FrameDict /bug get { 
+	/readline {
+		/gstring exch def
+		/gfile exch def
+		/gindex 0 def
+		{
+			gfile read pop 
+			dup 10 eq {exit} if 
+			dup 13 eq {exit} if 
+			gstring exch gindex exch put 
+			/gindex gindex 1 add def 
+		} loop
+		pop 
+		gstring 0 gindex getinterval true 
+		} def
+	} if
+/FMVERSION {
+	FMversion ne {
+		/Times-Roman findfont 18 scalefont setfont
+		100 100 moveto
+		(FrameMaker version does not match postscript_prolog!)
+		dup =
+		show showpage
+		} if
+	} def 
+/FMLOCAL {
+	FrameDict begin
+	0 def 
+	end 
+	} def 
+	/gstring FMLOCAL
+	/gfile FMLOCAL
+	/gindex FMLOCAL
+	/orgxfer FMLOCAL
+	/orgproc FMLOCAL
+	/organgle FMLOCAL
+	/orgfreq FMLOCAL
+	/yscale FMLOCAL
+	/xscale FMLOCAL
+	/manualfeed FMLOCAL
+	/paperheight FMLOCAL
+	/paperwidth FMLOCAL
+/FMDOCUMENT { 
+	array /FMfonts exch def 
+	/#copies exch def
+	FrameDict begin
+	0 ne dup {setmanualfeed} if
+	/manualfeed exch def
+	/paperheight exch def
+	/paperwidth exch def
+	/yscale exch def
+	/xscale exch def
+	currenttransfer cvlit /orgxfer exch def
+	currentscreen cvlit /orgproc exch def
+	/organgle exch def /orgfreq exch def
+	setpapername 
+	manualfeed {true} {papersize} ifelse 
+	{manualpapersize} {false} ifelse 
+	{desperatepapersize} if
+	end 
+	} def 
+	/pagesave FMLOCAL
+	/orgmatrix FMLOCAL
+	/landscape FMLOCAL
+/FMBEGINPAGE { 
+	FrameDict begin 
+	/pagesave save def
+	3.86 setmiterlimit
+	/landscape exch 0 ne def
+	landscape { 
+		90 rotate 0 exch neg translate pop 
+		}
+		{pop pop}
+		ifelse
+	xscale yscale scale
+	/orgmatrix matrix def
+	gsave 
+	} def 
+/FMENDPAGE {
+	grestore 
+	pagesave restore
+	end 
+	showpage
+	} def 
+/FMFONTDEFINE { 
+	FrameDict begin
+	findfont 
+	ReEncode 
+	1 index exch 
+	definefont 
+	FMfonts 3 1 roll 
+	put
+	end 
+	} def 
+/FMFILLS {
+	FrameDict begin
+	array /fillvals exch def
+	end 
+	} def 
+/FMFILL {
+	FrameDict begin
+	 fillvals 3 1 roll put
+	end 
+	} def 
+/FMNORMALIZEGRAPHICS { 
+	newpath
+	0.0 0.0 moveto
+	1 setlinewidth
+	0 setlinecap
+	0 0 0 sethsbcolor
+	0 setgray 
+	} bind def
+	/fx FMLOCAL
+	/fy FMLOCAL
+	/fh FMLOCAL
+	/fw FMLOCAL
+	/llx FMLOCAL
+	/lly FMLOCAL
+	/urx FMLOCAL
+	/ury FMLOCAL
+/FMBEGINEPSF { 
+	end 
+	/FMEPSF save def 
+	/showpage {} def 
+	FMNORMALIZEGRAPHICS 
+	[/fy /fx /fh /fw /ury /urx /lly /llx] {exch def} forall 
+	fx fy translate 
+	rotate
+	fw urx llx sub div fh ury lly sub div scale 
+	llx neg lly neg translate 
+	} bind def
+/FMENDEPSF {
+	FMEPSF restore
+	FrameDict begin 
+	} bind def
+FrameDict begin 
+/setmanualfeed {
+%%BeginFeature *ManualFeed True
+	 statusdict /manualfeed true put
+%%EndFeature
+	} def
+/max {2 copy lt {exch} if pop} bind def
+/min {2 copy gt {exch} if pop} bind def
+/inch {72 mul} def
+/pagedimen { 
+	paperheight sub abs 16 lt exch 
+	paperwidth sub abs 16 lt and
+	{/papername exch def} {pop} ifelse
+	} def
+	/papersizedict FMLOCAL
+/setpapername { 
+	/papersizedict 14 dict def 
+	papersizedict begin
+	/papername /unknown def 
+		/Letter 8.5 inch 11.0 inch pagedimen
+		/LetterSmall 7.68 inch 10.16 inch pagedimen
+		/Tabloid 11.0 inch 17.0 inch pagedimen
+		/Ledger 17.0 inch 11.0 inch pagedimen
+		/Legal 8.5 inch 14.0 inch pagedimen
+		/Statement 5.5 inch 8.5 inch pagedimen
+		/Executive 7.5 inch 10.0 inch pagedimen
+		/A3 11.69 inch 16.5 inch pagedimen
+		/A4 8.26 inch 11.69 inch pagedimen
+		/A4Small 7.47 inch 10.85 inch pagedimen
+		/B4 10.125 inch 14.33 inch pagedimen
+		/B5 7.16 inch 10.125 inch pagedimen
+	end
+	} def
+/papersize {
+	papersizedict begin
+		/Letter {lettertray letter} def
+		/LetterSmall {lettertray lettersmall} def
+		/Tabloid {11x17tray 11x17} def
+		/Ledger {ledgertray ledger} def
+		/Legal {legaltray legal} def
+		/Statement {statementtray statement} def
+		/Executive {executivetray executive} def
+		/A3 {a3tray a3} def
+		/A4 {a4tray a4} def
+		/A4Small {a4tray a4small} def
+		/B4 {b4tray b4} def
+		/B5 {b5tray b5} def
+		/unknown {unknown} def
+	papersizedict dup papername known {papername} {/unknown} ifelse get
+	end
+	/FMdicttop countdictstack 1 add def 
+	statusdict begin stopped end 
+	countdictstack -1 FMdicttop {pop end} for 
+	} def
+/manualpapersize {
+	papersizedict begin
+		/Letter {letter} def
+		/LetterSmall {lettersmall} def
+		/Tabloid {11x17} def
+		/Ledger {ledger} def
+		/Legal {legal} def
+		/Statement {statement} def
+		/Executive {executive} def
+		/A3 {a3} def
+		/A4 {a4} def
+		/A4Small {a4small} def
+		/B4 {b4} def
+		/B5 {b5} def
+		/unknown {unknown} def
+	papersizedict dup papername known {papername} {/unknown} ifelse get
+	end
+	stopped 
+	} def
+/desperatepapersize {
+	statusdict /setpageparams known
+		{
+		paperwidth paperheight 0 1 
+		statusdict begin
+		{setpageparams} stopped pop 
+		end
+		} if
+	} def
+/savematrix {
+	orgmatrix currentmatrix pop
+	} bind def
+/restorematrix {
+	orgmatrix setmatrix
+	} bind def
+/dmatrix matrix def
+/dpi    72 0 dmatrix defaultmatrix dtransform
+    dup mul exch   dup mul add   sqrt def
+/freq dpi 18.75 div 8 div round dup 0 eq {pop 1} if 8 mul dpi exch div def
+/sangle 1 0 dmatrix defaultmatrix dtransform exch atan def
+/DiacriticEncoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /space /exclam /quotedbl
+/numbersign /dollar /percent /ampersand /quotesingle /parenleft
+/parenright /asterisk /plus /comma /hyphen /period /slash /zero /one
+/two /three /four /five /six /seven /eight /nine /colon /semicolon
+/less /equal /greater /question /at /A /B /C /D /E /F /G /H /I /J /K
+/L /M /N /O /P /Q /R /S /T /U /V /W /X /Y /Z /bracketleft /backslash
+/bracketright /asciicircum /underscore /grave /a /b /c /d /e /f /g /h
+/i /j /k /l /m /n /o /p /q /r /s /t /u /v /w /x /y /z /braceleft /bar
+/braceright /asciitilde /.notdef /Adieresis /Aring /Ccedilla /Eacute
+/Ntilde /Odieresis /Udieresis /aacute /agrave /acircumflex /adieresis
+/atilde /aring /ccedilla /eacute /egrave /ecircumflex /edieresis
+/iacute /igrave /icircumflex /idieresis /ntilde /oacute /ograve
+/ocircumflex /odieresis /otilde /uacute /ugrave /ucircumflex
+/udieresis /dagger /.notdef /cent /sterling /section /bullet
+/paragraph /germandbls /registered /copyright /trademark /acute
+/dieresis /.notdef /AE /Oslash /.notdef /.notdef /.notdef /.notdef
+/yen /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/ordfeminine /ordmasculine /.notdef /ae /oslash /questiondown
+/exclamdown /logicalnot /.notdef /florin /.notdef /.notdef
+/guillemotleft /guillemotright /ellipsis /.notdef /Agrave /Atilde
+/Otilde /OE /oe /endash /emdash /quotedblleft /quotedblright
+/quoteleft /quoteright /.notdef /.notdef /ydieresis /Ydieresis
+/fraction /currency /guilsinglleft /guilsinglright /fi /fl /daggerdbl
+/periodcentered /quotesinglbase /quotedblbase /perthousand
+/Acircumflex /Ecircumflex /Aacute /Edieresis /Egrave /Iacute
+/Icircumflex /Idieresis /Igrave /Oacute /Ocircumflex /.notdef /Ograve
+/Uacute /Ucircumflex /Ugrave /dotlessi /circumflex /tilde /macron
+/breve /dotaccent /ring /cedilla /hungarumlaut /ogonek /caron
+] def
+/ReEncode { 
+	dup 
+	length 
+	dict begin 
+	{
+	1 index /FID ne 
+		{def} 
+		{pop pop} ifelse 
+	} forall 
+	0 eq {/Encoding DiacriticEncoding def} if 
+	currentdict 
+	end 
+	} bind def
+/graymode true def
+	/bwidth FMLOCAL
+	/bpside FMLOCAL
+	/bstring FMLOCAL
+	/onbits FMLOCAL
+	/offbits FMLOCAL
+	/xindex FMLOCAL
+	/yindex FMLOCAL
+	/x FMLOCAL
+	/y FMLOCAL
+/setpattern {
+	 /bwidth  exch def
+	 /bpside  exch def
+	 /bstring exch def
+	 /onbits 0 def  /offbits 0 def
+	 freq sangle landscape {90 add} if 
+		{/y exch def
+		 /x exch def
+		 /xindex x 1 add 2 div bpside mul cvi def
+		 /yindex y 1 add 2 div bpside mul cvi def
+		 bstring yindex bwidth mul xindex 8 idiv add get
+		 1 7 xindex 8 mod sub bitshift and 0 ne
+		 {/onbits  onbits  1 add def 1}
+		 {/offbits offbits 1 add def 0}
+		 ifelse
+		}
+		setscreen
+	 {} settransfer
+	 offbits offbits onbits add div FMsetgray
+	/graymode false def
+	} bind def
+/grayness {
+	FMsetgray
+	graymode not {
+		/graymode true def
+		orgxfer cvx settransfer
+		orgfreq organgle orgproc cvx setscreen
+		} if
+	} bind def
+	/HUE FMLOCAL
+	/SAT FMLOCAL
+	/BRIGHT FMLOCAL
+	/Colors FMLOCAL
+FMPrintInColor 
+	
+	{
+	/HUE 0 def
+	/SAT 0 def
+	/BRIGHT 0 def
+	% array of arrays Hue and Sat values for the separations [HUE BRIGHT]
+	/Colors   
+	[[0    0  ]    % black
+	 [0    0  ]    % white
+	 [0.00 1.0]    % red
+	 [0.37 1.0]    % green
+	 [0.60 1.0]    % blue
+	 [0.50 1.0]    % cyan
+	 [0.83 1.0]    % magenta
+	 [0.16 1.0]    % comment / yellow
+	 ] def
+      
+	/BEGINBITMAPCOLOR { 
+		BITMAPCOLOR} def
+	/BEGINBITMAPCOLORc { 
+		BITMAPCOLORc} def
+	/BEGINBITMAPTRUECOLOR { 
+		BITMAPTRUECOLOR } def
+	/BEGINBITMAPCOLORc { 
+		BITMAPTRUECOLORc } def
+	/K { 
+		Colors exch get dup
+		0 get /HUE exch store 
+		1 get /BRIGHT exch store
+		  HUE 0 eq BRIGHT 0 eq and
+			{1.0 SAT sub setgray}
+			{HUE SAT BRIGHT sethsbcolor} 
+		  ifelse
+		} def
+	/FMsetgray { 
+		/SAT exch 1.0 exch sub store 
+		  HUE 0 eq BRIGHT 0 eq and
+			{1.0 SAT sub setgray}
+			{HUE SAT BRIGHT sethsbcolor} 
+		  ifelse
+		} bind def
+	}
+	
+	{
+	/BEGINBITMAPCOLOR { 
+		BITMAPGRAY} def
+	/BEGINBITMAPCOLORc { 
+		BITMAPGRAYc} def
+	/BEGINBITMAPTRUECOLOR { 
+		BITMAPTRUEGRAY } def
+	/BEGINBITMAPTRUECOLORc { 
+		BITMAPTRUEGRAYc } def
+	/FMsetgray {setgray} bind def
+	/K { 
+		pop
+		} def
+	}
+ifelse
+/normalize {
+	transform round exch round exch itransform
+	} bind def
+/dnormalize {
+	dtransform round exch round exch idtransform
+	} bind def
+/lnormalize { 
+	0 dtransform exch cvi 2 idiv 2 mul 1 add exch idtransform pop
+	} bind def
+/H { 
+	lnormalize setlinewidth
+	} bind def
+/Z {
+	setlinecap
+	} bind def
+	/fillvals FMLOCAL
+/X { 
+	fillvals exch get
+	dup type /stringtype eq
+	{8 1 setpattern} 
+	{grayness}
+	ifelse
+	} bind def
+/V { 
+	gsave eofill grestore
+	} bind def
+/N { 
+	stroke
+	} bind def
+/M {newpath moveto} bind def
+/E {lineto} bind def
+/D {curveto} bind def
+/O {closepath} bind def
+	/n FMLOCAL
+/L { 
+ 	/n exch def
+	newpath
+	normalize
+	moveto 
+	2 1 n {pop normalize lineto} for
+	} bind def
+/Y { 
+	L 
+	closepath
+	} bind def
+	/x1 FMLOCAL
+	/x2 FMLOCAL
+	/y1 FMLOCAL
+	/y2 FMLOCAL
+	/rad FMLOCAL
+/R { 
+	/y2 exch def
+	/x2 exch def
+	/y1 exch def
+	/x1 exch def
+	x1 y1
+	x2 y1
+	x2 y2
+	x1 y2
+	4 Y 
+	} bind def
+/RR { 
+	/rad exch def
+	normalize
+	/y2 exch def
+	/x2 exch def
+	normalize
+	/y1 exch def
+	/x1 exch def
+	newpath
+	x1 y1 rad add moveto
+	x1 y2 x2 y2 rad arcto
+	x2 y2 x2 y1 rad arcto
+	x2 y1 x1 y1 rad arcto
+	x1 y1 x1 y2 rad arcto
+	closepath
+	16 {pop} repeat
+	} bind def
+/C { 
+	grestore
+	gsave
+	R 
+	clip
+	} bind def
+	/FMpointsize FMLOCAL
+/F { 
+	FMfonts exch get
+	FMpointsize scalefont
+	setfont
+	} bind def
+/Q { 
+	/FMpointsize exch def
+	F 
+	} bind def
+/T { 
+	moveto show
+	} bind def
+/RF { 
+	rotate
+	0 ne {-1 1 scale} if
+	} bind def
+/TF { 
+	gsave
+	moveto 
+	RF
+	show
+	grestore
+	} bind def
+/P { 
+	moveto
+	0 32 3 2 roll widthshow
+	} bind def
+/PF { 
+	gsave
+	moveto 
+	RF
+	0 32 3 2 roll widthshow
+	grestore
+	} bind def
+/S { 
+	moveto
+	0 exch ashow
+	} bind def
+/SF { 
+	gsave
+	moveto
+	RF
+	0 exch ashow
+	grestore
+	} bind def
+/B { 
+	moveto
+	0 32 4 2 roll 0 exch awidthshow
+	} bind def
+/BF { 
+	gsave
+	moveto
+	RF
+	0 32 4 2 roll 0 exch awidthshow
+	grestore
+	} bind def
+/G { 
+	gsave
+	newpath
+	normalize translate 0.0 0.0 moveto 
+	dnormalize scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	closepath fill
+	grestore
+	} bind def
+/A { 
+	gsave
+	savematrix
+	newpath
+	2 index 2 div add exch 3 index 2 div sub exch 
+	normalize 2 index 2 div sub exch 3 index 2 div add exch 
+	translate 
+	scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	restorematrix
+	stroke
+	grestore
+	} bind def
+	/x FMLOCAL
+	/y FMLOCAL
+	/w FMLOCAL
+	/h FMLOCAL
+	/xx FMLOCAL
+	/yy FMLOCAL
+	/ww FMLOCAL
+	/hh FMLOCAL
+	/FMsaveobject FMLOCAL
+	/FMoptop FMLOCAL
+	/FMdicttop FMLOCAL
+/BEGINPRINTCODE { 
+	/FMdicttop countdictstack 1 add def 
+	/FMoptop count 4 sub def 
+	/FMsaveobject save def
+	userdict begin 
+	/showpage {} def 
+	FMNORMALIZEGRAPHICS 
+	3 index neg 3 index neg translate
+	} bind def
+/ENDPRINTCODE {
+	count -1 FMoptop {pop pop} for 
+	countdictstack -1 FMdicttop {pop end} for 
+	FMsaveobject restore 
+	} bind def
+/gn { 
+	0 
+	{	46 mul 
+		cf read pop 
+		32 sub 
+		dup 46 lt {exit} if 
+		46 sub add 
+		} loop
+	add 
+	} bind def
+	/str FMLOCAL
+/cfs { 
+	/str sl string def 
+	0 1 sl 1 sub {str exch val put} for 
+	str def 
+	} bind def
+/ic [ 
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0223
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0223
+	0
+	{0 hx} {1 hx} {2 hx} {3 hx} {4 hx} {5 hx} {6 hx} {7 hx} {8 hx} {9 hx}
+	{10 hx} {11 hx} {12 hx} {13 hx} {14 hx} {15 hx} {16 hx} {17 hx} {18 hx}
+	{19 hx} {gn hx} {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}
+	{13} {14} {15} {16} {17} {18} {19} {gn} {0 wh} {1 wh} {2 wh} {3 wh}
+	{4 wh} {5 wh} {6 wh} {7 wh} {8 wh} {9 wh} {10 wh} {11 wh} {12 wh}
+	{13 wh} {14 wh} {gn wh} {0 bl} {1 bl} {2 bl} {3 bl} {4 bl} {5 bl} {6 bl}
+	{7 bl} {8 bl} {9 bl} {10 bl} {11 bl} {12 bl} {13 bl} {14 bl} {gn bl}
+	{0 fl} {1 fl} {2 fl} {3 fl} {4 fl} {5 fl} {6 fl} {7 fl} {8 fl} {9 fl}
+	{10 fl} {11 fl} {12 fl} {13 fl} {14 fl} {gn fl}
+	] def
+	/sl FMLOCAL
+	/val FMLOCAL
+	/ws FMLOCAL
+	/im FMLOCAL
+	/bs FMLOCAL
+	/cs FMLOCAL
+	/len FMLOCAL
+	/pos FMLOCAL
+/ms { 
+	/sl exch def 
+	/val 255 def 
+	/ws cfs 
+	/im cfs 
+	/val 0 def 
+	/bs cfs 
+	/cs cfs 
+	} bind def
+400 ms 
+/ip { 
+	is 
+	0 
+	cf cs readline pop 
+	{	ic exch get exec 
+		add 
+		} forall 
+	pop 
+	
+	} bind def
+/wh { 
+	/len exch def 
+	/pos exch def 
+	ws 0 len getinterval im pos len getinterval copy pop
+	pos len 
+	} bind def
+/bl { 
+	/len exch def 
+	/pos exch def 
+	bs 0 len getinterval im pos len getinterval copy pop
+	pos len 
+	} bind def
+/s1 1 string def
+/fl { 
+	/len exch def 
+	/pos exch def 
+	/val cf s1 readhexstring pop 0 get def
+	pos 1 pos len add 1 sub {im exch val put} for
+	pos len 
+	} bind def
+/hx { 
+	3 copy getinterval 
+	cf exch readhexstring pop pop 
+	} bind def
+	/h FMLOCAL
+	/w FMLOCAL
+	/d FMLOCAL
+	/lb FMLOCAL
+	/bitmapsave FMLOCAL
+	/is FMLOCAL
+	/cf FMLOCAL
+/wbytes { 
+	dup 
+	8 eq {pop} {1 eq {7 add 8 idiv} {3 add 4 idiv} ifelse} ifelse
+	} bind def
+/BEGINBITMAPBWc { 
+	1 {} COMMONBITMAPc
+	} bind def
+/BEGINBITMAPGRAYc { 
+	8 {} COMMONBITMAPc
+	} bind def
+/BEGINBITMAP2BITc { 
+	2 {} COMMONBITMAPc
+	} bind def
+/COMMONBITMAPc { 
+	/r exch def
+	/d exch def
+	gsave
+	translate rotate scale /h exch def /w exch def
+	/lb w d wbytes def 
+	sl lb lt {lb ms} if 
+	/bitmapsave save def 
+	r                    
+	/is im 0 lb getinterval def 
+	ws 0 lb getinterval is copy pop 
+	/cf currentfile def 
+	w h d [w 0 0 h neg 0 h] 
+	{ip} image 
+	bitmapsave restore 
+	grestore
+	} bind def
+/BEGINBITMAPBW { 
+	1 {} COMMONBITMAP
+	} bind def
+/BEGINBITMAPGRAY { 
+	8 {} COMMONBITMAP
+	} bind def
+/BEGINBITMAP2BIT { 
+	2 {} COMMONBITMAP
+	} bind def
+/COMMONBITMAP { 
+	/r exch def
+	/d exch def
+	gsave
+	translate rotate scale /h exch def /w exch def
+	/bitmapsave save def 
+	r                    
+	/is w d wbytes string def
+	/cf currentfile def 
+	w h d [w 0 0 h neg 0 h] 
+	{cf is readhexstring pop} image
+	bitmapsave restore 
+	grestore
+	} bind def
+	/proc1 FMLOCAL
+	/proc2 FMLOCAL
+	/newproc FMLOCAL
+/Fmcc {
+    /proc2 exch cvlit def
+    /proc1 exch cvlit def
+    /newproc proc1 length proc2 length add array def
+    newproc 0 proc1 putinterval
+    newproc proc1 length proc2 putinterval
+    newproc cvx
+} bind def
+/ngrayt 256 array def
+/nredt 256 array def
+/nbluet 256 array def
+/ngreent 256 array def
+	/gryt FMLOCAL
+	/blut FMLOCAL
+	/grnt FMLOCAL
+	/redt FMLOCAL
+	/indx FMLOCAL
+	/cynu FMLOCAL
+	/magu FMLOCAL
+	/yelu FMLOCAL
+	/k FMLOCAL
+	/u FMLOCAL
+/colorsetup {
+	currentcolortransfer
+	/gryt exch def
+	/blut exch def
+	/grnt exch def
+	/redt exch def
+	0 1 255 {
+		/indx exch def
+		/cynu 1 red indx get 255 div sub def
+		/magu 1 green indx get 255 div sub def
+		/yelu 1 blue indx get 255 div sub def
+		/k cynu magu min yelu min def
+		/u k currentundercolorremoval exec def
+		nredt indx 1 0 cynu u sub max sub redt exec put
+		ngreent indx 1 0 magu u sub max sub grnt exec put
+		nbluet indx 1 0 yelu u sub max sub blut exec put
+		ngrayt indx 1 k currentblackgeneration exec sub gryt exec put
+	} for
+	{255 mul cvi nredt exch get}
+	{255 mul cvi ngreent exch get}
+	{255 mul cvi nbluet exch get}
+	{255 mul cvi ngrayt exch get}
+	setcolortransfer
+	{pop 0} setundercolorremoval
+	{} setblackgeneration
+	} bind def
+	/tran FMLOCAL
+/fakecolorsetup {
+	/tran 256 string def
+	0 1 255 {/indx exch def 
+		tran indx
+		red indx get 77 mul
+		green indx get 151 mul
+		blue indx get 28 mul
+		add add 256 idiv put} for
+	currenttransfer
+	{255 mul cvi tran exch get 255.0 div}
+	exch Fmcc settransfer
+} bind def
+/BITMAPCOLOR { 
+	/d 8 def
+	gsave
+	translate rotate scale /h exch def /w exch def
+	/bitmapsave save def 
+	colorsetup
+	/is w d wbytes string def
+	/cf currentfile def 
+	w h d [w 0 0 h neg 0 h] 
+	{cf is readhexstring pop} {is} {is} true 3 colorimage 
+	bitmapsave restore 
+	grestore
+	} bind def
+/BITMAPCOLORc { 
+	/d 8 def
+	gsave
+	translate rotate scale /h exch def /w exch def
+	/lb w d wbytes def 
+	sl lb lt {lb ms} if 
+	/bitmapsave save def 
+	colorsetup
+	/is im 0 lb getinterval def 
+	ws 0 lb getinterval is copy pop 
+	/cf currentfile def 
+	w h d [w 0 0 h neg 0 h] 
+	{ip} {is} {is} true 3 colorimage
+	bitmapsave restore 
+	grestore
+	} bind def
+/BITMAPTRUECOLORc { 
+        gsave
+        translate rotate scale /h exch def /w exch def
+        /bitmapsave save def 
+        
+        /is w string def
+        
+        ws 0 w getinterval is copy pop 
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        {ip} {gip} {bip} true 3 colorimage
+        bitmapsave restore 
+        grestore
+        } bind def
+/BITMAPTRUECOLOR { 
+        gsave
+        translate rotate scale /h exch def /w exch def
+        /bitmapsave save def 
+        /is w string def
+        /gis w string def
+        /bis w string def
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        { cf is readhexstring pop } 
+        { cf gis readhexstring pop } 
+        { cf bis readhexstring pop } 
+        true 3 colorimage 
+        bitmapsave restore 
+        grestore
+        } bind def
+/BITMAPTRUEGRAYc { 
+        gsave
+        translate rotate scale /h exch def /w exch def
+        /bitmapsave save def 
+        
+        /is w string def
+        
+        ws 0 w getinterval is copy pop 
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        {ip gip bip w gray} image
+        bitmapsave restore 
+        grestore
+        } bind def
+/ww FMLOCAL
+/r FMLOCAL
+/g FMLOCAL
+/b FMLOCAL
+/i FMLOCAL
+/gray { 
+        /ww exch def
+        /b exch def
+        /g exch def
+        /r exch def
+        0 1 ww 1 sub { /i exch def r i get .299 mul g i get .587 mul
+			b i get .114 mul add add r i 3 -1 roll floor cvi put } for
+        r
+        } bind def
+/BITMAPTRUEGRAY { 
+        gsave
+        translate rotate scale /h exch def /w exch def
+        /bitmapsave save def 
+        /is w string def
+        /gis w string def
+        /bis w string def
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        { cf is readhexstring pop 
+          cf gis readhexstring pop 
+          cf bis readhexstring pop w gray}  image
+        bitmapsave restore 
+        grestore
+        } bind def
+/BITMAPGRAY { 
+	8 {fakecolorsetup} COMMONBITMAP
+	} bind def
+/BITMAPGRAYc { 
+	8 {fakecolorsetup} COMMONBITMAPc
+	} bind def
+/ENDBITMAP {
+	} bind def
+end 
+	/ALDsave FMLOCAL
+	/ALDmatrix matrix def ALDmatrix currentmatrix pop
+/StartALD {
+	/ALDsave save def
+	 savematrix
+	 ALDmatrix setmatrix
+	} bind def
+/InALD {
+	 restorematrix
+	} bind def
+/DoneALD {
+	 ALDsave restore
+	} bind def
+%%EndProlog
+%%BeginSetup
+(3.0) FMVERSION
+1 1 612 792 0 1 9 FMDOCUMENT
+0 0 /Helvetica-Bold FMFONTDEFINE
+1 0 /Times-Roman FMFONTDEFINE
+2 0 /Times-Bold FMFONTDEFINE
+3 0 /Times-Italic FMFONTDEFINE
+4 0 /Courier-Bold FMFONTDEFINE
+5 0 /Courier FMFONTDEFINE
+32 FMFILLS
+0 0 FMFILL
+1 .1 FMFILL
+2 .3 FMFILL
+3 .5 FMFILL
+4 .7 FMFILL
+5 .9 FMFILL
+6 .97 FMFILL
+7 1 FMFILL
+8 <0f1e3c78f0e1c387> FMFILL
+9 <0f87c3e1f0783c1e> FMFILL
+10 <cccccccccccccccc> FMFILL
+11 <ffff0000ffff0000> FMFILL
+12 <8142241818244281> FMFILL
+13 <03060c183060c081> FMFILL
+14 <8040201008040201> FMFILL
+16 1 FMFILL
+17 .9 FMFILL
+18 .7 FMFILL
+19 .5 FMFILL
+20 .3 FMFILL
+21 .1 FMFILL
+22 0.03 FMFILL
+23 0 FMFILL
+24 <f0e1c3870f1e3c78> FMFILL
+25 <f0783c1e0f87c3e1> FMFILL
+26 <3333333333333333> FMFILL
+27 <0000ffff0000ffff> FMFILL
+28 <7ebddbe7e7dbbd7e> FMFILL
+29 <fcf9f3e7cf9f3f7e> FMFILL
+30 <7fbfdfeff7fbfdfe> FMFILL
+%%EndSetup
+%%Page: "1" 1
+%%BeginPaperSize: Letter
+%%EndPaperSize
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(June 30, 1992) 72 737.98 T
+72 444.68 558 444.68 2 L
+2 Z
+N
+72 75.33 558 75.33 2 L
+0.25 H
+N
+0 10 Q
+(1) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+207 659 558 669 C
+207 660 459 660 2 L
+0.25 H
+0 Z
+0 X
+0 K
+N
+0 0 612 792 C
+1 24 Q
+0 X
+0 K
+-0.17 (How to Use DLPI) 207 677 S
+2 12 Q
+(Neal Nuckolls) 207 635 T
+0 9 Q
+(Internet Engineering) 207 575 T
+72 417 558 420 C
+207 419.15 558 419.15 2 L
+0.25 H
+2 Z
+0 X
+0 K
+N
+72 419.15 198 419.15 2 L
+0 Z
+N
+0 0 612 792 C
+0 12 Q
+0 X
+0 K
+(1.0) 181.33 424 T
+(Status) 207 424 T
+1 10 Q
+(This paper) 207 396.33 T
+(, manual pages, and all example programs are available via anonymous ftp) 249.07 396.33 T
+(from newstop.EBay) 207 384.33 T
+(.Sun.COM as the \336le) 286.3 384.33 T
+3 F
+(dltest.tar) 372.92 384.33 T
+(.Z) 407.63 384.33 T
+1 F
+(.) 418.18 384.33 T
+72 341 558 344 C
+207 343.15 558 343.15 2 L
+0.25 H
+2 Z
+0 X
+0 K
+N
+72 343.15 198 343.15 2 L
+0 Z
+N
+0 0 612 792 C
+0 12 Q
+0 X
+0 K
+(2.0) 181.33 348 T
+(Purpose) 207 348 T
+1 10 Q
+(This paper shows how user) 207 324.33 T
+(-level programs in SunOS 5.x can use the STREAMS Data) 315.61 324.33 T
+-0.24 (Link Provider Interface to transmit and receive raw datalink-level frames. Examples are) 207 312.33 P
+(used to demonstrate the use of the interface. This paper) 207 300.33 T
+3 F
+(does not) 430.44 300.33 T
+1 F
+(describe how to write) 466.53 300.33 T
+(DLPI device drivers. The purpose of this paper is to provide the applications program-) 207 288.33 T
+(mer within enough information to allow him/her to write programs which directly) 207 276.33 T
+(access the raw datalink drivers in the system to send and receive raw datalink frames.) 207 264.33 T
+-0.01 (Few programs need to access the raw datalink device drivers. Most networking applica-) 207 240.33 P
+(tions should use the T) 207 228.33 T
+(ransport Layer Interface \050TLI\051, socket, or T) 294.38 228.33 T
+(ransport-Independent) 467.76 228.33 T
+(RPC interface in SunOS 5.x. But a certain class of applications, such as network moni-) 207 216.33 T
+(toring programs, require access to the underlying datalink interface and must use DLPI) 207 204.33 T
+(for this.) 207 192.33 T
+72 149 558 152 C
+207 151.16 558 151.16 2 L
+0.25 H
+2 Z
+0 X
+0 K
+N
+72 151.16 198 151.16 2 L
+0 Z
+N
+0 0 612 792 C
+0 12 Q
+0 X
+0 K
+(3.0) 181.33 156 T
+(Background) 207 156 T
+1 10 Q
+-0.31 (The Data Link Provider Interface speci\336es a STREAMS kernel-level implementation of) 207 132.33 P
+(the ISO Data Link Service De\336nition \050ISO 8886\051 and Logical Link Control \050ISO 8802/) 207 120.33 T
+(2\051 LLC.) 207 108.33 T
+FMENDPAGE
+%%EndPage: "1" 2
+%%Page: "2" 2
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Background) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(2) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(DLPI enables a data link service user to access and use any of a variety of conforming) 207 680.66 T
+(data link service providers without special knowledge of the provider) 207 668.66 T
+(\325) 484.67 668.66 T
+(s protocol. Spe-) 487.45 668.66 T
+(ci\336cally) 207 656.66 T
+(, the interface is intended to support X.25 LAPB, BX.25 level2, SDLC, ISDN) 238.55 656.66 T
+-0.24 (LAPD, Ethernet, FDDI, T) 207 644.66 P
+-0.24 (oken Ring, T) 309.95 644.66 P
+-0.24 (oken Bus, BISYNC, and other datalink-level pro-) 361.24 644.66 P
+(tocols.) 207 632.66 T
+(The interface speci\336es access to data link service providers, and does not de\336ne a spe-) 207 608.66 T
+(ci\336c protocol or protocol implementation.) 207 596.66 T
+(SunOS 5.0 \050Solaris 2.0\051 includes support for DLPI V) 207 572.66 T
+(ersion 2. Most networking) 417.98 572.66 T
+(datalink-level device drivers for SunOS 5.x support DLPI V) 207 560.66 T
+(ersion 2 as their primary) 446.56 560.66 T
+(interface. A user) 207 548.66 T
+(-level DLPI library interface \050DLLI\051 is not currently available. Again,) 273.12 548.66 T
+(since the number of programs which should access the raw datalink layer is limited,) 207 536.66 T
+-0.03 (supporing a formal user) 207 524.66 P
+-0.03 (-level lirbrary seemed unnecessary) 301.92 524.66 P
+-0.03 (. This paper and the example) 440.22 524.66 P
+(demo programs contain more than suf) 207 512.66 T
+(\336cient code examples for most DLPI users.) 358.66 512.66 T
+(The DLPI header \336le shipped with SunOS 5.x is) 207 488.66 T
+3 F
+(<sys/dlpi.h>) 402.99 488.66 T
+1 F
+(.) 454.52 488.66 T
+-0.16 (The DLPI V) 207 464.66 P
+-0.16 (ersion 2 speci\336cation can be ordered from Sun. Don\325) 255.53 464.66 P
+-0.16 (t try to derive the inter-) 465.83 464.66 P
+(face from the header \336le - get a copy:) 207 452.66 T
+(STREAMS DLPI Spec., Sun Microsystems, 800-6915-01.) 216 428.66 T
+(DLPI de\336nes a STREAMS message set, state table, and conventions to allow the inter-) 207 404.66 T
+(action between a Data Link Service User \050DLS user\051 and Data Link Service Provider) 207 392.66 T
+-0.14 (\050DLS provider\051. W) 207 380.66 P
+-0.14 (ithin SunOS 5.x, the DLS users include the kernel IP and ARP proto-) 282.64 380.66 P
+(cols and the DLS providers are the datalink drivers such as the) 207 368.66 T
+3 F
+(le) 459.59 368.66 T
+1 F
+(\050LANCE Ethernet\051) 469.31 368.66 T
+(driver) 207 356.66 T
+(. Other DLS users include) 230.32 356.66 T
+3 F
+(in.rarpd) 336.91 356.66 T
+1 F
+(, the user) 369.95 356.66 T
+(-level reverse ARP daemon program) 406.11 356.66 T
+(and) 207 344.66 T
+3 F
+(snoop) 223.93 344.66 T
+1 F
+(, a networking monitor program which has replaced) 247.81 344.66 T
+3 F
+(ether\336nd) 457.37 344.66 T
+1 F
+(. Additionally) 495.4 344.66 T
+(,) 550.28 344.66 T
+(the) 207 332.66 T
+3 F
+(ifcon\336g) 221.71 332.66 T
+1 F
+(program is a DLS user when it reports or con\336gures certain datalink-level) 254.19 332.66 T
+(values of the system networking interfaces.) 207 320.66 T
+72 89.3 558 687.33 C
+131.62 131.33 498.38 293.33 C
+203.62 245.65 473.62 245.65 2 L
+3 H
+2 Z
+0 X
+0 K
+N
+266.62 146.65 401.62 191.65 R
+0.5 H
+N
+317.93 203.19 314.62 191.65 311.32 203.19 314.62 203.19 4 Y
+V
+311.32 234.12 314.62 245.65 317.93 234.12 314.62 234.12 4 Y
+V
+314.62 203.19 314.62 234.12 2 L
+0 Z
+N
+355.93 203.19 352.62 191.65 349.32 203.19 352.62 203.19 4 Y
+V
+349.32 234.12 352.62 245.65 355.93 234.12 352.62 234.12 4 Y
+V
+352.62 203.19 352.62 234.12 2 L
+N
+339.62 255.65 366.62 273.65 9 RR
+2 Z
+N
+301.62 255.65 328.62 273.65 9 RR
+N
+1 10 Q
+(/dev/le) 320.62 166.84 T
+(Streams) 275.62 229.84 T
+248.62 209.65 428.62 209.65 2 L
+7 X
+V
+10 X
+N
+0 X
+(DLPI) 428.62 202.84 T
+(DLS Users) 374.62 261.33 T
+(DLS Provider) 411.62 168.33 T
+(User) 446.62 248.33 T
+(Kernel) 447.62 237.33 T
+72 89.3 558 687.33 C
+0 0 612 792 C
+FMENDPAGE
+%%EndPage: "2" 3
+%%Page: "3" 3
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(DLPI Quick T) 207 739.85 T
+(utorial) 262.27 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(3) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+72 672.33 558 675.33 C
+207 674.48 558 674.48 2 L
+0.25 H
+2 Z
+0 X
+0 K
+N
+72 674.48 198 674.48 2 L
+0 Z
+N
+0 0 612 792 C
+0 12 Q
+0 X
+0 K
+(4.0) 181.33 679.33 T
+(DLPI Quick T) 207 679.33 T
+(utorial) 280.76 679.33 T
+1 10 Q
+(The DLPI primitives are de\336ned in terms of STREAMS messages. All DLPI messages) 207 655.66 T
+-0.19 (are either M_PROT) 207 643.66 P
+-0.19 (O or M_PCPROT) 285.83 643.66 P
+-0.19 (O type and contain the appropriate DLPI message) 357.45 643.66 P
+(structure in the leading mblk. The DLPI primitives are generally issued in a request/) 207 631.66 T
+(acknowledge scenerio where the user issues a request message and waits for an) 207 619.66 T
+(acknowledge or error response message from the provider) 207 607.66 T
+(.) 438.75 607.66 T
+(DLPI provides support for connectionless and connection-oriented datalink protocols.) 207 393.33 T
+(This paper will focus on providing examples of how to use connectionless datalink pro-) 207 381.33 T
+(viders.) 207 369.33 T
+(The DLPI V) 207 345.33 T
+(ersion 2 connectionless primitives allow the user to cause the provider to) 255.85 345.33 T
+(perform the following operations:) 207 333.33 T
+4 11 Q
+(\245) 207 315.33 T
+1 10 Q
+(attach a Stream to a particular addressable physical device) 220.74 315.33 T
+4 11 Q
+(\245) 207 300.33 T
+1 10 Q
+(bind a datalink-level service access point address to the Stream) 220.74 300.33 T
+4 11 Q
+(\245) 207 285.33 T
+1 10 Q
+(transmit datalink frames) 220.74 285.33 T
+4 11 Q
+(\245) 207 270.33 T
+1 10 Q
+(receive datalink frames) 220.74 270.33 T
+4 11 Q
+(\245) 207 255.33 T
+1 10 Q
+(enable reception of multicast group addresses) 220.74 255.33 T
+4 11 Q
+(\245) 207 240.33 T
+1 10 Q
+(enable physical and datalink-level \322promiscuous\323 reception) 220.74 240.33 T
+4 11 Q
+(\245) 207 225.33 T
+1 10 Q
+(get/set physical address of attached device) 220.74 225.33 T
+4 11 Q
+(\245) 207 210.33 T
+1 10 Q
+(transmit/receive LLC XID/TEST messages) 220.74 210.33 T
+(DLPI supports the concept of a DLSAP address which consists of a physical address) 207 186.33 T
+(plus a datalink service access point \050SAP\051 address. For example, the DLSAP address) 207 174.33 T
+(format for a datalink provider for Ethernet is the 6 byte Ethernet physical address fol-) 207 162.33 T
+(lowed immediately by the 2 byte Ethernet type to create an 8 byte Ethernet DLSAP) 207 150.33 T
+(address. The DLSAP address format dif) 207 138.33 T
+(fers from provider to provider) 366.7 138.33 T
+(. Information) 486.06 138.33 T
+(included in the DL_INFO_ACK primitive allows the user to compose and decompose) 207 126.33 T
+-0.25 (the physical and datalink portions to/from a DLSAP address for that particular provider) 207 114.33 P
+-0.25 (.) 553.25 114.33 P
+(There are examples of how to do this later) 207 102.33 T
+(.) 375.21 102.33 T
+72 89.3 558 687.33 C
+153 414 477 604.33 C
+378 568.33 378 433.33 2 L
+3 H
+2 Z
+0 X
+0 K
+N
+368.82 512.06 377.99 504.33 366.11 506.03 367.47 509.04 4 Y
+V
+297 540.33 367.47 509.04 2 L
+1 H
+N
+308.88 470.03 297 468.33 306.17 476.06 307.52 473.05 4 Y
+V
+378 504.33 307.53 473.04 2 L
+N
+1 10 Q
+(DL_A) 225 543.51 T
+(TT) 249.43 543.51 T
+(ACH) 260.84 543.51 T
+(request) 243 534.51 T
+(DL_OK) 243 471.5 T
+(acknowledge) 234 462.5 T
+72 89.3 558 687.33 C
+0 0 612 792 C
+FMENDPAGE
+%%EndPage: "3" 4
+%%Page: "4" 4
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(4) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(Before transmitting and receiving datalink frames, the user must open the datalink pro-) 207 680.66 T
+(vider) 207 668.66 T
+(, attach the \336le descriptor to a \322Physical Point of Attachment\323 \050PP) 227.14 668.66 T
+(A\051, and bind a) 490.49 668.66 T
+(Service Access Point \050SAP\051 address to the \336le descriptor) 207 656.66 T
+(.) 433.52 656.66 T
+(T) 207 632.66 T
+(wo styles of DLS provider are de\336ned by DLPI, distinguished by the way they enable) 212.41 632.66 T
+(a DLS user to choose a particular physical point of attachment \050PP) 207 620.66 T
+(A\051. Opening the) 472.28 620.66 T
+(datalink provider creates a new Stream to the device and returns a \336le descriptor) 207 608.66 T
+(.) 527.58 608.66 T
+-0.02 ( The) 207 584.66 P
+3 F
+-0.02 (style1) 227.49 584.66 P
+1 F
+-0.02 (provider assigns a PP) 253.29 584.66 P
+-0.02 (A to the Stream based on the major/minor device num-) 338.08 584.66 P
+-0.1 (bers the user opened. Style1 providers \322implicitly\323 attach the Stream to a device and do) 207 572.66 P
+-0.33 (not require the user to explicitly send a DL_A) 207 560.66 P
+-0.33 (TT) 386.98 560.66 P
+-0.33 (ACH_REQ message downstream to the) 398.39 560.66 P
+-0.06 (provider for this. An example of a style1 provider would probably be a serial line multi-) 207 548.66 P
+(plexer driver which allowed the user to open the minor device which corresponded to) 207 536.66 T
+(the particular serial port number) 207 524.66 T
+(. Opening the special device \336le) 335.24 524.66 T
+3 F
+(/dev/serial000) 465.98 524.66 T
+1 F
+(would) 525.66 524.66 T
+-0.14 (probably open minor device zero and associate this Stream with port zero of the device.) 207 512.66 P
+-0.02 (The) 207 488.66 P
+3 F
+-0.02 (style2) 225.02 488.66 P
+1 F
+-0.02 (provider requires a DLS user to explicitly identify the desired PP) 250.81 488.66 P
+-0.02 (A using the) 509.49 488.66 P
+(attach service primitive. Most DLS providers which provide shared access for multiple) 207 476.66 T
+-0.33 (Streams to a particular device port will be implemented as style2 providers. An example) 207 464.66 P
+-0.08 (of a style2 provider is the le0 \050LANCE Ethernet\051 device driver shipped with the SunOS) 207 452.66 P
+(5.x system. Opening the special \336le) 207 440.66 T
+3 F
+(/dev/le) 351.91 440.66 T
+1 F
+(creates a new Stream but does not select a) 381.05 440.66 T
+(particular ethernet interface. The user must then send a DL_A) 207 428.66 T
+(TT) 453.46 428.66 T
+(ACH_REQ message) 464.88 428.66 T
+-0.17 (downstream and receive a DL_OK_ACK response to associate the Stream with a partic-) 207 416.66 P
+(ular le interface.) 207 404.66 T
+(After the \336le descriptor has been attached to a PP) 207 380.66 T
+(A, the user must issue the) 403.43 380.66 T
+(DL_BIND_REQ primitive to associate the attached \336le descriptor with a full DLSAP) 207 368.66 T
+(address.) 207 356.66 T
+-0.11 (After the \336le descriptor has been attached and bound, the user can send and receive raw) 207 332.66 P
+-0.2 (datalink frames or issue additional, optional DLPI primitives to access optional features) 207 320.66 P
+(of the DLS provider) 207 308.66 T
+(.) 287.23 308.66 T
+72 265.33 558 268.33 C
+207 267.48 558 267.48 2 L
+0.25 H
+2 Z
+0 X
+0 K
+N
+72 267.48 198 267.48 2 L
+0 Z
+N
+0 0 612 792 C
+0 12 Q
+0 X
+0 K
+(5.0) 181.33 272.33 T
+(How to Use DLPI) 207 272.33 T
+1 10 Q
+-0.27 (The examples below demonstrate the use of the connectionless DLPI version 2 message) 207 244.66 P
+(set.) 207 232.66 T
+0 F
+(5.1) 184.11 202.66 T
+(Example DLPI message) 207 202.66 T
+1 F
+(The typical DLPI streams message consists of an M_PROT) 207 186.66 T
+(O or M_PCPROT) 445 186.66 T
+(O type) 517.01 186.66 T
+(mblk_t followed by zero or more M_DA) 207 174.66 T
+(T) 369.11 174.66 T
+(A type mblk\325) 374.42 174.66 T
+(s. Encapsulated within the lead-) 427.17 174.66 T
+-0.39 (ing M_PROT) 207 162.66 P
+-0.39 (O/M_PCPROT) 261.13 162.66 P
+-0.39 (O m_blk will be a longword aligned data structure de\336ning) 322.6 162.66 P
+FMENDPAGE
+%%EndPage: "4" 5
+%%Page: "5" 5
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(5) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(one of the DLPI primitives. Here is the data structure for the DL_A) 207 680.66 T
+(TT) 475.41 680.66 T
+(ACH_REQ prim-) 486.83 680.66 T
+(itive:) 207 668.66 T
+5 8 Q
+(/*) 108 651.99 T
+( * DL_ATTACH_REQ, M_PROTO type) 108 641.99 T
+( */) 108 631.99 T
+(typedef struct {) 108 621.99 T
+(ulong) 144 611.99 T
+(dl_primitive;) 180 611.99 T
+(/* set to DL_ATTACH_REQ */) 252 611.99 T
+(ulong) 144 601.99 T
+(dl_ppa;) 180 601.99 T
+(/* id of the PPA */) 252 601.99 T
+(} dl_attach_req_t;) 108 591.99 T
+0 10 Q
+(5.2) 184.11 563.66 T
+( Attaching and Binding) 207 563.66 T
+1 F
+(The program below demonstrates how to open, attach, and bind a datalink provider \336le) 207 529.66 T
+(descriptor) 207 517.66 T
+(, issue the inforeq primitive, and print some information about the provider) 246.57 517.66 T
+(.) 546.1 517.66 T
+( The program takes three command line ar) 207 493.66 T
+(guments. The) 376.41 493.66 T
+3 F
+(device) 433.32 493.66 T
+1 F
+(ar) 461.34 493.66 T
+(gument speci\336es the) 468.93 493.66 T
+(full path of the device driver) 207 481.66 T
+(. The) 320.53 481.66 T
+3 F
+(ppa) 343.57 481.66 T
+1 F
+(ar) 361.05 481.66 T
+(gument is the id of the point of physical attach-) 368.64 481.66 T
+(ment interpreted by the driver) 207 469.66 T
+(. It identi\336es the unit number or port number of the physi-) 325.8 469.66 T
+(cal device within the system. The third ar) 207 457.66 T
+(gument,) 372.26 457.66 T
+3 F
+(sap) 407.24 457.66 T
+1 F
+(, is an integer representing the) 421.12 457.66 T
+(datalink layer service access point and also interpreted by the driver) 207 445.66 T
+(. This tends to) 477.9 445.66 T
+(idenfy one of the protocol entities which will use this provider) 207 433.66 T
+(.) 455.73 433.66 T
+(An example of the ar) 207 409.66 T
+(guments and output of this program follows the source listing.) 291.19 409.66 T
+FMENDPAGE
+%%EndPage: "5" 6
+%%Page: "6" 6
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(6) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(/*) 72 663.99 T
+( * NAME) 72 653.99 T
+( * dlinfo - print information about the datalink provider) 72 643.99 T
+( * SYNOPSIS:) 72 633.99 T
+( *) 72 623.99 T
+(dlinfo device ppa sap) 108 623.99 T
+( *) 72 613.99 T
+( * Open datalink provider.) 72 603.99 T
+( * Attach to PPA.) 72 593.99 T
+( * Bind to sap) 72 583.99 T
+( * Get DL_INFO_ACK.) 72 573.99 T
+( * Print DL_INFO_ACK information.) 72 563.99 T
+( */) 72 553.99 T
+(#include) 72 533.99 T
+(<sys/types.h>) 110.38 533.99 T
+(#include) 72 523.99 T
+(<sys/stropts.h>) 110.38 523.99 T
+(#include) 72 513.99 T
+(<sys/dlpi.h>) 110.38 513.99 T
+(#include) 72 503.99 T
+(<sys/signal.h>) 110.38 503.99 T
+(#include) 72 493.99 T
+(<fcntl.h>) 110.38 493.99 T
+(#include) 72 483.99 T
+(<stdio.h>) 110.38 483.99 T
+(#include) 72 473.99 T
+(\322dltest.h\323) 110.38 473.99 T
+(main\050ac, av\051) 72 453.99 T
+(int) 72 443.99 T
+(ac;) 108 443.99 T
+(char) 72 433.99 T
+(*av[];) 108 433.99 T
+({) 72 423.99 T
+(long) 108 413.99 T
+(buf[MAXDLBUF];) 144 413.99 T
+(/* aligned on long */) 211.16 413.99 T
+(union) 108 403.99 T
+(DL_primitives) 144 403.99 T
+(*dlp;) 206.37 403.99 T
+(char) 108 393.99 T
+(*device;) 144 393.99 T
+(int) 108 383.99 T
+(ppa;) 144 383.99 T
+(int) 108 373.99 T
+(fd;) 144 373.99 T
+(int) 108 363.99 T
+(sap;) 144 363.99 T
+(dlp = \050union DL_primitives*\051 buf;) 108 343.99 T
+(if \050ac != 4\051) 108 323.99 T
+(usage\050av[0]\051;) 144 313.99 T
+(device = av[1];) 108 293.99 T
+(ppa = atoi\050av[2]\051;) 108 283.99 T
+(sap) 108 273.99 T
+(= atoi\050av[3]\051;) 144 273.99 T
+(/*) 108 253.99 T
+( * Open the device.) 108 243.99 T
+( */) 108 233.99 T
+(if \050\050fd = open\050device, O_RDWR\051\051 < 0\051) 108 223.99 T
+(syserr\050device\051;) 144 213.99 T
+(/*) 108 193.99 T
+( * Attach.) 108 183.99 T
+( */) 108 173.99 T
+(dlattachreq\050fd, ppa\051;) 108 163.99 T
+(dlokack\050fd, buf\051;) 108 153.99 T
+(/*) 108 133.99 T
+( * Bind.) 108 123.99 T
+( */) 108 113.99 T
+(dlbindreq\050fd, sap, 0, DL_CLDLS, 0, 0\051;) 108 103.99 T
+(dlbindack\050fd, buf\051;) 108 93.99 T
+FMENDPAGE
+%%EndPage: "6" 7
+%%Page: "7" 7
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(7) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(/*) 108 671.99 T
+( * Issue DL_INFO_REQ.) 108 661.99 T
+( */) 108 651.99 T
+(dlinforeq\050fd\051;) 108 641.99 T
+(dlinfoack\050fd, buf\051;) 108 631.99 T
+(/*) 108 611.99 T
+( * Print DL_INFO_ACK values.) 108 601.99 T
+( */) 108 591.99 T
+(printdlprim\050dlp\051;) 108 581.99 T
+(return \0500\051;) 108 561.99 T
+(}) 72 551.99 T
+(usage\050av0\051) 72 531.99 T
+(char) 72 521.99 T
+(*av0;) 108 521.99 T
+({) 72 511.99 T
+(\050void\051 fprintf\050stderr, \322%s: \322, av0\051;) 108 501.99 T
+(\050void\051 fprintf\050stderr, \322Usage: %s device ppa sap\134n\323, av0\051;) 108 491.99 T
+(\050void\051 exit\0501\051;) 108 481.99 T
+(}) 72 471.99 T
+(dlattachreq\050fd, ppa\051) 72 441.99 T
+(int) 72 431.99 T
+(fd;) 108 431.99 T
+(u_long) 72 421.99 T
+(ppa;) 108 421.99 T
+({) 72 411.99 T
+(dl_attach_req_t) 108 401.99 T
+(attach_req;) 179.96 401.99 T
+(struct) 108 391.99 T
+(strbuf) 144 391.99 T
+(ctl;) 180 391.99 T
+(int) 108 381.99 T
+(flags;) 144 381.99 T
+(attach_req.dl_primitive = DL_ATTACH_REQ;) 108 361.99 T
+(attach_req.dl_ppa = ppa;) 108 351.99 T
+(ctl.maxlen = 0;) 108 331.99 T
+(ctl.len = sizeof \050attach_req\051;) 108 321.99 T
+(ctl.buf = \050char *\051 &attach_req;) 108 311.99 T
+(flags = 0;) 108 291.99 T
+(if \050putmsg\050fd, &ctl, \050struct strbuf*\051 NULL, flags\051 < 0\051) 108 271.99 T
+(syserr\050\322dlattachreq: putmsg\323\051;) 144 261.99 T
+(}) 72 251.99 T
+(dlbindreq\050fd, sap, max_conind, service_mode, conn_mgmt, xidtest\051) 72 231.99 T
+(int) 72 221.99 T
+(fd;) 108 221.99 T
+(u_long) 72 211.99 T
+(sap;) 108 211.99 T
+(u_long) 72 201.99 T
+(max_conind;) 108 201.99 T
+(u_long) 72 191.99 T
+(service_mode;) 108 191.99 T
+(u_long) 72 181.99 T
+(conn_mgmt;) 108 181.99 T
+(u_long) 72 171.99 T
+(xidtest;) 108 171.99 T
+({) 72 161.99 T
+(dl_bind_req_t) 108 151.99 T
+(bind_req;) 170.37 151.99 T
+(struct) 108 141.99 T
+(strbuf) 144 141.99 T
+(ctl;) 180 141.99 T
+(int) 108 131.99 T
+(flags;) 144 131.99 T
+(bind_req.dl_primitive = DL_BIND_REQ;) 108 111.99 T
+(bind_req.dl_sap = sap;) 108 101.99 T
+(bind_req.dl_max_conind = max_conind;) 108 91.99 T
+FMENDPAGE
+%%EndPage: "7" 8
+%%Page: "8" 8
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(8) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(bind_req.dl_service_mode = service_mode;) 108 681.99 T
+(bind_req.dl_conn_mgmt = conn_mgmt;) 108 671.99 T
+(bind_req.dl_xidtest_flg = xidtest;) 108 661.99 T
+(ctl.maxlen = 0;) 108 641.99 T
+(ctl.len = sizeof \050bind_req\051;) 108 631.99 T
+(ctl.buf = \050char *\051 &bind_req;) 108 621.99 T
+(flags = 0;) 108 601.99 T
+(if \050putmsg\050fd, &ctl, \050struct strbuf*\051 NULL, flags\051 < 0\051) 108 581.99 T
+(syserr\050\322dlbindreq: putmsg\323\051;) 144 571.99 T
+(}) 72 561.99 T
+(dlbindack\050fd, bufp\051) 72 541.99 T
+(int) 72 531.99 T
+(fd;) 108 531.99 T
+(char) 72 521.99 T
+(*bufp;) 108 521.99 T
+({) 72 511.99 T
+(union) 108 501.99 T
+(DL_primitives) 144 501.99 T
+(*dlp;) 206.37 501.99 T
+(struct) 108 491.99 T
+(strbuf) 144 491.99 T
+(ctl;) 180 491.99 T
+(int) 108 481.99 T
+(flags;) 144 481.99 T
+(ctl.maxlen = MAXDLBUF;) 108 461.99 T
+(ctl.len = 0;) 108 451.99 T
+(ctl.buf = bufp;) 108 441.99 T
+(strgetmsg\050fd, &ctl, \050struct strbuf*\051NULL, &flags, \322dlbindack\323\051;) 108 421.99 T
+(dlp = \050union DL_primitives *\051 ctl.buf;) 108 401.99 T
+(expecting\050DL_BIND_ACK, dlp\051;) 108 381.99 T
+(if \050flags != RS_HIPRI\051) 108 361.99 T
+(err\050\322dlbindack: DL_OK_ACK was not M_PCPROTO\323\051;) 144 351.99 T
+(if \050ctl.len < sizeof \050dl_bind_ack_t\051\051) 108 331.99 T
+(err\050\322dlbindack: short response ctl.len: %d\323, ctl.len\051;) 144 321.99 T
+(}) 72 311.99 T
+(dlokack\050fd, bufp\051) 72 291.99 T
+(int) 72 281.99 T
+(fd;) 108 281.99 T
+(char) 72 271.99 T
+(*bufp;) 108 271.99 T
+({) 72 261.99 T
+(union) 108 251.99 T
+(DL_primitives) 144 251.99 T
+(*dlp;) 206.37 251.99 T
+(struct) 108 241.99 T
+(strbuf) 144 241.99 T
+(ctl;) 180 241.99 T
+(int) 108 231.99 T
+(flags;) 144 231.99 T
+(ctl.maxlen = MAXDLBUF;) 108 211.99 T
+(ctl.len = 0;) 108 201.99 T
+(ctl.buf = bufp;) 108 191.99 T
+(strgetmsg\050fd, &ctl, \050struct strbuf*\051NULL, &flags, \322dlokack\323\051;) 108 171.99 T
+(dlp = \050union DL_primitives *\051 ctl.buf;) 108 151.99 T
+(expecting\050DL_OK_ACK, dlp\051;) 108 131.99 T
+(if \050ctl.len < sizeof \050dl_ok_ack_t\051\051) 108 111.99 T
+(err\050\322dlokack: response ctl.len too short: %d\323, ctl.len\051;) 144 101.99 T
+FMENDPAGE
+%%EndPage: "8" 9
+%%Page: "9" 9
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(9) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(if \050flags != RS_HIPRI\051) 108 681.99 T
+(err\050\322dlokack: DL_OK_ACK was not M_PCPROTO\323\051;) 144 671.99 T
+(if \050ctl.len < sizeof \050dl_ok_ack_t\051\051) 108 651.99 T
+(err\050\322dlokack: short response ctl.len: %d\323, ctl.len\051;) 144 641.99 T
+(}) 72 631.99 T
+(dlinforeq\050fd\051) 72 601.99 T
+(int) 72 591.99 T
+(fd;) 108 591.99 T
+({) 72 581.99 T
+(dl_info_req_t) 108 571.99 T
+(info_req;) 170.37 571.99 T
+(struct) 108 561.99 T
+(strbuf) 144 561.99 T
+(ctl;) 180 561.99 T
+(int) 108 551.99 T
+(flags;) 144 551.99 T
+(info_req.dl_primitive = DL_INFO_REQ;) 108 531.99 T
+(ctl.maxlen = 0;) 108 511.99 T
+(ctl.len = sizeof \050info_req\051;) 108 501.99 T
+(ctl.buf = \050char *\051 &info_req;) 108 491.99 T
+(flags = RS_HIPRI;) 108 471.99 T
+(if \050putmsg\050fd, &ctl, \050struct strbuf*\051 NULL, flags\051 < 0\051) 108 451.99 T
+(syserr\050\322dlinforeq: putmsg\323\051;) 144 441.99 T
+(}) 72 431.99 T
+(dlinfoack\050fd, bufp\051) 72 411.99 T
+(int) 72 401.99 T
+(fd;) 108 401.99 T
+(char) 72 391.99 T
+(*bufp;) 108 391.99 T
+({) 72 381.99 T
+(union) 108 371.99 T
+(DL_primitives) 144 371.99 T
+(*dlp;) 206.37 371.99 T
+(struct) 108 361.99 T
+(strbuf) 144 361.99 T
+(ctl;) 180 361.99 T
+(int) 108 351.99 T
+(flags;) 144 351.99 T
+(ctl.maxlen = MAXDLBUF;) 108 331.99 T
+(ctl.len = 0;) 108 321.99 T
+(ctl.buf = bufp;) 108 311.99 T
+(strgetmsg\050fd, &ctl, \050struct strbuf*\051NULL, &flags, \322dlinfoack\323\051;) 108 291.99 T
+(dlp = \050union DL_primitives *\051 ctl.buf;) 108 271.99 T
+(expecting\050DL_INFO_ACK, dlp\051;) 108 251.99 T
+(if \050ctl.len < sizeof \050dl_info_ack_t\051\051) 108 231.99 T
+(err\050\322dlinfoack: response ctl.len too short: %d\323, ctl.len\051;) 144 221.99 T
+(if \050flags != RS_HIPRI\051) 108 201.99 T
+(err\050\322dlinfoack: DL_INFO_ACK was not M_PCPROTO\323\051;) 144 191.99 T
+(if \050ctl.len < sizeof \050dl_info_ack_t\051\051) 108 171.99 T
+(err\050\322dlinfoack: short response ctl.len: %d\323, ctl.len\051;) 144 161.99 T
+(}) 72 151.99 T
+FMENDPAGE
+%%EndPage: "9" 10
+%%Page: "10" 10
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(10) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(When executed, the program produces the following output:) 207 656.66 T
+5 8 Q
+(# dlinfo) 72 615.99 T
+(dlinfo: Usage: dlinfo device ppa sap) 72 605.99 T
+(# dlinfo /dev/le 0 0) 72 595.99 T
+(DL_INFO_ACK: max_sdu 1500 min_sdu 0) 72 585.99 T
+(addr_length 8 mac_type DL_CSMACD current_state DL_IDLE) 72 575.99 T
+(sap_length -2 service_mode DL_CLDLS qos_length 0) 72 565.99 T
+(qos_offset 0 qos_range_length 0 qos_range_offset 0) 72 555.99 T
+(provider_style DL_STYLE2 addr_offset 76 version 2) 72 545.99 T
+(brdcst_addr_length 6 brdcst_addr_offset 84) 72 535.99 T
+(addr 8:0:20:10:ab:ed:0:0) 72 525.99 T
+(brdcst_addr ff:ff:ff:ff:ff:ff) 72 515.99 T
+(#) 72 505.99 T
+1 10 Q
+-0.18 (Note that the DLSAP address length for the le driver is 8 and the sap_length is -2 which) 207 473.66 P
+(means that the \336rst 6 bytes are the physical address \050Ethernet address\051 and the \336nal 2) 207 461.66 T
+(bytes are the SAP \050Ethernet type\051 for this particular provider) 207 449.66 T
+(.) 448.77 449.66 T
+FMENDPAGE
+%%EndPage: "10" 11
+%%Page: "11" 11
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(1) 522.84 60.96 T
+(1) 527.85 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+(5.3) 184.11 680.66 T
+(T) 207 680.66 T
+(ransmitting messages) 212.56 680.66 T
+1 F
+(Once the \336le descriptor has been attached to a physical interface and a SAP has been) 207 664.66 T
+(bound, you can send and receive datalink messages using the DL_UNITDA) 207 652.66 T
+(T) 509.27 652.66 T
+(A_REQ) 514.58 652.66 T
+(and DL_UNITDA) 207 640.66 T
+(T) 279.44 640.66 T
+(A_IND dlpi primitives.) 284.75 640.66 T
+5 8 Q
+(/*) 72 603.99 T
+( * Xmit data buffer. Fill with whatever pattern you like ...) 72 593.99 T
+( */) 72 583.99 T
+(char) 72 573.99 T
+(xmitbuf[MAXDLBUF];) 108 573.99 T
+(main\050ac, av\051) 72 553.99 T
+(int) 72 543.99 T
+(ac;) 108 543.99 T
+(char) 72 533.99 T
+(*av[];) 108 533.99 T
+({) 72 523.99 T
+(char) 108 513.99 T
+(*device;) 144 513.99 T
+(int) 108 503.99 T
+(ppa;) 144 503.99 T
+(int) 108 493.99 T
+(fd;) 144 493.99 T
+(int) 108 483.99 T
+(localsap;) 144 483.99 T
+(int) 108 473.99 T
+(sapval;) 144 473.99 T
+(int) 108 463.99 T
+(n;) 144 463.99 T
+(int) 108 453.99 T
+(size;) 144 453.99 T
+(int) 108 443.99 T
+(physlen, saplen;) 144 443.99 T
+(u_char) 108 433.99 T
+(phys[MAXDLADDR], sap[MAXDLADDR];) 144 433.99 T
+(u_char) 108 423.99 T
+(addr[MAXDLADDR];) 144 423.99 T
+(int) 108 413.99 T
+(addrlen;) 144 413.99 T
+(long) 108 403.99 T
+(buf[MAXDLBUF];) 144 403.99 T
+(union) 108 393.99 T
+(DL_primitives) 144 393.99 T
+(*dlp;) 206.37 393.99 T
+(int) 108 383.99 T
+(i;) 144 383.99 T
+(...) 108 353.99 T
+(if \050ac != 8\051) 108 333.99 T
+(usage\050av[0]\051;) 144 323.99 T
+(device = av[1];) 108 303.99 T
+(ppa = atoi\050av[2]\051;) 108 293.99 T
+(localsap = atoi\050av[3]\051;) 108 283.99 T
+(n = atoi\050av[6]\051;) 108 273.99 T
+(size = atoi\050av[7]\051;) 108 263.99 T
+(...) 108 243.99 T
+(/*) 108 223.99 T
+( * Convert destination address string to address.) 108 213.99 T
+( */) 108 203.99 T
+(physlen = stringtoaddr\050av[4], phys\051;) 108 193.99 T
+(sapval = atoi\050av[5]\051;) 108 183.99 T
+(for \050i = 0; i < sizeof \050long\051; i++\051) 108 173.99 T
+(sap[i] = \050sapval >> \050i * BITSPERBYTE\051\051 & 0xff;) 144 163.99 T
+(...) 108 143.99 T
+(/*) 108 123.99 T
+( * Get info.) 108 113.99 T
+( */) 108 103.99 T
+(dlinforeq\050fd\051;) 108 93.99 T
+FMENDPAGE
+%%EndPage: "11" 12
+%%Page: "12" 12
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(12) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(dlinfoack\050fd, buf\051;) 108 681.99 T
+(...) 108 661.99 T
+(saplen = ABS\050dlp->info_ack.dl_sap_length\051;) 108 641.99 T
+(addrlen = saplen + physlen;) 108 631.99 T
+(/*) 108 611.99 T
+( * Construct destination address.) 108 601.99 T
+( */) 108 591.99 T
+(if \050dlp->info_ack.dl_sap_length > 0\051 {) 108 581.99 T
+(/* order is sap+phys */) 290.3 581.99 T
+(\050void\051 memcpy\050\050char*\051addr, \050char*\051sap, saplen\051;) 144 571.99 T
+(\050void\051 memcpy\050\050char*\051addr+saplen, \050char*\051phys, physlen\051;) 144 561.99 T
+(} else {) 108 551.99 T
+(/* order is phys+sap */) 146.38 551.99 T
+(\050void\051 memcpy\050\050char*\051addr, \050char*\051phys, physlen\051;) 144 541.99 T
+(\050void\051 memcpy\050\050char*\051addr+physlen, \050char*\051sap, saplen\051;) 144 531.99 T
+(}) 108 521.99 T
+(/*) 108 501.99 T
+( * Transmit \324size\325 packet \324n\325 times.) 108 491.99 T
+( */) 108 481.99 T
+(for \050i = 0; i < n; i++\051) 108 471.99 T
+(dlunitdatareq\050fd, addr, addrlen, 0, 0, xmitbuf, size\051;) 144 461.99 T
+(...) 108 451.99 T
+(dlunitdatareq\050fd, addrp, addrlen, minpri, maxpri, datap, datalen\051) 72 411.99 T
+(int) 72 401.99 T
+(fd;) 108 401.99 T
+(u_char) 72 391.99 T
+(*addrp;) 108 391.99 T
+(int) 72 381.99 T
+(addrlen;) 108 381.99 T
+(u_long) 72 371.99 T
+(minpri, maxpri;) 108 371.99 T
+(u_char) 72 361.99 T
+(*datap;) 108 361.99 T
+(int) 72 351.99 T
+(datalen;) 108 351.99 T
+({) 72 341.99 T
+(long) 108 331.99 T
+(buf[MAXDLBUF];) 144 331.99 T
+(union) 108 321.99 T
+(DL_primitives) 144 321.99 T
+(*dlp;) 206.37 321.99 T
+(struct) 108 311.99 T
+(strbuf) 144 311.99 T
+(data, ctl;) 180 311.99 T
+(dlp = \050union DL_primitives*\051 buf;) 108 291.99 T
+(dlp->unitdata_req.dl_primitive = DL_UNITDATA_REQ;) 108 271.99 T
+(dlp->unitdata_req.dl_dest_addr_length = addrlen;) 108 261.99 T
+(dlp->unitdata_req.dl_dest_addr_offset = sizeof \050dl_unitdata_req_t\051;) 108 251.99 T
+(dlp->unitdata_req.dl_priority.dl_min = minpri;) 108 241.99 T
+(dlp->unitdata_req.dl_priority.dl_max = maxpri;) 108 231.99 T
+(\050void\051 memcpy\050OFFADDR\050dlp, sizeof \050dl_unitdata_req_t\051\051, addrp, addrlen\051;) 108 211.99 T
+(ctl.maxlen = 0;) 108 191.99 T
+(ctl.len = sizeof \050dl_unitdata_req_t\051 + addrlen;) 108 181.99 T
+(ctl.buf = \050char *\051 buf;) 108 171.99 T
+(data.maxlen = 0;) 108 151.99 T
+(data.len = datalen;) 108 141.99 T
+(data.buf = \050char *\051 datap;) 108 131.99 T
+(if \050putmsg\050fd, &ctl, &data, 0\051 < 0\051) 108 111.99 T
+(syserr\050\322dlunitdatareq: putmsg\323\051;) 144 101.99 T
+(}) 72 91.99 T
+FMENDPAGE
+%%EndPage: "12" 13
+%%Page: "13" 13
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(13) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+(5.4) 184.11 653.66 T
+(Receiving messages) 207 653.66 T
+1 F
+-0.03 (Received datalink packets are subject to two levels of address matching. Packets which) 207 637.66 P
+(do not match the enabled physical address for the \336le descriptor are rejected. Packets) 207 625.66 T
+(which do not match the enabled SAP address\050es\051 for the \336le descriptor are rejected.) 207 613.66 T
+(Physical and SAP level address matching are independent on a per) 207 601.66 T
+(-packet and per) 473.27 601.66 T
+(-\336le) 534.68 601.66 T
+-0.07 (descriptor basis. The physical and SAP addresses enabled on one opened \336le descriptor) 207 589.66 P
+(have no ef) 207 577.66 T
+(fect on the packets received on another \336le descriptor) 248.45 577.66 T
+(. Only those received) 461.61 577.66 T
+(packet which match both the enabled physical address\050es\051 and enabled SAP) 207 565.66 T
+(addresses\050s\051 are sent upstream to the user) 207 553.66 T
+(.) 371.87 553.66 T
+(Attaching to a PP) 207 529.66 T
+(A enables that physical address on the \336le descriptor) 276.32 529.66 T
+(. Binding a sap) 486.18 529.66 T
+-0.37 (enables that sap address on the \336le descriptor) 207 517.66 P
+-0.37 (. Additional physical and sap addresses can) 384.58 517.66 P
+(be enabled for the \336le descriptor using the promiscuous and multicast primitives.) 207 505.66 T
+5 8 Q
+(...) 108 454.99 T
+(data.buf = \050char *\051 databuf;) 108 444.99 T
+(data.maxlen = MAXDLBUF;) 108 434.99 T
+(data.len = 0;) 108 424.99 T
+(while \050getmsg\050fd, NULL, &data, &flags\051 == 0\051 {) 108 404.99 T
+(if \050data.len\051 {) 144 384.99 T
+(for \050i = 0; i < data.len; i++\051) 180 374.99 T
+(printf\050\322%02x \322, data.buf[i] & 0xff\051;) 216 364.99 T
+(printf\050\322\134n\323\051;) 180 354.99 T
+(}) 144 344.99 T
+(data.len = 0;) 144 324.99 T
+(}) 108 314.99 T
+(...) 108 304.99 T
+0 10 Q
+(5.5) 184.11 266.66 T
+(RA) 207 266.66 T
+(W mode) 220.88 266.66 T
+1 F
+(One feature which is not included in the USL DLPI version 2 speci\336cation but is fre-) 207 250.66 T
+-0.05 (quetly necessary for several types of applications is \322raw\323 mode. Support for this mode) 207 238.66 P
+(has been added to SunOS 5.x . The user enables raw mode by issuing the DLIOCRA) 207 226.66 T
+(W) 545.13 226.66 T
+-0.27 (ioctl which is de\336ned in the version of dlpi.h shipped with SunOS 5.x . After this, \322raw\323) 207 214.66 P
+(ethernet frames which include the 14 byte ethernet header may be sent downstream in) 207 202.66 T
+(M_DA) 207 190.66 T
+(T) 234.21 190.66 T
+(A type messages and all received frames will be sent upstream with ethernet) 239.51 190.66 T
+(header included in M_DA) 207 178.66 T
+(T) 310.53 178.66 T
+(A type messages.) 315.84 178.66 T
+(The DLIOCRA) 207 154.66 T
+(W ioctl takes no ar) 268.66 154.66 T
+(guments.) 343.98 154.66 T
+FMENDPAGE
+%%EndPage: "13" 14
+%%Page: "14" 14
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(14) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+(5.6) 184.11 680.66 T
+(Getting and Setting the physical address) 207 680.66 T
+1 F
+(Use the DL_PHYS_ADDR_REQ primitive to request the current or default factory) 207 664.66 T
+(physical \050ethernet\051 address which is returned in the DL_PHYS_ADDR_ACK message.) 207 652.66 T
+5 8 Q
+(...) 108 625.99 T
+(/*) 108 615.99 T
+( * Get our current physical address.) 108 605.99 T
+( */) 108 595.99 T
+(dlphysaddrreq\050fd, DL_CURR_PHYS_ADDR\051;) 108 585.99 T
+(dlphysaddrack\050fd, buf\051;) 108 575.99 T
+(dlp = \050union DL_primitives*\051 buf;) 108 555.99 T
+(/*) 108 535.99 T
+( * Create raw ethernet header.) 108 525.99 T
+( */) 108 515.99 T
+(ehp = \050struct ether_header*\051 xmitbuf;) 108 505.99 T
+(memcpy\050&ehp->ether_dhost, phys, ETHERADDRL\051;) 108 495.99 T
+(memcpy\050&ehp->ether_shost,) 108 485.99 T
+(OFFADDR\050dlp, dlp->physaddr_ack.dl_addr_offset\051, ETHERADDRL\051;) 144 475.99 T
+(ehp->ether_type = \050u_short\051 sapval;) 108 465.99 T
+(/*) 108 445.99 T
+( * Put file descriptor in \322raw mode\323.) 108 435.99 T
+( */) 108 425.99 T
+(if \050strioctl\050fd, DLIOCRAW, -1, 0, 0\051 < 0\051) 108 415.99 T
+(syserr\050\322ioctl DLIOCRAW\323\051;) 144 405.99 T
+(/*) 108 385.99 T
+( * Transmit it as an M_DATA msg.) 108 375.99 T
+( */) 108 365.99 T
+(if \050write\050fd, xmitbuf, size\051 < 0\051) 108 355.99 T
+(syserr\050\322write\323\051;) 144 345.99 T
+(...) 108 335.99 T
+(dlphysaddrreq\050fd, addrtype\051) 72 295.99 T
+(int) 72 285.99 T
+(fd;) 108 285.99 T
+(u_long) 72 275.99 T
+(addrtype;) 108 275.99 T
+({) 72 265.99 T
+(dl_phys_addr_req_t) 108 255.99 T
+(phys_addr_req;) 194.35 255.99 T
+(struct) 108 245.99 T
+(strbuf) 144 245.99 T
+(ctl;) 180 245.99 T
+(int) 108 235.99 T
+(flags;) 144 235.99 T
+(phys_addr_req.dl_primitive = DL_PHYS_ADDR_REQ;) 108 215.99 T
+(phys_addr_req.dl_addr_type = addrtype;) 108 205.99 T
+(ctl.maxlen = 0;) 108 185.99 T
+(ctl.len = sizeof \050phys_addr_req\051;) 108 175.99 T
+(ctl.buf = \050char *\051 &phys_addr_req;) 108 165.99 T
+(flags = 0;) 108 145.99 T
+(if \050putmsg\050fd, &ctl, \050struct strbuf*\051 NULL, flags\051 < 0\051) 108 125.99 T
+(syserr\050\322dlphysaddrreq: putmsg\323\051;) 144 115.99 T
+(}) 72 105.99 T
+FMENDPAGE
+%%EndPage: "14" 15
+%%Page: "15" 15
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(How to Use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(15) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(dlphysaddrack\050fd, bufp\051) 72 681.99 T
+(int) 72 671.99 T
+(fd;) 108 671.99 T
+(char) 72 661.99 T
+(*bufp;) 108 661.99 T
+({) 72 651.99 T
+(union) 108 641.99 T
+(DL_primitives) 144 641.99 T
+(*dlp;) 206.37 641.99 T
+(struct) 108 631.99 T
+(strbuf) 144 631.99 T
+(ctl;) 180 631.99 T
+(int) 108 621.99 T
+(flags;) 144 621.99 T
+(ctl.maxlen = MAXDLBUF;) 108 601.99 T
+(ctl.len = 0;) 108 591.99 T
+(ctl.buf = bufp;) 108 581.99 T
+(strgetmsg\050fd, &ctl, \050struct strbuf*\051NULL, &flags, \322dlphysaddrack\323\051;) 108 561.99 T
+(dlp = \050union DL_primitives *\051 ctl.buf;) 108 541.99 T
+(expecting\050DL_PHYS_ADDR_ACK, dlp\051;) 108 521.99 T
+(if \050flags != RS_HIPRI\051) 108 501.99 T
+(err\050\322dlbindack: DL_OK_ACK was not M_PCPROTO\323\051;) 144 491.99 T
+(if \050ctl.len < sizeof \050dl_phys_addr_ack_t\051\051) 108 471.99 T
+(err\050\322dlphysaddrack: short response ctl.len: %d\323, ctl.len\051;) 144 461.99 T
+(}) 72 451.99 T
+1 10 Q
+(Use the DL_SET_PHYS_ADDR_REQ primitive to set the physical address of the) 207 419.66 T
+(attached interface. Note: this is a destructive operation and unlike all other primitives) 207 407.66 T
+-0.23 (will af) 207 395.66 P
+-0.23 (fect other \336le descriptors for this physical interface. The new physical address for) 232.4 395.66 P
+(the interface will be retained until the next DL_SET_PHYS_ADDR_REQ is issued or) 207 383.66 T
+(the system is rebooted. Only the superuser may issue this primitive.) 207 371.66 T
+0 F
+(5.7) 184.11 341.66 T
+(Multicast addressing) 207 341.66 T
+1 F
+(Use DL_ENABMUL) 207 325.66 T
+(TI_REQ and DL_DISABMUL) 291.85 325.66 T
+(TI_REQ to enable/disable speci\336c) 415.3 325.66 T
+(multicast group addresses. These primitives allow the user to iteratively build a set of) 207 313.66 T
+(enabled multicast addresses on a per) 207 301.66 T
+(-\336le-descriptor basis.) 352.52 301.66 T
+0 F
+(5.8) 184.11 271.66 T
+(Promiscuous reception) 207 271.66 T
+1 F
+(DL_PROMISCON_REQ and DL_PROMISCOFF_REQ allow the user to enable/ dis-) 207 255.66 T
+(able promiscuous-mode reception. These two primitives take a) 207 243.66 T
+3 F
+(level) 460.43 243.66 T
+1 F
+(ar) 481.8 243.66 T
+(gument which) 489.39 243.66 T
+(may be one of:) 207 231.66 T
+(DL_PROMISC_PHYS) 220.74 213.66 T
+(DL_PROMISC_SAP) 220.74 198.66 T
+(DL_PROMISC_MUL) 220.74 183.66 T
+(TI) 309.23 183.66 T
+(Each of the promiscuous levels acts like a \322wildcard\323 for the particular level. Enabling) 207 159.66 T
+(DL_PROMISC_PHYS will match all physical addresses. Enabling DL_PROMISC_-) 207 147.66 T
+(SAP will match all sap addresses. Enabling all DL_PROMISC_MUL) 207 135.66 T
+(TI will Attaching) 483.98 135.66 T
+(to a PP) 207 123.66 T
+(A enables that physical address on the \336le descriptor) 234.4 123.66 T
+(. Binding a sap enables that) 444.26 123.66 T
+-0.05 (sap address on the \336le descriptor) 207 111.66 P
+-0.05 (. Additional physical and sap addresses can be enabled) 336.94 111.66 P
+(for the \336le descriptor using the promiscuous and multicast primitives.) 207 99.66 T
+FMENDPAGE
+%%EndPage: "15" 16
+%%Page: "16" 16
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Converting NIT programs to use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(16) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(match all multicast-group addresses.) 207 680.66 T
+(The following example demonstrates how one would enable physical-level promiscu-) 207 656.66 T
+(ous mode:) 207 644.66 T
+5 8 Q
+(...) 108 617.99 T
+(/*) 108 597.99 T
+( * Enable promiscuous mode.) 108 587.99 T
+( */) 108 577.99 T
+(dlpromisconreq\050fd, DL_PROMISC_PHYS\051;) 108 567.99 T
+(dlokack\050fd, buf\051;) 108 557.99 T
+(...) 108 537.99 T
+(dlpromisconreq\050fd, level\051) 72 517.99 T
+(int) 72 507.99 T
+(fd;) 108 507.99 T
+(u_long) 72 497.99 T
+(level;) 108 497.99 T
+({) 72 487.99 T
+(dl_promiscon_req_t) 108 477.99 T
+(promiscon_req;) 194.35 477.99 T
+(struct) 108 467.99 T
+(strbuf) 144 467.99 T
+(ctl;) 180 467.99 T
+(int) 108 457.99 T
+(flags;) 144 457.99 T
+(promiscon_req.dl_primitive = DL_PROMISCON_REQ;) 108 437.99 T
+(promiscon_req.dl_level = level;) 108 427.99 T
+(ctl.maxlen = 0;) 108 407.99 T
+(ctl.len = sizeof \050promiscon_req\051;) 108 397.99 T
+(ctl.buf = \050char *\051 &promiscon_req;) 108 387.99 T
+(flags = 0;) 108 367.99 T
+(if \050putmsg\050fd, &ctl, \050struct strbuf*\051 NULL, flags\051 < 0\051) 108 347.99 T
+(syserr\050\322dlpromiscon: putmsg\323\051;) 144 337.99 T
+(}) 72 317.99 T
+72 266.33 558 269.33 C
+207 268.48 558 268.48 2 L
+0.25 H
+2 Z
+0 X
+0 K
+N
+72 268.48 198 268.48 2 L
+0 Z
+N
+0 0 612 792 C
+0 12 Q
+0 X
+0 K
+(6.0) 181.33 273.33 T
+(Converting NIT programs to use DLPI) 207 273.33 T
+1 10 Q
+(The Network Interface T) 207 249.66 T
+(ap \050NIT\051 STREAMS pseudo driver is not included in SunOS) 305.93 249.66 T
+(5.x . In previous releases of SunOS the underlying datalink device drivers were not) 207 237.66 T
+(directly accessible as UNIX special \336les therefore a pseudo driver) 207 225.66 T
+(, NIT) 470.55 225.66 T
+(, was supported) 491.45 225.66 T
+-0.37 (to allow those few user) 207 213.66 P
+-0.37 (-level programs which required access to the raw datalink drivers) 298.03 213.66 P
+(to access the devices.) 207 201.66 T
+-0.15 (In 5.x, all networking drivers are real STREAMS hardware drivers accessible in the \336le) 207 177.66 P
+(system namespace. T) 207 165.66 T
+(o access the \322le0\323 networking interface you now open /dev/le) 291.51 165.66 T
+-0.41 (instead of /dev/nit and issue DLPI primitives instead of NIT primitives. DLPI provides a) 207 153.66 P
+(superset of the features previously provided by the NIT pseudo driver) 207 141.66 T
+(.) 485.13 141.66 T
+(Applications which used NIT in SunOS 4.x will require some source-level modi\336ca-) 207 117.66 T
+(tions to run in SunOS 5.x . W) 207 105.66 T
+(ith the information provided below) 325.15 105.66 T
+(, the application pro-) 464.42 105.66 T
+(grammer should \336nd that these changes relatively simple and straightforward.) 207 93.66 T
+FMENDPAGE
+%%EndPage: "16" 17
+%%Page: "17" 17
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Converting NIT programs to use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(17) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(SunOS 4.x included three NIT components:) 207 680.66 T
+0 9 Q
+(1.) 207 662.66 T
+1 10 Q
+(nit_if\0504M\051 pseudo driver) 220.74 662.66 T
+(.) 319.57 662.66 T
+0 9 Q
+(2.) 207 647.66 T
+1 10 Q
+(nit_pf\0504M\051 packet \336lter module.) 220.74 647.66 T
+0 9 Q
+(3.) 207 632.66 T
+1 10 Q
+(nit_buf\0504M\051 buf) 220.74 632.66 T
+(fer module.) 285.8 632.66 T
+(The nit_if pseudo driver is not included in 5.x . The packet \336lter and buf) 207 608.66 T
+(fer modules) 496.07 608.66 T
+(have been ported to 5.x and minor enhancements made. Refer to the pfmod\0501M\051 and) 207 596.66 T
+-0.06 (bufmod\0501M\051 manual pages for the complete programmatic interfaces for these two gen-) 207 584.66 P
+(eral-purpose STREAMS modules.) 207 572.66 T
+0 F
+(6.1) 184.11 542.66 T
+(Open driver directly) 207 542.66 T
+1 F
+(Open the datalink driver instead of /dev/nit:) 207 526.66 T
+5 8 Q
+(/*) 108 499.99 T
+( * Open the device.) 108 489.99 T
+( */) 108 479.99 T
+(if \050\050fd = open\050\322/dev/le\323, 2\051\051 < 0\051) 108 469.99 T
+(syserr\050\322/dev/le\323\051;) 144 459.99 T
+0 10 Q
+(6.2) 184.11 421.66 T
+(NIT ioctls are now DLPI primitives or Buffer module ioctls) 207 421.66 T
+1 F
+(The NIT ioctl commands have changed slightly:) 207 405.66 T
+(Replace use of the SIOCGIF) 207 381.66 T
+(ADDR ioctl with the DL_PHYS_ADDR_REQ dlpi primi-) 321.18 381.66 T
+(tive to get the current or default physical ethernet address.) 207 369.66 T
+(Replace use of the SIOCSIF) 207 345.66 T
+(ADDR ioctl with the DL_SET_PHYS_ADDR_REQ dlpi) 319.52 345.66 T
+(primitive to set the current physical ethernet address. Y) 207 333.66 T
+(ou must be superuser to do this) 427.23 333.66 T
+(and this operation is destructive and permanently changes the individual ethernet) 207 321.66 T
+(address of the interface for all open Streams until it is changed again or the system) 207 309.66 T
+(rebooted.) 207 297.66 T
+(Replace use of the SIOCADDMUL) 207 273.66 T
+(TI and SIOCDELMUL) 348.75 273.66 T
+(TI ioctls with the DL_ENA-) 441.1 273.66 T
+(BMUL) 207 261.66 T
+(TI_REQ and DL_DISABMUL) 234.96 261.66 T
+(TI_REQ dlpi primitives. Each datalink provider) 358.4 261.66 T
+(will support a \336xed number of speci\336c multicast addresses. Use the DL_PROMIS-) 207 249.66 T
+(CON_REQ with DL_PROMISC_MUL) 207 237.66 T
+(TI dl_level value to enable) 364.33 237.66 T
+3 F
+(all) 473.97 237.66 T
+1 F
+(multicast group) 487.03 237.66 T
+(addresses.) 207 225.66 T
+(Replace use of the NIOCBIND ioctl command with the DL_A) 207 201.66 T
+(TT) 455.99 201.66 T
+(ACH_REQ and) 467.41 201.66 T
+(DL_BIND_REQ dlpi primitives. The attach primitive performs the equivalent function) 207 189.66 T
+(of the NIOCBIND ioctl and the bind primitive then labels the attached interface with a) 207 177.66 T
+(service access point \050sap\051 address. The bundled ethernet drivers implement the sap) 207 165.66 T
+-0.26 (address as the ethernet type. Y) 207 153.66 P
+-0.26 (ou must bind a sap address to the interface before you can) 326.83 153.66 P
+(send or receive; this is not an optional command.) 207 141.66 T
+-0.21 (Replace use of the NIOCSSNAP ioctl command with the SBIOCSSNAP buf) 207 117.66 P
+-0.21 (fer module) 512.34 117.66 P
+-0.22 (ioctl command. Y) 207 105.66 P
+-0.22 (ou must push \322bufmod\323 before issuing the SBIOCSSNAP in the same) 277.47 105.66 P
+(manner as the old NIT NIOCSSNAP ioctl.) 207 93.66 T
+FMENDPAGE
+%%EndPage: "17" 18
+%%Page: "18" 18
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Converting NIT programs to use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(18) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+(The NIOCSFLAGS ioctl command has changed. Instead of setting the NI_PROMISC) 207 680.66 T
+(\337ag you must now issue the DL_PROMISCON_REQ dlpi primitive setting the) 207 668.66 T
+(DL_PROMISC_PHYS value in the dl_level \336eld. Instead of setting the NI_TIMES-) 207 656.66 T
+(T) 207 644.66 T
+(AMP and NI_DROPS \337ags you must push the buf) 212.31 644.66 T
+(fer module; timestamp and drop-) 413.69 644.66 T
+(counts are included in the default buf) 207 632.66 T
+(fer module chunk message headers which also) 355.6 632.66 T
+(includes the original and truncated packet lengths.) 207 620.66 T
+0 F
+(6.3) 184.11 590.66 T
+(Attach and Bind) 207 590.66 T
+1 F
+-0.25 (Use the DLPI primitives DL_A) 207 574.66 P
+-0.25 (TT) 330.94 574.66 P
+-0.25 (ACH_REQ and DL_BIND_REQ to \336rst associate the) 342.36 574.66 P
+(\336le descriptor with a particular physical interface \050like NIOCBIND\051 and then label the) 207 562.66 T
+(attached \336le descriptor with a sap address. In the bundled 4.x ethernet drivers imple-) 207 550.66 T
+-0.09 (ment the sap as the ethernet type. So if you wanted to receive IP \0500x0800\051 type ethernet) 207 538.66 P
+(packets only you\325d do this:) 207 526.66 T
+5 8 Q
+(...) 108 499.99 T
+(/*) 108 489.99 T
+( * Attach.) 108 479.99 T
+( * Arguments: file descriptor, ppa identifier.) 108 469.99 T
+( */) 108 459.99 T
+(dlattachreq\050fd, ppa\051;) 108 449.99 T
+(dlokack\050fd, buf\051;) 108 439.99 T
+(/*) 108 409.99 T
+( * Bind.) 108 399.99 T
+( * Arguments: file descriptor, sap, max conind, service mode, conn_mgmt, xidtest.) 108 389.99 T
+( */) 108 379.99 T
+(dlbindreq\050fd, 0x800, 0, DL_CLDLS, 0, 0\051;) 108 369.99 T
+(dlbindack\050fd, buf\051;) 108 359.99 T
+(...) 108 349.99 T
+1 10 Q
+-0.01 (The complete example routines for attaching and binding are included in the \336rst exam-) 207 317.66 P
+(ple in the previous section.) 207 305.66 T
+0 F
+(6.4) 184.11 275.66 T
+(Filtering on ethernet type comes free) 207 275.66 T
+1 F
+(After binding to a speci\336c type, only packets of that ethertype will be received on that) 207 259.66 T
+-0.14 (\336le descriptor) 207 247.66 P
+-0.14 (. Y) 261.55 247.66 P
+-0.14 (ou don\325) 272.61 247.66 P
+-0.14 (t need to push and con\336gure the packet \336lter module to \336lter on) 303.1 247.66 P
+(ethertype since you get that \322for free\323. If you want to enable multiple ethernet types on) 207 235.66 T
+(the same \336le descriptor you\325ll have to enable promiscuous sap-level service using the) 207 223.66 T
+(DL_PROMISCON_REQ primitive and setting the DL_PROMISC_SAP value in the) 207 211.66 T
+-0.01 (dl_level \336eld and then push and con\336gure the packet \336lter module to \336lter out the pack-) 207 199.66 P
+(ets with ethertype you\325re not interested in receiving.) 207 187.66 T
+0 F
+(6.5) 184.11 157.66 T
+(The DLIOCRA) 207 157.66 T
+(W ioctl sets \322raw\323 mode) 272.52 157.66 T
+1 F
+(The standard connectionless DLPI primitives to send and receive datalink packets are) 207 141.66 T
+(DL_UNITDA) 207 129.66 T
+(T) 262.51 129.66 T
+(A_REQ and DL_UNITDA) 267.82 129.66 T
+(T) 374.96 129.66 T
+(A_IND. Each of these primitives is imple-) 380.27 129.66 T
+-0.06 (mented as an M_PROT) 207 117.66 P
+-0.06 (O STREAMS message type followed by one or more M_DA) 300.73 117.66 P
+-0.06 (T) 543.04 117.66 P
+-0.06 (A) 548.35 117.66 P
+(message types.) 207 105.66 T
+FMENDPAGE
+%%EndPage: "18" 19
+%%Page: "19" 19
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Converting NIT programs to use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(19) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+1 F
+-0.23 (If you just want to send and receive \322raw\323 ethernet frames including the ethernet header) 207 680.66 P
+(you can do this by enabling \322raw mode\323 on the particular \336le descriptor) 207 668.66 T
+(. Issue the) 493.46 668.66 T
+(DLIOCRA) 207 656.66 T
+(W ioctl:) 250.62 656.66 T
+5 8 Q
+(...) 108 629.99 T
+(/*) 108 619.99 T
+( * Issue DLIOCRAW ioctl.) 108 609.99 T
+( */) 108 599.99 T
+(if \050strioctl\050fd, DLIOCRAW, -1, 0, NULL\051 < 0\051) 108 589.99 T
+(syserr\050\322DLIOCRAW\323\051;) 144 579.99 T
+(...) 108 569.99 T
+(strioctl\050fd, cmd, timout, len, dp\051) 72 539.99 T
+(int) 72 529.99 T
+(fd;) 108 529.99 T
+(int) 72 519.99 T
+(cmd;) 108 519.99 T
+(int) 72 509.99 T
+(timout;) 108 509.99 T
+(int) 72 499.99 T
+(len;) 108 499.99 T
+(char) 72 489.99 T
+(*dp;) 108 489.99 T
+({) 72 479.99 T
+(struct) 108 469.99 T
+(strioctl) 144 469.99 T
+(sioc;) 182.38 469.99 T
+(int) 108 459.99 T
+(rc;) 144 459.99 T
+(sioc.ic_cmd = cmd;) 108 439.99 T
+(sioc.ic_timout = timout;) 108 429.99 T
+(sioc.ic_len = len;) 108 419.99 T
+(sioc.ic_dp = dp;) 108 409.99 T
+(rc = ioctl\050fd, I_STR, &sioc\051;) 108 399.99 T
+(if \050rc < 0\051) 108 379.99 T
+(return \050rc\051;) 144 369.99 T
+(else) 108 359.99 T
+(return \050sioc.ic_len\051;) 144 349.99 T
+(}) 72 339.99 T
+1 10 Q
+(Now all received frames will be passed up without changes within M_DA) 207 307.66 T
+(T) 502.07 307.66 T
+(A messages) 507.38 307.66 T
+(and you can send raw ethernet frames downstream in M_DA) 207 295.66 T
+(T) 449.31 295.66 T
+(A messages.) 454.61 295.66 T
+FMENDPAGE
+%%EndPage: "19" 20
+%%Page: "20" 20
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Converting NIT programs to use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(20) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+(6.6) 184.11 680.66 T
+(Enabling promiscuous mode is slightly different) 207 680.66 T
+1 F
+(Use the DL_PROMISCON_REQ with the dl_level \336eld set to DL_PROMISC_PHYS) 207 664.66 T
+(to enable physical-level promiscuous mode:) 207 652.66 T
+5 8 Q
+(...) 108 625.99 T
+(/*) 108 615.99 T
+( * Enable promiscuous mode.) 108 605.99 T
+( */) 108 595.99 T
+(dlpromisconreq\050fd, DL_PROMISC_PHYS\051;) 108 585.99 T
+(dlokack\050fd, buf\051;) 108 575.99 T
+(...) 108 565.99 T
+(dlpromisconreq\050fd, level\051) 72 535.99 T
+(int) 72 525.99 T
+(fd;) 108 525.99 T
+(u_long) 72 515.99 T
+(level;) 108 515.99 T
+({) 72 505.99 T
+(dl_promiscon_req_t) 108 495.99 T
+(promiscon_req;) 194.35 495.99 T
+(struct) 108 485.99 T
+(strbuf) 144 485.99 T
+(ctl;) 180 485.99 T
+(int) 108 475.99 T
+(flags;) 144 475.99 T
+(promiscon_req.dl_primitive = DL_PROMISCON_REQ;) 108 455.99 T
+(promiscon_req.dl_level = level;) 108 445.99 T
+(ctl.maxlen = 0;) 108 425.99 T
+(ctl.len = sizeof \050promiscon_req\051;) 108 415.99 T
+(ctl.buf = \050char *\051 &promiscon_req;) 108 405.99 T
+(flags = 0;) 108 385.99 T
+(if \050putmsg\050fd, &ctl, \050struct strbuf*\051 NULL, flags\051 < 0\051) 108 365.99 T
+(syserr\050\322dlpromiscon: putmsg\323\051;) 144 355.99 T
+(}) 72 335.99 T
+0 10 Q
+(6.7) 184.11 297.66 T
+(Packet \336lter module is the same) 207 297.66 T
+1 F
+(The packet \336lter module, now called \322pfmod\323 is almost identical to the SunOS 4.x ver-) 207 281.66 T
+(sion. 1GY) 207 269.66 T
+(ou can push it and program it as before.) 247.09 269.66 T
+0 F
+(6.8) 184.11 239.66 T
+(Buffer module has some of the old nit_if features) 207 239.66 T
+1 F
+(The buf) 207 223.66 T
+(fer module has had a few additions and includes a few features that were a part) 238.18 223.66 T
+(of the 4.x nit_if pseudo driver) 207 211.66 T
+(. In addition to the standard) 325.82 211.66 T
+3 F
+(chunksize) 438.24 211.66 T
+1 F
+(and) 479.6 211.66 T
+3 F
+(timeout) 496.53 211.66 T
+1 F
+(values) 529.01 211.66 T
+(for de\336ning when the \322chunk\323 is passed upstream, the 5.x bufmod also includes a) 207 199.66 T
+3 F
+(sna-) 535.66 199.66 T
+-0 (plength) 207 187.66 P
+1 F
+-0 ( parameter to truncate uninteresting parts of the packet,) 236.98 187.66 P
+3 F
+-0 ( dr) 457.62 187.66 P
+-0 (opcount) 468.63 187.66 P
+1 F
+-0 (of number of) 503.33 187.66 P
+-0.19 (received packets dropped due to read-side \337ow-control, and) 207 175.66 P
+3 F
+-0.19 (timestamp) 447.2 175.66 P
+1 F
+-0.19 ( of each received) 488.29 175.66 P
+(packet. Y) 207 163.66 T
+(ou push \322bufmod\323 on any Stream in which you want one or more of these) 244.3 163.66 T
+(generic features.) 207 151.66 T
+(The buf) 207 127.66 T
+(fer module header data structure has changed slightly:) 238.18 127.66 T
+FMENDPAGE
+%%EndPage: "20" 21
+%%Page: "21" 21
+612 792 0 FMBEGINPAGE
+72 750.68 558 750.68 2 L
+2 H
+0 Z
+0 X
+0 K
+N
+0 9 Q
+(Converting NIT programs to use DLPI) 207 739.85 T
+72 726.98 558 726.98 2 L
+0.25 H
+N
+72 75.33 558 75.33 2 L
+2 Z
+N
+(How to Use DLPI) 207 60.96 T
+0 10 Q
+(21) 522.29 60.96 T
+0 9 Q
+( of) 533.41 60.96 T
+0 10 Q
+(21) 546.89 60.96 T
+5 8 Q
+(struct sb_hdr {) 72 653.99 T
+(u_int) 108 643.99 T
+(sbh_origlen;) 144 643.99 T
+(u_int) 108 633.99 T
+(sbh_msglen;) 144 633.99 T
+(u_int) 108 623.99 T
+(sbh_totlen;) 144 623.99 T
+(u_int) 108 613.99 T
+(sbh_drops;) 144 613.99 T
+(struct) 108 603.99 T
+(timeval) 144 603.99 T
+(sbh_timestamp;) 180 603.99 T
+(};) 72 593.99 T
+1 10 Q
+(The names of the buf) 207 547.66 T
+(fer module ioctl commands have all changed to take on the new) 291.75 547.66 T
+(pre\336x \050\322SB\323 stands for STREAMS Buf) 207 535.66 T
+(fer Module\051:) 364.78 535.66 T
+(NIOCSTIME is now SBIOCSTIME) 220.74 517.66 T
+(NIOCGTIME is now SBIOCGTIME) 220.74 502.66 T
+(NIOCCTIME is now SBIOCCTIME) 220.74 487.66 T
+(NIOCSCHUNK is now SBIOCSCHUNK) 220.74 472.66 T
+(NIOCGCHUNK is now SBIOCGCHUNK) 220.74 457.66 T
+(Additional ioctls are documented in the bufmod\0501M\051 manual page.) 207 433.66 T
+FMENDPAGE
+%%EndPage: "21" 22
+%%Trailer
+%%BoundingBox: 0 0 612 792
+%%Pages: 21 1
+%%DocumentFonts: Helvetica-Bold
+%%+ Times-Roman
+%%+ Times-Bold
+%%+ Times-Italic
+%%+ Courier-Bold
+%%+ Courier

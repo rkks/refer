@@ -1,0 +1,27 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my %num_for = (
+#    English         Français       Française          Hindi
+   'zero' => 0,    'zéro' => 0,                   'shunya' => 0,        
+    'one' => 1,      'un' => 1,    'une' => 1,        'ek' => 1,
+    'two' => 2,    'deux' => 2,                       'do' => 2,
+  'three' => 3,   'trois' => 3,                     'teen' => 3,
+#      etc.          etc.
+   'nine' => 9,    'neuf' => 9,                      'nau' => 9,
+);
+

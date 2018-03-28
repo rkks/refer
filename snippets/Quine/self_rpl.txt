@@ -1,0 +1,55 @@
+Language: HP48 Reverse Polish Lisp
+
+Author: Ted Beers
+
+\<<
+  \<< "\<<" SWAP +
+      "DUP EVAL" + OBJ\->
+  \>>
+  DUP EVAL
+\>>
+
+
+Author: Antti Louko (alo@iki.fi)
+
+{
+  {
+    { DUP 1 \->LIST SWAP EVAL + }
+  }
+  DUP 1 \->LIST SWAP EVAL +
+}
+
+
+Author: Peter Berg Larsen (pebl@diku.dk)
+
+\<<
+  { STR\-> "\<<" SWAP +
+    "DUP EVAL" + OBJ\->
+  }
+  DUP EVAL
+\>>
+
+
+Author: 
+
+{
+ { 1 \->LIST
+   { DUP EVAL } +
+ }
+ DUP EVAL
+}
+
+
+Author: Peter Berg Larsen (pebl@diku.dk)
+
+{
+  "{DUP STR\-> +"
+    DUP STR\-> +
+}
+
+
+Author: Unknown
+Note: Cheating
+
+<< LASTARG >>
+

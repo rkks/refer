@@ -1,0 +1,107 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;shm_anon_bsd.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;Anonymous shared memory via BSD's MAP_ANON.<br />
+&nbsp;* &nbsp;Create a semaphore, create an anonymous memory segment with the MAP_ANON<br />
+&nbsp;* &nbsp;BSD flag and loop updating the segment content (increment casually) with<br />
+&nbsp;* &nbsp;short intervals.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 29/08/05.<br />
+&nbsp;* &nbsp;Original source file available at http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* for shm_* and mmap() */</span><br />
+<span style="color:#683821;">#include &lt;sys/types.h&gt;<br />
+#include &lt;sys/mman.h&gt;<br />
+#include &lt;fcntl.h&gt;<br />
+</span><span style="color:#236e25;">/* for getpid() */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><span style="color:#236e25;">/* for sem_* functions */</span><br />
+<span style="color:#683821;">#include &lt;sys/stat.h&gt;<br />
+#include &lt;semaphore.h&gt;<br />
+</span><span style="color:#236e25;">/* for seeding time() */</span><br />
+<span style="color:#683821;">#include &lt;time.h&gt;<br />
+</span><br />
+<span style="color:#236e25;">/* name of the semaphore */</span><br />
+<span style="color:#683821;">#define &nbsp;&nbsp;&nbsp;&nbsp;SEMOBJ_NAME &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/semshm"<br />
+</span><span style="color:#236e25;">/* maximum number of seconds to sleep between each loop operation */</span><br />
+<span style="color:#683821;">#define &nbsp;&nbsp;&nbsp;&nbsp;MAX_SLEEP_SECS &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">3</span><span style="color:#683821;"><br />
+</span><span style="color:#236e25;">/* maximum value to increment the counter by */</span><br />
+<span style="color:#683821;">#define &nbsp;&nbsp;&nbsp;&nbsp;MAX_INC_VALUE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">10</span><span style="color:#683821;"> <br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> shmfd;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> shared_seg_size = <span style="color:#0000ff;">2</span> * <span style="color:#881350;">sizeof</span>(<span style="color:#881350;">int</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> *shared_values; &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this will be a (shared) array of 2 elements */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;sem_t *sem_shmsegment; &nbsp;<span style="color:#236e25;">/* semaphore controlling access to the shared segment */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;pid_t mypid;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting a new semaphore for the shared segment &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- sem_open() &nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;sem_shmsegment = <span style="color:#003369;">sem_open</span>(SEMOBJ_NAME, O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, <span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>((<span style="color:#881350;">int</span>)sem_shmsegment == SEM_FAILED) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In sem_open()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* requesting the semaphore not to be held when completely unreferenced */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sem_unlink</span>(SEMOBJ_NAME);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* requesting the shared segment &nbsp;&nbsp;&nbsp;-- &nbsp;mmap() */</span> &nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;shared_values = (<span style="color:#881350;">int</span> *)<span style="color:#003369;">mmap</span>(<span style="color:#881350;">NULL</span>, shared_seg_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -<span style="color:#0000ff;">1</span>, <span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>((<span style="color:#881350;">int</span>)shared_values == -<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In mmap()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">fprintf</span>(stderr, <span style="color:#760f15;">"Shared memory segment allocated correctly (%d bytes) at %u.\n"</span>, shared_seg_size, (<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)shared_values);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(shmfd);<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* dupping the process */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(! <span style="color:#003369;">fork</span>() )<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* the child waits 2 seconds for better seeding srandom() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#0000ff;">2</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* seeding the random number generator (% x for better seeding when child executes close) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">srandom</span>(<span style="color:#003369;">time</span>(<span style="color:#881350;">NULL</span>));<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting my pid, and introducing myself */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;mypid = <span style="color:#003369;">getpid</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"My pid is %d\n"</span>, mypid); &nbsp;&nbsp;&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/*<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main loop:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- pause<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- print the old value<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- choose (and store) a random quantity<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- increment the segment by that<br />
+&nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">do</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#003369;">random</span>() % (MAX_SLEEP_SECS+<span style="color:#0000ff;">1</span>)); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* pausing for at most MAX_SLEEP_SECS seconds */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sem_wait</span>(sem_shmsegment);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* entered the critical region */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"process %d. Former value %d."</span>, mypid, shared_values[<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shared_values[<span style="color:#0000ff;">1</span>] = <span style="color:#003369;">random</span>() % (MAX_INC_VALUE+<span style="color:#0000ff;">1</span>); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* choose a random value up to MAX_INC_VALUE */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shared_values[<span style="color:#0000ff;">0</span>] += shared_values[<span style="color:#0000ff;">1</span>]; &nbsp;&nbsp;<span style="color:#236e25;">/* and increment the first cell by this value */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" Incrementing by %d.\n"</span>, shared_values[<span style="color:#0000ff;">1</span>]);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* leaving the critical region */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sem_post</span>(sem_shmsegment);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">while</span><span style="color:#003369;"> </span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* freeing the reference to the semaphore */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sem_close</span>(sem_shmsegment);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

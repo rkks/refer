@@ -1,0 +1,68 @@
+:
+##########################################################################
+# Shellscript:	cfget - get parameter from configuration file by key
+# Autor      :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1993-11-27
+# Requires   :	cfcat
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) cfget	1.2 04/02/18
+##########################################################################
+# Description:
+#    -	Reads given configuration file, and returns the value for
+#	the key specified
+#
+# Note
+#     - slow!
+#     - see also "defread" (SCO UNIX)
+#
+# See also:
+#	cfcat
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+[ $# -ge 2 ] || {
+    echo "$PN - get parameter from a configuration file by key, $VER"
+    echo "usage: $PN configfile key [key  ...]"
+    echo
+    echo "The configuration file contains lines in the following format:"
+    echo "	key = value"
+    echo
+    echo "Searches file for given keywords, and returns the corresponding"
+    echo "values."
+    exit 1
+}
+Config="$1"
+shift
+[ -z "$Config" ] && {
+    echo "$PN: please specify configuration file name!" >&2
+    exit 1
+}
+[ 1+1 -eq 2 ] && KornShell=yes
+# Search all keywords, print corresponding value
+for i
+do
+    # Convert keyword to upper case
+    if [ "$KornShell" = yes ]
+    then typeset -u g="$i"
+    else g="`echo $i | tr '[a-z]' '[A-Z]'`"
+    fi
+    # Seach keyword. Algorithm:
+    #	o  Save line (h - copy "pattern space" to "hold space"
+    #	o  Extract keywords, and convert to upper case (y)
+    #	o  If keyword found: restore old line (g), print parameter
+    cfcat "$Config" | sed -n -e "
+	/=/{
+	    h
+	    s/^[ 	]*\(.*\)[	]*=.*/\1/
+	    s/[ 	]*$//g
+	    y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/
+	    /^$g$/{
+		g
+		s/^[ 	]*.*=[ 	]*\(.*\)$/\1/
+		p
+		q
+	    }
+	}
+    "
+done
+exit 0

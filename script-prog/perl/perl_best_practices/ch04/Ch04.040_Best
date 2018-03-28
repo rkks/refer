@@ -1,0 +1,24 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 4 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# In India they use lakhs, crores, arabs, kharabs, etc...
+my $India_GDP              = 30_33_00_00_00_000;
+my $India_govt_revenue     =    86_69_00_00_000;
+my $India_govt_expenditure =  1_14_60_00_00_000;
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $India_GDP, $India_govt_revenue, $India_govt_expenditure ];

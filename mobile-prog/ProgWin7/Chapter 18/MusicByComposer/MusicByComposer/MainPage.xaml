@@ -1,0 +1,72 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="MusicByComposer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:local="clr-namespace:MusicByComposer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+    
+    <phone:PhoneApplicationPage.Resources>
+        <local:MusicPresenter x:Key="musicPresenter" />
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <controls:Pivot Name="pivot" 
+                        Title="MUSIC BY COMPOSER"
+                        ItemsSource="{Binding Source={StaticResource musicPresenter},
+                                              Path=Composers}">
+            <controls:Pivot.HeaderTemplate>
+                <!-- Objects of type ComposerInfo -->
+                <DataTemplate>
+                    <TextBlock Text="{Binding Composer}" />
+                </DataTemplate>
+            </controls:Pivot.HeaderTemplate>
+
+            <controls:Pivot.ItemTemplate>
+                <!-- Objects of type ComposerInfo -->
+                <DataTemplate>
+                    <ListBox ItemsSource="{Binding Albums}"
+                             SelectionChanged="OnListBoxSelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <!-- Objects of type AlbumInfo -->
+                            <DataTemplate>
+                                <Grid Background="Transparent">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            BorderBrush="{StaticResource PhoneForegroundBrush}"
+                                            BorderThickness="1"
+                                            Width="100" Height="100"
+                                            Margin="0 2 6 2">
+                                        <Image Source="{Binding ThumbnailArt}" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ShortAlbumName}"
+                                                   Foreground="{StaticResource PhoneAccentBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Album.Artist.Name}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DataTemplate>
+            </controls:Pivot.ItemTemplate>
+        </controls:Pivot>
+    </Grid>
+</phone:PhoneApplicationPage>

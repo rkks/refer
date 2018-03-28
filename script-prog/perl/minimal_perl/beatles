@@ -1,0 +1,11 @@
+#! /usr/bin/perl -wl
+%musicians=(   JOHN => 'Guitar',  PAUL => 'Bass',
+             GEORGE => 'Guitar', RINGO => 'Drums' );
+$,="\t";
+print 'UNCONTROLLED ordering:';
+print keys   %musicians;               # Disorderly column headings
+print values %musicians;
+print "\nCONTROLLED ordering:";
+@names_in_order=( 'JOHN', 'PAUL', 'GEORGE', 'RINGO' );
+print @names_in_order;                 # Orderly column headings
+print @musicians{ @names_in_order };

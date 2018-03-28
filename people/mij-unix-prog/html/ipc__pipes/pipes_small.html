@@ -1,0 +1,223 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  pipes.c
+ *  
+ *  A set of processes randomly messaging each the other, with pipes.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 05/01/05.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+<span class="ccom">/* ... */</span>
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* for read() and write() */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+#include &lt;sys/uio.h&gt;
+</span><span class="ccom">/* for strlen and others */</span>
+<span class="cpdr">#include &lt;string.h&gt;
+</span><span class="ccom">/* for pipe() */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+</span><span class="ccom">/* for [s]random() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span><span class="ccom">/* for time() [seeding srandom()] */</span>
+<span class="cpdr">#include &lt;time.h&gt;
+</span>
+
+<span class="cpdr">#define PROCS_NUM               </span><span class="cval">15</span><span class="cpdr">          /* </span><span class="cval">1</span><span class="cpdr"> &lt; number of processes involved &lt;= </span><span class="cval">255</span><span class="cpdr"> */
+#define MAX_PAYLOAD_LENGTH      </span><span class="cval">50</span><span class="cpdr">          /* message length */
+#define DEAD_PROC               -</span><span class="cval">1</span><span class="cpdr">          /* a value to mark a dead process' file descriptors with */
+</span>
+
+        <span class="ccom">/*      ***                     DATA TYPES                  ***     */</span>
+<span class="ccom">/* a process address */</span>
+<span class="ctyp">typedef</span> <span class="ctyp">char</span> proc_addr;
+
+<span class="ccom">/* a message */</span>
+<span class="ctyp">struct</span> message_s {
+    proc_addr src_id;
+    <span class="ctyp">short</span> <span class="ctyp">int</span> length;
+    <span class="ctyp">char</span> *payload;
+};
+
+
+        <span class="ccom">/*      ***                     FUNCTION PROTOTYPES         ***     */</span>
+<span class="ccom">/* send message to process with id dest */</span>
+<span class="ctyp">int</span> <span class="cfun">send_proc_message</span>(proc_addr dest, <span class="ctyp">char</span> *message);
+<span class="ccom">/* receive a message in the process' queue of received ones */</span>
+<span class="ctyp">int</span> <span class="cfun">receive_proc_message</span>(<span class="ctyp">struct</span> message_s *msg);
+<span class="ccom">/* mark process file descriptors closed */</span>
+<span class="ctyp">void</span> <span class="cfun">mark_proc_closed</span>(proc_addr process);
+
+
+        <span class="ccom">/*              ***             GLOBAL VARS                 ***     */</span>
+<span class="ccom">/* they are OK to be global here. */</span>
+proc_addr my_address;                   <span class="ccom">/* stores the id of the process */</span>
+<span class="ctyp">int</span> proc_pipes[PROCS_NUM][<span class="cval">2</span>];           <span class="ccom">/* stores the pipes of every process involved */</span>
+
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[])
+{
+    pid_t child_pid;
+    pid_t my_children[PROCS_NUM];               <span class="ccom">/* PIDs of the children */</span>
+    <span class="ctyp">int</span> i, ret;
+    <span class="ctyp">char</span> msg_text[MAX_PAYLOAD_LENGTH];       <span class="ccom">/* payload of the message to send */</span>
+    proc_addr msg_recipient;                    
+    <span class="ctyp">struct</span> message_s msg;
+    
+    
+    
+    <span class="ccom">/* create a pipe for me (the parent) */</span>
+    <span class="cfun">pipe</span>(proc_pipes[<span class="cval">0</span>]);
+
+    <span class="ccom">/* initializing proc_pipes struct */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">1</span>; i &lt; PROCS_NUM; i++) {
+        <span class="ccom">/* creating one pipe for every (future) process */</span>
+        ret = <span class="cfun">pipe</span>(proc_pipes[i]);
+        <span class="ctyp">if</span><span class="cfun"> </span>(ret) {
+            <span class="cfun">perror</span>(<span class="cstr">"Error creating pipe"</span>);
+            <span class="cfun">abort</span>();
+        }        
+    }
+        
+    
+    <span class="ccom">/* fork [1..NUM_PROCS] children. 0 is me. */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">1</span>; i &lt; PROCS_NUM; i++) {
+        <span class="ccom">/* setting the child address */</span>
+        my_address = my_address + <span class="cval">1</span>;
+        
+        child_pid = <span class="cfun">fork</span>();
+        <span class="ctyp">if</span><span class="cfun"> </span>(! child_pid) {
+            <span class="ccom">/* child */</span>
+            <span class="cfun">sleep</span>(<span class="cval">1</span>);
+
+            <span class="ccom">/* closing other process' pipes read ends */</span>
+            <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>; i &lt; PROCS_NUM; i++) {
+                <span class="ctyp">if</span><span class="cfun"> </span>(i != my_address)
+                    <span class="cfun">close</span>(proc_pipes[i][<span class="cval">0</span>]);
+            }
+            
+            
+            <span class="ccom">/* init random num generator */</span>
+            <span class="cfun">srandom</span>(<span class="cfun">time</span>(<span class="ctyp">NULL</span>));
+
+            <span class="ccom">/* my_address is now my address, and will hereby become a "constant" */</span>
+            <span class="ccom">/* producing some message for the other processes */</span>
+            <span class="ctyp">while</span><span class="cfun"> </span>(<span class="cfun">random</span>() % (<span class="cval">2</span>*PROCS_NUM)) {
+                <span class="ccom">/* interleaving... */</span>
+                <span class="cfun">sleep</span>((<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)(<span class="cfun">random</span>() % <span class="cval">2</span>));
+                
+                <span class="ccom">/* choosing a random recipient (including me) */</span>
+                msg_recipient = (proc_addr)(<span class="cfun">random</span>() % PROCS_NUM);
+                
+                <span class="ccom">/* preparing and sending the message */</span>
+                <span class="cfun">sprintf</span>(msg_text, <span class="cstr">"hello from process %u."</span>, (<span class="ctyp">int</span>)my_address);
+                ret = <span class="cfun">send_proc_message</span>(msg_recipient, msg_text);
+                <span class="ctyp">if</span><span class="cfun"> </span>(ret &gt; <span class="cval">0</span>) {
+                    <span class="ccom">/* message has been correctly sent */</span>
+                    <span class="cfun">printf</span>(<span class="cstr">"    --&gt; %d: sent message to %u\n"</span>, my_address, msg_recipient);
+                } <span class="ctyp">else</span> {
+                    <span class="ccom">/* the child we tried to message does no longer exist */</span>
+                    <span class="cfun">mark_proc_closed</span>(msg_recipient);
+                    <span class="cfun">printf</span>(<span class="cstr">"    --&gt; %d: recipient %u is no longer available\n"</span>, my_address, msg_recipient);
+                }
+            }
+            
+            <span class="ccom">/* now, reading the first 2 messages we've been sent */</span>
+            <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>; i &lt; <span class="cval">2</span>; i++) {
+                ret = <span class="cfun">receive_proc_message</span>(&amp;msg);
+                <span class="ctyp">if</span><span class="cfun"> </span>(ret &lt; <span class="cval">0</span>) <span class="ctyp">break</span>;
+                <span class="cfun">printf</span>(<span class="cstr">"&lt;--     Process %d, received message from %u: \"%s\".\n"</span>, my_address, msg.src_id, msg.payload);
+            };
+            
+            <span class="ccom">/* i'm exiting. making my pipe widowed */</span>
+            <span class="cfun">close</span>(proc_pipes[my_address][<span class="cval">0</span>]);
+            
+            <span class="cfun">printf</span>(<span class="cstr">"# %d: i am exiting.\n"</span>, my_address);
+            <span class="cfun">exit</span>(<span class="cval">0</span>);
+        }
+        
+        <span class="ccom">/* saving the child pid (for future killing) */</span>
+        my_children[my_address] = child_pid;
+
+        <span class="ccom">/* parent. I don't need the read descriptor of the pipe */</span> 
+        <span class="cfun">close</span>(proc_pipes[my_address][<span class="cval">0</span>]);
+        
+        <span class="ccom">/* this is for making srandom() consistent */</span>
+        <span class="cfun">sleep</span>(<span class="cval">1</span>);
+    }
+    
+    <span class="ccom">/* expecting the user request to terminate... */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"Please press ENTER when you like me to flush the children...\n"</span>);
+    <span class="cfun">getchar</span>();
+
+    <span class="cfun">printf</span>(<span class="cstr">"Ok, terminating dandling processes...\n"</span>);
+    <span class="ccom">/* stopping freezed children */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">1</span>; i &lt; PROCS_NUM; i++) {
+        <span class="cfun">kill</span>(my_children[i], SIGTERM);
+    }
+    <span class="cfun">printf</span>(<span class="cstr">"Done. Exiting.\n"</span>);
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+
+<span class="ctyp">int</span> <span class="cfun">send_proc_message</span>(proc_addr dest, <span class="ctyp">char</span> *message)
+{
+    <span class="ctyp">int</span> ret;
+    <span class="ctyp">char</span> *msg = (<span class="ctyp">char</span> *)<span class="cfun">malloc</span>(<span class="ctyp">sizeof</span>(message) + <span class="cval">2</span>);
+    
+    
+    <span class="ccom">/* the write should be atomic. Doing our best */</span>
+    msg[<span class="cval">0</span>] = (<span class="ctyp">char</span>)dest;
+    <span class="cfun">memcpy</span>((<span class="ctyp">void</span> *)&amp;(msg[<span class="cval">1</span>]), (<span class="ctyp">void</span> *)message, <span class="cfun">strlen</span>(message)+<span class="cval">1</span>);
+    
+    <span class="ccom">/* send message, including the "header" the trailing '\0' */</span>
+    ret = <span class="cfun">write</span>(proc_pipes[dest][<span class="cval">1</span>], msg, <span class="cfun">strlen</span>(msg)+<span class="cval">2</span>);
+    <span class="cfun">free</span>(msg);
+    
+    <span class="ctyp">return</span> ret;
+}
+
+
+<span class="ctyp">int</span> <span class="cfun">receive_proc_message</span>(<span class="ctyp">struct</span> message_s *msg)
+{
+    <span class="ctyp">char</span> c = <span class="cval">'x'</span>;
+    <span class="ctyp">char</span> temp_string[MAX_PAYLOAD_LENGTH];
+    <span class="ctyp">int</span> ret, i = <span class="cval">0</span>;
+
+    
+    <span class="ccom">/* first, getting the message sender */</span>
+    ret = <span class="cfun">read</span>(proc_pipes[my_address][<span class="cval">0</span>], &amp;c, <span class="cval">1</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(ret == <span class="cval">0</span>) {
+        <span class="ctyp">return</span> <span class="cval">0</span>;
+    }
+    msg-&gt;src_id = (proc_addr)c;
+
+    <span class="ctyp">do</span> {
+        ret = <span class="cfun">read</span>(proc_pipes[my_address][<span class="cval">0</span>], &amp;c, <span class="cval">1</span>);
+        temp_string[i++] = c;
+    } <span class="ctyp">while</span><span class="cfun"> </span>((ret &gt; <span class="cval">0</span>) &amp;&amp; (c != '\<span class="cval">0</span>') &amp;&amp; (i &lt; MAX_PAYLOAD_LENGTH));
+
+    
+    
+    <span class="ctyp">if</span><span class="cfun"> </span>(c == '\<span class="cval">0</span>') {
+        <span class="ccom">/* msg correctly received. Preparing message packet */</span>
+        
+        msg-&gt;payload = (<span class="ctyp">char</span> *)<span class="cfun">malloc</span>(<span class="cfun">strlen</span>(temp_string) + <span class="cval">1</span>);
+        <span class="cfun">strncpy</span>(msg-&gt;payload, temp_string, <span class="cfun">strlen</span>(temp_string) + <span class="cval">1</span>);
+        
+        <span class="ctyp">return</span> <span class="cval">0</span>;
+    }
+
+
+    <span class="ctyp">return</span> -<span class="cval">1</span>;
+}
+
+
+<span class="ctyp">void</span> <span class="cfun">mark_proc_closed</span>(proc_addr process)
+{
+    proc_pipes[process][<span class="cval">0</span>] = DEAD_PROC;
+    proc_pipes[process][<span class="cval">1</span>] = DEAD_PROC;
+}
+</div>

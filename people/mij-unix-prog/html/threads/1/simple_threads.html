@@ -1,0 +1,98 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/********************************************************<br />
+&nbsp;* An example source module to accompany...<br />
+&nbsp;*<br />
+&nbsp;* "Using POSIX Threads: Programming with Pthreads"<br />
+&nbsp;* &nbsp;&nbsp;&nbsp;&nbsp;by Brad nichols, Dick Buttlar, Jackie Farrell<br />
+&nbsp;* &nbsp;&nbsp;&nbsp;&nbsp;O'Reilly &amp; Associates, Inc.<br />
+&nbsp;*<br />
+&nbsp;********************************************************<br />
+&nbsp;* simple_threads.c<br />
+&nbsp;*<br />
+&nbsp;* Simple multi-threaded example.<br />
+&nbsp;* Creates two threads. While doing different things, they<br />
+&nbsp;* both access and modify variables with global scope.<br />
+&nbsp;* Those vars have been tought to be modified this way, so<br />
+&nbsp;* this is *not* an example of a thread side effect. If each<br />
+&nbsp;* thread'd been accessing the same variable, they could create<br />
+&nbsp;* such kind of problems.<br />
+&nbsp;*/</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+#include &lt;stdio.h&gt;<br />
+#include &lt;errno.h&gt;<br />
+#include &lt;pthread.h&gt;<br />
+</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">do_one_thing</span>(<span style="color:#881350;">int</span> *); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* first function to thread */</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">do_another_thing</span>(<span style="color:#881350;">int</span> *); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* second function to thread */</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">do_wrap_up</span>(<span style="color:#881350;">int</span>, <span style="color:#881350;">int</span>); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* after joining threads... */</span><br />
+<br />
+<span style="color:#881350;">int</span> r1 = <span style="color:#0000ff;">0</span>, r2 = <span style="color:#0000ff;">0</span>;<br />
+<br />
+<span style="color:#881350;">extern</span> <span style="color:#881350;">int</span><br />
+<span style="color:#003369;">main</span>(<span style="color:#881350;">void</span>)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* ids for the first and the second thread */</span><br />
+&nbsp;&nbsp;pthread_t thread1, thread2;<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* creating the first thread. retval != 0 means troubles */</span><br />
+&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(<span style="color:#003369;">pthread_create</span>(&amp;thread1, <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">NULL</span>,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span style="color:#881350;">void</span> *) do_one_thing,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span style="color:#881350;">void</span> *) &amp;r1) != <span style="color:#0000ff;">0</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"pthread_create"</span>), <span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>); <br />
+&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* creating the first thread. retval != 0 means troubles.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* its argument is passed with a void * casting as requested<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* by pthread_create. The actual function expects an int. */</span><br />
+&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(<span style="color:#003369;">pthread_create</span>(&amp;thread2, <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">NULL</span>, <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span style="color:#881350;">void</span> *) do_another_thing,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span style="color:#881350;">void</span> *) &amp;r2) != <span style="color:#0000ff;">0</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"pthread_create"</span>), <span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>); <br />
+&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* waiting for the first thread to terminate.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* Thread's return(/exit) value gets discarded. */</span><br />
+&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(<span style="color:#003369;">pthread_join</span>(thread1, <span style="color:#881350;">NULL</span>) != <span style="color:#0000ff;">0</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"pthread_join"</span>),<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* waiting for the second thread */</span><br />
+&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(<span style="color:#003369;">pthread_join</span>(thread2, <span style="color:#881350;">NULL</span>) != <span style="color:#0000ff;">0</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"pthread_join"</span>),<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+<br />
+&nbsp;&nbsp;<span style="color:#003369;">do_wrap_up</span>(r1, r2);<br />
+<br />
+&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>; <br />
+}<br />
+<br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">do_one_thing</span>(<span style="color:#881350;">int</span> *pnum_times)<br />
+{<br />
+&nbsp;&nbsp;<span style="color:#881350;">int</span> i, j, x;<br />
+&nbsp;&nbsp;<br />
+&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; &nbsp;i &lt; <span style="color:#0000ff;">4</span>; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"doing one thing\n"</span>); <br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(j = <span style="color:#0000ff;">0</span>; j &lt; <span style="color:#0000ff;">10000</span>; j++) x = x + i;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;(*pnum_times)++;<br />
+&nbsp;&nbsp;}<br />
+<br />
+}<br />
+<br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">do_another_thing</span>(<span style="color:#881350;">int</span> *pnum_times)<br />
+{<br />
+&nbsp;&nbsp;<span style="color:#881350;">int</span> i, j, x;<br />
+&nbsp;&nbsp;<br />
+&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; &nbsp;i &lt; <span style="color:#0000ff;">4</span>; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"doing another \n"</span>); <br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(j = <span style="color:#0000ff;">0</span>; j &lt; <span style="color:#0000ff;">10000</span>; j++) x = x + i;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;(*pnum_times)++;<br />
+&nbsp;&nbsp;}<br />
+<br />
+}<br />
+<br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">do_wrap_up</span>(<span style="color:#881350;">int</span> one_times, <span style="color:#881350;">int</span> another_times)<br />
+{<br />
+&nbsp;&nbsp;<span style="color:#881350;">int</span> total;<br />
+<br />
+&nbsp;&nbsp;total = one_times + another_times;<br />
+&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"All done, one thing %d, another %d for a total of %d\n"</span>,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;one_times, another_times, total);<br />
+}<br />
+</div>

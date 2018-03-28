@@ -1,0 +1,402 @@
+<html>
+<head>
+<title>Beej's Guide to Network Programming Errata</title>
+<meta name="Description" content="Beej's Guide to Network Programming Errata">
+<meta name="Keywords" content="network programming sockets">
+<style type="text/css">
+<!--
+body {
+	font-family: Helvetica,Arial,sans-serif;
+	font-size: 12pt;
+}
+
+#adsense {
+	float: right;
+	margin: 10px;
+}
+
+*.maintitle {
+	font-weight:bold;
+	font-size: 2.0em;
+	margin-bottom: 0px;
+}
+
+
+*.subtitle {
+	font-weight: bold;
+	font-style: italic;
+	font-size: 1.5em;
+	margin-top: 0px;
+}
+
+*.secttitle {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+*.subsecttitle {
+	font-weight: bold;
+}
+
+*.tableheader {
+	font-weight: bold;
+	font-style: italic;
+}
+
+*.email {
+	font-family: "Courier","Courier New",monospace;
+	font-weight: bold;
+}
+
+*.filename {
+	font-family: "Courier","Courier New",monospace;
+}
+
+*.command {
+	font-family: "Courier","Courier New",monospace;
+	font-weight: bold;
+}
+
+*.headerbar {
+	border: #000 solid 2px;
+	border-color: #000;
+	border-style: solid;
+	border-width: 2px;
+	background-color: #DDD;
+	margin: 1em;
+	padding: 1em;
+}
+
+*.beggartable {
+	border: #000,solid,2px;
+	border-color: #000;
+	border-style: solid;
+	border-width: 2px;
+	margin: 1em;
+	padding: 1em;
+}
+
+hr.singleline {
+	border: #000 solid 0px;
+	height: 1px;
+	background-color: #000;
+	border-color: #000;
+}
+
+*.strike {
+	text-decoration: line-through;
+}
+
+-->
+</style>
+</head>
+
+<body>
+
+<h1 class="maintitle">Beej's Guide to Network Programming Errata</h1>
+
+<p>I know I should have started this earlier than version 3.0.  I'm
+working on a time machine right now to help rectify the situation.</p>
+
+<hr class="singleline">
+<table border="0">
+
+<tr><td><i class="tableheader">Release</i></td>
+<td><i class="tableheader">Description of changes</i></td></tr>
+
+<!-- ================================================================ -->
+
+<tr><td valign="top"><b>3.0.8</b>, 2009-02-16</td>
+<td>getpeername() man page example [book v3.0.7 pp. 95-96]: replaced
+"&amp;amp;" with real ampersands (C doesn't like &amp;amp;&mdash;who
+knew) in call to getpeername().  Added address-of operators (&amp;)
+before the "s-&gt;sin_addr" and "s-&gt;sin6_addr" parameters to both
+calls to inet_ntop().  Thanks to Rafael for reporting these.
+
+<pre>
+getpeername(s, (struct sockaddr*)<strike class="strike">&amp;amp;</strike>addr, <strike class="strike">&amp;amp;</strike>len);
+getpeername(s, (struct sockaddr*)<b>&amp;</b>addr, <b>&amp;</b>len);
+
+inet_ntop(AF_INET, s->sin_addr, ipstr, sizeof ipstr);
+inet_ntop(AF_INET, <b>&amp;</b>s->sin_addr, ipstr, sizeof ipstr);
+
+inet_ntop(AF_INET, s->sin6_addr, ipstr, sizeof ipstr);
+inet_ntop(AF_INET, <b>&amp;</b>s->sin6_addr, ipstr, sizeof ipstr);
+</pre></td></tr>
+
+<!-- ================================================================ -->
+<tr><td><hr class="singlelineshort"/></td><td/></tr>
+
+<tr><td valign="top"><b>3.0.9</b>, 2009-02-18</td>
+<td>getpeername() man page example again (I know!) [book v3.0.7 p. 96]:
+replaced AF_INET with AF_INET6 where appropriate. How many bugs can I
+have in 10 lines of code?  I wrote a short program that counted exactly
+how many bugs I had, and it was this: -37!  Thanks again to Rafael who
+won't let me off the hook until I get it right. <tt>:)</tt>
+
+<pre>
+} else { // AF_INET6
+    <i>[... snip ...]</i>
+    inet_ntop(<strike class="strike">AF_INET</strike>, &amp;s->sin6_addr, ipstr, sizeof ipstr);
+    inet_ntop(<b>AF_INET6</b>, &amp;s->sin6_addr, ipstr, sizeof ipstr);
+</pre></td></tr>
+
+<!-- ================================================================ -->
+<tr><td><hr class="singlelineshort"/></td><td/></tr>
+
+<tr><td valign="top"><b>3.0.10</b>, 2009-02-23</td>
+<td>bind() man page example [book v3.0.7 p. 81]: need an address-of on
+myaddr.  (Thanks to Venkat for the report!)
+
+<pre>
+bind(s, (struct sockaddr*)myaddr, sizeof myaddr);
+bind(s, (struct sockaddr*)<b>&amp;</b>myaddr, sizeof myaddr);
+</pre>
+
+I also changed and added some comments in the same example [book v3.0.7
+pp. 80-81].  The "proper" way doesn't demonstrate error checking, so
+it's not very proper.
+
+<pre>
+// <strike class="strike">proper</strike> way of doing things with getaddrinfo()
+// <b>modern</b> way of doing things with getaddrinfo()
+
+<i>[... snip ...]</i>
+
+// make a socket:
+<b>// (you should actually walk the "res" linked list and error-check!)</b>
+</pre></td></tr>
+
+<!-- ================================================================ -->
+<tr><td><hr class="singlelineshort"/></td><td/></tr>
+
+<tr><td valign="top"><b>3.0.11</b>, 2009-02-24</td>
+<td>Section 5.2 socket() syscall example [book v3.0.7 p. 25]: forgot to
+declare the type of hints.  Also added a clarifying comment about the
+proper use of the getaddrinfo() results linked list. (This bug caught by
+Kaio&mdash;thanks, as always!)
+
+<pre>
+struct addrinfo *res;
+struct addrinfo <b>hints,</b> *res;
+</pre>
+
+and
+
+<pre>
+// do the lookup
+<b>// [pretend we already filled out the "hints" struct]</b>
+getaddrinfo("www.example.com", "http", &hints, &res);
+
+<b>// [again, you should do error-checking on getaddrinfo(), and walk
+// the "res" linked list looking for valid entries instead of just
+// assuming the first one is good (like many of these examples do.)
+// See the section on client/server for real examples.]</b>
+</pre></td></tr>
+
+<!-- ================================================================ -->
+<tr><td><hr class="singlelineshort"/></td><td/></tr>
+
+<tr><td valign="top"><b>3.0.12</b>, 2009-02-24</td>
+<td>And the hits just keep coming today!  These are from Mick&mdash;a
+couple of typos.
+
+<p>Section 3.1, "IP Addresses, versions 4 and 6" [book v3.0.7 p. 9]:</p>
+
+<pre>
+and was common written in "dots and numbers" form
+and was common<b>ly</b> written in "dots and numbers" form
+</pre>
+
+And, same section [book v3.0.7 p. 10]:
+
+<pre>
+That we need not just twice as many address, not a billion times as many
+That we need not just twice as many address<b>es</b>, not a billion times as many
+</pre></td></tr>
+
+<!-- ================================================================ -->
+<tr><td><hr class="singlelineshort"/></td><td/></tr>
+
+<tr><td valign="top"><b>3.0.13</b>, 2009-03-23</td>
+<td>A big batch today from Rainer Kupke: "&amp;amp;" removals and a
+quick note about using <tt>errno</tt> in multithreaded environments.
+couple of typos.  Hopefully this is all the stupid &amp;amp; errors caused
+by my lame indiscriminate use of CDATA in my source XML...
+
+<p>Section 9.2, "bind()" [book v3.0.7 p. 81]:</p>
+
+<pre>
+bind(s, (struct sockaddr*)myaddr, sizeof myaddr);
+bind(s, (struct sockaddr*)<b>&amp;</b>myaddr, sizeof myaddr);
+</pre>
+
+or
+
+<pre>
+bind(s, (struct sockaddr*)&amp;<strike class="strike">amp;</strike>myaddr, sizeof myaddr);
+bind(s, (struct sockaddr*)&amp;myaddr, sizeof myaddr);
+</pre>
+
+Section 9.18, "recv(), recvfrom()" [book v3.0.7 p. 116]:
+
+<pre>
+byte_count = recvfrom(sockfd, buf, sizeof buf, 0, &amp;<strike class="strike">amp;</strike>addr, &amp;<strike class="strike">amp;</strike>fromlen);
+byte_count = recvfrom(sockfd, buf, sizeof buf, 0, &amp;addr, &amp;fromlen);
+</pre>
+
+Section 9.19, "select()" [book v3.0.7 p. 118], lots of them bundled
+here... Gah, sorry!
+
+<pre>
+FD_ZERO(&amp;<strike class="strike">amp;</strike>readfds);
+FD_ZERO(&amp;readfds);
+
+FD_SET(s1, &amp;<strike class="strike">amp;</strike>readfds);
+FD_SET(s1, &amp;readfds);
+
+FD_SET(s2, &amp;<strike class="strike">amp;</strike>readfds);
+FD_SET(s2, &amp;readfds);
+
+rv = select(n, &amp;<strike class="strike">amp;</strike>readfds, NULL, NULL, &amp;<strike class="strike">amp;</strike>tv);
+rv = select(n, &amp;readfds, NULL, NULL, &amp;tv);
+
+if (FD_ISSET(s1, &amp;<strike class="strike">amp;</strike>readfds)) {
+if (FD_ISSET(s1, &amp;readfds)) {
+
+if (FD_ISSET(s2, &amp;<strike class="strike">amp;</strike>readfds)) {
+if (FD_ISSET(s2, &amp;readfds)) {
+</pre>
+
+Section 9.21, "send(), sendto()" [book v3.0.7 p. 122]:
+
+<pre>
+send(stream_socket, &amp;<strike class="strike">amp;</strike>temp, sizeof temp, 0);
+send(stream_socket, &amp;temp, sizeof temp, 0);
+
+sendto(dgram_socket, secret_message, strlen(secret_message)+1, 0,
+       (struct sockaddr*)&amp;<strike class="strike">amp;</strike>dest, sizeof dest);
+sendto(dgram_socket, secret_message, strlen(secret_message)+1, 0,
+       (struct sockaddr*)&amp;dest, sizeof dest);
+</pre>
+
+Section 5.2, "socket()&mdash;Get the file descriptor!" [book v3.0.7 p 25]:
+
+<pre>
+The global variable <i>errno</i> is set to the error's value (see the <strike class="strike">perror()</strike>
+man page.)
+
+The global variable <i>errno</i> is set to the error's value (see the <i>errno</i>
+man page <b>for more details, and a quick note on using <i>errno</i> in
+multithreaded programs</b>.)
+
+</pre>
+
+Section 9.10, "errno" [book v3.0.7 p 97], add the following paragraph to the
+end of the description:
+
+<pre>
+One thing to note, for you multithreading enthusiasts, is that on most systems
+<i>errno</i> is defined in a threadsafe manner.  (That is, it's not actually a
+global variable, but it behaves just like a global variable would in a
+single-threaded environment.)
+</pre></td></tr>
+
+<!-- ================================================================ -->
+<tr><td><hr class="singlelineshort"/></td><td/></tr>
+
+<tr><td valign="top"><b>3.0.14</b>, 2009-09-08</td>
+<td>A few changes, one substantial:
+
+<p>Section 6.3, "Datagram Sockets" [book v3.0.7 p 41]: type change in
+<tt class="filename">listener.c</tt> line 38:
+
+<pre>
+<strike class="strike">size_t</strike> addr_len;
+<b>socklen_t</b> addr_len;
+</pre>
+
+<p>Section 6.3, "select(): Synchronous I/O Multiplexing" [book v3.0.7 p
+XX]: added text:
+
+<pre>
+<b>This being said, in modern times <func>select()</func>, though very
+portable, is one of the slowest methods for monitoring sockets.  One
+possible alternative is libevent, or something similar, that
+encapsulates all the system-dependent stuff involved with getting socket
+notifications.</b>
+
+Without any further ado, I'll offer the synopsis of select():
+</pre>
+
+<p>Section 7.4, "Serialization&mdash;How to Pack Data" [book v3.0.7 pp.
+55-57]: addition and changes to <tt class="filename">ieee754.c</tt>:</p>
+
+<pre>
+#include &lt;inttypes.h&gt;
+</pre>
+
+<pre>
+<strike class="strike">long long</strike> pack754(long double f, unsigned bits, unsigned expbits)
+<b>uint64_t</b> pack754(long double f, unsigned bits, unsigned expbits)
+</pre>
+
+<pre>
+long double unpack754(<strike class="strike">long long</strike> i, unsigned bits, unsigned expbits)
+long double unpack754(<b>uint64_t</b> i, unsigned bits, unsigned expbits)
+</pre>
+
+<pre>
+printf("float encoded: 0x%08<strike class="strike">X</strike>\n", fi);
+printf("float encoded: 0x%08<b>" PRIx32 "</b>\n", fi);
+</pre>
+
+<pre>
+printf("double encoded: 0x%016<strike class="strike">llX</strike>\n", di);
+printf("double encoded: 0x%016<b>" PRIx64 "</b>\n", di);
+</pre>
+
+<p>Section 7.4, "Serialization&mdash;How to Pack Data" [book v3.0.7 pp.
+58-62]: multitude of changes, too many to list, to <tt
+class="filename">pack2.c</tt> to get it to function properly on 32-bit
+and 64-bit machines.  It now relies on C99 features, but it was the
+cleanest way to get it portable.  Modern <tt class="command">gcc</tt>
+should have no trouble.  (Thanks to Bruce L. for the catch and
+testing.)</p>
+
+<p>Section 7.4, "Serialization&mdash;How to Pack Data" [book v3.0.7 pp.
+XX-XX]: text added:</p>
+
+<pre>
+[THE END]
+
+<b>(Before I begin this section in earnest, I should tell you that there
+are libraries out there for doing this, and rolling your own and
+remaining portable and error-free is quite a challenge.  So hunt around
+and do your homework before deciding to implement this stuff yourself.
+I include the information here for those curious about how things like
+this work.)</b>
+
+Actually all the methods, above, have their drawbacks and advantages,
+</pre>
+
+<p>Section 7.4, "Serialization&mdash;How to Pack Data" [book v3.0.7 pp.
+XX-XX]: text added:</p>
+
+<pre>
+But if you want your source code to be portable, that's an assumption
+you can't necessarily make.  <b>(On the other hand, if you want things to
+be fast, you should optimize this out on platforms that don't need to do
+it!  That's what htons() and its ilk do.)</b>
+</pre>
+
+</td></tr>
+
+</table>
+
+<hr class="singleline">
+
+Contact Beej: <tt class="email"><a href="mailto:beej@beej.us">beej@beej.us</a></tt>
+
+</html>
+

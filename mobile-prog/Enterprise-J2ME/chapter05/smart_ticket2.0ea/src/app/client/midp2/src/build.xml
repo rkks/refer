@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: build.xml,v 1.3 2003/04/11 02:24:12 zull Exp $ -->
+
+<project name="smart_ticket-midp" default="all" basedir=".">
+
+  <target name="all" depends="init,compile,preverify,package" />
+
+  <target name="init">
+    <property file="${user.home}/smart_ticket.properties" />
+    <property name="tools.home" value="../../../../tools/" />
+    <property name="build.dir" value="../build" />
+    <property name="base.model.src.dir" value="../../midp/src/com/sun/j2me/blueprints/smartticket/client/midp/model" />
+    <property name="base.util.src.dir" value="../../midp/src/com/sun/j2me/blueprints/smartticket/client/midp/util" />
+    <property name="shared.src.dir" value="../../../shared/src" />
+    <property name="shared.rsrc.dir" value="${shared.src.dir}/rsrc" />
+    <property name="src.dir" value="." />
+    <property name="rsrc.dir" value="${src.dir}/rsrc" />
+    <property name="tmp.dir" value="${build.dir}/tmp" />
+    <property name="tmp.verified.dir" value="${tmp.dir}/verified" />
+    <property name="tmp.unverified.dir" value="${tmp.dir}/unverified" />
+    <property name="midp.locale" value="en_US" />
+    <condition property="midp.present">
+      <and>
+        <available file="${base.model.src.dir}" type="dir"/>
+        <available file="${base.util.src.dir}" type="dir"/>
+     </and>
+    </condition>
+  </target>
+
+  <target name="compile" depends="compile1, compile2" />
+
+  <target name="compile1" depends="init" if="midp.present">
+    <delete dir="${tmp.unverified.dir}" />
+    <mkdir dir="${tmp.unverified.dir}" />
+    <javac destdir="${tmp.unverified.dir}"
+           bootclasspath="${J2MEWTK.HOME}/lib/midpapi.zip"
+           debug="false"
+           target="1.1" 
+           includes="**/*.java"
+           excludes="**/SCCS/**, **/CVS/**, Preferences.java, ApplicationUtilities.java">
+      <src path="${shared.src.dir}" />
+      <src path="${base.model.src.dir}" />
+      <src path="${base.util.src.dir}" />
+      <src path="${src.dir}" />
+    </javac>
+  </target>
+
+  <target name="compile2" depends="init" unless="midp.present">
+    <delete dir="${tmp.unverified.dir}" />
+    <mkdir dir="${tmp.unverified.dir}" />
+    <javac destdir="${tmp.unverified.dir}"
+           bootclasspath="${J2MEWTK.HOME}/lib/midpapi.zip"
+           debug="false"
+           target="1.1" 
+           includes="**/*.java"
+           excludes="**/SCCS/**, **/CVS/**, Preferences.java, ApplicationUtilities.java">
+      <src path="${shared.src.dir}" />
+      <src path="${src.dir}" />
+    </javac>
+  </target>
+
+  <target name="preverify" depends="init">
+    <delete dir="${tmp.verified.dir}" />
+    <mkdir dir="${tmp.verified.dir}" />
+    <exec executable="${J2MEWTK.HOME}/bin/preverify">
+      <arg line="-classpath" />
+      <arg path="${tmp.unverified.dir}:${J2MEWTK.HOME}/lib/midpapi.zip" />
+      <arg line="-d ${tmp.verified.dir}" /> 
+      <arg value="${tmp.unverified.dir}" />
+    </exec>
+  </target>
+
+  <target name="package" depends="init">
+    <taskdef name="filesize" 
+             classname="ant.FileSizeTask"
+             classpath="${tools.home}/ant/classes" />
+    <mkdir dir="${build.dir}" />
+<!--
+    <jar manifest="${src.dir}/smart_ticket-client-manifest.mf"
+         basedir="${midp.build.verified.dir}"
+         jarfile="${midp.dist.dir}/smarticket.jar" />
+-->
+    <copy todir="${tmp.verified.dir}/" overwrite="true">
+      <fileset dir="${shared.rsrc.dir}" includes="**/ErrorResources_${midp.locale}.properties" />
+      <fileset dir="${shared.rsrc.dir}" includes="**/UIResources2_${midp.locale}.properties" />
+    </copy>    
+    <delete file="${build.dir}/smart_ticket-client.jar" />
+    <zip zipfile="${build.dir}/smart_ticket-client.jar">
+      <zipfileset dir="${src.dir}" 
+                  includes="smart_ticket-client-manifest.mf" 
+                  fullpath="META-INF/MANIFEST.MF" />
+      <zipfileset dir="${tmp.verified.dir}" />
+      <zipfileset dir="${rsrc.dir}" excludes="**/SCCS/**,**/CVS/**"/>
+    </zip>
+
+    <filesize file="${build.dir}/smart_ticket-client.jar" property="jarsize"/>
+    <filter token="jarsize" value="${jarsize}" />
+    <filter token="locale" value="${midp.locale}" />
+    <copy todir="${build.dir}" filtering="true" overwrite="true">
+      <fileset dir="${src.dir}" includes="smart_ticket-client.jad" />
+    </copy>
+  </target>
+
+  <target name="obfuscate" depends="compile">
+    <taskdef name="wtkobfuscate" 
+             classname="de.pleumann.antenna.WtkObfuscate"
+             classpath="${tools.home}/ant/lib/antenna-bin.jar"/>
+    <taskdef name="wtkpackage" 
+             classname="de.pleumann.antenna.WtkPackage"
+             classpath="${tools.home}/ant/lib/antenna-bin.jar"/>
+    <property name="wtk.home" value="${J2MEWTK.HOME}" />
+    <copy todir="${tmp.verified.dir}" overwrite="true">
+      <fileset dir="${tmp.unverified.dir}" />
+    </copy>
+    <antcall target="package" />
+    <wtkobfuscate jarfile="${build.dir}/smart_ticket-client.jar" 
+                  jadfile="${build.dir}/smart_ticket-client.jad">
+      <preserve class="com.sun.j2me.blueprints.smartticket.client.midp.SmartTicketMIDlet" />
+    </wtkobfuscate>
+    <delete dir="${tmp.unverified.dir}" />
+    <unzip src="${build.dir}/smart_ticket-client.jar"
+           dest="${tmp.unverified.dir}" 
+           overwrite="true" />
+    <delete dir="${tmp.verified.dir}" />
+    <exec executable="${J2MEWTK.HOME}/bin/preverify">
+      <arg line="-classpath" />
+      <arg path="${build.dir}/smart_ticket-client.jar:${J2MEWTK.HOME}/lib/midpapi.zip" />
+      <arg line="-d ${tmp.verified.dir}" /> 
+      <arg value="${tmp.unverified.dir}" />
+    </exec>
+    <antcall target="package" />
+  </target>
+
+  <target name="emulate" depends="init">
+    <exec executable="${J2MEWTK.HOME}/bin/emulator" dir="${build.dir}">
+      <arg value="-Xdescriptor:smart_ticket-client.jad" />
+    </exec>
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <target name="cleandb" depends="init">
+    <delete>
+      <fileset dir="${J2MEWTK.HOME}/appdb" includes="**/*.db" />
+    </delete>
+  </target>
+</project>

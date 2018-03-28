@@ -1,0 +1,2178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="oramaint" content="webmaster@oreilly.com">
+<meta name="keywords" content="Unix, Linux, UNIX Power Tools"><title>UNIX Power Tools, 3rd Edition: Examples</title></head>
+<body bgcolor="#ffffff" link="#aa0000" vlink="#000077">
+<img src="http://www.oreilly.com/graphics_new/generic_ora_header_xwide.gif" width="610" height="37" alt="O'Reilly and Associates" class="headerimg">
+
+<h2><a name="the-top">Unix Power Tools, 3rd Edition: Examples</a></h2>
+<p>
+This page has descriptions of the programs and other example files
+in the third edition of
+<a href="http://www.oreilly.com/catalog/upt3/"><em>UNIX Power Tools</em></a>,
+published in 2002 by O'Reilly &amp; Associates, Inc.
+</p>
+
+<h3>Overall info</h3>
+<ul>
+<li><p>
+Some of the programs in the archive are fairly old and may require
+porting to run on your particular version of Unix and/or with your shell.
+O'Reilly &amp; Associates can't provide porting support for this code.
+</p></li>
+<li><p>
+Some packages are updated often.
+We've made links to these packages' source code at other hosts (not O'Reilly's).
+We'll try to keep these pages of links up to date, but there's a good chance
+that some of the links will be broken because there's a newer version (at
+another URL), the other server has been rearranged, etc.
+If you find an outdated link,
+please <a href="mailto:jpeek@jpeek.com">tell us</a>!
+Then do a little hunting--for instance, change a URL like
+<em>ftp://x.y.com/files/aprog_1.3.tar.Z</em> to the name of the directory
+holding the file, like <em>ftp://x.y.com/files/</em>.
+</p></li>
+<li><p>
+If you have comments about the overall structure of the book or this
+archive site, or you find errors in the book, please go to the
+<a href="http://www.oreilly.com/catalog/upt3/errata/">errata page</a>
+and fill in the form.
+</p></li>
+</ul>
+
+<h3>Archive structure</h3>
+<ul>
+<li><p>
+The example files and programs from this O'Reilly server are in the
+<a href="split/"><em>split</em> subdirectory</a>
+(main server: <em>http://examples.oreilly.com/upt3/split/</em>)
+</p><p>
+You can also get all of these files in one <em>gzip</em>ped <em>tar</em>
+archive named
+<a href="upt200211.tar.gz"><em>upt200211.tar.gz</em></a>
+(main server: <em>http://examples.oreilly.com/upt3/upt200211.tar.gz</em>).
+</p></li>
+<li><p>
+Many of the programs on the Internet are GNU source.
+There are mirrors all over the world.
+Each of the GNU packages has a link to
+<a href="http://www.gnu.org/order/ftp.html">other mirrors</a>
+(the list of GNU servers).
+To use another server, note the package name(s) you want,
+then click the link to find a server close to you.
+For more information on GNU software, see
+<a href="http://www.gnu.org/">http://www.gnu.org/</a>.
+</p></li>
+<li><p>
+A few files are shell archives; their filenames end with <em>.shar</em>.
+For information about unpacking these, read the
+<a href="split/README-shar">shar README file</a>.
+</p></li>
+<li><p>
+Some files contain shell aliases or functions; the filenames usually
+end with <em>.csh</em> or <em>.sh</em>.
+These aren't meant to be run directly (by typing the filename at a
+shell prompt).
+Instead, you'll probably want to copy the contents
+into your shell setup file (like <em>.cshrc</em> or <em>.bashrc</em>).
+</p></li>
+</ul>
+
+<h3>Descriptions of programs and examples</h3>
+<p>
+The rest of this page contains descriptions of each program and example
+with links to their files.
+</p>
+<p>
+If you know the names of the files you want,
+click on one of the names below; it'll take you to the description
+of that file and a link to it.
+Or, if you feel like browsing, scroll down and read through the descriptions.
+</p>
+<p>
+<a name="the-list"></a>
+<a href="#%21">!</a>
+| <a href="#.emacs_ml">.emacs_ml</a>
+| <a href="#.enter.csh">.enter.csh</a>
+| <a href="#.enter.sh">.enter.sh</a>
+| <a href="#.exit.csh">.exit.csh</a>
+| <a href="#.exit.sh">.exit.sh</a>
+| <a href="#age_files">age_files</a>
+| <a href="#agrep">agrep</a>
+| <a href="#awf">awf</a>
+| <a href="#behead">behead</a>
+| <a href="#bkedit">bkedit</a>
+| <a href="#blinkprompt.csh">blinkprompt.csh</a>
+| <a href="#blinkprompt.sh">blinkprompt.sh</a>
+| <a href="#bzip2">bzip2</a>
+| <a href="#c.csh">c.csh</a>
+| <a href="#c.sh">c.sh</a>
+| <a href="#catsaway">catsaway</a>
+| <a href="#center">center</a>
+| <a href="#cgrep">cgrep</a>
+| <a href="#checksed">checksed</a>
+| <a href="#chmod.csh">chmod.csh</a>
+| <a href="#chmod.sh">chmod.sh</a>
+| <a href="#chmod_edit">chmod_edit</a>
+| <a href="#cleanup">cleanup</a>
+| <a href="#column">column</a>
+| <a href="#commer">commer</a>
+| <a href="#count.it">count.it</a>
+| <a href="#count_types">count_types</a>
+| <a href="#csh_init">csh_init</a>
+| <a href="#csplit">csplit</a>
+| <a href="#curl">curl</a>
+| <a href="#cut">cut</a>
+| <a href="#cw">cw</a>
+| <a href="#dateprompt.sh">dateprompt.sh</a>
+| <a href="#dd">dd</a>
+| <a href="#dedent">dedent</a>
+| <a href="#del">del</a>
+| <a href="#deroff">deroff</a>
+| <a href="#df">df</a>
+| <a href="#diff">diff</a>
+| <a href="#dircolors">dircolors</a>
+| <a href="#dirsprompt.bash">dirsprompt.bash</a>
+| <a href="#dirsprompt.csh">dirsprompt.csh</a>
+| <a href="#dirstailprompt.csh">dirstailprompt.csh</a>
+| <a href="#emacs">emacs</a>
+| <a href="#env">env</a>
+| <a href="#expect">expect</a>
+| <a href="#exrc">exrc</a>
+| <a href="#fac.sh">fac.sh</a>
+| <a href="#false">false</a>
+| <a href="#file">file</a>
+| <a href="#fileutils">fileutils</a>
+| <a href="#find.csh">find.csh</a>
+| <a href="#find.sh">find.sh</a>
+| <a href="#fmt">fmt</a>
+| <a href="#fmt.sh">fmt.sh</a>
+| <a href="#ftpfile">ftpfile</a>
+| <a href="#gawk">gawk</a>
+| <a href="#gnroff">gnroff</a>
+| <a href="#grabchars">grabchars</a>
+| <a href="#grep">grep</a>
+| <a href="#gzip">gzip</a>
+| <a href="#hgrep">hgrep</a>
+| <a href="#if-else-alias.csh">if-else-alias.csh</a>
+| <a href="#ispell">ispell</a>
+| <a href="#join">join</a>
+| <a href="#lensort">lensort</a>
+| <a href="#lndir">lndir</a>
+| <a href="#look">look</a>
+| <a href="#lookfor">lookfor</a>
+| <a href="#ls">ls</a>
+| <a href="#mailto">mailto</a>
+| <a href="#makealias.csh">makealias.csh</a>
+| <a href="#md5sum">md5sum</a>
+| <a href="#metamail">metamail</a>
+| <a href="#mimencode">mimencode</a>
+| <a href="#mkfifo">mkfifo</a>
+| <a href="#mlprompt.csh">mlprompt.csh</a>
+| <a href="#mlprompt.sh">mlprompt.sh</a>
+| <a href="#mx.sh">mx.sh</a>
+| <a href="#namesort">namesort</a>
+| <a href="#namesort.pl">namesort.pl</a>
+| <a href="#ndown">ndown</a>
+| <a href="#netpbm">netpbm</a>
+| <a href="#nl">nl</a>
+| <a href="#nohup">nohup</a>
+| <a href="#nom">nom</a>
+| <a href="#nom2">nom2</a>
+| <a href="#nup">nup</a>
+| <a href="#offset">offset</a>
+| <a href="#oldlinks">oldlinks</a>
+| <a href="#opttest">opttest</a>
+| <a href="#paircheck">paircheck</a>
+| <a href="#paste">paste</a>
+| <a href="#patch">patch</a>
+| <a href="#perl">perl</a>
+| <a href="#pick">pick</a>
+| <a href="#printenv">printenv</a>
+| <a href="#proxynotify">proxynotify</a>
+| <a href="#python">python</a>
+| <a href="#qterm">qterm</a>
+| <a href="#rcsegrep.fast">rcsegrep.fast</a>
+| <a href="#rcsgrep">rcsgrep</a>
+| <a href="#rcsrevs">rcsrevs</a>
+| <a href="#recomment">recomment</a>
+| <a href="#requote">requote</a>
+| <a href="#rot">rot</a>
+| <a href="#rpm">rpm</a>
+| <a href="#run-parts">run-parts</a>
+| <a href="#runsed">runsed</a>
+| <a href="#samba">samba</a>
+| <a href="#script.tidy">script.tidy</a>
+| <a href="#scriptprompt.zsh">scriptprompt.zsh</a>
+| <a href="#search.el">search.el</a>
+| <a href="#setprompt.csh">setprompt.csh</a>
+| <a href="#setprompt.sh">setprompt.sh</a>
+| <a href="#sh_init">sh_init</a>
+| <a href="#shellutils">shellutils</a>
+| <a href="#showargs">showargs</a>
+| <a href="#showenv">showenv</a>
+| <a href="#showmatch">showmatch</a>
+| <a href="#sl">sl</a>
+| <a href="#sleep">sleep</a>
+| <a href="#spell">spell</a>
+| <a href="#split">split</a>
+| <a href="#split.pl">split.pl</a>
+| <a href="#ssh">ssh</a>
+| <a href="#stattitle.csh">stattitle.csh</a>
+| <a href="#stattitle.sh">stattitle.sh</a>
+| <a href="#strings">strings</a>
+| <a href="#stripper">stripper</a>
+| <a href="#stty">stty</a>
+| <a href="#sysmgr">sysmgr</a>
+| <a href="#tail">tail</a>
+| <a href="#tar">tar</a>
+| <a href="#tcl+tk">tcl+tk</a>
+| <a href="#tee">tee</a>
+| <a href="#textutils">textutils</a>
+| <a href="#touch">touch</a>
+| <a href="#tpipe">tpipe</a>
+| <a href="#tr">tr</a>
+| <a href="#true">true</a>
+| <a href="#umask.csh">umask.csh</a>
+| <a href="#umask.sh">umask.sh</a>
+| <a href="#uniq">uniq</a>
+| <a href="#uptime">uptime</a>
+| <a href="#users">users</a>
+| <a href="#vgrep">vgrep</a>
+| <a href="#vis">vis</a>
+| <a href="#vnc">vnc</a>
+| <a href="#watchq">watchq</a>
+| <a href="#wget">wget</a>
+| <a href="#ww.csh">ww.csh</a>
+| <a href="#ww.sh">ww.sh</a>
+| <a href="#xargs">xargs</a>
+| <a href="#xgrep">xgrep</a>
+| <a href="#xwrist">xwrist</a>
+| <a href="#zap">zap</a>
+
+<h2><a name=".emacs_ml">.emacs_ml</a></h2>
+<p>
+The <a href="split/.emacs_ml">
+<em>.emacs_ml</em></a>
+file contains a listing of Mike's favorite Emacs
+commands. If you like them, put them in your own <em>$HOME/.emacs</em> file.
+(See article 19.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name=".enter.csh">.enter.csh</a></h2>
+<p>
+<a href="split/.enter.csh">
+<em>.enter.csh</em></a>
+is an example of a C shell script you might want to run
+when your C shell enters a particular directory. It is meant to be
+used with an alias (which can be found in the
+<a href="#csh_init"><em>csh_init</em> file</a>) and with a
+<a href="#.exit.csh"><em>.exit.csh</em> script</a>.
+(See article 31.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name=".enter.sh">.enter.sh</a></h2>
+<p>
+<a href="split/.enter.sh">
+<em>.enter.sh</em></a>
+is an example of a Bourne shell script you might want to
+run when your Bourne-type shell (including <em>ksh</em> and <em>bash</em>) enters a
+particular directory. It is meant to be used with a shell function
+(which can be found in the
+<a href="#sh_init"><em>sh_init</em> file</a>) and with a
+<a href="#.exit.sh"><em>.exit.sh</em> script</a>.
+(See article 31.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name=".exit.csh">.exit.csh</a></h2>
+<p>
+<a href="split/.exit.csh">
+<em>.exit.csh</em></a>
+is an example of a shell script you might want to run when
+your C shell leaves a particular directory. It is meant to be used
+with an alias (which can be found in the
+<a href="#csh_init"><em>csh_init</em> file</a>) and with a
+<a href="#.enter.csh"><em>.enter.csh</em> script</a>.
+(See article 31.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name=".exit.sh">.exit.sh</a></h2>
+<p>
+<a href="split/.exit.sh">
+<em>.exit.sh</em></a>
+is an example of a shell script you might want to run when
+your Bourne-type shell (including <em>ksh</em> and <em>bash</em>) leaves a particular
+directory. It is meant to be used with a shell function (which can be
+found in the
+<a href="#sh_init"><em>sh_init</em> file</a>)
+and with a
+<a href="#.enter.sh"><em>.enter.sh</em> script</a>.
+(See article 31.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="!">!</a></h2>
+<p>
+The <a href="split/%21">
+<em>!</em></a>
+command (pronounced "bang") creates a temporary file to be used
+with a program that requires a filename in its command line. This is
+useful with shells that don't support process substitution. For
+example, to <em>diff</em> two files after sorting them, you might do:
+</p>
+<pre>diff `! sort file1` `! sort file2`
+</pre>
+<p>
+(See article 28.1.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="age_files">age_files</a></h2>
+<p>
+The <a href="split/age_files">
+<em>age_files</em></a>
+shell script reports the size of the files in a given
+directory by age.
+(See article 8.14.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="agrep">agrep</a></h2>
+<p>
+<em>agrep</em> looks for approximate matches.
+It can search by lines or by records.
+(See article 13.6.)
+</p>
+<ul compact="compact">
+<li>Source (note: compressed with <em>compress</em>, not <em>gzip</em>!):
+<a href="ftp://ftp.cs.arizona.edu/agrep/agrep-2.04.tar.Z">
+<em>ftp://ftp.cs.arizona.edu/agrep/agrep-2.04.tar.Z</em></a>
+<li>Udi Manber's Software page:
+<a href="http://glimpse.cs.arizona.edu/software.html">
+<em>http://glimpse.cs.arizona.edu/software.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="awf">awf</a></h2>
+<p>
+<a href="split/awf.shar">
+<em>awf</em></a>
+(Amazingly Workable Formatter) is an <em>nroff -man</em> or <em>nroff -ms</em>
+clone written entirely in (old) <em>awk</em>. It is slow and has many
+restrictions, but does a decent job on most manual pages and simple
+<em>-ms</em> documents. It is also a text formatter that is simple enough to
+be tinkered with, for people who want to experiment.
+(See article 3.21.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="behead">behead</a></h2>
+<p>
+The <a href="split/behead">
+<em>behead</em></a>
+shell script removes all lines in a file up to the first
+blank line. This effectively removes the header from files saved from
+mail or news.
+(See article 21.5.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="bkedit">bkedit</a></h2>
+<p>
+<a href="split/bkedit">
+<em>bkedit</em></a>
+is a simple shell script that makes a backup copy of a file before
+using the <em>vi</em> editor on it.
+(See article 35.16.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="blinkprompt.csh">blinkprompt.csh</a></h2>
+<p>
+<a href="split/blinkprompt.csh">
+<em>blinkprompt.csh</em></a> has
+short sequences of code that makes
+a <em>tcsh</em> or <em>csh</em> shell prompt with the blinking word "root".
+This reminds root users of their superuser power (and its dangers).
+(See article 4.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="blinkprompt.sh">blinkprompt.sh</a></h2>
+<p>
+<a href="split/blinkprompt.sh">
+<em>blinkprompt.sh</em></a> has
+short sequences of code that makes
+a Bourne-type shell prompt (for <em>bash</em>, <em>sh</em>, and <em>zsh</em>,
+among others) with the blinking word "root".
+This reminds root users of their superuser power (and its dangers).
+(See article 4.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="bzip2">bzip2</a></h2>
+<p>
+The <em>bzip2</em> utility
+compresses files.  It often makes files smaller than
+<a href="#gzip"><em>gzip</em></a> (but it also often takes longer to run).</p>
+<p>In addition to the <em>bzip2</em>
+program itself, the package includes <em>bunzip2</em> and <em>bzcat</em>.
+(See article 15.6.)
+</p>
+<ul compact="compact">
+<li>
+Home page: <a href="http://sources.redhat.com/bzip2/">
+<em>http://sources.redhat.com/bzip2/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="catsaway">catsaway</a></h2>
+<p>
+The <a href="split/catsaway">
+<em>catsaway</em></a>
+shell script is included here as an example of using a
+loop to repeat a command until it fails.
+(See article 35.15.)
+See also <a href="#sysmgr"><em>sysmgr</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="c.csh">c.csh</a></h2>
+<p>
+<a href="split/c.csh">
+<em>c.csh</em></a> has
+two C shell aliases that let you change to a different current
+directory by typing the initial letter(s) of each pathname element.
+One version works if you already have an alias for <em>cd</em>;
+the other, which is slightly simpler, should work for everyone else.
+(See article 31.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="c.sh">c.sh</a></h2>
+<p>
+<a href="split/c.sh">
+<em>c.sh</em></a> has
+a Bourne shell function that lets you change to another current
+directory by typing the initial letter(s) of each pathname element.
+(See article 31.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="center">center</a></h2>
+<p>
+<a href="split/center">
+<em>center</em></a>
+is an <em>awk</em> script that centers each line of a file.
+(See article 21.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="cgrep">cgrep</a></h2>
+<p>
+<a href="split/cgrep">
+<em>cgrep</em></a>
+is a context-<em>grep</em> Perl script for showing the given string
+with several lines of surrounding text.
+(See article 13.9.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="checksed">checksed</a></h2>
+<p>
+The <a href="split/checksed">
+<em>checksed</em></a>
+shell script runs the <em>sed</em> commands in a file called
+<em>sedscr</em> on the specified files, showing the edits
+with <em>diff</em> and a pager program.
+(See article 34.4.)
+See also <a href="#runsed"><em>runsed</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="chmod.csh">chmod.csh</a></h2>
+<p>
+<a href="split/chmod.csh">
+<em>chmod.csh</em></a> has
+two C shell aliases named <em>-w</em> and <em>+w</em>
+that make it easy to change write permission on a file or directory.
+(See article 50.7.)
+See also <a href="#cw+cx"><em>cw, c-w, cx</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="chmod.sh">chmod.sh</a></h2>
+<p>
+<a href="split/chmod.sh">
+<em>chmod.sh</em></a> has
+two Bourne shell functions named <em>-w</em> and <em>+w</em>
+that make it easy to change write permission on a file or directory.
+(See article 50.7.)
+See also <a href="#cw+cx"><em>cw, c-w, cx</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="chmod_edit">chmod_edit</a></h2>
+<p>
+The <a href="split/chmod_edit">
+<em>chmod_edit</em></a>
+shell script adds write permission to a file, places
+you in your favorite editor, and then removes write permission again.
+(See article 50.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="cleanup">cleanup</a></h2>
+<p>
+<a href="split/cleanup">
+<em>cleanup</em></a>
+is an example of a shell script to be run by <em>cron</em>. By
+combining multiple <em>find</em> conditions, the <em>find</em>
+command is run only once instead of multiple times.
+(See article 14.19.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="column">column</a></h2>
+<p>
+<a href="split/column.tar.gz">
+<em>column</em></a>
+neatens text into columns.
+(See article 21.16.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="commer">commer</a></h2>
+<p>
+<a href="split/commer">
+<em>commer</em></a>
+is a shell script that uses <em>comm</em> to compare two sorted files;
+it processes <em>comm</em>'s output to make it easier to read.
+(See article 11.9.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="count.it">count.it</a></h2>
+<p>
+<a href="split/count.it">
+<em>count.it</em></a>
+reports the difference in word length between two files.
+(See article 16.6.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="count_types">count_types</a></h2>
+<p>
+<a href="split/count_types">
+<em>count_types</em></a>
+is a shell script that counts the number of files of
+each type, as reported by the <EM>file</EM> command.
+(See article 8.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="csh_init">csh_init</a></h2>
+<p>
+The <a href="split/csh_init">
+<em>csh_init</em></a>
+file has C shell
+alias definitions that work with the
+<a href="#.enter.csh"><em>.enter.csh</em></a> and
+<a href="#.exit.csh"><em>.exit.csh</em></a>
+files to enable automatic command execution as you move into and out of
+directories. These
+are also available as Bourne shell functions in the
+<a href="#sh_init"><em>sh_init</em></a> file.
+(See article 31.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="csplit">csplit</a></h2>
+<p>
+The <em>csplit</em>
+program splits a file according to context.
+It's part of the <a href="#textutils">GNU textutils</a>.
+See also <a href="#split"><em>split</em></a>.
+(See article 21.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="curl">curl</a></h2>
+<p>
+cURL, or <em>curl</em>,
+is similar to <a href="#wget">wget</a>, but it works with more protocols.
+It also supports kerberos, cookies, user authentication, file transfer resume
+and more.
+(See article 40.8.)
+</p>
+<ul compact="compact">
+<li>
+Home page: <a href="http://curl.haxx.se/">
+<em>http://curl.haxx.se/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="cut">cut</a></h2>
+<p>
+<em>cut</em> extracts characters from particular locations on each line
+of a text file.
+It's part of the <a href="#textutils">GNU textutils</a>.
+See also <a href="#paste"><em>paste</em></a>.
+(See article 21.18.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="cw+cx">cw, c-w, cx</a></h2>
+<p>
+The shell script named <a href="split/cw">
+<em>cw</em></a> adds write permission to the file(s) on its command line.
+It has a link named <em>c-w</em> that removes write permission and
+another named <em>cx</em> that adds execute permission.
+See also <a href="#chmod.sh"><em>chmod.sh</em></a>,
+<a href="#chmod.csh"><em>chmod.csh</em></a>.
+(See article 50.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="dateprompt.sh">dateprompt.sh</a></h2>
+<p>
+<a href="split/dateprompt.sh">
+<em>dateprompt.sh</em></a> sets a prompt on old Bourne shells that
+don't support other ways to set the promot dynamically.
+It works by starting a background program that periodically updates the
+prompt string and sends a signal to the shell, which <em>trap</em>s
+that signal.
+(See article 4.15.)
+Most modern shells don't need this kludge to set a prompt, but the
+technique (sending a signal to your shell) is still useful to know.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="dd">dd</a></h2>
+<p>
+<em>dd</em>
+is a handy (but cryptic) utility for processing text.
+(See article 21.6.)
+It's part of the <a href="#fileutils">GNU fileutils</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="dedent">dedent</a></h2>
+<p>
+<a href="split/dedent">
+<em>dedent</em></a>
+is a directly-executable <em>sed</em> script that removes all
+whitespace from the beginning of each line of text.
+(See article 5.21.)
+If your system can't directly execute files starting with <tt>#!</tt>,
+add a shell wrapper; see article 36.3.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="del">del</a></h2>
+<p>
+<a href="split/del">
+<em>del</em></a>
+is a file-removing shell script that works more quickly, for large
+numbers of files, than <em>rm -i</em>.
+If there are three or fewer files to remove, it runs <tt>rm -i</tt>;
+otherwise, it shows all of the filenames and asks you just once.
+Train your fingers to use <em>del</em> -- instead of aliasing <em>rm</em>
+to actually run <em>rm -i</em>, which can be dangerous if you go to an
+account without that alias and expect an interactive file-removal command.
+(See article 14.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="deroff">deroff</a></h2>
+<p>
+<em>deroff</em> removes <em>troff</em>-style formatting markup from
+manual page sources and other similar files.
+(See article 16.9.)
+</p>
+<ul compact="compact">
+<li>
+Home page: <a href="http://www.moria.de/~michael/deroff/">
+<em>http://www.moria.de/~michael/deroff/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="df">df</a></h2>
+<p>
+The <em>df</em> utility shows filesystem capacity and how much space is
+currently available on each.
+The GNU version has a more flexible output format than many others.
+<em>df</em> is part of the <a href="#fileutils">GNU fileutils</a>.
+(See article 15.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="diff">diff</a></h2>
+<p>
+The <em>diff</em> utility shows the differences between two files,
+or between all files in two directories, in a variety of formats.
+It's part of the GNU diffutils.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://ftp.gnu.org/pub/gnu/diffutils/">
+<em>http://ftp.gnu.org/pub/gnu/diffutils/</em></a>
+(See article 11.3 and others.)
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="dircolors">dircolors</a></h2>
+<p>
+The <em>dircolors</em> utility 
+outputs commands to set the LS_COLORS environment variable, which sets
+the colors used by <a href="#ls">GNU <em>ls</em></a>.
+<em>dircolors</em> is part of the <a href="#fileutils">GNU fileutils</a>.
+(See article 8.6.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="dirsprompt.bash">dirsprompt.bash</a></h2>
+<p>
+<a href="split/dirsprompt.bash">
+<em>dirsprompt.bash</em></a>
+makes a prompt for <em>bash</em>
+showing the current directory stack.
+(See article 4.14.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="dirsprompt.csh">dirsprompt.csh</a></h2>
+<p>
+<a href="split/dirsprompt.csh">
+<em>dirsprompt.csh</em></a> is a set of aliases
+that make
+a <em>tcsh</em> or <em>csh</em> shell prompt showing the current
+directory stack.
+(See article 4.14.)
+See also <a href="#dirstailprompt"><em>dirstailprompt</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="dirstailprompt.csh">dirstailprompt.csh</a></h2>
+<p>
+<a href="split/dirstailprompt.csh">
+<em>dirstailprompt.csh</em></a> is a set of aliases
+that make
+a <em>tcsh</em> or <em>csh</em> shell prompt showing a shortened version
+(only the pathname tails) of the current directory stack.
+(See article 4.14.)
+See also <a href="#dirsprompt.csh"><em>dirsprompt.csh</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="emacs">emacs</a></h2>
+<p>
+GNU Emacs
+is the GNU incarnation of the advanced, self-documenting,
+customizable, extensible real-time display editor Emacs.
+(See article 19.1.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/emacs.html">
+<em>http://www.gnu.org/directory/GNU/emacs.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="env">env</a></h2>
+<p>
+The <em>env</em> utility
+shows a list of the currently-set environment variables, sorted by
+name.
+(See article 35.3.)
+It's part of the <a href="#shellutils">GNU shellutils</a>.
+See also <a href="#printenv"><em>printenv</em></a> and
+<a href="#showenv"><em>showenv</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="expect">expect</a></h2>
+<p>
+<a href="http://expect.nist.gov/">Expect</a>
+is a program to control interactive applications, such as
+<em>telnet</em> and <em>passwd</em>, that prompt you to type something at the
+prompt. You can write simple Expect scripts to automate these
+interactions. Then the Expect script can run the "interactive" program
+non-interactively.
+(See article 28.18.)
+Expect programs are almost always written using
+<a href="#tcl+tk">Tcl/tk</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="exrc">exrc</a></h2>
+<p>
+The <a href="split/exrc">
+<em>exrc</em></a>
+file is a collection of <em>vi</em> and <em>ex</em> commands that are
+shown throughout the book.  Others aren't shown in the book and are
+only available in this file.  In its distribution form, each set of
+commands is commented out and needs to be explicitly uncommented before
+you can use them; this is because many of the definitions override or
+conflict with one another. You can copy this file into your <em>.exrc</em>
+file, and then enable the definitions that you want.
+(See articles 18.5, 18.11, and 18.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="fac.sh">fac.sh</a></h2>
+<p>
+<a href="split/fac.sh">
+<em>fac.sh</em></a>
+is a Bourne shell function that uses recursion to calculate factorials.
+It's meant more for demonstration than for serious use: most shells,
+except <em>zsh</em>, will quickly overflow and give incorrect results.
+(See article 29.11.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="false">false</a></h2>
+<p>
+The <em>false</em> utility simply returns a nonzero exit status.
+It's so simple that this GNU version doesn't add any functionality to the
+version available on almost all Unix-type systems -- so you probably
+won't need to install this.
+It's part of the <a href="#shellutils">GNU shellutils</a>.
+(See article 35.12.)
+See also <a href="#true"><em>true</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="file">file</a></h2>
+<p>
+The <a href="ftp://ftp.astron.com/pub/file/"><em>file</em></a>
+utility reads the file(s) named on its command line
+and tries to guess the file type.
+(Because Unix-type systems and utilities generally don't require filename
+"extensions" like <em>.txt</em>, a file with any name can contain almost
+anything.)
+(See article 12.6.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="fileutils">fileutils</a></h2>
+<p>
+The GNU file utilities have significant advantages over their standard
+UNIX counterparts, such as greater speed, additional options, and fewer
+arbitrary limits. Programs included are: <em>chmod</em>, <em>chgrp</em>,
+<em>chown</em>, <em>cp</em>, <em>dd</em>, <em>df</em>, <em>du</em>,
+<em>install</em>, <em>ln</em>, <em>ls</em>, <em>mkdir</em>, <em>mkfifo</em>,
+<em>mknod</em>, <em>mv</em>, <em>rm</em>, <em>rmdir</em>, and <em>touch</em>.
+Most of these programs are covered throughout the book.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://ftp.gnu.org/gnu/fileutils/fileutils-4.1.tar.gz">
+<em>http://ftp.gnu.org/gnu/fileutils/fileutils-4.1.tar.gz</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="find.csh">find.csh</a></h2>
+<p>
+<a href="split/find.csh">
+<em>find.csh</em></a> has
+two C shell aliases, named <em>find.</em> and <em>find.ls</em>,
+that use the <em>find</em> operator <em>-prune</em> to do
+searches in the current directory only.
+If your version of <em>find</em> doesn't have <em>-prune</em>,
+it might have another operator, such as <em>-maxdepth 1</em>, that
+you can use instead.
+(See article 9.26.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="find.sh">find.sh</a></h2>
+<p>
+<a href="split/find.sh">
+<em>find.sh</em></a> has
+two Bourne shell functions, named <em>Find</em> and <em>Findls</em>,
+that use the <em>find</em> operator <em>-prune</em> to do
+searches in the current directory only.
+If your version of <em>find</em> doesn't have <em>-prune</em>,
+it might have another operator, such as <em>-maxdepth 1</em>, that
+you can use instead.
+(See article 9.26.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="fmt">fmt</a></h2>
+<p>
+<em>fmt</em>
+neatens text into paragraphs that are (by default) no longer than
+72 characters. This GNU version has several other formatting
+features.
+(See article 21.2.)
+It's part of the <a href="#textutils">GNU textutils</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="fmt.sh">fmt.sh</a></h2>
+<p>
+<a href="split/fmt.sh">
+<em>fmt.sh</em></a>
+is a shell script that uses <em>sed</em> and <em>nroff</em> to simulate the
+behavior of the <em>fmt</em> command. It is meant for systems that are not
+distributed with <em>fmt</em> already installed.
+(See article 21.3.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="ftpfile">ftpfile</a></h2>
+<p>
+<a href="split/ftpfile">
+<em>ftpfile</em></a>
+is a shell script for anonymously <em>ftp</em>'ing a file.
+It is included in the archive as an example of a here document.
+(See article 27.16.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="gawk">gawk</a></h2>
+<p>
+<em>gawk</em>
+is a version of <em>awk</em> from the Free Software Foundation. It has
+many more features than the original <em>awk</em>.
+(See article 20.11.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/gawk.html">
+<em>http://www.gnu.org/directory/GNU/gawk.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="gnroff">gnroff</a></h2>
+<p>
+<em>gnroff</em>
+is the GNU version of the <em>nroff</em> text formatter, used
+to format manpages (and also handy for other plain-text document
+formatting).
+It's part of the <em>groff</em> package.
+(See article 3.21.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/groff.html">
+<em>http://www.gnu.org/directory/GNU/groff.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="grabchars">grabchars</a></h2>
+<p>
+<a href="split/grabchars/">
+<em>grabchars</em></a>
+gets one or more keystrokes from the user without requiring
+the RETURN key. It was written to make all types of shell
+scripts more interactive.
+(See article 35.18.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="grep">grep</a></h2>
+<p>
+The GNU utilities <em>grep</em>, <em>egrep</em> and <em>fgrep</em>
+find lines of text that match a pattern.
+They have many other features, including showing lines of context
+around a matching line.
+(See article 13.8.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/grep.html">
+<em>http://www.gnu.org/directory/grep.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="gzip">gzip</a></h2>
+<p>
+GNU <em>gzip</em>
+allows compression of files. In addition to the <em>gzip</em>
+program itself, the package includes <em>gunzip</em> and <em>zcat</em>.
+(See article 15.6.)
+See also <a href="#bzip2"><em>bzip2</em></a>.
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/gzip.html">
+<em>http://www.gnu.org/directory/GNU/gzip.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="hgrep">hgrep</a></h2>
+<p>
+<a href="split/hgrep.shar">
+<em>hgrep</em></a>
+is a trivial, but cute, front-end for <em>grep</em>. It takes the
+results of the <em>grep</em> and highlights the word that was searched for.
+(See article 13.16.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="if-else-alias.csh">if-else-alias.csh</a></h2>
+<p>
+<a href="split/if-else-alias.csh">
+<em>if-else-alias.csh</em></a> demonstrates how to put an
+<em>if</em>-<em>else</em>-<em>endif</em>
+test into a C shell alias.
+It isn't pretty, but it works (as far as we know... if it doesn't
+work on your <em>csh</em>, please tell us!).
+(See article 29.9.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="ispell">ispell</a></h2>
+<p>
+<em>ispell</em>
+is a fast screen-oriented spelling checker that shows your
+errors in the context of the original file, and suggests possible
+corrections when it can figure them out. Compared to UNIX <em>spell</em>, it
+is faster and much easier to use. <em>ispell</em>
+can also handle languages other than English.
+(See article 16.2.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/ispell.html">
+<em>http://www.gnu.org/directory/ispell.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="join">join</a></h2>
+<p>
+<em>join</em>
+joins two files with multiple fields or columns -- similar to a
+relational database "join" operation.
+It's part of the <a href="#textutils">GNU textutils</a>.
+(See article 21.19.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="lensort">lensort</a></h2>
+<p>
+<a href="split/lensort">lensort</a>
+sorts lines from shortest to longest.
+(See article 22.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="lndir">lndir</a></h2>
+<p>
+<a href="split/lndir.shar">
+<em>lndir</em></a>
+is a safe way to duplicate a directory structure elsewhere on
+the filesystem. It's necessary because a <em>cd</em> into a straight symbolic
+link actually changes to the directory pointed to by the link, which
+can be confusing or even dangerous if the link is in a sensitive area
+of the filesystem. <em>lndir</em>
+recursively re-creates a directory
+structure, making symbolic links to all the files in the directory.
+(See article 10.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="look">look</a></h2>
+<p>
+<a href="split/look.shar">
+<em>look</em></a>
+is a fairly fast, fairly portable version of <em>look</em>, the program
+for searching sorted files.
+(See article 13.14.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="lookfor">lookfor</a></h2>
+<p>
+The <a href="split/lookfor">
+<em>lookfor</em></a>
+script finds all files in the given directory tree that
+contain the given string(s).
+(See article 9.22.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="ls">ls</a></h2>
+<p>
+The GNU version of the well-known utility <em>ls</em> has many features,
+including the ability to make listings in color.
+<em>ls</em> is part of the <a href="#fileutils">GNU fileutils</a>.
+(See article 8.6.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="mailto">mailto</a></h2>
+<p>
+The <em>mailto</em> utility encodes and sends MIME-format email messages.
+It's part of the <a href="#metamail">Metamail utilities</a>.
+(See article 21.12.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="makealias.csh">makealias.csh</a></h2>
+<p>
+<a href="split/makealias.csh">
+<em>makealias.csh</em></a>
+contains two C shell aliases that build other aliases.
+<em>makealias</em> "knows" how to quote special characters
+within the alias definition to make the C shell happy; to do this,
+it calls the <em>quote</em> alias.
+As the book's description says, "Pretty gross, but they do the job."
+(See article 29.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="md5sum">md5sum</a></h2>
+<p>
+The <em>md5sum</em>
+utility both generates and validates file checksums.
+It's an improved version of the original Unix <em>sum</em> utilities and
+comes from the <a href="#textutils">GNU textutils</a>.
+(See article 50.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="metamail">metamail</a></h2>
+<p>
+The Metamail utilities handle the MIME email format.
+Although Metamail is old (it was released as MIME was originally
+being developed and standardized), it's still useful for scripting
+and decoding common MIME formats.
+</p>
+<p>
+NOTE: Metamail has an obscure security vulnerability; see
+<a href="http://www.cert.org/advisories/CA-1997-14.html">
+CERT advisory CA-1997-14.html</a> for a description and workarounds.
+The problem seems to be only with incoming messages processed by
+<em>metamail</em>, not with messages you create using <em>mailto</em>
+and <em>mimencode</em>, but you may want to verify this yourself.
+</p>
+<p>
+See also <a href="#mailto"><em>mailto</em></a> and
+<a href="#mimencode"><em>mimencode</em></a>.
+</p>
+<ul compact="compact">
+<li>
+<a href="ftp://ftp.funet.fi/pub/unix/mail/metamail/mm2.7.tar.Z">
+<em>ftp://ftp.funet.fi/pub/unix/mail/metamail/mm2.7.tar.Z</em></a> (Europe)
+</li><li>
+<a href="ftp://ftp.research.telcordia.com/pub/nsb/mm2.7.tar.Z">
+<em>ftp://ftp.research.telcordia.com/pub/nsb/mm2.7.tar.Z</em></a> (USA)
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="mimencode">mimencode</a></h2>
+<p>
+The <em>mimencode</em> utility encodes files into the MIME format for
+emailing.
+You'll need to add the message header and any multipart separators,
+so <em>mimencode</em> is most useful for building messages within scripts.
+It's part of the <a href="#metamail">Metamail utilities</a>.
+(See article 21.12.)
+See also <a href="#mailto"><em>mailto</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="mkfifo">mkfifo</a></h2>
+<p>
+The <em>mkfifo</em> utility creates a FIFO, a named pipe, that processes
+can write to and read from like a pipe on the command line (<tt>|</tt>).
+<em>mkfifo</em> is part of the <a href="#fileutils">GNU fileutils</a>.
+(See article 43.11.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="mlprompt.csh">mlprompt.csh</a></h2>
+<p>
+<a href="split/mlprompt.csh">
+<em>mlprompt.csh</em></a> has
+short sequences of code that makes
+a multiline <em>tcsh</em> or <em>csh</em> shell prompt.
+This is useful when you want to put so much information in your
+single-line prompt that there's no room left to type the command.
+(See article 4.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="mlprompt.sh">mlprompt.sh</a></h2>
+<p>
+<a href="split/mlprompt.sh">
+<em>mlprompt.sh</em></a> has
+short sequences of code that makes a multiline prompt
+for Bourne-type shells such as <em>ksh</em> and <em>bash</em>.
+This is useful when you want to put so much information in your
+single-line prompt that there's no room left to type the command.
+(See article 4.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="mx.sh">mx.sh</a></h2>
+<p>
+<a href="split/mx.sh">
+<em>mx.sh</em></a>
+has a Bourne shell function that looks up the DNS MX (mail exchanger)
+for one or more Internet hosts.
+(See article 29.11.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="namesort">namesort</a></h2>
+<p>
+The <a href="split/namesort">
+<em>namesort</em></a>
+program sorts a list of names by the last name.
+(See article 22.8.)
+See also <a href="#namesort.pl"><em>namesort.pl</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="namesort.pl">namesort.pl</a></h2>
+<p>
+The <a href="split/namesort.pl">
+<em>namesort.pl</em></a>
+script uses the Perl module <tt>Lingua::EN::NameParse</tt>
+to sort a list of names by the last name.
+(See article 22.8.)
+See also <a href="#namesort"><em>namesort</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="ndown">ndown</a></h2>
+<p>
+<a href="split/ndown">
+<em>ndown</em></a>
+brings down a network connection and removes a small reminder window
+on the display.
+It's actually a link to (another name for) the file
+<a href="#nup"><em>nup</em></a>.
+(See article 24.22.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="netpbm">netpbm</a></h2>
+<p>
+<a href="http://netpbm.sourceforge.net/"><em>netpbm</em></a>
+is the latest version of <em>pbmplus</em>, the Extended Portable
+Bitmap Toolkit. <em>netpbm</em>
+converts various image formats to and from
+portable formats, and therefore to and from one another. In addition
+to the converters, the package includes some simple tools for
+manipulating the portable formats.
+(See article 45.19.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="nl">nl</a></h2>
+<p>
+<em>nl</em>
+numbers the lines of a text file with various output formats.
+It's part of the <a href="#textutils">GNU textutils</a>.
+(See article 12.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="nohup">nohup</a></h2>
+<p>
+<em>nohup</em>
+runs a program, ignoring hangup signals.
+It's part of the <a href="#shellutils">GNU shellutils</a>.
+(See article 23.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="nom">nom</a></h2>
+<p>
+<a href="split/nom">
+<em>nom</em></a>
+("no match") supplies the names of the files in the current
+directory that "don't" match the given shell wildcards. For example,
+to edit all files in the current directory that don't end in <em>.o</em>,
+try:
+</p>
+<pre>vi `nom *.o`
+</pre>
+<p>
+(See article 33.8.)
+See also <a href="#nom2"><em>nom2</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="nom2">nom2</a></h2>
+<p>
+<a href="split/nom2">
+<em>nom2</em></a>
+is a version of <a href="#nom"><em>nom</em></a> that uses
+process substitution.
+(See article 33.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="nup">nup</a></h2>
+<p>
+<a href="split/nup">
+<em>nup</em></a>
+starts a network connection and puts a small reminder window
+on the display.
+It's actually a link to (another name for) the file
+<a href="#ndown"><em>ndown</em></a>.
+(See article 24.22.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="offset">offset</a></h2>
+<p>
+The <a href="split/offset">
+<em>offset</em></a>
+Perl script indents text for printing or other uses.
+(See article 21.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="oldlinks">oldlinks</a></h2>
+<p>
+The <a href="split/oldlinks">
+<em>oldlinks</em></a>
+script finds symbolic links that point to non-existent files.
+(See article 8.16.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="opttest">opttest</a></h2>
+<p>
+<a href="split/opttest">
+<em>opttest</em></a>
+is a shell script for parsing
+<em>getopt</em> output. It's meant to
+demonstrate <em>getopt</em>'s behavior.
+(See article 35.24.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="paircheck">paircheck</a></h2>
+<p>
+<a href="split/paircheck">
+<em>paircheck</em></a>
+is a <a href="#gawk"><em>gawk</em></a> script that checks an HTML
+document to be sure each <tt>&lt;ul&gt;</tt> tag has a corresponding
+<tt>&lt;/ul&gt;</tt> tag.
+(See article 16.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="paste">paste</a></h2>
+<p>
+<em>paste</em> assembles text strings into a file, line by line.
+It's part of the <a href="#textutils">GNU textutils</a>.
+See also <a href="#cut"><em>cut</em></a>.
+(See article 21.18.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="patch">patch</a></h2>
+<p>
+<em>patch</em>
+is Larry Wall's program for distributing source patches to files.
+By using <a href="#diff"><em>diff</em></a> files
+(generally "context <em>diff</em>s"), <em>patch</em>
+can intelligently apply patches to a file even if modifications have
+been made to the source in the meantime. <em>patch</em>
+is used extensively to communicate source changes throughout the world.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/patch.html">
+<em>http://www.gnu.org/directory/GNU/patch.html</em></a>
+(See article 20.9.)
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="perl">perl</a></h2>
+<p>
+Perl is a very popular interpreted programming language with an eclectic syntax
+that will remind you of bits of <em>awk</em>, <em>sed</em>, the Bourne
+shell, and also of nothing else <tt>:-)</tt>.
+(See article 41.2.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.cpan.org/src/stable.tar.gz">
+<em>http://www.cpan.org/src/stable.tar.gz</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="pick">pick</a></h2>
+<p>
+The <a href="split/pick">
+<em>pick</em></a>
+shell script lets you pick one of a series of choices.
+(You give those choices on <em>pick</em>'s command line.)
+<em>pick</em> comes from the classic book
+<em>The Unix Programming Environment</em> by Kernighan &amp; Pike.
+(See article 24.16.)
+See also <a href="#zap"><em>zap</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="printenv">printenv</a></h2>
+<p>
+The <em>printenv</em> utility
+shows an unsorted list of all currently-set environment variables --
+or, if you name a variable, it shows only that variable.
+It's part of the <a href="#shellutils">GNU shellutils</a>.
+(See article 35.3.)
+See also <a href="#env"><em>env</em></a> and
+<a href="#showenv"><em>showenv</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="proxynotify">proxynotify</a></h2>
+<p>
+<a href="split/proxynotify">
+<em>proxynotify</em></a> is a demonstration of using shell functions.
+It's a shell script that incorporates the
+<a href="#mx.sh"><em>mx()</em></a> function from a library file,
+then uses it to email form letters to postmasters.
+(See article 35.30.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="python">python</a></h2>
+<p>
+Python is a popular object-oriented, interpreted, programming language.
+Its syntax and its modular design are designed to make code that's both
+clear and concise.
+(See article 42.2.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.python.org/">
+<em>http://www.python.org/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="qterm">qterm</a></h2>
+<p>
+<a href="split/qterm/">
+<em>qterm</em></a>
+is a program that queries terminals to find out what kind of
+terminal is responding. It is useful to "automagically" define your
+terminal type. It prints the name of the terminal (such as "vt100") to
+standard output. (This name is hopefully compatible with a
+<em>termcap/terminfo</em> name on your system.)
+(See article 5.4.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="rcsegrep.fast">rcsegrep.fast</a></h2>
+<p>
+<a href="split/rcsegrep.fast">
+<em>rcsegrep.fast</em></a>
+is a shell script (written mostly in <em>nawk</em>) that
+searches the most recent revision of one or more RCS files for a given
+string. It's fast because it reads the RCS file directly. Only
+recommended when you have a lot of files to search; use the
+<a href="#rcsgrep"><em>rcsgrep</em> scripts</a> otherwise.
+(See article 13.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="rcsgrep">rcsgrep</a></h2>
+<p>
+<a href="split/rcsgrep">
+<em>rcsgrep</em></a>
+is a shell script that searches revisions of RCS files for a
+given string. Can also be called through links named <em>rcsegrep</em> and
+<em>rcsfgrep</em>.
+(See article 13.7.)
+See also <a href="#rcsegrep.fast"><em>rcsegrep.fast</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="rcsrevs">rcsrevs</a></h2>
+<p>
+<a href="split/rcsrevs">
+<em>rcsrevs</em></a>
+is a shell script that lists all the revision numbers
+archived in an RCS file.
+(See article 39.6.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="recomment">recomment</a></h2>
+<p>
+The <a href="split/recomment">
+<em>recomment</em></a>
+shell script runs <em>fmt</em> on files with lines that are
+commented out, with wrapped lines recommented.
+(See article 21.4.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="requote">requote</a></h2>
+<p>
+The <a href="split/requote">
+<em>requote</em></a>
+shell script reformats text that has been quoted.
+(Here, "quoted" means preceding
+each line of text with one or more characters, such as <tt>&gt;</tt>
+in email messages or <tt>#</tt> in many programming languages.)
+(See article 5.21.)
+See also <a href="#fmt"><em>fmt</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="rot">rot</a></h2>
+<p>
+<a href="split/rot.shar">
+<em>rot</em></a>
+rotates a file, so that lines become columns, and vice versa.
+Without any options, the file will be rotated clockwise.
+(See article 21.21.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="rpm">rpm</a></h2>
+<p>
+RPM is a popular tool used to find and install software packages.
+It's often used on Linux, but RPM also works with Solaris, HP-UX, FreeBSD,
+NetBSD, and other systems.
+(See article 40.11.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.rpm.org/">
+<em>http://www.rpm.org/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="run-parts">run-parts</a></h2>
+<p>
+The <a href="split/run-parts">
+<em>run-parts</em></a>
+shell script looks into a directory and runs all programs that
+it should.
+It's typically called from a <em>crontab</em> entry.
+(See article 25.2.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="runsed">runsed</a></h2>
+<p>
+The <a href="split/runsed">
+<em>runsed</em></a>
+shell script runs the <em>sed</em> commands in a file called
+<em>sedscr</em> on the specified files, overwriting the original files.
+(See article 34.4.)
+See also <a href="#checksed"><em>checksed</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="samba">samba</a></h2>
+<p>
+Samba lets your Unix machine participate in Microsoft Windows
+file sharing and print services.
+(See article 47.2.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.samba.org/">
+<em>http://www.samba.org/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="scriptprompt.zsh">scriptprompt.zsh</a></h2>
+<p>
+<a href="split/scriptprompt.zsh">
+<em>scriptprompt.zsh</em></a> sets a Z shell prompt that changes
+when the shell is being run from inside the <em>script</em> utility.
+This shows how to change a prompt by using the values of variables.
+(See article 4.6.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="script.tidy">script.tidy</a></h2>
+<p>
+<a href="split/script.tidy">
+<em>script.tidy</em></a>
+uses <em>sed</em> to clean up files generated with the <em>script</em>
+program.
+(See article 37.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="search.el">search.el</a></h2>
+<p>
+The <a href="split/search.el">
+<em>search.el</em></a> file contains a set of Emacs search commands.
+To use these commands, use the <em>load-file</em> command in your
+<em>$HOME/.emacs</em> file to point to this file.
+(See article 19.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="setprompt.csh">setprompt.csh</a></h2>
+<p>
+<a href="split/setprompt.csh">
+<em>setprompt.csh</em></a> is a sample C shell alias that's intended
+to set your shell prompt.  It can hold <em>the</em> code
+that actually sets your prompt; other aliases can call it when the
+prompt needs to be updated.
+(See article 4.1.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="setprompt.sh">setprompt.sh</a></h2>
+<p>
+<a href="split/setprompt.sh">
+<em>setprompt.sh</em></a> is a sample Bourne-type shell function that's intended
+to set your shell prompt.  It can hold <em>the</em> code
+that actually sets your prompt; other aliases can call it when the
+prompt needs to be updated.
+(See article 4.1.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="shellutils">shellutils</a></h2>
+<p>
+The GNU shell utilities have significant advantages over their standard
+UNIX counterparts, such as greater speed, additional options, and fewer
+arbitrary limits. Programs included are:
+<em>basename</em>, <em>chroot</em>, <em>date</em>, <em>dirname</em>,
+<em>echo</em>, <em>env</em>, <em>expr</em>, <em>factor</em>, <em>false</em>,
+<em>groups</em>, <em>hostname</em>, <em>id</em>, <em>logname</em>,
+<em>nice</em>, <em>nohup</em>, <em>pathchk</em>, <em>pinky</em>,
+<em>printenv</em>, <em>printf</em>, <em>pwd</em>, <em>seq</em>,
+<em>sleep</em>, <em>stty</em>, <em>su</em>, <em>tee</em>, <em>test</em>,
+<em>true</em>, <em>tty</em>, <em>uname</em>, <em>uptime</em>,
+<em>users</em>, <em>who</em>, <em>whoami</em>, and <em>yes</em>.
+Most of these programs are covered throughout the book.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://ftp.gnu.org/gnu/sh-utils/sh-utils-2.0.tar.gz">
+<em>http://ftp.gnu.org/gnu/sh-utils/sh-utils-2.0.tar.gz</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="sh_init">sh_init</a></h2>
+<p>
+The <a href="split/sh_init">
+<em>sh_init</em></a>
+file has Bourne-type shell functions and
+alias definitions that work with the
+<a href="#.enter.sh"><em>.enter.sh</em></a> and
+<a href="#.exit.sh"><em>.exit.sh</em></a>
+files to enable automatic command execution as you move into and out of
+directories. These
+are also available as C shell aliases in the
+<a href="#csh_init"><em>csh_init</em></a> file.
+(See article 31.13.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="showargs">showargs</a></h2>
+<p>
+The <a href="split/showargs">
+<em>showargs</em></a>
+shell script shows each of its command line arguments, one by one,
+in a way that helps you see spaces within the arguments.
+It's handy for practice with shell quoting.
+(See article 27.5.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="showenv">showenv</a></h2>
+<p>
+The <a href="split/showenv">
+<em>showenv</em></a>
+shell script shows one or all currently-set environment variables
+in another process.
+It depends on the <em>/proc</em> filesystem; note that, because this isn't
+standardized on all Unix and Linux versions, <em>showenv</em>
+may not work completely or may need to be tweaked.
+If you don't have <em>/proc</em>, you may be able to get the same
+results with a command like the BSD-style <tt>ps eww</tt> and some
+hacking -- or try a program that uses your system's library routines.
+(See article 24.9.)
+See also <a href="#env"><em>env</em></a> and
+<a href="#printenv"><em>printenv</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="showmatch">showmatch</a></h2>
+<p>
+The <a href="split/showmatch">
+<em>showmatch</em></a>
+shell script shows the strings in a given file that
+match the specified regular expression.
+(See article 32.17.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="sl">sl</a></h2>
+<p>
+<a href="split/sl">
+<em>sl</em></a>
+is a Perl script for showing the actual filenames for symbolic
+links.
+(See article 10.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="sleep">sleep</a></h2>
+<p>
+The <em>sleep</em> utility simply waits the specified number of seconds,
+then exits.
+This GNU version takes an optional "units" parameter when you want to
+specify a number of minutes, hours, or days.
+(See article 25.9.)
+It's part of the <a href="#shellutils">GNU shellutils</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="spell">spell</a></h2>
+<p>
+The GNU <em>spell</em> program is a front-end to the
+<a href="#ispell"><em>ispell</em></a> interactive speller.
+It makes a command-line interface similar to that of
+the standard Unix <em>spell</em> program.
+(See article 16.1.)
+It doesn't have the interface described in article 16.4, though;
+if you're looking for that, try to find the original version.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/spell.html">
+<em>http://www.gnu.org/directory/spell.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="split">split</a></h2>
+<p>
+The <em>split</em>
+program splits a file into smaller files at fixed points.
+It's part of the <a href="#textutils">GNU textutils</a>.
+(See article 21.9.)
+See also <a href="#split.pl"><em>split.pl</em></a> and
+<a href="#csplit"><em>csplit</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="split.pl">split.pl</a></h2>
+<p>
+<a href="split/split.pl">
+<em>split.pl</em></a>
+is a Perl script that splits files into smaller ones.
+(See article 21.9.)
+See also <a href="#split"><em>split</em></a> and
+<a href="#csplit"><em>csplit</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="ssh">SSH</a></h2>
+<p>
+SSH, Secure Shell, is a package of programs that use public-key
+encryption to make secure network connections between hosts.
+(See articles 5.22, 46.6.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.openssh.com/">
+OpenSSH</a>
+</li>
+<li>
+<a href="http://www.ssh.com/">
+<em>ssh.com</em></a> (commercial product)
+</li>
+<li>
+<a href="http://kimmo.suominen.com/ssh/">
+Getting Started with SSH</a>
+</li>
+</ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="stattitle.csh">stattitle.csh</a></h2>
+<p>
+<a href="split/stattitle.csh">
+<em>stattitle.csh</em></a> has code for the
+<em>tcsh</em> and <em>csh</em> shells to put some text (by default,
+the hostname and current directory name) into the status line or
+titlebar of a terminal or window.
+(See article 4.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="stattitle.sh">stattitle.sh</a></h2>
+<p>
+<a href="split/stattitle.sh">
+<em>stattitle.sh</em></a> has code for the
+Korn shell and <em>bash</em> to put some text (by default,
+the hostname and current directory name) into the status line or
+titlebar of a terminal or window.
+(See article 4.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="strings">strings</a></h2>
+<p>
+The <em>strings</em> utility searches a file (typically a non-text
+file like a program's object file) for printable character sequences.
+<em>strings</em> is part of the
+<a href="http://www.gnu.org/directory/binutils.html">GNU binutils</a>.
+(See article 13.15.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="stripper">stripper</a></h2>
+<p>
+<a href="split/stripper">
+<em>stripper</em></a>
+is a shell script that uses <em>file</em> to find the unstripped binary
+executable files in your personal <em>bin</em> directory and asks
+you if you want to run <em>strip</em> on each one.
+It may need to be adjusted for your system and for your version of
+<em>file</em>.
+(See article 15.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="stty">stty</a></h2>
+<p>
+The <em>stty</em> utility displays and sets your <em>tty</em>, the device
+that's displayed in your terminal or terminal window.
+(See article 5.7.)
+<em>stty</em> is part of the <a href="#shellutils">GNU shellutils</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="sysmgr">sysmgr</a></h2>
+<p>
+The <a href="split/sysmgr">
+<em>sysmgr</em></a>
+shell script is included here as an example of using a
+loop to repeat a command until it succeeds.
+(See article 35.15.)
+See also <a href="#catsaway"><em>catsaway</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="tail">tail</a></h2>
+<p>
+<em>tail</em>
+shows the last lines (by default, the last 10 lines) of a text file.
+It also can watch a file, showing all lines that are added to the file;
+this is very useful for monitoring background processes and system logs.
+(See article 12.11.)
+<em>tail</em> is part of the <a href="#textutils">GNU textutils</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="tar">tar</a></h2>
+<p>
+GNU <em>tar</em>
+is upwards compatible with the traditional <em>tar</em> utility.
+It adds many new features including remote
+devices, compression, multi-volume archives, the ability to extract to
+standard output, the ability to extract using wildcards, interactive
+confirmation, the ability to extract only "missing" files, and the
+ability to store only files newer than a given date.
+(See article 15.7.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/software/tar/">
+<em>http://www.gnu.org/software/tar/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="tcl+tk">tcl+tk</a></h2>
+<p>
+Tcl is a popular interpreted programming language.
+Tk gives Tcl a programmable graphical interface.
+(See article 28.18.)
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.tcl.tk/software/tcltk/">
+<em>http://www.tcl.tk/software/tcltk/</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="tee">tee</a></h2>
+<p>
+<em>tee</em>
+reads its standard input, then writes that same data to both its
+standard output and to one or more files.
+This is handy for seeing what's going through a pipeline. 
+(See article 43.8.)
+<em>tee</em> is part of the <a href="#shellutils">GNU shellutils</a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="textutils">textutils</a></h2>
+<p>
+The GNU text processing utilities have significant advantages over their
+standard UNIX counterparts, such as greater speed, additional options, and fewer
+arbitrary limits.
+Most of these programs are
+covered throughout the book.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/textutils.html">
+<em>http://www.gnu.org/directory/GNU/textutils.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="touch">touch</a></h2>
+<p>
+The <em>touch</em> utility creates an empty (zero-length) file and/or
+changes the timestamp of an existing file without modifying its
+contents.
+<em>touch</em> is part of the <a href="#fileutils">GNU fileutils</a>.
+(See article 9.8.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="tpipe">tpipe</a></h2>
+<p>
+<a href="split/tpipe.shar">
+<em>tpipe</em></a>
+is a simple utility program that can be used to split a UNIX
+pipeline into two pipelines. Like <em>tee</em>, <em>tpipe</em>
+transcribes its
+standard input to its standard output. But where <em>tee</em> writes an
+additional copy of its input to a file, <em>tpipe</em>
+writes the additional
+copy to the input of another pipeline that is specified as the argument
+to <em>tpipe</em>.
+(See article 43.10.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="tr">tr</a></h2>
+<p>
+<em>tr</em>
+translates a set of characters to a corresponding set;
+both sets are named on its command line.
+It's part of the <a href="#textutils">GNU textutils</a>.
+(See article 21.11.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="true">true</a></h2>
+<p>
+The <em>true</em> utility simply returns a zero exit status.
+It's so simple that this GNU version doesn't add any functionality to the
+version available on almost all Unix-type systems -- so you probably
+won't need to install this.
+It's part of the <a href="#shellutils">GNU shellutils</a>.
+See also <a href="#false"><em>false</em></a>.
+(See article 35.12.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="umask.csh">umask.csh</a></h2>
+<p>
+<a href="split/umask.csh">
+<em>umask.csh</em></a> has
+two C shell aliases named <em>open</em> and <em>shut</em>
+that make it easy to change the default file-creation permission.
+(See article 50.2.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="umask.sh">umask.sh</a></h2>
+<p>
+<a href="split/umask.sh">
+<em>umask.sh</em></a> has
+two Bourne shell functions named <em>open</em> and <em>shut</em>
+that make it easy to change the default file-creation permission.
+(See article 50.2.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="uniq">uniq</a></h2>
+<p>
+<em>uniq</em>
+reads a file and compares adjacent lines.
+It's part of the <a href="#textutils">GNU textutils</a>.
+(See article 21.20.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="uptime">uptime</a></h2>
+<p>
+The <em>uptime</em> utility displays how long the system has been up
+(how much time has passed since the system was last booted) and three
+average measurements of the system's load.
+<em>uptime</em> is part of the <a href="#shellutils">GNU shellutils</a>.
+(See article 26.4.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="users">users</a></h2>
+<p>
+The <em>users</em> utility displays the usernames of all users currently
+logged on to the system.
+<em>users</em> is part of the <a href="#shellutils">GNU shellutils</a>.
+(See article 35.25.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="vgrep">vgrep</a></h2>
+<p>
+The <a href="split/vgrep">
+<em>vgrep</em></a>
+shell script supplies a list of filenames that don't
+contain the given string. It's sort of a <em>grep -v</em> for complete files
+instead of for individual lines.
+(See article 33.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="vis">vis</a></h2>
+<p>
+<a href="split/vis/">
+<em>vis</em></a>
+is a program that repeatedly executes a specified command and
+refreshes the display of its output on the screen.
+(See article 28.11.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="vnc">vnc</a></h2>
+<p>
+<a href="http://www.uk.research.att.com/vnc/download.html">VNC</a>
+is a client/server system that allows users to manipulate desktop environments
+remotely.
+(See article 47.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="watchq">watchq</a></h2>
+<p>
+<a href="split/watchq">
+<em>watchq</em></a>
+is a daemon that monitors the queues for several printers and
+sends messages to users when errors occur.
+(See article 24.14.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="wget">wget</a></h2>
+<p>
+<em>wget</em> lets you download files from the Internet using
+HTTP, HTTPS, and FTP protocols -- non-interactively, without needing
+a web browser.
+If the transfer is interrupted, you can restart and resume where you
+left off.
+(See article 40.7.)
+See also <a href="#curl">curl</a>.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://www.gnu.org/directory/GNU/wget.html">
+<em>http://www.gnu.org/directory/GNU/wget.html</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="ww.csh">ww.csh</a></h2>
+<p>
+<a href="split/ww.csh">
+<em>ww.csh</em></a> has
+two C shell aliases named <em>ww</em> that show repeated words.
+One alias is for Berkeley <em>tr</em>; the other is for the System V
+version.
+(See article 16.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="ww.sh">ww.sh</a></h2>
+<p>
+<a href="split/ww.sh">
+<em>ww.sh</em></a> has
+two Bourne shell functions named <em>ww</em> that show repeated words.
+One function is for Berkeley <em>tr</em>; the other is for the System V
+version.
+(See article 16.7.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="xargs">xargs</a></h2>
+<p>
+The GNU version of the <em>xargs</em>
+utility is used to collect arguments for a command
+before executing it. Its <em>-0</em> option works with GNU <em>find</em> to
+avoid problems in the standard <em>xargs</em>.
+(See article 28.17.)
+It's part of the GNU findutils.
+</p>
+<ul compact="compact">
+<li>
+<a href="http://ftp.gnu.org/pub/gnu/findutils/findutils-4.1.tar.gz">
+<em>http://ftp.gnu.org/pub/gnu/findutils/findutils-4.1.tar.gz</em></a>
+</li></ul>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+<h2><a name="xgrep">xgrep</a></h2>
+<p>
+Most <em>grep</em>-like programs search for lines that match a regular
+expression, then output the entire lines.
+<a href="http://examples.oreilly.com/upt3/split/xgrep">
+<em>xgrep</em></a>
+is a <em>sed</em> script
+that retrieves only the matching text--not (necessarily) a whole line.
+(See article 32.17.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="xwrist">xwrist</a></h2>
+<p>
+<a href="split/xwrist">
+<em>xwrist</em></a>
+is a shell script that opens reminder windows (by default, every
+ten minutes) to remind you to give your wrists a break from typing.
+It's useful on its own, but it's also meant as a demonstration of
+programming with the X Window System utility <em>xmessage</em>.
+(See article 36.26.)
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+<h2><a name="zap">zap</a></h2>
+<p>
+<a href="split/zap">
+<em>zap</em></a>
+interactively allows you to kill processes by running <em>ps</em> and
+then querying you about killing each process reported by <em>ps</em>.
+<em>zap</em> comes from the classic book
+<em>The Unix Programming Environment</em> by Kernighan &amp; Pike.
+(See article 24.16.)
+See also <a href="#pick"><em>pick</em></a>.
+<br>
+[<a href="#the-top">Overview</a>] [<a href="#the-list">List</a>]
+</p>
+
+<p align="center">
+<font size="-2">
+<a href="http://examples.oreilly.com/upt3/index.html">UNIX Power Tools
+examples archive</a> |
+<a href="http://www.oreilly.com/catalog/upt3/">UNIX Power Tools book
+description</a>
+</font>
+</p><p>
+</p><address>
+<a href="mailto:jpeek@jpeek.com">jpeek@jpeek.com</a>
+</address>
+<p></p>
+<p>
+</p><hr size="1" noshade="noshade">
+<p><b>Back to: <a href="http://www.oreilly.com/catalog/upt3/">Unix Power Tools, 3rd Ed.</a></b></p>
+
+
+<p>
+<hr size="1" noshade="noshade" />
+</p>
+<center>
+<font size="-1">
+<p>
+<b><a href="http://www.oreilly.com/">O'Reilly Home</a> | <a href="http://www.oreillynet.com/pub/a/mediakit/privacy.html">Privacy Policy</a></b>
+</p>
+<p>
+<i>&copy; 2002, O'Reilly &amp; Associates, Inc.<br />
+<script language="JavaScript">
+<!--
+var name = "webmaster";
+var domain = "oreilly.com";
+document.write('<a href="mailto:' + name + '&#64;' + domain + '">');
+document.write(name + '&#64;' + domain + '</a>');
+document.write('<!-- mailmunge bit -->');
+// -->
+</script>
+</i>
+</p>
+</font>
+</center>
+
+</body></html>

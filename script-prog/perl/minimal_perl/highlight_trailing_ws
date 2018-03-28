@@ -1,0 +1,8 @@
+#! /usr/bin/perl -wpl
+
+BEGIN {
+    $ON =`tput smso`;    #  start mode "standout"
+    $OFF=`tput rmso`;    # remove mode "standout"
+}
+# Show "<WHITESPACE>" in reverse video, to attract eyeballs
+s/[<SPACE>\t]+$/$ON<WHITESPACE>$OFF/g;

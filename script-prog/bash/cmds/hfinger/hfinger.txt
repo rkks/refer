@@ -1,0 +1,60 @@
+:
+##########################################################################
+# Title      :	hfinger - show if sombody 'finger'ed you
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-08-30
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) hfinger	1.2 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+# Determine mail program knowing "-s" argument
+Mail=mail
+[ -x /bin/mailx ] && Mail=mailx
+usage () {
+    echo >&2 "$PN - show when somebody 'finger's you, $VER (stv '94)"
+    exit 1
+}
+fatal () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+    exit 1
+}
+: ${LOGNAME:=`who am i | cut -d' ' -f1`}	# receiver of mail
+: ${FINGERMSG:=$HOME/TODO}			# file to print
+: ${FINGERLOG:=$HOME/lib/finger.log}		# log file
+Pipe=${TMPDIR:=/tmp}/info			# innocent name...
+Plan=$HOME/.plan
+[ $# -gt 0 -a X"$1" = X"-h" ] && usage
+[ -r "$FINGERMSG" ] || fatal "file $FINGERMSG not found"
+trap "rm -f $Pipe $Plan; [ -f $Plan.alt ] && mv $Plan.alt $Plan" 0
+trap "exit 1" 1 2 3 15
+[ -f "$Plan" ] && mv "$Plan" "$Plan".alt
+mknod $Pipe p || fatal "cannot create named pipe"
+chmod 744 $Pipe || fatal "cannot change mode of named pipe"
+ln -s $Pipe $Plan || fatal "cannot create symbolic link"
+while :
+do
+    # cp blocks on write to the named pipe until sombody
+    # reads the pipe (i.e. with "finger")
+    cp $FINGERMSG $Plan
+    # somebody read the file .plan:
+    $Mail -s "$PN" $LOGNAME <<!
+*** $PN: sombody fingered you (`date`) ***
+	$ netstat -n | grep ESTAB
+`netstat -n | grep ESTAB`
+	$ who
+`who`
+	$ w
+`w`
+	$ ps -auxww
+`ps -auxww`
+!
+    echo "`date '+%y-%m-%d %H:%M:%S'`	somebody fingered me!" >> $FINGERLOG
+    sleep 2
+done
+exit 0				# never reached

@@ -1,0 +1,105 @@
+#!/bin/csh -f
+#
+#	$Header: Config,v 1.9 89/12/29 21:14:18 daniel grabchars_1_9 $
+#
+#	Config - set up Makefile for grabchars
+#
+#	Dan Smith (daniel@island.uu.net), November 1988, April 1990
+#
+#	Config file for grabchars... must be csh, no attempt
+#	made to be eunice (i.e. echo " ") compatible...
+#
+clear
+cat << GUMBY
+
+	Config for grabchars
+
+	This csh script will figure out a few things about your
+system, and then will run a "make clean", a "make depend", and
+a "make release".  You should then try out grabchars, and, once assured
+that it's behaving itself, you should run a "make install"
+
+GUMBY
+echo -n 'press return to start...'
+set ignore=$<
+
+#	figure out where to put this when the user types
+#	"make install"...we'll try in three likely places...
+
+foreach try_bin (/usr/local{/bin,} /usr/public/bin)
+	echo -n looking at $try_bin...
+	if (-w $try_bin) then
+		set bin_dir=$try_bin && echo yep... && break
+	endif
+	echo ""
+end
+
+#	figure out where to put the man pages when the user
+#	"make install"...a few places come to mind...
+
+foreach try_man (/usr/{,local/,public/}man/man1)
+	echo -n looking at $try_man...
+	if (-w $try_man) then
+		set man_dir=$try_man && echo yep... && break
+	endif
+	echo ""
+end
+
+if ($?bin_dir) then
+	echo BIN_DIR looks like it will be $bin_dir
+else
+	echo BIN_DIR is unknown...check the Makefile when it comes up...
+	set bin_dir=""
+endif
+
+if ($?man_dir) then
+	echo MAN_DIR looks like it will be $man_dir
+else
+	echo MAN_DIR is unknown...check the Makefile when it comes up...
+	set man_dir=""
+endif
+
+set myedit=vi
+if ($?EDITOR) then
+	set myedit=$EDITOR
+endif
+
+oh_really:
+	if (! -e $myedit) then
+		echo -n "I don't see a $myedit...where is your editor? "
+		set myedit=$<
+		echo ok...
+	endif
+
+echo editor of choice seems to be \"$myedit\"...
+
+if  (-e Makefile) mv Makefile{,.old} >& /dev/null
+
+echo making makefile...
+sed	-e "s+^BIN_DIR.*+BIN_DIR = $bin_dir+" \
+	-e "s+^MAN_DIR.*+MAN_DIR = $man_dir+" \
+	-e "s+^EDITOR.*+EDITOR = $myedit+" \
+	< Makefile.dist > Makefile
+
+echo going to $myedit with Makefile for you to check out..
+echo -n press return...
+set ignore=$<
+$myedit Makefile || \
+	echo where is your editor\?\!\!  && goto oh_really
+
+echo " "
+echo clean up any residue from before, doing a \"make clean\"
+sleep 2
+make clean
+
+echo " "
+echo going to run a \"make depend\"...
+sleep 2
+make depend
+
+echo " "
+echo ok, let\'s try to make this with \"make release\"
+sleep 2
+make release
+echo you can try this out with:
+echo demo

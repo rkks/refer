@@ -1,0 +1,55 @@
+Language: Fortran 
+Author: Myron A. Calhoun
+Note: Fortan 77
+
+      character*999s,p 
+       datas/'''/end(6x,a17/3(5x,a1,a66/),6x,a40/6x,a66/6x,a3)character*
+     '999s,p datas/p=s(64:70)//s(:1)//s(:1)//s(:176)//s(:2)write(*,s(6:5
+     '6))s(48:),p,p,s,p(67:),s,p(133:),s(71:),s(111:),s(3:)'/           
+      p=s(64:70)//s(:1)//s(:1)//s(:176)//s(:2)
+      write(*,s(6:56))s(48:),p,p,s,p(67:),s,p(133:),s(71:),s(111:),s(3:)
+      end
+
+Author: Mark Barnett
+
+	REAL*8F(6)/48H(7X'REAL*8F(6)/48H'6A8,1H//7X'PRINTF,F'/7X'END')
+ 	PRINTF,F
+	END
+
+Author Armond O Friend
+
+	WRITE(6,100)
+	CALL EXIT
+100 FORMAT(T7,12HWRITE(6,100)/T7,9HCALL EXIT/
+12(48H 100	FORMAT(T7,12HWRITE(6,100)/T7,9HCALL EXIT/
+1/T6,6H12(48H),T69,2H)/,T7,2(31H/T6,6H12(48H),T69,2H)/T7,3HEND)
+END
+
+Author:E. Roberts
+Note: There is supposedely an error in this one which keeps it from compiling.  If you know what it is, tell me!
+
+      WRITE(6,100)                                    
+      STOP                                            
+  100 FORMAT(6X,12HWRITE(6,100)/6X,4HSTOP/            
+     .42H  100 FORMAT(6X,12HWRITE(6,100)/6X,4HSTOP/          ,2(/5X,67H.
+     .42H  100 FORMAT(6X,12HWRITE(6,100)/6X,4HSTOP/          ,2(/5X,67H.
+     .)/T48,2H)/T1,5X2(21H.)/T48,2H)/T1,5X2(21H)/
+     .T62,10H)/6X3HEND)T1,5X2(28H.T62,10H)/6X3HEND)T1,5X2(29H)/6X3HEND)
+      END
+
+
+
+Author: Mike Duffy
+      REAL*8F(17)                                                               DATA
+F/8H(7X,11HR,8HEAL*8F(1,8H7)/7X,7H,8HDATA F/,,8H5(2H8H,A,     
+     18H8,1H,)/6,8HX,1H1,6(,8H2H8H,A8,,8H1H,)/6X,,8H1H2,5(2H,8H8H,A8,1H, 
+     28H,),2H8H,,8HA8,1H//7,8HX,11HWRI,8HTE(6,F)F,8H/7X,3HEN,8HD)       /
+      WRITE(6,F)F                                                        
+      END                                                                
+
+
+Author: Radford Neal (radford@ai.toronto.edu) 
+
+      character a*55
+      dataa/55h(6x14hcharacter a*55/6x9hdataa/55h,a,1h//6x9hprint a,a)/
+      print a,a

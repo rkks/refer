@@ -1,0 +1,8 @@
+Language: AWK
+Author: Chris Hruska
+Notes: This one is the standard C quine with main replaced by BEGIN. 
+
+BEGIN{c="BEGIN{c=%c%s%c;printf(c,34,c,34);}";printf(c,34,c,34);}
+
+Author: Alan Linton (alan@cranley.demon.co.uk)
+BEGIN{c="BEGIN{c=%c%s%c;printf c,34,c,34}";printf c,34,c,34}

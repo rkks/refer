@@ -1,0 +1,8 @@
+#! /usr/bin/perl -s -wnl
+use String::Approx 'amatch';   # must specifically request "amatch"
+BEGIN {
+    $string  or
+        warn "Usage: $0 -string='something' [ file1 ... ]\n"  and
+            exit 255;
+}
+amatch $string, [ "i", "20%" ] and  print; # Ignore case; 20% fuzzy

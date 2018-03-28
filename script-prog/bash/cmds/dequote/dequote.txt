@@ -1,0 +1,84 @@
+:
+##########################################################################
+# Title      :	dequote - undo "quoting" of a text
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-01-11
+# Category   :	Mail, Text Utilities
+# SCCS-Id.   :	@(#) dequote	1.4 03/12/19
+##########################################################################
+# Description
+#	Removes any leading " >" from stdin, and writes to stderr.
+#	The first quote string (i.e. " >") is written to stdout.
+#
+# Example:
+#	The following two lines
+#		|	> this is a quoted text
+#		|	> and this too
+#	become
+#		| this is a quoted text
+#		| and this too
+#	(The vertical bar denotes the left margin).
+#	On stdout appears the following output:
+#		|	>
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.4'
+# Search PATH for a new AWK (or GNU AWK)
+if [ X"$NAWK" = X"" ]
+then
+    for path in `echo "$PATH" | sed 's/^:/.:/;s/:$/:./;s/:/ /g'`
+    do
+	[ -x "$path/gawk" ] && { NAWK=$path/gawk; break; }
+	[ -x "$path/nawk" ] && { NAWK=$path/nawk; break; }
+    done
+    : ${NAWK=awk}
+fi
+usage () {
+    echo >&2 "$PN - remove \"quotes\" from a text, $VER (stv '94)
+usage: $PN [-1] [file ...]
+    -1: remove only first quoting level (default: all levels)"
+    exit 1
+}
+msg () {
+    for msgLine
+    do echo "$PN: $msgLine" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+set -- `getopt 1h "$@"` || usage
+[ $# -lt 1 ] && usage                   # "getopt" detected an error
+AllLevels=true
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -1)     AllLevels=false;;
+        --)     shift; break;;
+        -h)     usage;;
+        -*)     usage;;
+        *)      break;;                 # First file name
+    esac
+    shift
+done
+# swap stdout and stderr
+exec 3>&1 1>&2 2>&3 3>&-
+$NAWK '
+    $1 ~ />/ {
+        if ( "'"$AllLevels"'" == "true" ) {
+            while ( $0 ~ /^[    ]*>/ ) {
+               if ( QStr == "" && match ($0, "^[       ]*>") )
+		    Q = Q substr ($0, RSTART, RLENGTH)
+                sub ("^[ 	]*>", "")
+            }
+            if ( QStr == "" ) QStr = Q
+        } else {
+            if ( QStr == "" && match ($0, "^[   ]*>") )
+                QStr = substr ($0, RSTART, RLENGTH)
+            sub ("^[    ]*>", "")        # remove all quotes
+        }
+    }
+    {print}
+    END {
+	if ( QStr != "" )
+	    print QStr | "cat >&2"
+    }
+' "$@"

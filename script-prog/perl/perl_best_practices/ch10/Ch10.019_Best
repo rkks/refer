@@ -1,0 +1,29 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @results = (1..10);
+
+SAVE: 
+while (my $save_file = prompt 'Save to which file? ') {
+    # Open specified file and save results...
+    open my $out, '>', $save_file  or next SAVE;
+    print {$out} @results          or next SAVE;
+    close $out                     or next SAVE;
+ 
+    # Save succeeded, so we're done...
+    last SAVE;
+}
+

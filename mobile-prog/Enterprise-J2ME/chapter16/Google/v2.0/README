@@ -1,0 +1,17 @@
++ kSOAP project:
+
+    org.ksoap2.*
+    org.ksoap2.serialization.*
+
+    org.ksoap2.transport.*
+
++ kObjects project:
+
+    org.kobjects.base64.*
+    org.kobjects.isodate.*
+
++ kXML2 project:
+
+    org.kxml2.io.*
+    org.kxml2.kdom.*
+    org.kxml2.wap.*

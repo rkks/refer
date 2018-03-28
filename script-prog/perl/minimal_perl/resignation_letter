@@ -1,0 +1,9 @@
+#! /usr/bin/perl -wl
+
+printf 'Email resignation letter? YES to confirm, <^D> to exit: ';
+$answer=<STDIN>;                # omitting chomp to simplify
+
+$answer ne "YES\n"  and         # This is line 6
+    die "\n$0: Hasty resignation averted\n";
+
+print 'Sending email';          # (emailing code unshown)

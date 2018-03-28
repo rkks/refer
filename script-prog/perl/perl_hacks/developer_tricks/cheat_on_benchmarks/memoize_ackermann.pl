@@ -1,0 +1,2 @@
+use Memoize;
+memoize( 'ackermann' );

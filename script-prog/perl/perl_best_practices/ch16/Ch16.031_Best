@@ -1,0 +1,103 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $product = Shimmer->new({ name=>'Shimmer', patent=>987654321 });
+
+package Wax::Floor;
+use Class::Std;
+{
+    # Attributes...
+    my %name_of;
+    my %patent_of;
+ 
+    sub BUILD {
+        my ($self, $ident, $arg_ref) = @_;
+ 
+        $name_of{$ident}   = $arg_ref->{name};
+        $patent_of{$ident} = $arg_ref->{patent};
+ 
+        return;
+    }
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        warn __PACKAGE__, " cleaning up $name_of{ident $self}";
+        delete $name_of{$ident};
+        delete $patent_of{$ident};
+ 
+        return;
+    }
+}
+ 
+package Topping::Dessert;
+use Class::Std;
+{
+    # Attributes...
+    my %name_of;
+    my %flavour_of;
+ 
+    sub BUILD {
+        my ($self, $ident, $arg_ref) = @_;
+        
+        $name_of{$ident}    = $arg_ref->{name};
+        $flavour_of{$ident} = $arg_ref->{flavour};
+ 
+        return;
+    }
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        warn __PACKAGE__, " cleaning up $name_of{ident $self}";
+        delete $name_of{$ident};
+        delete $flavour_of{$ident};
+ 
+        return;
+    }
+}
+
+
+
+package Shimmer;
+use Class::Std;
+use base qw( Wax::Floor  Topping::Dessert );
+{
+    # Attributes...
+    my %name_of;
+    my %patent_of;
+ 
+    sub BUILD {
+        my ($class, $ident, $arg_ref) = @_;
+        
+        $name_of{$ident}    = $arg_ref->{name};
+        $patent_of{$ident} = $arg_ref->{patent};
+ 
+        return;
+    }
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        warn __PACKAGE__, " cleaning up $name_of{ident $self}";
+        delete $name_of{$ident};
+        delete $patent_of{$ident};
+ 
+        return;
+    }
+}
+
+

@@ -1,0 +1,21 @@
+# doctype:  synthesize proper command line for troff
+echo -n "cat $* | "
+egrep -h '^\.(EQ|TS|\[|PS|IS|PP)' $* |
+sort -u |
+awk '
+/^\.PP/	{ ms++ }
+/^\.EQ/	{ eqn++ }
+/^\.TS/	{ tbl++ }
+/^\.PS/	{ pic++ }
+/^\.IS/	{ ideal++ }
+/^\.\[/	{ refer++ }
+END {
+	if (refer > 0) printf "refer | "
+	if (pic > 0)   printf "pic | "
+	if (ideal > 0) printf "ideal | "
+	if (tbl > 0)   printf "tbl | "
+	if (eqn > 0)   printf "eqn | "
+	printf "troff "
+	if (ms > 0) printf "-ms"
+	printf "\n"
+} '

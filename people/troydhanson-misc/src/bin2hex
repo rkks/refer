@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+local $/;
+my $bin = <STDIN>; #slurp
+my @bytes = unpack "C*", $bin;
+print for map sprintf("%2.2x",$_), @bytes;

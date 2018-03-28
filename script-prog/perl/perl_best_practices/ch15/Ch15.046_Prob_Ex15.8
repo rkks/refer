@@ -1,0 +1,40 @@
+##############################################################################
+## Example 15.8 (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-8. Another way to implement accessor methods
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %name_of;
+my %rank_of;
+my %serial_num_of;
+
+# Provide access to the name attribute...
+sub name :lvalue {
+    my ($self) = @_;
+    return $name_of{ident $self};
+}
+ 
+sub rank :lvalue {
+    my ($self) = @_;
+    return $rank_of{ident $self};
+}
+ 
+# Serial numbers are read-only, so not lvalue...
+sub serial_num  {
+    my ($self) = @_;
+    return $serial_num_of{ident $self};
+}
+

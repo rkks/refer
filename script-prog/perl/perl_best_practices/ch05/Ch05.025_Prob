@@ -1,0 +1,50 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 5 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $error_mesg   = '    Oops!    ';
+my @diagnostics = (
+    '     Something is wrong!     ',
+    '     Very wrong!     ',
+);
+
+sub trimmed_copy_of {
+    # Trim explicit arguments...
+    if (@_ > 0) {
+        my ($string) = @_;
+        $string =~ s{\A \s* (.*?) \s* \z}{$1}xms;
+        return $string;
+
+    }
+
+    # Otherwise, trim the default argument (i.e. $_)...
+    else {
+        s{\A \s* (.*?) \s* \z}{$1}xms;
+        return $_;
+    }
+}
+
+
+print trimmed_copy_of($error_mesg);
+ 
+for (@diagnostics) {
+    print trimmed_copy_of;
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    $error_mesg,
+    @diagnostics,
+];

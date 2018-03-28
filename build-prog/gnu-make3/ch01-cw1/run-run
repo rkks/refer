@@ -1,0 +1,3 @@
+#! /bin/bash
+echo '$ count_words < lexer.l'
+count_words < lexer.l

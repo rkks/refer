@@ -1,0 +1,242 @@
+function pushd {                # push current directory onto stack
+    dirname=$1
+    if cd ${dirname:?"missing directory name."}   # if cd was successful
+    then
+        DIRSTACK="$dirname ${DIRSTACK:-$PWD}"
+        print $DIRSTACK
+    else
+        print still in $PWD.
+    fi
+}
+
+
+
+function _cd {
+    "cd" $*
+    es=$?
+    print $OLDPWD --> $PWD
+    return $es
+}
+
+
+
+filename=$1
+word1=$2
+word2=$3
+
+if grep $word1 $filename || grep $word2 $filename
+then
+    print "$word1 or $word2 is in $filename."
+fi
+
+
+filename=$1
+word1=$2
+word2=$3
+
+if grep $word1 $filename && grep $word2 $filename
+then
+    print "$word1 and $word2 are both in $filename."
+fi
+
+
+function popd {                 # pop directory off the stack, cd there
+    if [[ -n $DIRSTACK ]]; then
+        DIRSTACK=${DIRSTACK#* }
+        cd ${DIRSTACK%% *}
+        print "$PWD"
+    else
+        print "stack empty, still in $PWD."
+    fi
+}
+
+
+    if [[ $DIRSTACK = "" ]]; then
+        ...
+
+
+filename=${1:?"filename missing."}
+howmany=${2:-10}
+sort -nr $filename | head $howmany
+
+
+if [[ -z $1 ]]; then
+    print 'usage: howmany filename [-N]'
+    return 1
+fi
+
+
+
+filename=$1
+howmany=${2:-10}
+sort -nr $filename | head $howmany
+
+function pushd {                # push current directory onto stack
+    dirname=$1
+    if [[ -d $dirname && -x $dirname ]]; then
+        cd $dirname
+        DIRSTACK="$dirname ${DIRSTACK:-$PWD}"
+        print "$DIRSTACK"
+    else
+        print "still in $PWD."
+    fi
+}
+
+
+if [[ ! -a $1 ]]; then
+    print "file $1 does not exist."
+    return 1
+fi
+if [[ -d $1 ]]; then
+    print -n "$1 is a directory that you may"
+    if [[ ! -x $1 ]]; then
+	print -n " not "
+    fi
+    print "search."
+elif [[ -f $1 ]]; then
+    print "$1 is a regular file."
+else
+    print "$1 is a special type of file."
+fi
+if [[ -O $1 ]]; then
+    print 'you own the file.'
+else
+    print 'you do not own the file.'
+fi
+if [[ -r $1 ]]; then
+    print 'you have read permission on the file.'
+fi
+if [[ -w $1 ]]; then
+    print 'you have write permission on the file.'
+fi
+if [[ -x $1 && ! -d $1 ]]; then
+    print 'you have execute permission on the file.'
+fi
+
+
+
+SYSNAMES="fred bob dave pete"
+export SYSNAMES
+
+
+for sys in $SYSNAMES
+do
+    finger @$sys
+    print
+done
+
+
+
+for filename in "$@" ; do
+    finfo $filename
+    print
+done
+
+
+function finfo {
+    if [[ ! -a $1 ]]; then
+        print "file $1 does not exist."
+        return 1
+    fi
+    ...
+}
+
+
+
+for filename in ${1:+$1/}* ; do
+    newfilename=$(print $filename | tr [A-Z] [a-z])
+    newfilename=${newfilename%.}
+    print "$filename -> $newfilename"
+    mv $filename $newfilename
+done
+
+
+dos_regexp='[^a-z]\\{1,8\\}\\.[^a-z]\\{0,3\\}'
+for filename in ${1:+$1/}* ; do
+    if print $filename | grep $dos_regexp > /dev/null; then
+        newfilename=$(print $filename | tr [A-Z] [a-z])
+        newfilename=${newfilename%.}
+        print "$filename -> $newfilename"
+        mv $filename $newfilename
+    fi
+done
+
+
+
+objfiles=""
+for filename in $*; do
+    case $filename in
+        *.c )
+            objname=${filename%.c}.o
+            ccom $filename $objname ;;
+	*.s )
+	    objname=${filename%.s}.o
+	    as $filename $objname ;;
+	*.o )
+	    objname=$filename ;;
+	*   )
+	    print "error: $filename is not a source or object file."
+	    return 1 ;;
+    esac
+    objfiles="$objfiles $objname"
+done
+ld $objfiles
+
+
+case $(tty) in
+    /dev/tty0[134]            ) TERM=gl35a ;;
+    /dev/tty07                ) TERM=t2000 ;;
+    /dev/tty08 | /dev/console ) TERM=s531  ;;
+    *                         ) TERM=vt99  ;;
+esac
+
+
+
+
+PS3='terminal? '
+select term in gl35a t2000 s531 vt99; do
+    if [[ -n $term ]]; then
+        TERM=$term
+        print TERM is $TERM
+        break
+    else
+        print 'invalid.'
+    fi
+done
+
+
+
+print 'Select your terminal type:'
+PS3='terminal? '
+select term in
+    'Givalt GL35a' \\
+    'Tsoris T-2000' \\
+    'Shande 531' \\
+    'Vey VT99'
+do
+    case $REPLY in
+        1 ) TERM=gl35a ;;
+        2 ) TERM=t2000 ;;
+        3 ) TERM=s531 ;;
+        4 ) TERM=vt99 ;;
+        * ) print 'invalid.' ;;
+    esac
+    if [[ -n $term ]]; then
+        print TERM is $TERM
+        break
+    fi
+done
+
+
+path=$PATH
+dir=${path%%:*}
+while [[ -n $path ]]; do
+    if [[ -x $dir/$1 && ! -d $dir/$1 ]]; then
+	file $dir/$1
+	return
+    fi
+    path=${path#*:}
+    dir=${path%%:*}
+done
+return 1
+

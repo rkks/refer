@@ -1,0 +1,78 @@
+TODO file...
+
+	[Author's request:  if you implement any of this, please
+	send me a patch!  I'd appreciate it]
+
+	add support for arrow keys
+	handle control characters better...
+
+	I'm not sure what would constitute reasonable
+	return values (have negative values? values greater than 128?)
+	Is there a canonical return value list for keyboard events?
+
+
+	KEY BINDINGS/ABBREVATIONS
+
+	This can be handled in one step.  Command lines could be
+	specified as "a=1 b=2 c=3 d=error ex=expand".  This would map
+	the letter a to "1", "b" to "2", "c" to "3", "d" to "error", and
+	"ex" to "expand".
+
+	INPUT MAPPING
+
+	The present input mapping is primitive.  It would be better
+	to map on a character by character basis.  I haven't worked
+	out a complete syntax.  One possibilty is:
+
+	"Ulllnnn"
+
+	which would be an uppercase character, followed by three
+	lowercase characters, followed by three numbers.  Also:
+
+	"[aeiou]lllWUUU"
+
+	would be a vowel for the first character, followed by
+	a whitespace char (space or tab), followed by three uppercase
+	characters.
+
+	It would be good to introduce more flexibility into this:
+
+	"Ul*WUl*"
+
+	would be an uppercase character, followed by ZERO or More
+	lowercase characters, whitespace, then upper and ZERO
+	or more lowers.
+
+	c	character [A-Za-z]
+	U	uppercase char
+	l	lowercase char
+	n	number 0-9
+	p	punctuation
+	W	whitespace (SPC or TAB)
+	[]	group ("c" would be [Ul])
+	*	zero or more 
+
+
+	stronger erase/kill processing...
+		check isatty ()...
+		this needs to be implemented for SYS V
+
+	default should/could occur with whitespace...not limited to return.
+		rather than add yet another flag, I think I will
+		extend the -r flag, so that you can say "-rw" or
+		"-r w" and have an *initial* whitespace (such as a TAB,
+		and aside from a RETURN, which would continue to work
+		anywhere) give the same effect as if RETURN had been typed...
+		a "-rW" or "-r W" would give you the ability to finish
+		input as soon as any whitespace had been typed...
+
+	give an option where the status returned is a count of seconds
+	that it took to answer, rather than the count of characters
+	entered....could be useful for some people
+
+	When some/all of this is implemented, and support for other
+machines starts coming together, I'll cobble together a 2.0.
+
+	better Makefile and Config :-)
+
+	Thatzit for now...

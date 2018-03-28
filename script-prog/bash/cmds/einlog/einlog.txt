@@ -1,0 +1,96 @@
+:
+##########################################################################
+# Title      :	einlog - keep a log file of login and logout time stamps
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1993-12-10
+# Requires   :	
+# Category   :	Desktop
+# SCCS-Id.   :	@(#) einlog	1.9 05/08/29
+##########################################################################
+# Description
+#	Keep a log file of the first and the last login
+# See also
+#	logstat
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.9'
+: ${LOGFILE:=$HOME/lib/log}
+: ${TMPDAT:=/tmp/log.$$}
+lock=$LOGFILE.lock
+DateForm='%Y-%m-%d %H:%M (%a)'
+Date=`LANG=C date '+%Y-%m-%d'`
+currenttime=`LANG=C date "+$DateForm"`
+usage () {
+    echo >&2 "$PN - keep a log file of login and logout time stamps, $VER
+usage: $PN {-i | -o}
+    -i:	log in
+    -o: log out
+Log file:
+    $LOGFILE"
+    exit 1
+}
+msg () {
+    for msgLine
+    do echo "$PN: $msgLine" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+set -- `getopt :haeio "$@" || exit 1` || usage
+[ $# -lt 1 ] && usage			# "getopt" detected an error
+Mode=login				# {login|logout}
+while [ "$#" -gt 0 ]
+do
+    case "$1" in
+	-i|-e)	Mode=login;;
+	-o|-a)	Mode=logout;;
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+# System V date command preferred
+PATH="/usr/5bin:$PATH"	export PATH
+if mkdir "$lock" >/dev/null 2>&1
+then
+    # Aquired lock. Remove it when the program terminates, or after
+    # reception of a signal.
+    trap 'rmdir "$lock" >/dev/null 2>&1' 0
+    trap "exit 2" 1 2 3 13 15
+else
+    fatal "could not create lock: $lock"
+fi
+if [ -f "$LOGFILE" ]
+then
+    :
+else
+    cat <<-! > "$LOGFILE"
+	# log - login and logout times (first and last login)
+	# created `date +"$DateForm"`
+	!
+    chmod 600 "$LOGFILE"
+fi
+# Only one entry per day. Always add an "EIN" entry if it does not exist
+# already.
+grep "EIN: $Date" < "$LOGFILE" > /dev/null || 
+  echo "EIN: $currenttime
+AUS: $currenttime" >> "$LOGFILE"
+case "$Mode" in
+    login)
+	# "EIN" record was already written.
+	;;
+    logout)
+    	# Keep file time stamp by copying it using "cp -p"
+	cp -p "$LOGFILE" "$TMPDAT" ||
+		fatal "cannot create temporary file: $TMPDAT"
+	{ 
+	    grep -v "AUS:.* $Date" < "$LOGFILE" 	# once per day
+	    echo "AUS: $currenttime"
+	} > "$TMPDAT" &&
+	    mv -f "$TMPDAT" "$LOGFILE"
+	;;
+    *)
+    	usage
+	;;
+esac

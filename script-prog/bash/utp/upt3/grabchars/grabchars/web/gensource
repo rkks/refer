@@ -1,0 +1,175 @@
+#! /bin/csh -f
+
+cat << +++ >! $$.menu
+		XXX Menu
+
+#	change XXX to the name of the menu, if it is the main menu then
+#	it is a good idea to indicate it, such as "Gumby Main Menu".
+#	The first word will become the name of the routine.
+#	now, put all of the options for this menu here, (or if you are just
+#	generating a template for a routine, leave it blank)... There is
+#	some documentation below for reference...
+#
+#	Your options (common ones at the end can just be uncommented):
+
+
+#	now that you are done specifying options, save the file
+#	and quit the editor, and your routine will be worked on...
+
+#	Documentation/Reference:
+#
+#	Lines can look like:
+#
+#	f	file
+#	s	sort - sort all of the info
+#	?	help - help menu
+#
+#	General Rules:
+#		one character for the action, followed by a one word
+#		description, which will help form the name of the
+#		routine that will get called when that character is
+#		pressed...everything after is just description for the
+#		user
+#
+#		the menu will appear in alphabetical order no matter
+#		what you put at this point, you can edit that later...
+#
+#		don't put something like:
+#		s save
+#		s sort
+#		every character gets bound to a routine...
+#
+#		always try to use '?' for help to be consistent.
+
+#	Common Options:
+#	These are just suggestions for some menu entries, just uncomment
+#	them (remember, you can only use a letter once in the same menu)
+#	to use them...
+
+#	!	shell
+#	?	help
+#	a	add
+#	c	config - change parameters
+#	D	default
+#	d	database
+#	d	display
+#	d	dump
+#	e	edit
+#	f	file
+#	f	forward
+#	f	format
+#	h	help
+#	i	init
+#	j	join
+#	k	kill - stop a process
+#	l	load
+#	l	list
+#	m	mail/messages
+#	m	merge
+#	m	main - go to main menu
+#	n	new
+#	o	open
+#	p	print
+#	q	quit
+#	r	reset
+#	r	restore
+#	s	start
+#	s	shell
+#	t	tape
+#	t	tar
+#	u	undo
+#	v	verbose
+#	w	write
+
++++
+
+echo going to $EDITOR...
+
+$EDITOR $$.menu
+sed -n -e '/^[$#]/d' -e '/[a-zA-Z0-9]/p' $$.menu >! foo.$$ ;  mv -f foo.$$ $$.menu
+sed -n -e 's/^[	 ]*//p'  $$.menu >! foo.$$ ;  mv -f foo.$$ $$.menu
+echo -n finding title...
+set first_line=(`head -1 $$.menu`)
+set title=`head -1 $$.menu | tr ' 	A-Z' '__a-z'`
+echo -n "($title)..."
+
+@ num_lines=`wc -l $$.menu | awk ' { print $1 } '`
+@ num_lines--
+echo -n scanning file...
+tail -${num_lines} $$.menu | sed -e 's/^[	 ]*//' | tr '/' '_'  | sort -u >! foo.$$; mv -f foo.$$ $$.menu
+
+set noglob
+set menu_entries=`awk ' { if ($NF >= 2) print $1 } ' $$.menu `
+set menu_routines=`awk ' { if ($NF >= 2) print $2 } ' $$.menu `
+
+echo setup...
+
+set output=$title
+cp /dev/null $output
+
+cat << +++ >> $output
+#	start of $title
+
+${title}:
+
+cat << menu_screen
+\`clear\`
+
+		$first_line
+
++++
+
+echo body of menu...
+awk ' { printf ("\t%s\n", $0) }' $$.menu >> $output
+
+echo switch statement...
+cat << +++ >> $output
+
+menu_screen
+
+	set noglob
+	set choice=\`\$grabchars -q "	your choice >> " | cat -v\`
+	if (\$choice =~ '?') set choice=help
+	switch (\$choice)
++++
+
+@ count=1
+foreach item ( $menu_entries)
+	echo -n $item...
+	if ($item =~ '?') set item=help
+	cat << +++ >> $output
+		case "$item":
+			echo -n "	$menu_routines[$count]..."
+			@ ret_pos++
+			source ${menu_routines[$count]}_menu
+			@ ret_pos--
+			breaksw
++++
+	@ count++
+end
+
+echo default statement...
+cat << +++ >> $output
+		case "^L":
+		case "^R":
+			echo -n redraw...
+			breaksw
+		default:
+			if (\$ret_pos > 1) then
+				echo -n "	back..."
+				set menu_loop="false"
+			else
+				echo no such option...
+			endif
+			breaksw
+	endsw
+
+	\$menu_loop goto $title
+	set menu_loop=""
+
+#	end of ${title} 
+
++++
+echo cleanup....
+
+rm $$.menu

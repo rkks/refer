@@ -1,0 +1,41 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 2 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+my $raw;
+
+# Process an array that has been recognized...
+sub addarray_internal {
+    my ($var_name, $needs_quotemeta) = @_;
+ 
+    # Cache the original...
+    $raw .= $var_name;
+ 
+    # Build meta-quoting code, if requested...
+    my $quotemeta = $needs_quotemeta ?  q{map {quotemeta $_} } : $EMPTY_STR;
+ 
+    # Expand elements of variable, conjoin with ORs...
+    my $perl5pat = qq{(??{join q{|}, $quotemeta \@{$var_name}})};
+ 
+    # Insert debugging code if requested...
+    my $type = $quotemeta ? 'literal' : 'pattern';
+    debug_now("Adding $var_name (as $type)");
+    add_debug_mesg("Trying $var_name (as $type)");
+ 
+    return $perl5pat;
+}
+

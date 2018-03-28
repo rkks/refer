@@ -1,0 +1,77 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="timelykill"
+       HTML_="stop process pid"
+    PURPOSE_="kill process pid after n time"
+   SYNOPSIS_="$NAME_ [-hl] <pid> <n>s|m|h|d"
+   REQUIRES_="standard GNU commands"
+    VERSION_="1.0"
+       DATE_="2004-06-20; last update: 2005-02-28"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="sys"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     <pid> <n>s|m|h|d, pid and n seconds|minutes|hours|days to wait before killing the process
+     -h, usage and options (this help)
+     -l, see this script"
+exit 1
+}
+
+# enabling extended globbing
+shopt -s extglob 
+
+# local func
+check_pid() {
+
+    kill -0 $1 &>/dev/null # using bash kill built in
+    [ $? = 0 ] && return 0 || return 1
+
+}
+
+time_validateSleepArg() {
+
+    case $1 in
+        +([0-9])[smhd] ) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# option handling
+case $1 in
+    -h) usage ;;
+    -l) more $0; exit 1 ;;
+    +([0-9])) # arg1 can only be an integer
+
+        # sleep arg check
+        time_validateSleepArg $2
+        [ $? = 0 ] || { echo >&2 second argument invalid, type $NAME_ -h for help; exit 1; }
+
+        check_pid $1 ; [ $? != 0 ] && { echo >&2 pid $1 does not exits; exit 1; }
+        sleep ${2} # before the kill
+
+        while kill -0 $1 &>/dev/null ;do
+              
+            kill -15 $1; check_pid; [ $? == 1 ] && exit 0
+            kill  -3 $1; check_pid; [ $? == 1 ] && exit 0
+            kill  -9 $1; check_pid; [ $? == 1 ] && exit 0
+            echo process can not be killed, possibly due to lack of ownership rights
+            exit 1
+
+        done ;;
+
+    *) echo invalid or missing argument, type $NAME_ -h for help ; exit 1 ;;
+
+esac

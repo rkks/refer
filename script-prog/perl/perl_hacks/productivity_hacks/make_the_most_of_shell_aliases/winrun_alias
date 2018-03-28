@@ -1,0 +1,2 @@
+alias winrun='exec 'cmd', "/c", ((split '/',$0)[-1], map {
+  s/^(.*)$/(-f $1)?qx{cygpath -w "$1"}:$1/e;chomp;$_; } (@ARGV));'

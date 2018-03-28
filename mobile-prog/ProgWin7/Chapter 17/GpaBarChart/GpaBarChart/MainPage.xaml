@@ -1,0 +1,99 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="GpaBarChart.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:elpaso="clr-namespace:ElPasoHighSchool;assembly=ElPasoHighSchool"
+    xmlns:petzold="clr-namespace:Petzold.Phone.Silverlight;assembly=Petzold.Phone.Silverlight"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="480"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Landscape" Orientation="Landscape"
+    shell:SystemTray.IsVisible="True">
+    
+    <phone:PhoneApplicationPage.Resources>
+        <elpaso:StudentBodyPresenter x:Key="studentBodyPresenter" />
+        <petzold:MultiplyConverter x:Key="multiply" />
+        <petzold:ValueToBrushConverter x:Key="valueToBrush"
+                                       Criterion="1"
+                                       GreaterThanBrush="{StaticResource PhoneAccentBrush}"
+                                       EqualToBrush="{StaticResource PhoneAccentBrush}"
+                                       LessThanBrush="Red" />
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="GPA BAR CHART" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0"
+              DataContext="{Binding Source={StaticResource studentBodyPresenter},
+                                    Path=StudentBody}">
+            
+            <Border x:Name="studentDisplay"
+                    BorderBrush="{StaticResource PhoneForegroundBrush}"
+                    BorderThickness="{StaticResource PhoneBorderThickness}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="24"
+                    Padding="12"
+                    CornerRadius="24"
+                    Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="{Binding FullName}"
+                               HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="GPA = " />
+                        <TextBlock Text="{Binding GradePointAverage}" />
+                    </StackPanel>    
+                </StackPanel>
+            </Border>
+            
+            <ItemsControl ItemsSource="{Binding Students}"
+                          VerticalAlignment="Bottom">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Fill="{Binding GradePointAverage,
+                                                  Converter={StaticResource valueToBrush}}"
+                                   
+                                   Height="{Binding GradePointAverage,
+                                                    Converter={StaticResource multiply},
+                                                    ConverterParameter=50}"
+                                   VerticalAlignment="Bottom"
+                                   Margin="1 0" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <petzold:UniformStack Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+    </Grid>
+
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>

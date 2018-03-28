@@ -1,0 +1,43 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+
+
+sub try_next_line {
+    # Give get_next_line() two chances...
+    for my $already_retried (0..1) {
+ 
+        # Return immediately on success, but catch any failure...
+        eval { 
+            return get_next_line()
+        };
+ 
+        # If we can handle this exception...
+        if (my $exception = X::EOF->caught() ) {
+            # Fail on irremedially bad cases...
+            fail_if_incorrigible($exception, $already_retried);
+                    
+            # Otherwise, try rewinding the filehandle...
+            seek $exception->fh(), 0, 0;
+        }
+        # Otherwise, let some caller handle it...
+        else {
+            $EVAL_ERROR->rethrow();
+        }
+    }
+}
+

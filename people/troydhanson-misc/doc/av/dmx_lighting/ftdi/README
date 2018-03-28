@@ -1,0 +1,30 @@
+ rgb.c: set fixture to static color
+ rgb-mmap.c: set fixture continuously to RGB bytes (memory mapped from a file)
+ 
+  This program controls a DMX light fixture. 
+ 
+  The light fixture is a Chauvet LED Techno Strobe RGB 
+  (http://www.chauvetlighting.com/led-techno-strobe-rgb.html). The DMX
+  channel codes it responds to (equating to byte sequence, here) is documented 
+  http://www.chauvetlighting.com/products/manuals/ST-4000_LED_Techno_Strobe_RGB_UM_Rev3_WO.pdf
+ 
+  The DMX communication utilizes a USB-to-DMX adapter, 
+  an ENTTEC DMX USB Pro (http://www.enttec.com/dmxusb.php). It's byte
+  API is documented in http://www.enttec.com/docs/dmx_usb_pro_api_spec.pdf
+ 
+  The ENTTEC adapter is a USB to serial (DMX) adapter, utilizing the
+  the FTDI chip. There is a FTDI library that uses libusb underneath
+  (http://www.intra2net.com/en/developer/libftdi). This program is
+  coded to that libftdi API.
+ 
+  So, the FTDI library lets us talk to the ENTTEC, which has its own byte
+  protocol, of which we're only using one capability (send DMX message).  
+  The DMX message we send, speaks the Chauvet's DMX dialect to set its RGB,
+  strobe and dim settings.
+  
+  The Chauvet light must have its DIP switches all set to "off".
+  If they are in another configuration it changes the DMX start address
+  that the fixture responds to, which would requiring adjusting the 
+  DMX message (essentially adding bytes because the DMX channels are
+  position-based, in the message buffer).
+ 

@@ -1,0 +1,24 @@
+#! /usr/bin/perl -wnl
+
+BEGIN {
+   $debug=defined $ENV{DEBUG_unique_args};
+
+   if ($debug) {      # use shorter variable name
+      $,="\n\t";      # indent output for better visibility
+      print "$0: Initial arguments (sorted): ", sort @ARGV;
+      print "";       # separate from following output
+   }
+
+   foreach $arg (@ARGV) {
+        # following line supplied automatically
+      # ! defined $unique{$arg}  and  $unique{$arg}=0;
+        $unique{$arg}++;    # count each argument's occurrences
+   }
+   @ARGV=sort keys %unique; # retain unique args
+
+   if ($debug) {
+      print "\n$0: Final arguments: ", @ARGV;
+      exit 0;               # terminate here during debugging
+   }
+}
+# BODY OF PROGRAM GOES HERE

@@ -1,0 +1,5 @@
+gz: a simple implementation of "gzip" using zlib's C API
+ungz: a simple "gunzip" implementation based on same API
+
+usage: gz somefile > somefile.gz
+       ungz somefile.gz

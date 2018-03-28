@@ -1,0 +1,66 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="MoveOnCanvas.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="MOVE ON CANVAS" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Canvas Width="450" Height="450"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                
+                <Ellipse Name="ball" 
+                         Fill="{StaticResource PhoneAccentBrush}" 
+                         Width="50" Height="50" />
+
+                <Canvas.Triggers>
+                    <EventTrigger>
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimationUsingKeyFrames 
+                                                Storyboard.TargetName="ball"
+                                                Storyboard.TargetProperty="(Canvas.Left)">                                    <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />                                    <LinearDoubleKeyFrame   KeyTime="0:0:1" Value="400" />                                    <DiscreteDoubleKeyFrame KeyTime="0:0:2" Value="400" />                                    <LinearDoubleKeyFrame   KeyTime="0:0:3" Value="0" />                                    <DiscreteDoubleKeyFrame KeyTime="0:0:4" Value="0" />                                </DoubleAnimationUsingKeyFrames>                                <DoubleAnimationUsingKeyFrames 
+                                                Storyboard.TargetName="ball"
+                                                Storyboard.TargetProperty="(Canvas.Top)">                                    <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />                                    <DiscreteDoubleKeyFrame KeyTime="0:0:1" Value="0" />                                    <LinearDoubleKeyFrame   KeyTime="0:0:2" Value="400" />                                    <DiscreteDoubleKeyFrame KeyTime="0:0:3" Value="400" />                                    <LinearDoubleKeyFrame   KeyTime="0:0:4" Value="0" />                                </DoubleAnimationUsingKeyFrames>                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Canvas.Triggers>
+            </Canvas>
+        </Grid>
+    </Grid>
+ 
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>

@@ -1,0 +1,48 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="sman"
+       HTML_="man page searching"
+    PURPOSE_="search man page for a string, highlight found strings"
+   SYNOPSIS_="$NAME_ [-hl] <command> <string>"
+   REQUIRES_="standard GNU commands"
+    VERSION_="1.0"
+       DATE_="2004-05-10; last update: 2004-07-11"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="misc"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage() {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     <command> command name
+     <string> the string to search for
+     -h usage and options (this help)
+     -l list the script"
+
+exit 1
+}
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+case $1 in
+
+    -h) usage ;;
+    -l) more $0; exit 1 ;;
+     *) if [ $# -eq 2 ]; then
+            man $1 | col -b | grep -iC 5 --color=always $2 | more
+        else
+            echo invalid argument use, type $NAME_ -h for help
+            exit 1
+        fi ;;
+esac

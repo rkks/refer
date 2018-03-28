@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    Cat - concatinate files
+#
+# SYNOPSIS
+#    Cat [file ...]
+#
+# DESCRIPTION
+#    This command concatinates the files by reading each
+#    file in sequence and writing it to the standard output.
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    One or more files were not found
+#
+############################################################
+ERROR=0             # Has there been an error (0=no, 1=yes)
+LINE=               # Line read from file
+
+while [ $# -gt 0 ]
+do
+     if [ ! -r "$1" ]; then
+          echo "Cannot find file $1" 1>&2
+          ERROR=1
+     else
+          IFS=
+          while read LINE
+          do
+               echo "$LINE"
+          done <"$1"
+     fi
+     shift
+done
+
+exit $ERROR

@@ -1,0 +1,52 @@
+#! /usr/bin/perl -s -wnl
+our ($f, $i, $l, $v, $n, $d, $p, $m, $s, $r); # switch vars
+
+BEGIN {
+  $Usage="Usage: $0 [-f] [-i] [-l] [-v] [-n] [-d]";
+  $Usage.=" [-p|-c] [-m] [-s] [-r] 'RE' [file...]\n";
+
+  # Must at least have pattern argument
+  @ARGV > 0  or  warn "$Usage"  and  exit 255;
+
+  # Can't have mutually-exclusive switches
+  defined $p  and  defined $c  and
+    warn "$Usage\n\tCan't have -p and -c\n"  and  exit 1;
+
+  $X='g';           # set modifier to perform all substitutions
+  $ON=$OFF="";      # by default, don't highlight matches
+
+  if ($d) {           # for match-displaying with -d
+    $ON=(`tput smso`  or  "");  $OFF=(`tput rmso`  or  "");
+  };
+
+  $p  and  $/="";     # paragraph mode
+  $c  and  $/=$c;     # custom record separator mode
+  $i  and  $X.='i';   # ignore case; add to modifiers in $X
+  $m  and  $X.='m';   # multi-line mode
+  $s  and  $X.='s';   # single-line mode
+
+  $pattern=shift @ARGV;          # remaining args are filenames
+  $f  and  $pattern='\Q' . $pattern . '\E'; # "quote" metachars
+
+  $r  and  @ARGV=grep { chomp; -T }
+    `find @ARGV -follow -type f -print`;
+  $multifiles=@ARGV > 1;    # controls "filenames:match" format
+
+  $matcher="s/$pattern/$ON\$&$OFF/$X";
+  $v  and  $matcher="! $matcher";     # complement match result
+}
+#####  BODY OF PROGRAM, EXECUTED FOR EACH LINE OF INPUT  #####
+$found_match=eval $matcher;      # run sub-op, to try for match
+if ( $@ ne "" ) {                # show eval's error
+  warn "\n$0: Eval failed for pattern: '$matcher'\n\n";
+  die  "Perl says:\n$@\n";
+}
+elsif ( $found_match ) {
+  if ($l) { print $ARGV; close ARGV; }       # print filename\n
+  elsif   ($multifiles) { printf "$ARGV:"; } # print filename:
+  if (! $l){            # don't show match if listing filenames
+    $n  and  printf "$.:";  # prepend line number to record
+    print;                  # show selected record
+    $p  and  print "";      # separate paragraphs by blank line
+  }
+}

@@ -1,0 +1,341 @@
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: building.html,v 1.2 2003/04/09 23:20:25 ro89390 Exp $ -->
+
+<!DOCTYPE doctype PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Java[tm] Smart Ticket Sample Application 2.0 Early Access &gt; Building and Running the Sample Application</title>
+</head>
+  <body bgcolor="#ffffff">
+    
+<table width="100%" cellpadding="5" cellspacing="0" border="0">
+  <tbody>
+     <tr>
+  <td bgcolor="#000033"> <font color="#ffffff"><a href="index.html"><font
+ color="#ccccff"><b>Java[tm] Smart Ticket Sample Application 2.0 Early Access</b></font></a> &gt; <b>Building 
+and Running the Sample Application</b></font> </td>
+  </tr>
+     
+  </tbody> 
+</table>
+    
+<h1>Building and Running the Sample Application</h1>
+    
+<p><a href="http://ant.apache.org">Ant</a>, a tool with similar
+functionality to <i>make</i>, is used to build the sample application,
+and to execute the binaries that are built. (Ant has been developed
+under the auspices of the Apache Software Foundation.)  A working
+version of Ant is provided as part of the sample application
+bundle.</p>
+    
+<p>Before building the sample application, make sure your environment
+variables are set as specified in the <a
+href="installing.html">installation instructions</a>.</p>
+
+<h2>Building the Sample Application</h2>
+
+<p>To build the sample application, bring up a shell or command
+prompt, change the current directory to
+<code>{smart_ticket.dir}/src</code>, and type:</p>
+    
+<p><code>build.sh</code> <i>&lt;argument&gt;</i> (Solaris or
+Linux)</p>
+    
+<p><code>build.bat</code> <i>&lt;argument&gt;</i> (Windows)</p>
+
+<p>The following table lists arguments you can use with the build
+script in <code>{smart_ticket.dir}/src</code>, and what using each of
+these arguments accomplishes.</p>
+    
+<div align="center">  
+<table cellpadding="5" cellspacing="0" border="1">
+  <caption>Arguments for the build script</caption> <tbody>
+     <tr>
+  <th>Argument</th>
+  <th>Purpose</th>
+  </tr>
+  <tr>
+  <td><code>all</code></td>
+  <td>Builds the entire application. (This is the default target.)</td>
+  </tr>
+<!--
+  <tr>
+  <td><code>client</code></td>
+  <td>Builds the MIDP client part of the application.</td>
+  </tr>
+  <tr>
+  <td><code>server</code></td>
+  <td>Builds the J2EE server part of the application.</td>
+  </tr>
+-->
+  <tr>
+  <td><code>clean</code></td>
+  <td>Cleans out the build output directories.</td>
+  </tr>
+  <tr>
+  <td><code>emulate</code></td>
+  <td>Runs the MIDP client part in the emulator.</td>
+  </tr>
+    <tr>
+      <td><code>cleandb</code></td>
+      <td>Cleans the J2ME Wireless Toolkit RMS data store.</td>
+    </tr>
+  <tr>
+  <td><code>deploy</code></td>
+  <td>Deploys the J2EE server part on the J2EE SDK server.</td>
+  </tr>
+  <tr>
+  <td><code>undeploy</code></td>
+  <td>Undeploys the J2EE server part from the J2EE SDK server.</td>
+  </tr>
+     
+  </tbody> 
+</table>
+  </div>
+
+<p>When the build script is invoked with no arguments, it will build
+the entire application.</p>
+
+<p>The client part of the application is placed in:</p>
+
+<p><code>{smart_ticket.dir}/src/app/client/midp/build/</code></p>
+
+<p>The server part of the application is placed in:</p>
+
+<p><code>{smart_ticket.dir}/src/app/server/build/</code></p>
+
+<h2>Running the Sample Application</h2>
+
+<p>To run the binaries produced by the build, use the build
+scripts. These instructions describe how to run the sample application
+using the J2EE SDK and the J2ME Wireless Toolkit on a single
+machine.</p>
+
+<ol>
+ <li>
+    <p><b>Start the Cloudscape database server, which comes with the J2EE
+SDK.</b></p>
+  
+    <ul type="a">
+ <li>
+        <p>Bring up a command prompt.</p>
+      </li>
+  <li>
+        <p>Change the current directory to <code>$J2EE_HOME/bin</code>
+        (Linux or Solaris) or <code>%J2EE_HOME%\bin</code> (Windows
+        NT/2000).</p>
+      </li>
+  <li>
+        <p>Enter the following command:</p>
+  
+        <p><code>cloudscape -start</code></p>
+      </li>
+ 
+    </ul>
+ </li>
+  <li>
+    <p><b>Start the J2EE Reference Implementation server, which comes with
+the J2EE SDK.</b></p>
+  
+    <ul type="a">
+ <li>
+        <p>Bring up a command prompt.</p>
+      </li>
+  <li>
+        <p>Change the current directory to <code>$J2EE_HOME/bin</code>
+        (Linux or Solaris) or <code>%J2EE_HOME%\bin</code> (Windows
+        NT/2000).</p>
+      </li>
+  <li>
+        <p>Enter the following command:</p>
+  
+        <p><code>j2ee -noJMS</code></p>
+      </li>
+ 
+    </ul>
+ </li>
+        <li>
+          <p><b>If you're running the J2EE part of the application for
+              the very first time, or if you've modified code in the
+              J2EE part that accesses the database, follow these
+              steps:</b></p>
+
+          <ul type="a">
+            <li>
+              <p><b>Generate the default SQL for the application, and
+                deploy the application to the J2EE SDK server.</b></p>
+
+              <ul type="i">
+                <li>
+                  <p>Bring up a command prompt.</p>
+                </li>
+
+                <li>
+                  <p>Change the current directory to
+                    <code>{smart_ticket.dir}/src</code>.</p>
+                </li>
+                <li>
+                  <p>Enter the following command:</p>
+
+                  <p><code>build.sh deploy</code> (Solaris or
+                    Linux)</p>
+    
+                  <p><code>build.bat deploy</code> (Windows)</p>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <p><b>Populate the Cloudscape database with the sample
+                  application's data.</b></p>
+  
+              <ul type="i">
+                <li><p>Using your Web browser, visit <a
+                                                        href="http://localhost:8000/smartticket/"><code>http://localhost:8000/smartticket/</code></a>. If
+                  your browser is configured to use a proxy, make sure
+                  that your browser does not use the proxy to access
+                  <code>localhost</code>.</p></li>
+            
+                <li><p>Click the link to populate the database. This
+                    link points to <a
+                    href="http://localhost:8000/smartticket/admin/populating.jsp?forcefully=false"><code>http://localhost:8000/smartticket/admin/populating.jsp?forcefully=false</code></a>. The
+                    browser will let you know when the database has
+                    been successfully populated.</p></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <p><b>If you've modified code in the J2ME part that accesses
+              the local database (Record Management Store), or if the
+              local database is out of sync with the database used by
+              the J2EE part (for example, if you've redeployed the
+              J2EE part of the application), follow these
+              steps:</b></p>
+
+              <ul type="i">
+                <li>
+                  <p>Bring up a command prompt.</p>
+                </li>
+
+                <li>
+                  <p>Change the current directory to
+                    <code>{smart_ticket.dir}/src</code>.</p>
+                </li>
+                <li>
+                  <p>Enter the following command:</p>
+
+                  <p><code>build.sh cleandb</code> (Solaris or
+                    Linux)</p>
+    
+                  <p><code>build.bat cleandb</code> (Windows)</p>
+                </li>
+              </ul>
+        </li>
+        <li>
+          <p><b>Run the MIDP part of the application.</b></p>
+
+          <ul type="i">
+            <li>
+              <p>Bring up a command prompt.</p>
+            </li>
+            
+            <li>
+              <p>Change the current directory to
+                <code>{smart_ticket.dir}/src</code>.</p>
+            </li>
+            <li>
+              <p>Enter the following command:</p>
+              
+              <p><code>build.sh emulate</code> (Solaris or Linux)</p>
+              
+              <p><code>build.bat emulate</code> (Windows)</p>
+            </li>
+          </ul>
+        </li>
+     </ul>
+  
+    <p>A phone emulator will appear, showing the Java Smart Ticket
+Sample Application splash screen.</p>
+  </li>
+</ol>
+  
+<p>You can now use the application.</p>
+
+
+<!--
+<h2>Building the Client Using the J2ME Wireless Toolkit KToolbar</h2>
+
+<p>You may find it convenient to build the client using the <a
+href="http://java.sun.com/products/j2mewtoolkit/">J2ME Wireless
+Toolkit</a> KToolbar.</p>
+
+<p>To prepare the client code for use in a KToolbar project, go to the
+directory <code>{smart_ticket.dir}/src/app/client/midp/src</code> and
+run the build script using the target
+<code>j2mewtk_project</code>.</p>
+
+<p>The build script will create a directory
+<code>{smart_ticket.dir}/src/app/client/midp/smart_ticket-client</code>. This
+directory is organized for use as a J2ME Wireless Toolkit
+project. Copy or move this directory into
+<code>{j2mewtk.dir}/apps</code>. Consult the J2ME Wireless Toolkit
+documentation for general information on using KToolbar projects.</p>
+
+<p><b>Note:</b> The KToolbar project contains code that is shared
+between the client and the server. If you modify the shared code in
+the KToolbar project, make sure to reflect the changes on the
+server.</p>
+-->
+ 
+<hr noshade=""><a href="copyright.html">&copy; 2002, 2003 Sun
+Microsystems, Inc.  All rights reserved.</a>
+</body>
+</html>

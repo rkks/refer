@@ -1,0 +1,12 @@
+child.c:5: warning: function declaration isn't a prototype
+child.c:9: warning: function declaration isn't a prototype
+child.c: In function `main':
+child.c:12: warning: comparison between pointer and integer
+child.c:15: warning: implicit declaration of function `fork'
+child.c:18: warning: implicit declaration of function `sleep'
+child.c:21: warning: implicit declaration of function `pause'
+child.c: At top level:
+child.c:27: warning: function declaration isn't a prototype
+child.c: In function `sig_cld':
+child.c:32: warning: comparison between pointer and integer
+child.c:35: warning: implicit declaration of function `wait'

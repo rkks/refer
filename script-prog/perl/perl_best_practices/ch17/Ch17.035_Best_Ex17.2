@@ -1,0 +1,95 @@
+##############################################################################
+##   Example 17.2 (Recommended) from Chapter 17 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 17-2. Accessor subroutines instead of interface variables
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Serialize;
+use Carp;
+use Readonly;
+use Perl6::Export::Attrs;
+ 
+Readonly my $MAX_DEPTH => 100;
+ 
+# Lexical variables that specify shared features of the module...
+my $compaction = 'none';
+my $depth      = $MAX_DEPTH;
+ 
+# Table of compaction tools...
+my %compactor = (
+  # Value of       Subroutine returning
+  # $compaction    compacted form of arg
+      none     =>   sub { return shift },
+      zip      =>   \&compact_with_zip,
+      gzip     =>   \&compact_with_gzip,
+      bz       =>   \&compact_with_bz,
+      # etc.
+);
+ 
+# Accessor subroutines for state variables...
+sub set_compaction {
+    my ($new_compaction) = @_;
+    
+    # Has to be a compaction type from the table...
+    croak "Unknown compaction type ($new_compaction)"
+        if !exists $compactor{$new_compaction};
+ 
+    # If so, remember it...
+    $compaction = $new_compaction;
+ 
+    return;
+}
+ 
+sub set_depth {
+    my ($new_depth) = @_;
+ 
+    # Any non-negative depth is okay...
+    if ($new_depth >= 0) {
+        $depth = $new_depth;
+    }
+    # Any negative depth is an error, so fix it and report...
+    else {
+        $depth = 0;
+        carp "Negative depth ($new_depth) interpreted as zero";
+    }
+ 
+    return;
+}
+ 
+sub _serialize {
+    return 'corn flakes';
+}
+
+# Subroutine to serialize a data structure, passed by reference...
+sub freeze : Export {
+    my ($data_structure_ref) = @_;
+ 
+    return $compactor{$compaction}->( _serialize($data_structure_ref) );
+}
+ 
+# and elsewhere...
+ 
+# use Serialize;
+ 
+Serialize::set_depth(-20);         # warning issued and value normalized to zero
+Serialize::set_compaction(1);      # exception thrown here
+ 
+# and later...
+my $data_ref;
+ 
+my $frozen_data = Serialize::freeze($data_ref);
+

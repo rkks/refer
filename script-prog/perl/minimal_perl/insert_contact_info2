@@ -1,0 +1,21 @@
+#! /usr/bin/perl -s -i.bak -wpl
+# Inserts contact info for script author after shebang line
+
+BEGIN {
+    $author  or
+        warn "Usage: $0 -author='Author info' f1 [f2 ...]\n"  and
+            exit 255;
+}
+
+# Rewrite shebang line to append contact info
+$. == 1 and
+# The expanded version of this substitution operator follows below:
+#      s|^#!.*/bin/.+$|$&\n# Author: $author|g;
+ s|
+   ^         # start match at beginning of line
+     \#!       # shebang characters
+     .*        # optionally followed by anything; including nothing
+     /bin/     # followed by a component of the interpreter path
+     .+        # followed by the rest of the interpreter path
+   $         # up to the end of line
+  |$&\n\# Author: $author|gx; # replace by match, \n, author stuff

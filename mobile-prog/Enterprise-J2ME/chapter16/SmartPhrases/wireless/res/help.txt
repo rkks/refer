@@ -1,0 +1,17 @@
+Smart Phrases is a complete dictionary and thesaurus, a smart spell checker with suggestions and a language usage checker. It has the following buttons:
+
+GO: Check the query string via an online dictionary or Google. See below
+
+Dictionary: Look up the meaning and synonym of the query string via an online dictionary
+  
+Usage Stat: Check the usage statistics of the EXACT query phrase via Google
+
+-----
+
+MORE: Check pronunciation based spell suggestions using Google or dictionary
+
+Clear History: Clear all cached entries
+
+Back: Go back to query form with last query string
+
+Help: This screen

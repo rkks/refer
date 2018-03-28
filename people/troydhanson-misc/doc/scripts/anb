@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+sub usage {
+  print "$0: filea fileb\n";
+  exit -1;
+}
+usage unless scalar @ARGV == 2;
+my $a = shift @ARGV;
+my $b = shift @ARGV;
+local $/;
+open A, "<$a" or die "can't open $a: $!\n";
+open B, "<$b" or die "can't open $b: $!\n";
+my $ac = <A>;  # slurp
+my $bc = <B>;  # slurp
+my %bl;
+$bl{$_}++ for split /\n/, $bc;
+for my $al (split /\n/, $ac) {
+    print "$al\n" unless $bl{$al};
+}

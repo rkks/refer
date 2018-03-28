@@ -1,0 +1,4 @@
+Not really a bug:
+When at end of file cursor position shows x/x+1 rather
+than x/x. This is because the cursor position goes from   
+0 to filelength-1, rather than 1 to filelength.

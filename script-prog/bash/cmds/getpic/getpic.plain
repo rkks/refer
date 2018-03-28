@@ -1,0 +1,87 @@
+:
+##########################################################################
+# Title      :	getpic - background picture for X11 with xv
+# Author     :	Heiner Steven (heiner.steven@odn.de)
+#		(based on a script by muftix@asbach.de)
+# Date       :	1995-03-07
+# Requires   :	cfcat, rand
+# Category   :	Desktop
+# SCCS-Id.   :	@(#) getpic	2.1 04/03/12
+##########################################################################
+# Description
+#	Prints name of a background image
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='2.1'
+: ${GREP:=egrep}
+# Directories to search for pictures
+: ${PICDIRS:="$HOME/pictures:/export/pictures:/usr/local/pictures"}
+: ${PICEXCL:=$HOME/.picexclude}		# exclude list
+: ${PICDEF:=`cfcat $HOME/.picdefault 2>/dev/null`}	# Default image
+usage () {
+    echo >&2 "$PN - print name of a background picture, $VER
+usage: $PN [picture|pattern]
+If no picture is specified, one is chosen randomly. Otherwise a picture
+is chosen randomly chosen from all files matching the specified pattern.
+Environment variables:
+    Directory to search
+	   for pictures: PICDIRS=$PICDIRS
+    Pictures to exclude: PICEXCL=$PICEXCL
+    Name of default picture: PICDEV=$PICDEF"
+    exit 1
+}
+msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+[ -f "$PICEXCL" ] || > $PICEXCL
+[ -f "$PICDEF" ] || echo "# default picture for $PN" > $HOME/.picdefault
+Pic=$PICDEF
+PicList=${TMPDIR:=/tmp}/gp$$.l
+Tmp=$TMPDIR/gp$$.t
+ 
+# Remove temporary file at exit or interrupt
+trap 'rm -f "$PicList" "$Tmp" > /dev/null 2>&1' 0
+trap "exit 2" 1 2 3 15
+# Create picture list and return count
+for dir in `echo "$PICDIRS" | tr : ' '`
+do
+    find "$dir" -type f -print 2>/dev/null |
+	fgrep -v -f "$PICEXCL"
+done > "$PicList" 
+if [ $# -gt 0 ]
+then					# try to get specified picture
+    # Select the matching pictures
+    "$GREP" "$1" "$PicList" > "$Tmp" && mv "$Tmp" "$PicList" || exit 1
+fi
+# Count images (lines), remove leading blanks
+n=`echo \`wc -l < "$PicList"\``
+if [ ${n:=0} -gt 0 ]
+then					# randomly select picture
+    # Randomly choose one picture 
+    k=`rand "$n"`
+    Pic=`sed -ne "${k}{p;q;}" "$PicList"`
+    if [ -r "$Pic" ]
+    then
+	msg "selected #$k of $n pictures: $Pic"
+    else
+    	msg "could not read file $Pic - using default"
+    	Pic=$PICDEF
+    fi
+fi
+[ -z "$Pic" ] && fatal "could not determine picture"
+cat <<EOT
+$Pic
+EOT

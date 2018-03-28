@@ -1,0 +1,26 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my ($title, $first_name, $last_name);
+my $full_name = 'Steve Austin';
+'abc' =~ m{(.)(.)(.)}xms;
+
+if ($full_name =~ m/\A (Mrs?|Ms|Dr) \s+ (\S+) \s+ (\S+) \z/xms) {
+    ($title, $first_name, $last_name) = ($1, $2, $3);
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $title, $first_name, $last_name ];

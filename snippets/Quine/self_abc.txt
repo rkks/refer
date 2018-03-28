@@ -1,0 +1,43 @@
+Language: ABC
+
+
+Author: Jurjen Bos
+
+HOW TO SELFREPRODUCE:
+   PUT '' IN dna
+   PUT dna^"HOW TO SELFREPRODUCE:\N1PUT \q\q IN dna\d\n1PUT dna IN p\n1" IN dna
+   PUT dna^"PUT {[\q0\q]: 0; [\q1\q]:3; [\q2\q]: 6; [\q3\q]: 9; [\q4\q]" IN dna
+   PUT dna^": 12; [\q5\q]: 15} IN indent\n1WHILE p<>\q\q:\n2SELECT:\n3p" IN dna
+   PUT dna^"|1<>\q\\\q:\n4WRITE p|1\n4PUT p@2 IN p\n3p|2=\q\\n\q:\n4WRI" IN dna
+   PUT dna^"TE /\q \q^^indent[p@3|1]\n4PUT p@4 IN p\n3p|2=\q\\q\q:\n4WR" IN dna
+   PUT dna^"ITE \q\q\q\q\n4PUT p@3 IN p\n3p|2=\q\\d\q:\n4PUT dna IN p2\" IN dna
+   PUT dna^"n4WHILE p2<>\q\q:\n5WRITE /\q   PUT dna^\q\q\bp2|59\b\q\q I" IN dna
+   PUT dna^"N dna\n5PUT p2@min{60; #p2+1} IN p2\n4PUT p@3 IN p\n3p|2=\q" IN dna
+   PUT dna^"\\\\\q:\n4WRITE \q\\\q\n4PUT p@3 IN p\n3p|2=\q\\b\q:\n4WRIT" IN dna
+   PUT dna^"E \q\b\b\q\n4PUT p@3 IN p" IN dna
+   PUT dna IN p
+   PUT {["0"]: 0; ["1"]: 3; ["2"]: 6; ["3"]: 9; ["4"]: 12; ["5"]: 15} IN indent
+   WHILE p<>"":
+      SELECT:
+         p|1<>"\":
+            WRITE p|1
+            PUT p@2 IN p
+         p|2="\n":
+            WRITE /" "^^indent[p@3|1]
+            PUT p@4 IN p
+         p|2="\q":
+            WRITE """"
+            PUT p@3 IN p
+         p|2="\d":
+            PUT dna IN p2
+            WHILE p2<>"":
+               WRITE /"   PUT dna^""`p2|59`"" IN dna"
+               PUT p2@min{60; #p2+1} IN p2
+            PUT p@3 IN p
+         p|2="\\":
+            WRITE "\"
+            PUT p@3 IN p
+         p|2="\b":
+            WRITE "``"
+            PUT p@3 IN p
+       

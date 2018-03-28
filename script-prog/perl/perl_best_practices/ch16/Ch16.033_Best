@@ -1,0 +1,48 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Book;
+{
+    # Declare attribute hashes, and construct a list of references to them
+    # (the \(...) applies the \ operator to each element of the list)...
+    my @attr_refs = \(
+        my %title_of,
+        my %author_of,
+        my %publisher_of,
+        my %year_of,
+        my %topic_of,
+        my %style_of,
+        my %price_of,
+        my %rating_of,
+        my %sales_of,
+    );
+ 
+    # Clean up attributes when object is destroyed...
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        # Update library information...
+        Library->remove($self);
+ 
+        # Clean up attribute hashes...
+        for my $attr_ref (@attr_refs) {
+            delete $attr_ref->{$ident};
+        }
+ 
+        return;
+    }
+}

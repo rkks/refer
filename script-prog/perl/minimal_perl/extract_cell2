@@ -1,0 +1,21 @@
+#! /usr/bin/perl -s -wnla
+
+# Prints field indicated by $recnum/$fnum, preceded by filename.
+# -fnum switch handles field numbers as well as negative indices.
+
+our ($p);       # -p switch for paragraph mode is optional
+
+BEGIN {
+  $fnum  and  $recnum or
+      warn "Usage: $0 -recnum=M -fnum=N\n"  and
+          exit 255;
+  # Decrement positive fnum, so user can say 1, and get index of 0
+  # But don't decrement negative values; they're indices already!
+   $index=$fnum;               # initially assume $fnum is an index
+   $index >= 1 and $index--;   # make it an index if it wasn't
+   $p  and  $/="";             # set paragraph mode if requested
+}
+$. == $recnum  and  print "\u$ARGV: $F[$index]";
+
+# Reset record counter $. after end of each file
+eof  and  close ARGV;

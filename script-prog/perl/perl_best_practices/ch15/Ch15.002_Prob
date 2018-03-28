@@ -1,0 +1,40 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Use our company's proprietary OO file system interface...
+# use File::Hierarchy;
+ 
+# Make an object representing the user's home directory...
+my $fs = File::Hierarchy->new('~');
+ 
+# Then poke around inside the (array-based)  object 
+# and pull out its embedded file objects...
+for my $file (@{$fs->{files}}) {
+    # Then poke around inside each (hash-based) file object, 
+    # pull out its name, and print it...
+    print $file->{name}, "\n";
+}
+
+
+package File::Hierarchy;
+
+sub new {
+    my ($class) = @_;
+    return bless {files => []}, $class;
+}
+
+sub get_files {}

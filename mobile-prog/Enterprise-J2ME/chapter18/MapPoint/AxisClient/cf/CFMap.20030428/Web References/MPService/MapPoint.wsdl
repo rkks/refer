@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <s:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:complexType name="ArrayOf_xsd_string">
+        <s:complexContent mixed="false">
+          <s:restriction base="soapenc:Array">
+            <s:attribute d7p1:arrayType="s:string[]" ref="soapenc:arrayType" xmlns:d7p1="http://schemas.xmlsoap.org/wsdl/" />
+          </s:restriction>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ArrayOf_xsd_string" nillable="true" type="s0:ArrayOf_xsd_string" />
+    </s:schema>
+  </types>
+  <message name="getDirectionsResponse">
+    <part name="getDirectionsReturn" type="s0:ArrayOf_xsd_string" />
+  </message>
+  <message name="getSegmentNumResponse">
+    <part name="getSegmentNumReturn" type="s:int" />
+  </message>
+  <message name="getMapRequest">
+    <part name="in0" type="s:int" />
+    <part name="in1" type="s:int" />
+    <part name="in2" type="s:int" />
+  </message>
+  <message name="getDirectionsRequest">
+    <part name="in0" type="s:string" />
+    <part name="in1" type="s:string" />
+    <part name="in2" type="s:string" />
+    <part name="in3" type="s:string" />
+    <part name="in4" type="s:string" />
+    <part name="in5" type="s:string" />
+    <part name="in6" type="s:string" />
+    <part name="in7" type="s:string" />
+  </message>
+  <message name="getMapResponse">
+    <part name="getMapReturn" type="s:base64Binary" />
+  </message>
+  <message name="getSegmentNumRequest" />
+  <portType name="MPClient">
+    <operation name="getMap" parameterOrder="in0 in1 in2">
+      <input name="getMapRequest" message="s0:getMapRequest" />
+      <output name="getMapResponse" message="s0:getMapResponse" />
+    </operation>
+    <operation name="getDirections" parameterOrder="in0 in1 in2 in3 in4 in5 in6 in7">
+      <input name="getDirectionsRequest" message="s0:getDirectionsRequest" />
+      <output name="getDirectionsResponse" message="s0:getDirectionsResponse" />
+    </operation>
+    <operation name="getSegmentNum">
+      <input name="getSegmentNumRequest" message="s0:getSegmentNumRequest" />
+      <output name="getSegmentNumResponse" message="s0:getSegmentNumResponse" />
+    </operation>
+  </portType>
+  <binding name="MapPointSoapBinding" type="s0:MPClient">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <operation name="getMap">
+      <soap:operation soapAction="" />
+      <input name="getMapRequest">
+        <soap:body use="encoded" namespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output name="getMapResponse">
+        <soap:body use="encoded" namespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+    <operation name="getDirections">
+      <soap:operation soapAction="" />
+      <input name="getDirectionsRequest">
+        <soap:body use="encoded" namespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output name="getDirectionsResponse">
+        <soap:body use="encoded" namespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+    <operation name="getSegmentNum">
+      <soap:operation soapAction="" />
+      <input name="getSegmentNumRequest">
+        <soap:body use="encoded" namespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output name="getSegmentNumResponse">
+        <soap:body use="encoded" namespace="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="MPClientService">
+    <port name="MapPoint" binding="s0:MapPointSoapBinding">
+      <soap:address location="http://pancake.as.utexas.edu:8080/axis/services/MapPoint" />
+    </port>
+  </service>
+</definitions>

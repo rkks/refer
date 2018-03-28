@@ -1,0 +1,14 @@
+Language: C++
+Author: lapinski@utexas.edu
+
+#include<iostream.h>
+main(){char*s="#include<iostream.h>%cmain(){char*s=%c%s%c;cout.form(s,10,34,s,34,10);}%c";cout.form(s,10,34,s,34,10);}
+
+Author: David Rogers
+
+#include <iostream.h>
+#define ENIUQ(TEMPLATE) cout << TEMPLATE << "(" << #TEMPLATE << ");}";
+
+void main()
+{ENIUQ("#include <iostream.h>\n#define ENIUQ(TEMPLATE) cout << TEMPLATE 
+<< \"(\" << #TEMPLATE << \");}\";\n\nvoid main()\n{ENIUQ");}

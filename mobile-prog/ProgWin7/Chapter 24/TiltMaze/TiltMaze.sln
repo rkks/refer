@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiltMaze", "TiltMaze\TiltMaze\TiltMaze.csproj", "{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TiltMazeContent", "TiltMaze\TiltMazeContent\TiltMazeContent.contentproj", "{E7065547-FA4A-4AA5-B493-F0C227C7FEA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{BA329C7C-C03F-4D1C-9CA9-53118D97C79B}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{E7065547-FA4A-4AA5-B493-F0C227C7FEA5}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{E7065547-FA4A-4AA5-B493-F0C227C7FEA5}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

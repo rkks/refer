@@ -1,0 +1,75 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;getopt-long.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;Parsing long-option command lines with getopt.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 11/08/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* for getopt_long() */</span><br />
+<span style="color:#683821;">#include &lt;getopt.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> ch; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* service variables */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> long_opt_index = <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> longval;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> *my_argument;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> option long_options[] = { &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* long options array. Items are all caSe SensiTivE! */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#760f15;">"add"</span>, <span style="color:#0000ff;">0</span>, <span style="color:#881350;">NULL</span>, <span style="color:#0000ff;">'a'</span> &nbsp;&nbsp;}, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* --add or -a &nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#760f15;">"back"</span>, <span style="color:#0000ff;">0</span>, <span style="color:#881350;">NULL</span>, <span style="color:#0000ff;">'b'</span> &nbsp;}, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* --back or -b */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#760f15;">"check"</span>, <span style="color:#0000ff;">0</span>, &amp;longval, <span style="color:#0000ff;">'c'</span> }, &nbsp;<span style="color:#236e25;">/* return 'c', or return 0 and set longval to 'c' if "check" is parsed */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#760f15;">"extra"</span>, <span style="color:#0000ff;">1</span>, &amp;longval, <span style="color:#0000ff;">'x'</span> },<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#0000ff;">0</span>, &nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">0</span>, &nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">0</span>, &nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">0</span> &nbsp;&nbsp;} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* terminating -0 item */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;};<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>((ch = <span style="color:#003369;">getopt_long</span>(argc, argv, <span style="color:#760f15;">"abchx:"</span>, long_options, &amp;long_opt_index)) != -<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">switch</span><span style="color:#003369;"> </span>(ch) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'a'</span>: &nbsp;&nbsp;<span style="color:#236e25;">/* long_opt_index does not make sense for these */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* 'a' and '--add' are confused (aliased) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Option a, or --add.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'b'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* 'b' and '--back' are confused (aliased) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Option b, or --back.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'c'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* 'c' and '--check' are distinguished, but handled the same way */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Option c, not --check.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'x'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my_argument = optarg;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Option x, not --extra. Argument %s.\n"</span>, my_argument);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">0</span>: &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this is returned for long options with option[i].flag set (not NULL). */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* the flag itself will point out the option recognized, and long_opt_index is now relevant */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">switch</span><span style="color:#003369;"> </span>(longval) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'c'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* '--check' is managed here */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Option --check, not -c (Array index: %d).\n"</span>, long_opt_index);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'x'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* '--extra' is managed here */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my_argument = optarg;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Option --extra, not -x (Array index: %d). Argument: %s.\n"</span>, long_opt_index, my_argument);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* there's no default here */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'h'</span>: &nbsp;&nbsp;<span style="color:#236e25;">/* mind that h is not described in the long option list */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Usage: getopt-long [-a or --add] [-b or --back] [-c or --check] [-x or --extra]\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">default</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"You, lamah!\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

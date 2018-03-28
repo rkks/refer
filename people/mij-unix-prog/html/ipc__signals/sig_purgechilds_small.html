@@ -1,0 +1,106 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  sig_purgechilds.c
+ *  
+ *  The parent process pulls a child exit status whenever the OS notifies
+ *  a child status change.
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 04/01/05.
+ *  Original source file available at http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+<span class="ccom">/* for printf() and fgetc() */</span>
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* for fork() */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+</span><span class="ccom">/* for srandom() and random() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span><span class="ccom">/* for time() [seeding srandom()] */</span>
+<span class="cpdr">#include &lt;time.h&gt;
+</span><span class="ccom">/* for waitpid() */</span>
+<span class="cpdr">#include &lt;sys/wait.h&gt;
+</span><span class="ccom">/* for signal(), kill() and raise() */</span>
+<span class="cpdr">#include &lt;signal.h&gt;
+</span>
+<span class="ccom">/* how many childs to raise */</span>
+<span class="cpdr">#define NUM_PROCS   </span><span class="cval">5</span><span class="cpdr">
+</span>
+
+<span class="ccom">/* handler prototype for SIGCHLD */</span>
+<span class="ctyp">void</span> <span class="cfun">child_handler</span>(<span class="ctyp">int</span>);
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[])
+{
+    <span class="ctyp">int</span> i, exit_status;
+    
+    
+    <span class="ccom">/* execute child_handler() when receiving a signal of type SIGCHLD */</span>
+    <span class="cfun">signal</span>(SIGCHLD, &amp;child_handler);
+
+    <span class="ccom">/* initialize the random num generator */</span>
+    <span class="cfun">srandom</span>(<span class="cfun">time</span>(<span class="ctyp">NULL</span>));
+    
+    
+    <span class="cfun">printf</span>(<span class="cstr">"Try to issue a \'ps\' while the process is running...\n"</span>);
+    
+    
+    <span class="ccom">/* produce NUM_PROCS childs */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>; i &lt; NUM_PROCS; i++) {
+        <span class="ctyp">if</span><span class="cfun"> </span>(! <span class="cfun">fork</span>()) {
+            <span class="ccom">/* child */</span>
+            
+            <span class="ccom">/* choosing a random exit status between 0 and 99 */</span>
+            exit_status = (<span class="ctyp">int</span>)(<span class="cfun">random</span>() % <span class="cval">100</span>);
+            <span class="cfun">printf</span>(<span class="cstr">" -&gt; New child %d, will exit with %d.\n"</span>, (<span class="ctyp">int</span>)<span class="cfun">getpid</span>(), exit_status);
+            
+            <span class="ccom">/* try to skip signals overlapping */</span>
+            <span class="cfun">sleep</span>((<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)(<span class="cfun">random</span>() % <span class="cval">3</span>));
+            
+            <span class="ccom">/* choosing a value to exit between 0 and 99 */</span>
+            <span class="cfun">exit</span>(exit_status);
+        } 
+        
+        <span class="ccom">/* father */</span>
+        <span class="cfun">sleep</span>((<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)(<span class="cfun">random</span>() % <span class="cval">2</span>));
+    }
+
+    <span class="ccom">/* checkpoint */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"parent: done with fork()ing.\n"</span>);
+
+    <span class="ccom">/* why this is not equivalent to sleep(20) here? */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>; i &lt; <span class="cval">10</span>; i++) {
+        <span class="cfun">sleep</span>(<span class="cval">1</span>);
+    }
+    <span class="ccom">/* all the child processes should be done now */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"I did not purge all the childs. Timeout; exiting.\n"</span>);
+    
+    <span class="ccom">/* terminate myself =&gt; exit */</span>
+    <span class="cfun">kill</span>(<span class="cfun">getpid</span>(), <span class="cval">15</span>);
+    
+    <span class="ccom">/* this won't be actually executed */</span>
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+
+<span class="ccom">/* handler definition for SIGCHLD */</span>
+<span class="ctyp">void</span> <span class="cfun">child_handler</span>(<span class="ctyp">int</span> sig_type)
+{
+    <span class="ctyp">int</span> child_status;
+    pid_t child;
+    <span class="ctyp">static</span> <span class="ctyp">int</span> call_num = <span class="cval">0</span>;
+
+    <span class="ccom">/* getting the child's exit status */</span>
+    child = <span class="cfun">waitpid</span>(<span class="cval">0</span>, &amp;child_status, <span class="cval">0</span>);
+    
+    <span class="cfun">printf</span>(<span class="cstr">"&lt;-  Child %d exited with status %d.\n"</span>, child, <span class="cfun">WEXITSTATUS</span>(child_status)); 
+    
+    <span class="ccom">/* did we get all the childs? */</span>
+    <span class="ctyp">if</span><span class="cfun"> </span>(++call_num &gt;= NUM_PROCS) {
+        <span class="cfun">printf</span>(<span class="cstr">"I got all the childs this time. Going to exit.\n"</span>);
+        <span class="cfun">exit </span>(<span class="cval">0</span>);
+    }
+    
+    <span class="ctyp">return</span>;
+}
+</div>

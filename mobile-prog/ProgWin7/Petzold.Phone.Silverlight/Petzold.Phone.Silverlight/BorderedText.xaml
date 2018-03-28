@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Petzold.Phone.Silverlight.BorderedText"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             Name="this">
+    
+    <Border Background="{Binding ElementName=this, Path=Background}"
+            BorderBrush="{Binding ElementName=this, Path=BorderBrush}"
+            BorderThickness="{Binding ElementName=this, Path=BorderThickness}"
+            CornerRadius="{Binding ElementName=this, Path=CornerRadius}"
+            Padding="{Binding ElementName=this, Path=Padding}">
+
+        <TextBlock Text="{Binding ElementName=this, Path=Text}"
+                   TextAlignment="{Binding ElementName=this, Path=TextAlignment}"
+                   TextDecorations="{Binding ElementName=this, Path=TextDecorations}"
+                   TextWrapping="{Binding ElementName=this, Path=TextWrapping}" />
+    </Border>
+</UserControl>

@@ -1,0 +1,46 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 13 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub get_number {
+    Readonly my $MAX_ALLOWED_VALUE => 10;
+    my $num = 17;
+
+    croak( "Numeric value $num too big (must be $MAX_ALLOWED_VALUE or less)" )
+        if $num > $MAX_ALLOWED_VALUE;
+}
+
+
+# Get the next number...
+my $value = eval { get_number() };
+ 
+# If the attempt fails...
+if (defined $EVAL_ERROR) {
+    # If the candidate was considered too big, go with the maximum allowed...
+    if ($EVAL_ERROR =~ m{ \A Numeric [ ] value [ ] \S+ [ ] too [ ] big }xms) {
+        ($value) = $EVAL_ERROR =~ m{ must [ ] be [ ] (\S+) [ ] or [ ] less }xms;
+    }
+    # If the candidate was deemed too small, try it anyway...
+    elsif ($EVAL_ERROR =~ m{ \A Numeric [ ] value [ ] (\S+) [ ] too [ ] small }xms) {
+        $value = $1;
+    }
+    # Otherwise, rethrow the exception...
+    else {
+        croak( $EVAL_ERROR );
+    }
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $value ];

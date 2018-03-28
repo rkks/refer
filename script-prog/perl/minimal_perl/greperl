@@ -1,0 +1,10 @@
+#! /usr/bin/perl -s -wnl
+
+BEGIN {
+    # -pattern='RE' switch is required
+    $pattern  or
+        warn "Usage: $0 -pattern='RE' [ file1 ... ]\n"  and 
+            exit 255;
+}
+
+/$pattern/  and  print;

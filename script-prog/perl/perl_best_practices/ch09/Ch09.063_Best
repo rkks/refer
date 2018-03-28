@@ -1,0 +1,30 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+use List::Util qw( min max );
+ 
+sub clip_to_range {
+    my ($min, $max, @data) = @_;
+ 
+    return map { max( $min, min($max, $_) ) } @data;
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    clip_to_range(2,9 => 1,3,5,-2,99,11,9,8 )
+];

@@ -1,0 +1,16 @@
+div.greyEntry
+{        
+	background-color	:#EAEAEA;
+}
+
+div
+{
+	background-color	:white;
+	padding				:2px;
+}
+
+a.Entry:hover
+{
+	font-weight			:bold;
+	color				:Black;
+}

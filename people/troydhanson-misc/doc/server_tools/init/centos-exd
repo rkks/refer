@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# exd: sample daemon
+#
+# chkconfig:   2345 26 89
+# description: example daemon
+
+. /etc/rc.d/init.d/functions
+
+# NOTE: if exd is capable of writing a pidfile then in start() use
+#   daemon --pidfile=/var/run/exd.pid /usr/bin/exd -p /var/run/exd.pid &
+# and in stop() use
+#   killproc -p /var/run/exd.pid exd
+# and in case status) use
+#   status -p /var/run/exd.pid exd
+
+start()
+{
+    echo -n $"Starting exd: "
+    daemon /usr/bin/exd &
+    touch /var/lock/subsys/exd
+    echo
+}
+
+stop()
+{
+    echo -n $"Shutting down exd: "
+    killproc exd
+    rm -f /var/lock/subsys/exd
+    echo
+}
+
+[ -f /usr/bin/exd ] || exit 0
+
+# see how we were called
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart|reload)
+        stop
+        start
+        ;;
+  condrestart)
+        [ -e /var/lock/subsys/exd ] && (stop; start)
+        ;;
+  status)
+        status exd
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|condrestart}"
+        exit 1
+esac
+
+exit 0

@@ -1,0 +1,35 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EXPR  => qr{foo}xms;
+Readonly my $VAR   => qr{bar}xms;
+Readonly my $LIST  => qr{1[.][.]9}xms;
+Readonly my $BLOCK => qr{ [{] [.]{3} [}] }xms;
+
+
+Readonly my $WITH_BLOCK => qr{
+   with \s+                                 # Always a 'with' keyword
+   (?: each \s+                             #  If followed by 'each'
+       (?:$EXPR                             #    Then expect an expression
+         | $VAR  \s* in \s* [(] $LIST [)]   #    or a variable and list
+       )
+     | [(] $LIST [)]                        #  Otherwise, no 'each' and just a list
+   )
+   \s* $BLOCK                               # And the loop block always at the end
+}xms;
+
+croak 'oops!'    if 'with er go est' =~ $WITH_BLOCK;
+croak 'matched!' if 'with each bar in (1..9) {...}' =~ $WITH_BLOCK;

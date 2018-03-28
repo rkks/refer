@@ -1,0 +1,327 @@
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.4">
+
+  <context-param>
+    <param-name>admin email</param-name>
+    <param-value>admin@jspbook.com</param-value>
+  </context-param>
+
+  <filter>
+    <filter-name>HelloWorldFilter</filter-name>
+    <filter-class>com.jspbook.HelloWorldFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>LinkTrackerFilter</filter-name>
+    <filter-class>com.jspbook.LinkTrackerFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>GZIPFilter</filter-name>
+    <filter-class>com.jspbook.GZIPFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>CacheFilter</filter-name>
+    <filter-class>com.jspbook.CacheFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>ControlFilter</filter-name>
+    <filter-class>com.jspbook.ControlFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>SimpleI18nFilter</filter-name>
+    <filter-class>com.jspbook.SimpleI18nFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>MCTemplateFilter</filter-name>
+    <filter-class>com.jspbook.MCTemplateFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>MCTemplateFilter</filter-name>
+    <url-pattern>/mc/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>SimpleI18nFilter</filter-name>
+    <url-pattern>/welcome.html</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>ControlFilter</filter-name>
+    <url-pattern>/model2/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>GZIPFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CacheFilter</filter-name>
+    <url-pattern>/timemonger.jsp</url-pattern>
+    <init-param>
+      <param-name>cacheTimeout</param-name>
+      <param-value>1</param-value>
+    </init-param>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>LinkTrackerFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>HelloWorldFilter</filter-name>
+    <url-pattern>/HelloWorldFilter</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>HelloWorld</servlet-name>
+    <servlet-class>com.jspbook.HelloWorld</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>InternationalizedHelloWorld</servlet-name>
+    <servlet-class>com.jspbook.InternationalizedHelloWorld</servlet-class>
+    <init-param>
+      <param-name>greeting</param-name>
+      <param-value>Bonjour!</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DynamicImage</servlet-name>
+    <servlet-class>com.jspbook.DynamicImage</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>LinkTracker</servlet-name>
+    <servlet-class>com.jspbook.LinkTracker</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ShowHeaders</servlet-name>
+    <servlet-class>com.jspbook.ShowHeaders</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ShowParameters</servlet-name>
+    <servlet-class>com.jspbook.ShowParameters</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ShowForm</servlet-name>
+    <servlet-class>com.jspbook.ShowForm</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>FileUpload</servlet-name>
+    <servlet-class>com.jspbook.FileUpload</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Servlet2Servlet</servlet-name>
+    <servlet-class>com.jspbook.Servlet2Servlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Servlet2Servlet2</servlet-name>
+    <servlet-class>com.jspbook.Servlet2Servlet2</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>MockError</servlet-name>
+    <servlet-class>com.jspbook.MockError</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ShowSource</servlet-name>
+    <servlet-class>com.jspbook.ShowSource</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DisplayUsers</servlet-name>
+    <servlet-class>com.jspbook.DisplayUsers</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>InternationalizedHelloWorldJSP</servlet-name>
+    <jsp-file>/InternationalizedHelloWorld.jsp</jsp-file>
+    <init-param>
+      <param-name>greeting</param-name>
+      <param-value>Bonjour!</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>EnhancedErrorPage</servlet-name>
+    <servlet-class>com.jspbook.EnhancedErrorPage</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>CompressionTest</servlet-name>
+    <servlet-class>com.jspbook.CompressionTest</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>I18nHelloWorld</servlet-name>
+    <servlet-class>com.jspbook.I18nHelloWorld</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>EditCookies</servlet-name>
+    <servlet-class>com.jspbook.EditCookies</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditCookies</servlet-name>
+    <url-pattern>/EditCookies</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>I18nHelloWorld</servlet-name>
+    <url-pattern>/I18nHelloWorld</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>CompressionTest</servlet-name>
+    <url-pattern>/CompressionTest</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>EnhancedErrorPage</servlet-name>
+    <url-pattern>/EnhancedErrorPage</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>InternationalizedHelloWorldJSP</servlet-name>
+    <url-pattern>/InternationalizedHelloWorld.jsp</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DisplayUsers</servlet-name>
+    <url-pattern>/DisplayUsers</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ShowSource</servlet-name>
+    <url-pattern>/ShowSource</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>MockError</servlet-name>
+    <url-pattern>/MockError</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Servlet2Servlet2</servlet-name>
+    <url-pattern>/Servlet2Servlet2</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Servlet2Servlet</servlet-name>
+    <url-pattern>/Servlet2Servlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>FileUpload</servlet-name>
+    <url-pattern>/FileUpload</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ShowForm</servlet-name>
+    <url-pattern>/ShowForm</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ShowParameters</servlet-name>
+    <url-pattern>/ShowParameters</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ShowHeaders</servlet-name>
+    <url-pattern>/ShowHeaders</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>LinkTracker</servlet-name>
+    <url-pattern>/LinkTracker</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DynamicImage</servlet-name>
+    <url-pattern>/DynamicImage</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>InternationalizedHelloWorld</servlet-name>
+    <url-pattern>/InternationalizedHelloWorld</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HelloWorld</servlet-name>
+    <url-pattern>/HelloWorld</url-pattern>
+  </servlet-mapping>
+
+  <listener>
+    <listener-class>
+     com.jspbook.ConcurrentUserTracker
+    </listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+     com.jspbook.SiteLogger
+    </listener-class>
+  </listener>
+
+  <welcome-file-list>
+    <welcome-file>welcome.html</welcome-file>
+  </welcome-file-list>
+<!--
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/EmailErrorPage.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/FileNotFound.jsp</location>
+  </error-page>
+-->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>SecuredBookSite</web-resource-name>
+      <url-pattern>/secured/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Reader</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>SecuredBookSite</web-resource-name>
+      <url-pattern>/tlssecured/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <form-login-config>
+      <form-login-page>/login.jsp</form-login-page>
+      <form-error-page>/error.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+  <taglib>
+    <taglib-uri>http://www.jspbook.com/example</taglib-uri>
+    <taglib-location>/WEB-INF/example.tld</taglib-location>
+  </taglib>
+</web-app>

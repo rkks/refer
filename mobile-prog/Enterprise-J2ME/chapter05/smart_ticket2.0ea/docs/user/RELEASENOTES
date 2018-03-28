@@ -1,0 +1,109 @@
+Java[tm] Smart Ticket Sample Application 2.0 Early Access
+Release Notes
+
+CONTENTS
+
+- Overview
+- Early Access
+- User Documentation
+- What's New
+- Known Issues
+- Sending Feedback
+
+OVERVIEW
+
+The Java Smart Ticket Sample Application is a sample wireless
+enterprise application using Java technology. In this movie ticketing
+application, customers may purchase movie tickets using a mobile
+device such as a cell phone, palmtop, or two-way pager.
+
+The sample application is a client-server application. The client part
+uses the Mobile Information Device Profile (MIDP) of the Java 2
+Platform, Micro Edition (J2ME[tm]), and the server part runs on a Java
+2 Platform, Enterprise Edition (J2EE[tm]) application server.
+
+Developers wishing to learn more about the design principles behind
+the Java Smart Ticket Sample Application should visit the Java
+BluePrints for Wireless Web site at:
+
+http://java.sun.com/blueprints/wireless/
+
+This sample application is intended to be educational. Some
+functionality may be missing or incomplete.
+
+EARLY ACCESS
+
+This version is distributed for early access. Some functionality may
+be missing or incomplete.
+
+Note: The 2.0 Early Access version of the sample application uses
+the J2EE server code from version 1.2. So, if you already have version
+1.2, you do not need to redeploy the J2EE part of the application if
+it is already deployed.
+
+USER DOCUMENTATION
+
+Please consult the user documentation (installation instructions,
+etc.) in the directory {smart_ticket.dir}/docs/user/, where
+{smart_ticket.dir} is the root directory of the sample application
+bundle.
+
+WHAT'S NEW
+
+In version 2.0 of the application, a MIDP 2.0 user interface was
+added. Because version 2.0 is distributed for early access, this user
+interface is not final.
+
+In version 1.2 of the application, a disconnected mode of operation
+was added, providing the following enhancements:
+
+- Downloading (persistence) of movie listings to enable browsing
+offline
+
+- Caching of movie listings to speed up browsing online
+
+- Synchronization of movie ratings so that users may enter movie
+ratings from different devices or different types of clients
+(e.g. mobile devices, desktops, laptops)
+
+KNOWN ISSUES
+
+This sample application is intended to be educational. Some
+functionality may be missing or incomplete.
+
+Known issues for this release include the following:
+
+- The application is internationalized but not localized.
+
+- For the application to filter theaters by ZIP code, you must use the
+ZIP code 95130 or 95054 when you create your account.
+
+- Account information needs to be synchronized on both the client and
+server parts. If you ever have problems accessing user information,
+remove the record store data on the client side, re-populate the
+database on the server side, and then re-enter your account
+information the next time you start the application, as if you were
+using it for the very first time.
+
+Known issues for this early access release include the following in
+particular:
+
+- Error checking and reporting for account setup is buggy and
+incomplete.
+
+- Internationalization is not fully implemented.
+
+- The seating plan UI is slightly buggy.
+
+- Many preferences are ignored.
+
+- The "Exit" button does not exit the application.
+
+- Only the last-modified-wins synchronization strategy is used.
+
+SENDING FEEDBACK
+
+Please send any feedback on this release to
+javablueprintswireless-feedback@sun.com.
+
+Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All rights reserved.

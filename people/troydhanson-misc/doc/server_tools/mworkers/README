@@ -1,0 +1,35 @@
+Programs that manage a set of workers
+=====================================
+
+  Programs that start with 'p' are multi-process workers,
+  programs that start with 't' are multi-thread workers.
+
+
+* pworkers1.c:  signal-based manager of 'n' worker processes (sigsuspend)
+* pworkers2.c:  signal-based manager of 'n' worker processes (sigwaitinfo)
+                Using sigwaitinfo the main loop accepts the signal directly
+                so no signal handler is involved. This is a nice approach.
+* tworkers1.c:  main thread keeps a queue serviced by 'n' worker threads 
+* tworkers2.c:  main thread keeps a queue serviced by 'n' worker threads.
+		When the main thread receives a signal, it cancels the worker
+                threads and 'joins' (collects) them. There is a trick needed
+                in this program: see the use of pthread_cleanup_push/pop.
+                Without their use, the mutex locked (when pthread_cond_wait
+                is canceled) would remain locked and prevent the other threads
+                from being able to cancel. By installing the pop handler to
+                release the mutex, it's released correctly in both the cancel 
+                scenario or in normal operation. (c.f. TLPI p.678).
+* tworkers3.c:  Variant of tworkers2; uses a 'shutdown' variable with a
+		condition broadcast instead of pthread_cancel. Accomplishes
+		the same result as tworkers2 with less complexity.
+
+
+--------------------------------------------------------------------------------
+
+
+Also included:
+
+ quitafter.c:   Runs a sub-program, forcing it to quit after x seconds, e.g.:
+
+                    quitafter 10s /bin/sleep 50
+

@@ -1,0 +1,52 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 11 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+sub generate_account_num {
+    return join $EMPTY_STR, map { int rand 10 } 1..10;
+}
+
+sub generate_initial_passwd {
+    return join $EMPTY_STR, map { ('a'..'z',0..9)[rand 36] } 1..6;
+}
+
+# Create a new bank account...
+sub new_account {
+    my ($customer, $id, $type) = @_;
+ 
+    # Account details are stored in anonymous hashes...
+    my $new_account = {
+        customer  => $customer,
+        id        => generate_account_num(),
+        type      => $type,
+        user_id   => $id,
+        passwd    => generate_initial_passwd(),
+    };
+ 
+    # The new account is then added to the customer's list of accounts...
+    push @{$customer->{accounts}}, $new_account;
+ 
+    return $new_account;
+}
+
+my %account = (
+    name => 'Rockerbloke',
+);
+my $account = new_account( \%account, 12345, 'Investment');
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%account ];

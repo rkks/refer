@@ -1,0 +1,258 @@
+.\" @(#)le.7 1.10 92/03/25 SMI; from _source_
+.TH le 7 "2 Oct 1991"
+.SH NAME
+le, lebuffer, ledma \- Am7990 (LANCE) Ethernet device driver
+.SH SYNOPSIS
+.nf
+.B #include <sys/stropts.h>
+.B #include <sys/ethernet.h>
+.B #include <sys/dlpi.h>
+.SH DESCRIPTION
+.IX  "le device"  ""  "\fLle\fP \(em Am7990 (LANCE) Ethernet device driver"  ""  PAGE START
+.IX  "Am7990 (LANCE) Ethernet device driver"  ""  "Am7990 (LANCE) Ethernet device driver \(em \fLle\fP"  ""  PAGE START
+.LP
+The Am7990 (LANCE) Ethernet driver is a multi-threaded,
+loadable, clonable, STREAMS hardware driver
+supporting the connectionless
+Data Link Provider Interface,
+.BR dlpi (7),
+over a LANCE Ethernet controller.
+The motherboard and add-in SBus LANCE controllers
+of several varieties are supported.
+Multiple LANCE controllers installed within the system
+are supported by the driver.
+The 
+.B le
+driver provides basic support for the LANCE hardware.
+Functions include chip initialization,
+frame transmit and receive,
+multicast and promiscuous support,
+and error recovery and reporting.
+.LP
+The cloning character-special device
+.B /dev/le
+is used to access all LANCE controllers installed within the system.
+.LP
+The
+.B lebuffer
+and
+.B ledma
+device drivers are bus nexus drivers
+which cooperate with the
+.BR le
+leaf driver in supporting the LANCE hardware functions over several distinct
+slave-only and DVMA LANCE-based Ethernet controllers.
+The 
+.B lebuffer
+and
+.B ledma
+bus nexi drivers are not directly accessible to the user.
+.LP
+The 
+.B le
+driver is a \*(lqstyle 2\*(rq Data Link Service provider.
+All M_PROTO and M_PCPROTO type msgs are interpreted as DLPI primitives.
+An explicit DL_ATTACH_REQ message by the user is required to
+associate the opened stream with a particular device
+.RB ( ppa ).
+The 
+.B ppa
+ID is interpreted as an unsigned long and indicates
+the corresponding device instance (unit) number.
+An error (DL_ERROR_ACK) is returned by the driver
+if the
+.B ppa
+field value does not correspond
+to a valid device instance number for this system.
+The device is initialized on first attach
+and de-initialized (stopped) on last detach.
+.LP
+The values returned by the driver
+in the DL_INFO_ACK primitive
+in response to the DL_INFO_REQ from the user are as follows:
+.IP
+.PD 0
+The max SDU is 1500 (ETHERMTU).
+.IP
+The min SDU is 0.
+.IP
+The 
+.B dlsap
+address length is 8.
+.IP
+The MAC type is DL_CSMACD.
+.IP
+The
+.B sap
+length value is \-2 meaning the physical address component
+is followed immediately by a 2 byte
+.B sap
+component within the DLSAP address.
+.IP
+The service mode is DL_CLDLS.
+.IP
+No optional quality of service (QOS) support is included at present
+so the QOS fields are 0.
+.IP
+The provider style is DL_STYLE2.
+.IP
+The version is DL_VERSION_2.
+.IP
+The broadcast address value is Ethernet/IEEE broadcast address (0xFFFFFF).
+.PD
+.LP
+.br
+.ne 7
+Once in the DL_ATTACHED state,
+the user must send a DL_BIND_REQ to associate a particular
+SAP (Service Access Pointer) with the stream.
+The 
+.B le
+driver interprets the 
+.B sap
+field within the DL_BIND_REQ
+as an Ethernet \*(lqtype\*(rq therefore valid values for the
+.B sap
+field are in the [0-0xFFFF] range.
+Only one Ethernet type can be bound to the stream
+at any time.
+.LP
+In addition to Ethernet V2 service,
+an \*(lq802.3 mode\*(rq is provided by the driver
+and works as follows.
+.B sap
+values in the range [0-1500] are treated
+as equivalent
+and represent a desire by the user for \*(lq802.3\*(rq mode.
+If the value of the
+.B sap
+field of the DL_BIND_REQ
+is within this range,
+then the driver computes the length of the message,
+not including initial M_PROTO mblk,
+of all subsequent DL_UNITDATA_REQ messages
+and transmits 802.3 frames having this value
+in the MAC frame header length field.
+All frames received from the media
+having a \*(lqtype\*(rq field in this range
+are assumed to be 802.3 frames
+and are routed up all open streams
+which are bound to any
+.B sap
+value within this range.
+If more than one stream is in \*(lq802.3 mode\*(rq
+then the frame will be duplicated and routed
+up multiple streams as DL_UNITDATA_IND messages.
+.LP
+The 
+.B le
+driver DLSAP address format consists of 
+the 6 byte physical (Ethernet) address component
+followed immediately by
+the 2 byte
+.B sap
+(type) component
+producing an 8 byte DLSAP address.
+Applications should *not* hardcode to this particular
+implementation-specific
+DLSAP
+address format but use information returned in the DL_INFO_ACK primitive
+to compose and decompose DLSAP addresses.
+The
+.B sap
+length, full DLSAP length,
+and
+.BR sap /physical
+ordering are included within the DL_INFO_ACK.
+The physical address length can be computed by subtracting
+the
+.B sap
+length from the full DLSAP address length
+or by issuing the DL_PHYS_ADDR_REQ to obtain
+the current physical address associated with the stream.
+.LP
+Once in the DL_BOUND state,
+the user may transmit frames on the Ethernet
+by sending DL_UNITDATA_REQ messages to the 
+.B le
+driver.
+The 
+.B le
+driver will route received Ethernet frames
+up all those open and bound streams
+having a
+.B sap
+which matches the Ethernet type
+as DL_UNITDATA_IND messages.
+Received Ethernet frames are duplicated
+and routed up multiple open streams if necessary.
+The DLSAP address contained within the DL_UNITDATA_REQ
+and DL_UNITDATA_IND messages consists
+of both the
+.B sap
+(type) and physical (Ethernet) components.
+.LP
+In addition to the mandatory connectionless DLPI message set
+the driver additionally supports the following primitives.
+.LP
+The DL_ENABMULTI_REQ and DL_DISABMULTI_REQ primitives enable/disable
+reception of individual multicast group addresses.
+A set of multicast addresses may be iteratively created
+and modified on a per-stream basis using these primitives.
+These primitives are accepted by the driver
+in any state following DL_ATTACHED.
+.LP
+The DL_PROMISCON_REQ and DL_PROMISCOFF_REQ primitives
+with the DL_PROMISC_PHYS flag set in the dl_level field
+enables/disables
+reception of all (\*(lqpromiscuous mode\*(rq) frames on the media
+including frames generated by the local host.
+.br
+.ne 5
+When used with the DL_PROMISC_SAP flag set
+this enables/disables reception of all
+.B sap
+(Ethernet type) values.
+When used with the DL_PROMISC_MULTI flag set
+this enables/disables reception of all multicast group addresses.
+The effect of each is always on a per-stream basis
+and independent of the other
+.B sap
+and physical
+level configurations on this stream or other streams.
+.LP
+The DL_PHYS_ADDR_REQ primitive
+return the 6 octet Ethernet address currently associated (attached)
+to the stream in the DL_PHYS_ADDR_ACK primitive.
+This primitive is valid only in states following
+a successful DL_ATTACH_REQ.
+.LP
+The DL_SET_PHYS_ADDR_REQ primitive
+changes the 6 octet Ethernet address currently associated (attached)
+to this stream.
+The credentials of the process which originally opened this stream
+must be superuser or EPERM is returned in the DL_ERROR_ACK.
+This primitive is destructive in that it affects all other
+current and future streams attached to this device.
+An M_ERROR is sent up all other streams attached to this device
+when this primitive on this stream is successful.
+Once changed,
+all streams subsequently opened and attached to this device
+will obtain this new physical address.
+Once changed,
+the physical address will remain so until this primitive
+is used to change the physical address again
+or the system is rebooted,
+whichever comes first.
+.SH FILES
+.PD 0
+.TP 20
+.B /dev/le
+.PD
+.SH "SEE ALSO"
+.\".BR lebuffer (7),
+.\".BR ledma (7),
+.BR dlpi (7),
+.BR ie (7)
+.IX  "le device"  ""  "\fLle\fP \(em Am7990 (LANCE) Ethernet device driver"  ""  PAGE END
+.IX  "Am7990 (LANCE) Ethernet device driver"  ""  "Am7990 (LANCE) Ethernet device driver \(em \fLle\fP"  ""  PAGE END

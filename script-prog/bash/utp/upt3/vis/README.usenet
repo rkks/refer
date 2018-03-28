@@ -1,0 +1,55 @@
+Path: xanth!mcnc!rutgers!tut.cis.ohio-state.edu!cwjcc!hal!ncoast!allbery
+From: george@rebel.UUCP (George M. Sipe)
+Newsgroups: comp.sources.misc
+Subject: v04i120: make any command screen oriented
+Message-ID: <48343@rebel.UUCP>
+Date: 11 Oct 88 02:20:38 GMT
+Sender: allbery@ncoast.UUCP
+Reply-To: george@rebel.UUCP (George M. Sipe)
+Organization: Tolerant Systems, Atlanta GA
+Lines: 500
+Approved: allbery@ncoast.UUCP
+
+Posting-number: Volume 4, Issue 120
+Submitted-by: "George M. Sipe" <george@rebel.UUCP>
+Archive-name: vis
+
+	...
+George M. Sipe,		Phone: (404) 662-1533
+Tolerant Systems, 6961 Peachtree Industrial, Norcross, GA  30071
+UUCP: ...!{decvax,hplabs,linus,rutgers,seismo}!gatech!rebel!george
+
+---------------------------------------------------------------------------
+
+Path: xanth!nic.MR.NET!hal!ncoast!allbery
+From: george@rebel.UUCP (George M. Sipe)
+Newsgroups: comp.sources.misc
+Subject: v05i005: (official) update #1 to vis
+Message-ID: <49579@rebel.UUCP>
+Date: 28 Oct 88 02:21:55 GMT
+Sender: allbery@ncoast.UUCP
+Reply-To: george@rebel.UUCP (George M. Sipe)
+Organization: Tolerant Systems, Atlanta GA
+Lines: 452
+Approved: allbery@ncoast.UUCP
+
+Posting-number: Volume 5, Issue 5
+Submitted-by: "George M. Sipe" <george@rebel.UUCP>
+Archive-name: vis.Patch1
+
+This update adds two useful new features to vis, the program recently
+posted which makes any command "screen oriented":
+
+	1.  Steve Alter (alter@ttidca.tti.com) added the capability
+	    to fully suppress the status line via a new -h option.
+	    This permits the full screen to be used to display the
+	    output of the command.
+
+	2.  Anton Chernoff (abc@lpi.uucp) added the capability to
+	    highlight characters changed since the last pass by the
+	    use of standout mode, specified with a new -s option.
+
+George M. Sipe,		Phone: (404) 662-1533
+Tolerant Systems, 6961 Peachtree Industrial, Norcross, GA  30071
+UUCP: ...!{decvax,hplabs,linus,rutgers,seismo}!gatech!rebel!george
+

@@ -1,0 +1,42 @@
+#
+#	highest filename [howmany]
+#
+#	Print howmany highest-numbered lines in file filename.
+#	The input file is assumed to have lines that start with
+#	numbers.  Default for howmany is 10.
+#
+
+filename=${1:?"filename missing."}
+howmany=${2:-10}
+
+sort -nr $filename | head -$howmany
+
+
+mail $(who | cut -d' '  -f1)
+
+
+function lsd {
+    date=$1
+    ls -l | grep -i '^.\\{41\\}$date' | cut -c55-
+}
+
+
+
+
+DIRSTACK=""
+export DIRSTACK
+
+
+function pushd {		# push current directory onto stack
+    dirname=$1
+    cd ${dirname:?"missing directory name."}
+    DIRSTACK="$dirname ${DIRSTACK:-$PWD}"
+    print "$DIRSTACK"
+}
+   
+function popd {			# pop directory off stack, cd to new top
+    DIRSTACK=${DIRSTACK#* }
+    cd ${DIRSTACK%% *}
+    print "$PWD"
+}
+

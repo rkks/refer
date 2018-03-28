@@ -1,0 +1,367 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="TelephonicConversation.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot contains the root grid where all other page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" 
+                       Style="{StaticResource PhoneTextNormalStyle}"
+                       TextAlignment="Center"
+                       Foreground="{StaticResource PhoneAccentBrush}">
+                "A Telephonic Conversation"<LineBreak />by Mark Twain
+            </TextBlock>
+        </StackPanel>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.Resources>
+                <Style x:Key="paragraphStyle"
+                       TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeSmall}" />
+                </Style>
+            </Grid.Resources>
+            
+            <ScrollViewer Padding="5">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;I consider that a conversation by telephone — when you are
+                        simply sitting by and not taking any part in that conversation — 
+                        is one of the solemnest curiosities of this modern life.
+                        Yesterday I was writing a deep article on a sublime philosophical
+                        subject while such a conversation was going on in the
+                        room. I notice that one can always write best when somebody
+                        is talking through a telephone close by. Well, the thing began
+                        in this way. A member of our household came in and asked
+                        me to have our house put into communication with Mr. Bagley’s,
+                        down town. I have observed, in many cities, that the sex
+                        always shrink from calling up the central office themselves. I
+                        don’t know why, but they do. So I touched the bell, and this
+                        talk ensued: —
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">Central Office.</Run>
+                        [Gruffly.] Hello!
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">I.</Run> Is it the Central Office?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">C. O.</Run> Of course it is. What do you want?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">I.</Run> Will you switch me on to the Bagleys, please?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">C. O.</Run> All right. Just keep your ear to the telephone.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Then I heard, <Run FontStyle="Italic">k-look</Run>, 
+                        <Run FontStyle="Italic">k-look</Run>,
+                        <Run FontStyle="Italic">k’look</Run>,
+                        <Run FontStyle="Italic">klook-klook-klook-look-look!</Run>
+                        then a horrible “gritting” of teeth, and finally a piping
+                        female voice: Y-e-s? [Rising inflection.] Did you wish to 
+                        speak to me?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Without answering, I handed the telephone to the applicant,
+                        and sat down. Then followed that queerest of all the
+                        queer things in this world, — a conversation with only one
+                        end to it. You hear questions asked; you don’t hear the answer.
+                        You hear invitations given; you hear no thanks in return.
+                        You have listening pauses of dead silence, followed by
+                        apparently irrelevant and unjustifiable exclamations of glad
+                        surprise, or sorrow, or dismay. You can’t make head or tail of
+                        the talk, because you never hear anything that the person at
+                        the other end of the wire says. Well, I heard the following
+                        remarkable series of observations, all from the one tongue,
+                        and all shouted, — for you can’t ever persuade the sex to speak
+                        gently into a telephone: —
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Yes? Why, how did <Run FontStyle="Italic">that</Run> happen?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;What did you say?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Oh, no, I don’t think it was.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">No!</Run> Oh, no.
+                        I did n’t mean <Run FontStyle="Italic">that</Run>.
+                        I meant, put it in while it is still boiling, — or just before
+                        it <Run FontStyle="Italic">comes</Run>
+                        to a boil.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;WHAT?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;I turned it over with a back stitch on the selvage edge.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Yes, I like that way, too; but I think it’s better to baste it
+                        on with Valenciennes or bombazine, or something of that
+                        sort. It gives it such an air, — and attracts so much notice.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;It’s forty-ninth Deuteronomy, sixty-fourth to ninety-seventh
+                        inclusive. I think we ought all to read it often.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Perhaps so; I generally use a hair-pin.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;What did you say? [<Run FontStyle="Italic">aside</Run>] 
+                        Children, do be quiet!
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">Oh!</Run> B <Run FontStyle="Italic">flat!</Run>
+                        Dear me, I thought you said it was the cat!
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Since <Run FontStyle="Italic">when</Run>?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Why, <Run FontStyle="Italic">I</Run> never heard of it.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;You astound me! It seems utterly impossible!
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">Who</Run> did?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Good-ness gracious!
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Well, what <Run FontStyle="Italic">is</Run> this world coming to?
+                        Was it right in <Run FontStyle="Italic">church</Run>?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;And was her <Run FontStyle="Italic">mother</Run> there?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Why, Mrs. Bagley, I should have died of humiliation! What 
+                        did they <Run FontStyle="Italic">do</Run>?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Long pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;I can’t be perfectly sure, because I have n’t the notes by me;
+                        but I think it goes something like this: te-rolly-loll-loll, loll
+                        lolly-loll-loll, O tolly-loll-loll-
+                        <Run FontStyle="Italic">lee-ly-li-i</Run>-do! And then 
+                        <Run FontStyle="Italic">repeat</Run>, you know.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Yes, I think it <Run FontStyle="Italic">is</Run> very sweet, — and very 
+                        solemn and impressive, if you get the andantino and pianissimo right.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Oh, gum-drops, gum-drops! But I never allow them to eat
+                        striped candy. And of course they <Run FontStyle="Italic">can’t</Run>,
+                        till they get their teeth, any way.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">What?</Run>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Oh, not in the least, — go right on. He’s here writing, — it
+                        does n’t bother <Run FontStyle="Italic">him</Run>.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Very well, I’ll come if I can. [<Run FontStyle="Italic">Aside.</Run>]
+                        Dear me, how it does tire a person’s arm to hold this thing up so long!
+                        I wish she’d —
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Oh, no, not at all; I <Run FontStyle="Italic">like</Run> to talk, —
+                        but I’m afraid I’m keeping you from your affairs.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Visitors?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;No, we never use butter on them.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Yes, that is a very good way; but all the cook-books say
+                        they are very unhealthy when they are out of season. And 
+                        <Run FontStyle="Italic">he</Run> does n’t like them, any way, —
+                        especially canned.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Oh, I think that is too high for them; we have never paid
+                        over fifty cents a bunch.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;<Run FontStyle="Italic">Must</Run> you go?
+                        Well, <Run FontStyle="Italic">good</Run>-by.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Yes, I think so. <Run FontStyle="Italic">Good</Run>-by.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Four o’clock, then — I’ll be ready. <Run FontStyle="Italic">Good</Run>-by.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Thank you ever so much. <Run FontStyle="Italic">Good</Run>-by.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Pause.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;Oh, not at all! — just as fresh — <Run FontStyle="Italic">Which?</Run>
+                        Oh, I’m glad to hear you say that. <Run FontStyle="Italic">Good</Run>-by.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;[Hangs up the telephone and says, “Oh, it <Run FontStyle="Italic">does</Run>
+                        tire a person’s arm so!”]
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}">
+                        &#x2003;A man delivers a single brutal “Good-by,” and that is the
+                        end of it. Not so with the gentle sex, — I say it in their praise;
+                        they cannot abide abruptness.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource paragraphStyle}" 
+                               TextAlignment="Right">
+                        — <Run FontStyle="Italic">Atlantic Monthly</Run>, June 1880
+                    </TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+    
+    <!-- Sample code showing usage of ApplicationBar
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton x:Name="appbar_button1" IconUri="/Images/appbar_button1.png" Text="Button 1"></shell:ApplicationBarIconButton>
+            <shell:ApplicationBarIconButton x:Name="appbar_button2" IconUri="/Images/appbar_button2.png" Text="Button 2"></shell:ApplicationBarIconButton>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="menuItem1" Text="MenuItem 1"></shell:ApplicationBarMenuItem>
+                <shell:ApplicationBarMenuItem x:Name="menuItem2" Text="MenuItem 2"></shell:ApplicationBarMenuItem>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+    -->
+
+
+</phone:PhoneApplicationPage>

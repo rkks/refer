@@ -1,0 +1,47 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 4 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+use List::MoreUtils qw( any );
+
+my $fugitive = 'Kimball';
+my @guests = qw( Ryan Johnson Nixon Jones );
+
+# Is the bad guy at the party under an assumed name?
+if ( any { $fugitive->also_known_as($_) } @guests ) {
+    stay_calm();
+    dial(911);
+    do_not_approach($fugitive);
+}
+
+sub stay_calm {
+    print "STAY CALM!!!!!!\n";
+}
+
+sub dial {
+    my ($number) = @_;
+    print "DIAL $number!!!!!\n";
+}
+
+sub do_not_approach {
+    my ($name) = @_;
+    print "STAY AWAY FROM $name!!!!!!\n";
+}
+
+package Kimball;
+
+sub also_known_as {
+    my ($self, $alias) = @_;
+    return $alias eq 'Nixon';
+}

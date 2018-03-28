@@ -1,0 +1,42 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="rmdups"
+       HTML_="delete duplicate lines"
+    PURPOSE_="remove duplicate lines from file or stdin"
+   SYNOPSIS_="$NAME_ [-hl] <file> [file...]"
+   REQUIRES_="standard GNU commands"
+    VERSION_="1.0"
+       DATE_="2002-04-24; last update: 2002-04-25"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="text"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -h, usage and options (this help)
+     -l, see this script"
+    exit 1
+}
+
+# options
+case $1 in
+    -h) usage ;;
+    -l) more $0 ; exit 1 ;;
+esac
+    
+# main
+cat "$@" | { 
+    awk '!x[$0]++'
+}
+

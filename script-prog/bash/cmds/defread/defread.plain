@@ -1,0 +1,48 @@
+:
+##########################################################################
+# Title      :	defread - read default entry from configuration file
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-10-23
+# Requires   :	awk
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) defread	1.2 03/12/19
+##########################################################################
+# Description
+#	Reads entries from a configuration file.
+#
+# Note
+#	This command resembles SCO's defread(S)
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+usage () {
+    echo >&2 "$PN - read entry from configuration file, $VER (stv '94)
+usage: $PN file pattern
+$PN returns the line matching the pattern, starting with the
+first character after the pattern."
+    exit 1
+}
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;
+    esac
+    shift
+done
+[ $# -lt 2 ] && usage
+File="$1"; shift
+for i
+do
+    awk '
+	$1 ~ /^\#/ { next }		# ignore comments
+    	$0 ~ /'"$i"'/ {
+		sub (/'"$i"'/, "")
+		print
+		exit 0
+	}
+    ' $File || exit 1
+done
+exit 0

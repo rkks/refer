@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VariableTextMovement", "VariableTextMovement\VariableTextMovement\VariableTextMovement.csproj", "{794D87F6-DCE2-42BB-8662-D9B1A50BC673}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "VariableTextMovementContent", "VariableTextMovement\VariableTextMovementContent\VariableTextMovementContent.contentproj", "{822437F4-E0E0-419F-AF83-4E742FA80942}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{794D87F6-DCE2-42BB-8662-D9B1A50BC673}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{822437F4-E0E0-419F-AF83-4E742FA80942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{822437F4-E0E0-419F-AF83-4E742FA80942}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{822437F4-E0E0-419F-AF83-4E742FA80942}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{822437F4-E0E0-419F-AF83-4E742FA80942}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

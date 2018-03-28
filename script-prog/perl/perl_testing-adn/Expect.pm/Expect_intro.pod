@@ -1,0 +1,88 @@
+=head1 NAME
+
+Expect.pm (1.07) - Perl Expect interface
+
+=head1 SYNOPSIS
+
+	use Expect.pm
+
+=head1 DESCRIPTION
+
+
+
+The Expect module is a successor of Comm.pl and a descendent of Chat.pl. It
+more closely ressembles the Tcl Expect language than its predecessors. It
+does not contain any of the networking code found in Comm.pl. I suspect this
+would be obsolete anyway given the advent of IO::Socket and external tools
+such as netcat.
+
+Expect.pm is an attempt to have more of a switch() & case: feel to make 
+decision processing more fluid. three separate types of debugging have 
+been implemented to make code production easier.
+
+It is now possible to interconnect multiple file handles (and processes) much
+like Tcl's expect. An attempt was made to enable all the features of Tcl's
+expect without forcing Tcl on the victim programmer :-) .
+
+=head1 CAVEATS
+
+Expect.pm was designed to be generally portable across Unixes.
+
+1. The operating system must include  ptys. This excludes non-Unix operating
+systems as far as I know.
+
+2. The operating system must be POSIX compliant and include the Perl
+5 POSIX.pm module. The Fcntl.pm module is also used. My understanding
+is that there is no POSIX for Microsoft stuff. Bummer.
+
+3. Perl 5.00401+ must be used. This module has been tested with 5.001 and
+5.003 under Linux and SunOS 5 and worked fine, but with the new IO::Pty
+support 5.00401 is required. Expect itself doesn't require this in case
+at some point IO::Pty should become backwards compatible with earlier versions
+of Perl. Please read the FAQ if you have trouble before going any further.
+
+The old perl 4 Comm.pl was only compatible with SunOS 4 and 5 due to 
+heavy use of ioctl() calls. It is the author's wish that this lack of
+portability be fixed as much as possible.
+
+=head1 CAVEATS PART 2
+
+Tty settings are a major pain to keep track of. If you find
+unexpected behavior such as double-echoing or a frozen session doublecheck
+the documentation for default settings. When in doubt handle them yourself
+using the exp_stty() and manual_stty() functions. As of .98 you shouldn't
+have to worry about stty settings getting fouled unless you use interconnect
+or intentionally change them (like doing -echo to get a password).
+
+If you foul your terminal's tty settings kill any hung processes and enter stty
+sane at a shell prompt. This should make your terminal manageable again.
+
+=head1 BUGS
+
+This module has not been tested on a great variety of platforms and
+is relatively young. Interesting and unexpected features will undoubtedly
+surface.
+
+=head1 AUTHOR
+
+Austin Schutz <tex@habit.com>
+Partner/Mad Scientist, The Habit Internet Cafe.
+Feel free to send any compliments/gripes my way.
+
+And now my shameless commercial plug:
+Check out Portland's First and Finest 'Net cafe at
+http://B<www.habit.com>
+	
+=head1 CONTRIBUTORS
+
+There are still a few lines of code dating back to the inspirational
+Comm.pl and Chat.pl modules without which this would not have been possible.
+Kudos to Eric Arnold <Eric.Arnold@Sun.com> and Randal 'Nuke your NT box with
+one line of perl code' Schwartz<merlyn@stonehenge.com> for making these
+available to the perl public.
+
+As of .98 I think all the old code is toast. No way could this have been done
+without it though. Special thanks to Graham Barr for helping make sense of
+the IO::Handle stuff as well as providing the highly recommended IO::Tty 
+module.
+

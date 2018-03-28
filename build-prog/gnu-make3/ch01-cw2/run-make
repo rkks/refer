@@ -1,0 +1,9 @@
+#! /bin/bash
+make >& /dev/null
+# Do this copy to avoid touching the other side of the symlink.
+cp lexer.l x
+rm lexer.l
+mv x lexer.l
+touch lexer.l
+echo '$ make'
+make

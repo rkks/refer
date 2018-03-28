@@ -1,0 +1,177 @@
+#!/bin/csh -f
+#
+#	This script is a template for csh programs that are contained
+#	within one file.  It demonstrates the use of aliases to push
+#	and pop "routines".  This is a different method from that used
+#	by mkmenu/gensource, which produce modules that source each other.
+#	Enjoy!
+#
+#	daniel@island.uu.net
+
+goto basic_setup
+
+#	start of template_main_menu_routines
+
+template_main_menu_routines:
+
+onintr template_main_menu_routines
+
+cat << menu_screen
+`clear`
+
+		Template Main Menu
+
+	!	shell
+	?	help
+	e	edit
+	l	list
+
+	q	quit
+
+menu_screen
+
+	set noglob
+	set choice=`$grabchars -q "	your choice >> " | cat -v`
+	if ($choice =~ '?') set choice=help
+	switch ($choice)
+		case "!":
+			sh
+			breaksw
+		case "help":
+			echo -n "help..."
+			push_point help_menu_routines
+			breaksw
+		case "e":
+			echo -n "edit..."
+			push_point edit_routines
+			breaksw
+		case "l":
+			echo -n "list..."
+			push_point list_routines
+			breaksw
+		case "q":
+			echo "quit..."
+			exit
+			breaksw
+		default:
+			if ($ret_pos > 1) then
+				echo -n "	back..."
+				pop_point
+			else
+				echo no such option...
+			endif
+			breaksw
+	endsw
+	goto template_main_menu_routines
+
+#	end of template_main_menu_routines
+
+#	start of edit_routines
+edit_routines:
+	cat << +++
+`clear`
+`ls -l`
+
++++
+	set which_file=`$grabchars -b -d "a_new_file" -t 60 -n 80 -r -q 'enter a filename or just hit return >> '`
+	echo " "
+	echo going to \"$EDITOR\" with \"$which_file\"...
+	$EDITOR $which_file
+	pop_point
+
+#	end of edit_routines
+
+#	start of list_routines
+list_routines:
+
+	#	this demonstrates the use of local points, which
+	#	are used to break up huge "functions" up into
+	#	smaller ones..
+
+	local_point list_1
+	push_point do_list
+list_1:
+	echo done with list...
+	pop_point
+
+#	end of list_routines
+
+#	start of do_list
+do_list:
+	ls -l | $PAGER
+	$ckpager $grabchars -s -t 30 -q 'press any key...'
+	pop_point
+
+#	end of do_list
+
+#	start of help_menu_routines
+
+help_menu_routines:
+
+cat << the_end_of_help | $PAGER
+`clear`
+
+	Hello $USER,
+
+	A sample help screen
+
+	The main menu looks like this:
+
+---
+		Template Main Menu
+
+	!	shell
+	?	help
+	e	edit
+	l	list
+
+	q	quit
+
+---
+	'!' will push a shell...
+	'?' got you to here
+	'e' edit a file
+	'l' ls -l files here
+	'q' leave
+		
+the_end_of_help
+	$ckpager $grabchars -f -p "...press any key..."
+	pop_point
+
+#	end of help_menu_routines
+
+
+basic_setup:
+	set base_dir=$cwd
+
+	#	these three aliases allow me to make a very flexible menu
+	#	structure...you "push" every menu you go to, and pop out
+	#	to get back to where you came from..
+
+	alias push_point 'set return_point=($return_point[1-$ret_pos] \!*); @ ret_pos++; goto \!*; if ($?pverbose) echo push_point produces $return_point'
+
+	alias pop_point 'set back_pos=$return_point[$ret_pos]; @ ret_pos--; goto $return_point[$ret_pos]; if ($?pverbose) echo push_point produces $return_point'
+
+	alias local_point '@ ret_pos--; set return_point=($return_point[1-$ret_pos] \!*); @ ret_pos++; if ($?pverbose) echo local point produces $return_point'
+
+	#	initialize this, just in case it gets hit...
+	set back_pos="template_main_menu_routines"
+	set return_point="template_main_menu_routines"
+	@ ret_pos=0
+
+
+	if (! $?EDITOR) setenv EDITOR /usr/ucb/vi
+	if (! $?PAGER) setenv PAGER /usr/ucb/more
+
+	set ckpager=false
+	if ($PAGER =~ *more*) then
+		set ckpager=""	# we'll need it...
+	endif
+
+	set this_host=`hostname`
+	set grabchars=grabchars # this should be /usr/local/bin/grabchars
+	set grab_opts=""
+
+	setenv RUNNING_TEMPLATE
+
+	push_point template_main_menu_routines

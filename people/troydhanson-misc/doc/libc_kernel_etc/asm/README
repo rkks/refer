@@ -1,0 +1,5 @@
+hello.asm   -- hello world in assembly language
+atoi.asm    -- call C library (atoi function) from assembly
+gethost.asm -- call C library gethostname, check return status
+add.asm     -- an assembly function (add) called from C (addc.c)
+penv.asm    -- print environment variables  

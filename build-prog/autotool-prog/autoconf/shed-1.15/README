@@ -1,0 +1,89 @@
+SHED (Simple Hex EDitor) v1.15
+
+Shed is a program for viewing and editing non-text
+files. The look and feel is designed to be similar
+to that of pico's.
+
+LICENSE
+Shed is released under the GNU General Public License
+(GPL). See COPYING for more information.
+
+USAGE
+****************************************************
+BACKUP YOUR FILES FIRST!!!.
+NB: Notice there is no save key. This is because the
+file is not loaded into memory, so when you edit it,
+the change is made directly to disk.
+****************************************************
+
+Type shed and a filename. If you're editing a file it
+must be an existing file. If no filename is given,
+or it is '-', then shed displays stdin.
+
+The man page has information on command line options.
+
+Each line of the shed display represents one byte of the
+file. Each lines consists of the offset of that byte from
+the start of the file, the ascii value of the byte, and
+then the bytes value in various bases. All values are
+unsigned.
+
+Keys:
+
+arrow keys       - move cursor around
+pgup/^Y          - cursor up 16
+pgdown/^V        - cursor down 16
+home/^A          - start of line
+end/^E           - end of line
+
+space/e          - edit value of current byte.
+                   You are asked to enter the new value in the format of the current
+                   column the cursor is in - eg. if you are in the hex column, it will
+                   ask for the new value in hex.
+
+1,2,4            - set size of cursor in bytes, in the hex/dec/oct columns (and binary
+                   if in traditional mode).
+
+`                - toggle the endianness of multi-byte values (when cursor size is 2 or 4)
+
+s, w, ^x, f, F3  - search.
+                   Search string is asked for in the format of the current cursor column.
+                   In ascii, just enter the string in ascii. In the others, enter the values
+                   seperated by spaces - eg to search for ABC from the decimal column you
+                   would enter "65 66 67" (without the quotes).
+
+^f,^b            - search shortcut for forwards/backwards respectivly.
+
+r,n,F3           - repeat previous search
+
+t                - toggle whether offset numbers and cursor position etc are in dec or hex.
+
+b                - toggle binary mode column behaviour (bit edit mode vs traditional)
+
+d                - dump to file.
+
+j                - jump to byte. enter a byte number, or 'top' or 'end'.
+
+a                - change the mode of the ascii column (printable only/c-style extended chars/'man ascii' descriptions)
+
+p                - turn on 'preview' mode.
+
+x, ^x            - exit
+
+
+When a command (except search) asks you for input, entering a
+zero-length string will cancel the command, as will ^C.
+When searching, entering a zero-length string will use the
+previous search word, if one exists.
+
+NOTES
+shed can be used directly on devices (/dev/*) but it can not
+obtain the length so you can overrun the length of the device.
+
+CONTACT
+Visit the shed homepage at
+  http://shed.sourceforge.net
+
+Send comments/bug reports/improvements to:
+  alexsisson@gmail.com - put shed in the subject so it gets filtered to my shed folder!
+

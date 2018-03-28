@@ -1,0 +1,192 @@
+/* --
+Theme Name: Plastique - Black/White
+Theme URI: http://themeclubhouse.digwp.com/
+Description: Black-&-white child theme for the Plastique theme.
+Version: 1.0
+Author: Jeff Starr
+Author URI: http://perishablepress.com/
+Template: Plastique
+
+Copyright (c) 2010 Jeff Starr
+	Permission is granted to copy, distribute and/or modify this document 
+	under the terms of the GNU Free Documentation License, Version 1.3 or 
+	any later version published by the Free Software Foundation; with no 
+	Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A 
+	copy of the license is included in the section entitled "GNU Free 
+	Documentation License".
+
+-- */
+
+/* == IMPORT DEFAULT PLASTIQUE STYLES == */
+@import url("../Plastique/style.css");
+
+
+/* == GENERAL == */
+
+body { background: #fff; color: #000; }
+
+
+/* == HEADER == */
+
+#header {
+	border-bottom: 1px solid #777;
+	border-top: 1px solid #777;
+	background: #fefefe;
+	}
+
+	/* blog title */
+	#header h1 a:link, #header h1 a:visited { border-bottom: 1px solid #777; }
+	#header h1 a:hover, #header h1 a:active { border-bottom: 5px solid #000; }
+
+	/* header menu */
+	ul.header-menu a { background: #fff; }
+
+		ul.header-menu a:link, ul.header-menu a:visited { border: 1px solid #777; color: #000; }
+		ul.header-menu a:hover, ul.header-menu a:active { border: 1px solid #000; color: #000; }
+
+
+/* == POST CATEGORY NAME == */
+
+.post-cats { color: #888; }
+
+
+/* == POST HEADER LINKS == */
+
+#content .post-meta-wrap a:link, #content .post-meta-wrap a:visited { border-bottom: 1px solid #777; }
+#content .post-meta-wrap a:hover, #content .post-meta-wrap a:active { border-bottom: 5px solid #000; }
+
+
+/* == POST CATEGORY STYLES == */
+
+.post[class$="-id"] { background: #fff url(images/post-bg.gif) repeat-x top left; }
+.post[class$="-id"] .post-wrap-1 { border: 1px solid #777; }
+.post[class$="-id"] h1 { border-left: 30px solid #000; }
+.post[class$="-id"] a:link, .post[class$="-id"] a:visited { border-bottom: 1px solid #777; }
+body[class$="-id"] .comments-heading h3 { border-left: 30px solid #000; }
+
+
+/* == PAGE CATEGORY STYLES == */
+
+div.page { background: #fff url(images/post-bg.gif) repeat-x top left; }
+div.page .post-wrap-1 { border: 1px solid #777; }
+div.page h1 { border-left: 30px solid #000; }
+div.page a:link, div.page a:visited { border-bottom: 1px solid #777; }
+body.page .comments-heading h3 { border-left: 30px solid #000; }
+
+
+/* == READ MORE LINKS == */
+
+#content .read-more a:link, #content .read-more a:visited { color: #333; border-bottom: 1px solid #777; }
+#content .read-more a:hover, #content .read-more a:active { color: #000; border-bottom: 5px solid #000; }
+
+	/* non-single views */
+	.post[class] .post-wrap-1, div.page[class] .post-wrap-1 { background: transparent url(images/more-bg.gif) repeat-x left bottom; }
+	/* single post views */
+	.single .post[class] .post-wrap-1,
+	/* single page views */
+	div.page[class] .post-wrap-1 { background: transparent url(images/metadata.gif) repeat-x left bottom; }
+
+
+/* == POST META TEXT == */
+
+.post-metadata-caption { color: #777; }
+
+
+/* == COMMENTS == */
+
+.commentlist li.comment {
+	background: #fff url(images/post-bg.gif) repeat-x 0 0;
+	border: 1px solid #777;
+	}
+
+	/* gravatars */
+	.comment-author img { border: 1px solid #777; }
+
+	/* links */
+	#comments a:link, #comments a:visited { color: #333; border-bottom: 1px solid #777; }
+	#comments a:hover, #comments a:active { color: #000; border-bottom: 5px solid #000; }
+
+	/* form */
+	#commentform { background: #fefefe; border: 1px solid #777; }
+		#commentform textarea { border: 1px solid #777; }
+		#commentform input    { border: 1px solid #777; }
+		#submit {
+			border: 1px solid #777;
+			background: #fff;
+			color: #000; 
+			}
+			#submit:hover {
+				border: 1px solid #000;
+				color: #000;
+				}
+
+	/* reply & cancel buttons */
+	#comments .reply a, 
+	#comments .cancel-comment-reply a { background: #fff; }
+
+		#comments .reply a:link, 
+		#comments .reply a:visited, 
+		#comments .cancel-comment-reply a:link, 
+		#comments .cancel-comment-reply a:visited { border: 1px solid #777; color: #000; }
+
+		#comments .reply a:hover, 
+		#comments .reply a:active, 
+		#comments .cancel-comment-reply a:hover, 
+		#comments .cancel-comment-reply a:active { border: 1px solid #000; color: #000; }
+
+	/* nested comments */
+	ol.children li.depth-2 {
+		background: #fff url(images/post-bg.gif) repeat-x 0 0;
+		border: 1px solid #333;
+		}
+
+		/* gravatars */
+		ol.children li.depth-2 .comment-author img {
+			border: 1px solid #333;
+			}
+
+
+/* == WIDGETS == */
+
+.widget {
+	border: 1px solid #777;
+	background: #fff;
+	}
+	#sub-header .widget { background: #fff; }
+	.widget h4 { background: #fefefe; border-bottom: 1px solid #777; }
+
+	/* category posts */
+	#sub-header .cat-post-item { background: #fff; border: 1px solid #999; }
+
+	/* widget links */
+	.widget-panel a:link, .widget-panel a:visited { color: #000; border-bottom: 1px solid #777; }
+	.widget-panel a:hover, .widget-panel a:active { color: #000; border-bottom: 5px solid #000; }
+
+	/* search form */
+	input#searchsubmit {
+		border: 1px solid #777;
+		background: #fff;
+		color: #000; 
+		}
+		input#searchsubmit:hover {
+			border: 1px solid #000;
+			background: #fff;
+			color: #000; 
+			}
+		/* search results header */
+		#search-results {
+			border: thin solid #777;
+			background: #fff;
+			}
+
+
+/* == FOOTER == */
+
+#footer {
+	border-bottom: 1px solid #777;
+	border-top: 1px solid #777;
+	background: #fefefe;
+	}
+
+
+/* == ALL YOUR CODE ARE BELONG TO POETRY == */

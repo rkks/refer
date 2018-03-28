@@ -1,0 +1,103 @@
+##############################################################################
+##   Example 17.3 (Recommended) from Chapter 17 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 17-3. Objects instead of accessor subroutines
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+package Serialize;
+use Class::Std;
+use Carp;
+{
+sub compact_with_zip  {}
+sub compact_with_gzip {}
+sub compact_with_bz   {}
+
+    my %compaction_of : ATTR( default => 'none' );
+    my %depth_of      : ATTR( default => 100    );
+ 
+    # Table of compaction tools...
+    my %compactor = (
+      # Value of       Subroutine returning
+      # $compaction    compacted form of arg
+          none     =>   sub { return shift },
+          zip      =>   \&compact_with_zip,
+          gzip     =>   \&compact_with_gzip,
+          bz       =>   \&compact_with_bz,
+          # etc.
+    );
+ 
+    # Accessor subroutines for state variables...
+    sub set_compaction {
+        my ($self, $new_compaction) = @_;
+    
+        # Has to be a compaction type from the table...
+        croak "Unknown compaction type ($new_compaction)"
+            if !exists $compactor{$new_compaction};
+ 
+        # If so, remember it...
+        $compaction_of{ident $self} = $new_compaction;
+ 
+        return;
+    }
+ 
+    sub set_depth {
+        my ($self, $new_depth) = @_;
+ 
+        # Any non-negative depth is okay...
+        if ($new_depth >= 0) {
+            $depth_of{ident $self} = $new_depth;
+        }
+        # Any negative depth is an error, so fix it and report...
+        else {
+            $depth_of{ident $self} = 0;
+            carp "Negative depth ($new_depth) interpreted as zero";
+        }
+ 
+        return;
+    }
+
+    sub _serialize {
+        return 'corn flakes';
+    }
+    
+    # Method to serialize a data structure, passed by reference...
+    sub freeze {
+        my ($self, $data_structure_ref) = @_;
+
+        my $compactor = $compactor{$compaction_of{ident $self}};
+ 
+        return $compactor->( _serialize($data_structure_ref) );
+    }
+ 
+    # etc.
+}
+ 
+# and elsewhere...
+ 
+# Create a new interface to the class...
+# use Serialize;
+my $serializer = Serialize->new();
+ 
+# Set up the state of that interface as required...
+$serializer->set_depth(20);
+$serializer->set_compaction('zip');
+ 
+# and later...
+ 
+my $data_ref;
+
+my $frozen_data = $serializer->freeze($data_ref);
+

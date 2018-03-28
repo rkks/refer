@@ -1,0 +1,123 @@
+:
+##########################################################################
+# Title      :	sendfile - send file by e-mail
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1999-08-20
+# Requires   :	getmimetype, metasend
+# Category   :	Mail
+# SCCS-Id.   :	@(#) sendfile	1.6 04/03/18
+##########################################################################
+# Description
+#	Uses "metasend" to send files as MIME attachments
+#
+# Caveats
+#    o	"sendfile" can handle file names containing whitespace characters,
+#	but currently "metasend" cannot.
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.6'
+: ${SPLITSIZE:=5242880}			# 5 MB
+usage () {
+    echo >&2 "$PN - send file by e-mail, $VER
+usage: $PN [-f] [-s subject] [-m mimetype] recipient file ...
+    -f:  force sending of mail even for invalid recipients
+    -s:  subject of the mail message
+    -m:  mime-type (i.e. \"application/octet-stream\")
+Multiple files may be specified. If no mimetype was given,
+it is determined via a call to \"getmimetype\"."
+    exit 1
+}
+msg () {
+    for msgLine
+    do echo "$PN: $msgLine" >&2
+    done
+}
+fatal () {
+    msg "$@"
+    exit 1
+}
+[ $# -lt 2 ] && usage
+# This temporary file will be used for the introductional text. It will be
+# removed either when the program finishes, or receives a signal.
+Intro=${TMPDIR:=/tmp}/sf$$
+trap 'rm -f "$Intro"' 0
+trap "exit 2" 1 2 3 13 15
+#########################################################################
+# Give the user a chance to enter a text that will be displayed
+# before the file attachments
+#########################################################################
+# If we wait for input from the keyboard, print a helpful message
+[ -t 0 ] && echo >&2 "[Text to appear before the attachments, EOF to end]"
+cat > "$Intro"
+[ -s "$Intro" ] && args='-f "$Intro" -m text/plain'
+filenames=
+Force=no
+Recipient=
+Subject=
+Filename=
+Mimetype=
+while [ $# -gt 0 ]
+do
+    case "$1" in
+    	-s)
+	    [ -z "$2" ] && fatal "-s option needs an argument, a mail subject"
+	    Subject="$2"
+	    shift;;
+	-m)
+	    [ -z "$2" ] && fatal "-m option needs an argument, a MIME type"
+	    Mimetype="$2"
+	    shift;;
+	-f)
+	    Force=yes
+	    ;;
+	-*)
+	    usage
+	    ;;
+	*)
+	    if [ -z "$Recipient" ]
+	    then			# First argument is recipient's address
+	    	Recipient="$1"
+		case "$Recipient" in
+		    *@*)	;;
+		    *)
+			[ $Force = no ] &&
+			    fatal "\"$Recipient\" seems to be an invalid recpient address."	\
+				"Use -f option to send the mail nevertheless"
+		esac
+	    else
+		Filename="$1"
+		[ -r "$Filename" ] || fatal "cannot read file: $Filename"
+	    fi
+	    ;;
+    esac
+    if [ -f "$Filename" ] 
+    then
+	if [ -n "$Filename" ]
+	then
+	    name=`basename "$Filename"`
+	    [ -z "$args" ] || args="$args -n"
+	    if [ -z "$Mimetype" ]
+	    then
+		Mimetype=`getmimetype "$Filename"`
+	    fi
+	    : ${Mimetype:=application/octet-stream}
+	    #args=$args -f $Filename -m $Mimetype;name=\"$name\" -D $Filename"
+	    args=$args' -f "'"$Filename"'" -m "'"$Mimetype"';name=\"'"$name"'\"" -D "'"$Filename"'"'
+	    Filename=
+	    Mimetype=
+	    filenames="$filenames${filenames:+ }$name"
+	fi
+    fi
+    shift
+done
+if [ -z "$Recipient" ]
+then
+    fatal "please specify a mail recipient"
+elif [ -z "$filenames" ]
+then
+    fatal "please specify at least one file to send"
+fi
+: ${Subject:="file(s) sent using $PN"}
+: ${Splitsize:=$SPLITSIZE}
+[ -t 0 ] && echo >&2 "$PN: sending file"
+eval "metasend -b -S '$Splitsize' -s '$Subject' -t '$Recipient' $args"

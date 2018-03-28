@@ -1,0 +1,23 @@
+#
+# $Header$
+#
+# Solaris 2.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -Xa
+EXTRACFLAGS=
+
+#CC=		gcc
+#CFLAGS=	-O
+#EXTRACFLAGS=
+
+#
+# Location of the signal library.
+#
+SIGLIBS=

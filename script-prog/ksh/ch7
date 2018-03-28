@@ -1,0 +1,249 @@
+
+pgmname=$1
+for user in $(cut -f1 -d: /etc/passwd); do
+    mail $user << EOF
+Dear $user,
+
+A new version of $pgmname has been installed in $(whence pgmname).
+
+Regards,
+
+Your friendly neighborhood sysadmin.
+EOF
+done
+
+
+pgmname=$1
+for user in $(cut -f1 -d: /etc/passwd); do
+    mail $user <<- EOF
+        Dear user,
+
+        A new version of $pgmname has been installed in $(whence pgmname).
+
+        Regards,
+
+        Your friendly neighborhood sysadmin.
+        EOF
+done
+
+
+
+TERM=vt99       # assume this as a default
+line=$(tty)
+
+
+function findterm {
+    TERM=vt99       # assume this as a default
+    line=$(tty)
+    while read dev termtype; do
+        if [[ $dev = $line ]]; then
+            TERM=$termtype
+            print "TERM set to $TERM."
+            break;
+        fi
+    done
+}
+
+findterm < /etc/terms
+
+
+TERM=vt99       # assume this as a default
+line=$(tty)
+while read dev termtype; do
+    if [[ $dev = $line ]]; then
+        TERM=$termtype
+        print "TERM set to $TERM."
+        break;
+    fi
+done < /dev/terms
+
+
+{
+    TERM=vt99       # assume this as a default
+    line=$(tty)
+    while read dev termtype; do
+        if [[ $dev = $line ]]; then
+            TERM=$termtype
+            print "TERM set to $TERM."
+            break;
+        fi
+    done
+} < /etc/terms
+
+
+
+
+#
+
+
+ls "$@" | {
+    let width=0
+    while read fname; do
+        if (( ${#fname} > $width )); then
+            let width=${#fname}
+        fi
+    done
+    let width="$width + 2"
+    let numcols="${COLUMNS:-80} / $width"
+}
+
+
+set -A filenames $(ls $1)
+typeset -L$width fname
+let count=0
+let column=1
+
+while (( $count < ${#filenames[*]} )); do
+    fname=${filenames[$count]}
+    print "$fname  \\\\c"
+    let count="count + 1"
+    let column="column + 1"
+    if [[ $((column % numcols)) = 0 ]]; then
+         print		# output a NEWLINE
+    fi
+done
+
+if [[ $((column % numcols)) != 0 ]]; then
+    print
+fi
+
+
+
+
+print 'Select your terminal type:'
+done=false
+while [[ done = false ]]; do
+    done=true		# assume user will make a valid choice
+    {
+        print '1) gl35a'
+        print '2) t2000'
+        print '3) s531'
+        print '4) vt99'
+    } >&2
+    read REPLY?'terminal? '
+
+    case $REPLY in
+        1 ) TERM=gl35a ;;
+        2 ) TERM=t2000 ;;
+        3 ) TERM=s531 ;;
+        4 ) TERM=vt99 ;;
+        * ) print 'invalid.'
+	    done=false ;;
+    esac
+done
+print 'TERM is $TERM'
+
+
+
+
+typeset -L30 f1 f2
+while read -u3 f1 && read -u4 f2; do
+    print "$f1$f2"
+done 3<$1 4<$2
+
+
+
+ 
+PS1='($PWD)--> '
+
+
+function tildize {
+    if [[ $1 = $HOME* ]]; then
+        print "\\~/${1#$HOME}"
+        return 0
+    fi
+    awk '{FS=":"; print $1, $6}' /etc/passwd | 
+        while read user homedir; do
+            if [[ $homedir != / && $1 = $homedir* ]]; then
+                print "\\~$user/${1#$homedir}"
+                return 0
+            fi
+        done
+    print "$1"
+    return 1
+}
+
+
+
+PS1=$(tildize $PWD)
+
+function _cd {
+    "cd" "$@"
+    es=$?
+    PS1=$(tildize $PWD)
+    return $es
+}
+
+alias cd=_cd
+
+
+
+
+
+
+function makecmd {
+    read target colon sources
+    for src in $sources; do
+        if [[ $src -nt $target ]]; then
+            while read cmd && [[ $cmd != \\t* ]]; do
+	    print "$cmd"
+                eval ${cmd#\\t}
+            done
+            break
+        fi
+    done
+}
+
+
+
+# initialize option-related variables
+do_link=true
+debug=""
+link_libs="-l c"
+exefile=""
+
+# initialize pipeline components
+compile=" | ccom"
+assemble=" | as"
+optimize=""
+
+# process command-line options
+while getopts "cgl:o:O" opt; do
+    case $opt in 
+        c )    do_link=false ;;
+        g )    debug="-g" ;;
+        l )    link_libs="$link_libs -l $OPTARG" ;;
+        o )    exefile="-o $OPTARG" ;;
+        O )    optimize=" | optimize" ;;
+        \\? )   print 'usage: occ [-cgO] [-l lib] [-o file] files...'
+               return 1 ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+# process the input files
+for filename in "$@"; do
+    case $filename in
+	*.c )
+	    objname=${filename%.c}.o ;;
+	*.s )
+	    objname=${filename%.s}.o
+	    compile="" ;;
+	*.o )
+	    compile=""
+	    assemble="" ;;
+	*   )
+            print "error: $filename is not a source or object file."
+            return 1 ;;
+    esac
+
+    # run a pipeline for each input file
+    eval cat \\$filename \\$compile \\$assemble \\$optimize > \\$objname
+
+    objfiles=$objfiles" "$objname
+done
+
+if [[ $do_link = true ]]; then
+    ld $exefile $link_libs $objfiles
+fi
+

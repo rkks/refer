@@ -1,0 +1,156 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    Kill - kill a process (send a signal) by name
+#
+# SYNOPSIS
+#    Kill [-signal] ProcessName
+#
+# DESCRIPTION
+#    This command will send a signal to any process with the
+#    name ProcessName.  The user will be asked for
+#    conformation before sending the signal to the process.
+#
+#    -signal
+#         Specifies the signal to send to the process.  Any
+#         value that is accepted by the kill(1) command may
+#         be specified.  For example, either -9 or -KILL can
+#         be used to send signal nine to the process.  If
+#         this option is not used, signal 15 (TERM) will be
+#         sent to the process.
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Usage error or abnormal termination
+#
+############################################################
+PATH=$PATH:`dirname $0`
+
+. SystemType.sh
+. GetYesNo.sh
+
+CMDNAME=`basename $0`
+USAGE="Usage: $CMDNAME [-signal] ProcessName"
+OLD_IFS=$IFS             # Original value of IFS variable
+SIGNAL=                  # Optional signal; see kill(1)
+NAME=                    # Name of process to kill
+PID=                     # PID of process being checked
+PROCNAME=                # Name of process being checked
+OWNER=                   # Owner of process being checked
+PS_OPTS=                 # Options for ps command
+PROCESS_LIST=/tmp/list.$$ # Output of ps command
+TITLE_PRINTED=FALSE      # Title printed? (TRUE or FALSE)
+FOUND=FALSE              # Found matching process?
+LINE=                    # Single line of output from ps
+COL=                     # Column where process name begins
+SYSTEM=`SystemType`      # String identifying the system
+
+trap 'rm -f /tmp/*.$$; exit 1' 1 2 3 15
+
+#
+# Get and check the command line parameters.
+#
+case $1 in
+     --)  shift
+          ;;
+     -*)  SIGNAL=$1      # Leave the hyphen
+          shift
+          ;;
+esac
+if [ $# -ne 1 ]; then
+     echo "$USAGE" 1>&2
+     exit 1
+fi
+
+NAME=$1        # Get the name of the process to kill.
+
+#
+# Determine which options to use with the ps command.
+#
+case $SYSTEM in
+     SUNBSD | ULTRIX ) PS_OPTS="-auxw"     ;;
+     * )               PS_OPTS="-ef"       ;;
+esac
+
+#
+# Get a list of the current processes and filter out the
+# lines that do not contain the process we are looking for.
+#
+ps $PS_OPTS                   |
+     sed '1d'                 |    # Remove the title line
+     grep "$NAME"             |    # Eliminate the chaff
+     grep -v "$0"             |    # Eliminate this process
+     grep -v "ps $PS_OPTS"    >$PROCESS_LIST
+
+#
+# Check each process.
+#
+exec <$PROCESS_LIST
+IFS=
+while read LINE
+do
+     IFS=$OLD_IFS
+     #
+     # Get the owner, PID, and name of the process.
+     #
+     set $LINE
+     OWNER=$1
+     PID=$2
+
+     #
+     # Determine the column where the process name begins.
+     #
+     case $SYSTEM in
+          AIX | HP | SGI | SOLARIS )    COL=48 ;;
+          SUNBSD | DECOSF )             COL=57 ;;
+          ULTRIX )                      COL=51 ;;
+          * )  echo "Unexpected system type." 1>&2
+               exit 1
+               ;;
+     esac
+
+     LINE=`echo "$LINE" | cut -c$COL-`
+     set dummy $LINE
+     shift
+     PROCNAME=$1
+
+     if [ "$PROCNAME" = "$NAME" -o \
+          "`basename $PROCNAME`" = "$NAME" ]; then
+
+          FOUND=TRUE
+
+          #
+          # Print title.
+          #
+          if [ "$TITLE_PRINTED" = "FALSE" ]; then
+               echo "PID	Owner	Process"
+               TITLE_PRINTED=TRUE
+          fi
+
+          #
+          # Ask user.
+          #
+          if GetYesNo \
+               "$PID	$OWNER	$PROCNAME (y/n)? " </dev/tty
+          then
+               kill $SIGNAL $PID
+          fi
+     fi
+     IFS=
+done
+
+if [ "$FOUND" = "FALSE" ]; then
+     echo "Process \"$NAME\" not found."
+fi
+
+rm -f /tmp/*.$$
+exit 0

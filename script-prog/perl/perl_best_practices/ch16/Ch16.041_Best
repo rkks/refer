@@ -1,0 +1,64 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+
+BEGIN {
+
+Readonly my $COMMA => q{,};
+
+package Coerced;
+use Class::Std;
+{
+    my %elements_of : ATTR( init_arg => 'elem' );
+
+    sub count {
+        my ($self) = @_;
+        return scalar @{ $elements_of{ident $self} }; 
+    }
+    
+    sub as_str {
+        my ($self) = @_;
+        return sprintf '(%s)', join $COMMA, @{ $elements_of{ident $self} }; 
+    }
+    
+    sub is_okay {
+        my ($self) = @_;
+        return !$self->Houston_We_Have_A_Problem();
+    }
+    
+    use overload (
+        q{0+}   => 'count',
+        q{""}   => 'as_str',
+        q{bool} => 'is_okay',
+
+        fallback => 1,
+    );
+
+    sub Houston_We_Have_A_Problem {
+        return 1;
+    }
+}
+
+}
+
+my $coercable = Coerced->new({elem => [10..17]});
+
+print "str: '$coercable'\n";
+print "num: ", 0+$coercable, "\n";
+if (!$coercable) {
+    print "We have a problem (as expected)\n"
+}

@@ -1,0 +1,48 @@
+<project name="EchoUIConsumer" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="EchoUIConsumer" />
+    <property name="tmp" value="anttmp" />
+    <property name="tmpclasses" value="${tmp}/tmpclasses" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${tmp}" />
+    <delete file="bin/${projname}.jar" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${tmp}" />
+    <mkdir dir="${tmpclasses}" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${tmpclasses}">
+      <classpath>
+        <fileset dir="../lib">
+          <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="../EchoService/bin">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <jar jarfile="bin/${projname}.jar"
+         basedir="${tmpclasses}" manifest="bin/manifest.txt"
+    />
+  </target>
+
+  <target name="run" depends="init" >
+    <echo message="Run startSMF.sh in exec/" />
+    <echo message="Run management commands in the console" />
+    <echo message="e.g. install, uninstall, start, stop, launch, close" />
+    <echo message="The HTTP service listens at port 8081" />
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

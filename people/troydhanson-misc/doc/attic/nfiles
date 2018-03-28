@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+# copy stdin or input files to sequentially numbered output
+# files each having "l" lines
+use strict;
+use warnings;
+use Getopt::Long;
+
+sub usage {
+  print "usage: $0 [-b <base>] [-l <lines-per-file] [-s <suffix>] [file]\n";
+  exit(-1);
+}
+
+our $seq=0;
+our $base = "out";
+our $suffix = "";
+our $help;
+our $lines=1000000;
+our $n=0;
+
+usage unless GetOptions("base=s"    => \$base,
+                        "suffix=s"  => \$suffix,
+                        "lines=i"   => \$lines,
+                        "help"   => \$help);
+usage if $help;
+while(<>) {
+  my $in = $_;
+  if (($n == 0) || ($n >= $lines)) {
+    my $filename = $base . $seq . $suffix;
+    open OUT, ">$filename" or die "can't open $filename: $!\n";
+    $seq++;
+    $n=0;
+  }
+  print OUT $in;
+  $n++;
+}

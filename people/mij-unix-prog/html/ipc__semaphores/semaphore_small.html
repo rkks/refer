@@ -1,0 +1,198 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  semaphore.c
+ *  
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 12/03/05.
+ *  Original source file available at http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+
+<span class="cpdr">#define _POSIX_SOURCE
+#include &lt;stdio.h&gt;
+</span><span class="ccom">/* sleep() */</span>
+<span class="cpdr">#include &lt;errno.h&gt;
+#include &lt;unistd.h&gt;
+</span><span class="ccom">/* abort() and random stuff */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span><span class="ccom">/* time() */</span>
+<span class="cpdr">#include &lt;time.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+</span>
+
+<span class="ccom">/* this skips program termination when receiving signals */</span>
+<span class="ctyp">void</span> <span class="cfun">signal_handler</span>(<span class="ctyp">int</span> type);
+
+<span class="ccom">/*
+ * thread A is synchronous. When it needs to enter its
+ * critical section, it can't do anything other than waiting.
+ */</span>
+<span class="ctyp">void</span> *<span class="cfun">thread_a</span>(<span class="ctyp">void</span> *);
+
+<span class="ccom">/*
+ * thread B is asynchronous. When it tries to enter its
+ * critical section, it switches back to other tasks if
+ * it hasn't this availability.
+ */</span>
+<span class="ctyp">void</span> *<span class="cfun">thread_b</span>(<span class="ctyp">void</span> *);
+
+
+<span class="ccom">/* the semaphore */</span>
+sem_t mysem;
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[])
+{
+    pthread_t mytr_a, mytr_b;
+    <span class="ctyp">int</span> ret;
+    
+    
+    <span class="cfun">srand</span>(<span class="cfun">time</span>(<span class="ctyp">NULL</span>));
+    <span class="cfun">signal</span>(SIGHUP, signal_handler);
+    <span class="cfun">signal</span>(SIGUSR1, signal_handler);
+
+    <span class="ccom">/*
+     * creating the unnamed, local semaphore, and initialize it with
+     * value 1 (max concurrency 1)
+     */</span>
+    ret = <span class="cfun">sem_init</span>(&amp;mysem, <span class="cval">0</span>, <span class="cval">1</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+        <span class="ccom">/* error. errno has been set */</span>
+        <span class="cfun">perror</span>(<span class="cstr">"Unable to initialize the semaphore"</span>);
+        <span class="cfun">abort</span>();
+    }
+    
+    <span class="ccom">/* creating the first thread (A) */</span>
+    ret = <span class="cfun">pthread_create</span>(&amp;mytr_a, <span class="ctyp">NULL</span>, thread_a, <span class="ctyp">NULL</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"Unable to create thread"</span>);
+        <span class="cfun">abort</span>();
+    }
+
+    <span class="ccom">/* creating the second thread (B) */</span>
+    ret = <span class="cfun">pthread_create</span>(&amp;mytr_b, <span class="ctyp">NULL</span>, thread_b, <span class="ctyp">NULL</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"Unable to create thread"</span>);
+        <span class="cfun">abort</span>();
+    }
+    
+    <span class="ccom">/* waiting for thread_a to finish */</span>
+    ret = <span class="cfun">pthread_join</span>(mytr_a, (<span class="ctyp">void</span> *)<span class="ctyp">NULL</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"Error in pthread_join"</span>);
+        <span class="cfun">abort</span>();
+    }
+
+    <span class="ccom">/* waiting for thread_b to finish */</span>
+    ret = <span class="cfun">pthread_join</span>(mytr_b, <span class="ctyp">NULL</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"Error in pthread_join"</span>);
+        <span class="cfun">abort</span>();
+    }
+
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+
+<span class="ctyp">void</span> *<span class="cfun">thread_a</span>(<span class="ctyp">void</span> *x)
+{
+    <span class="ctyp">unsigned</span> <span class="ctyp">int</span> i, num;
+    <span class="ctyp">int</span> ret;
+    
+    
+    <span class="cfun">printf</span>(<span class="cstr">" -- thread A -- starting\n"</span>);
+    num = ((<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)<span class="cfun">rand</span>() % <span class="cval">40</span>);
+    
+    <span class="ccom">/* this does (do_normal_stuff, do_critical_stuff) n times */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>; i &lt; num; i++) {
+        <span class="ccom">/* do normal stuff */</span>
+        <span class="cfun">sleep</span>(<span class="cval">3</span> + (<span class="cfun">rand</span>() % <span class="cval">5</span>));
+        
+        <span class="ccom">/* need to enter critical section */</span>
+        <span class="cfun">printf</span>(<span class="cstr">" -- thread A -- waiting to enter critical section\n"</span>);
+        <span class="ccom">/* looping until the lock is acquired */</span>
+        <span class="ctyp">do</span> {
+            ret = <span class="cfun">sem_wait</span>(&amp;mysem);
+            <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+                <span class="ccom">/* the lock wasn't acquired */</span>
+                <span class="ctyp">if</span><span class="cfun"> </span>(errno != EINVAL) {
+                    <span class="cfun">perror</span>(<span class="cstr">" -- thread A -- Error in sem_wait. terminating -&gt; "</span>);
+                    <span class="cfun">pthread_exit</span>(<span class="ctyp">NULL</span>);
+                } <span class="ctyp">else</span> {
+                    <span class="ccom">/* sem_wait() has been interrupted by a signal: looping again */</span>
+                    <span class="cfun">printf</span>(<span class="cstr">" -- thread A -- sem_wait interrupted. Trying again for the lock...\n"</span>);
+                }
+            }
+        } <span class="ctyp">while</span><span class="cfun"> </span>(ret != <span class="cval">0</span>);
+        <span class="cfun">printf</span>(<span class="cstr">" -- thread A -- lock acquired. Enter critical section\n"</span>);
+        
+        <span class="ccom">/* CRITICAL SECTION */</span>
+        <span class="cfun">sleep</span>(<span class="cfun">rand</span>() % <span class="cval">2</span>);
+        
+        <span class="ccom">/* done, now unlocking the semaphore */</span>
+        <span class="cfun">printf</span>(<span class="cstr">" -- thread A -- leaving critical section\n"</span>);
+        ret = <span class="cfun">sem_post</span>(&amp;mysem);
+        <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+            <span class="cfun">perror</span>(<span class="cstr">" -- thread A -- Error in sem_post"</span>);
+            <span class="cfun">pthread_exit</span>(<span class="ctyp">NULL</span>);
+        }
+    }
+    
+    <span class="cfun">printf</span>(<span class="cstr">" -- thread A -- closing up\n"</span>);
+
+    <span class="cfun">pthread_exit</span>(<span class="ctyp">NULL</span>);
+}
+
+
+<span class="ctyp">void</span> *<span class="cfun">thread_b</span>(<span class="ctyp">void</span> *x)
+{
+    <span class="ctyp">unsigned</span> <span class="ctyp">int</span> i, num;
+    <span class="ctyp">int</span> ret;
+    
+    
+    <span class="cfun">printf</span>(<span class="cstr">" -- thread B -- starting\n"</span>);
+    num = ((<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)<span class="cfun">rand</span>() % <span class="cval">100</span>);
+    
+    <span class="ccom">/* this does (do_normal_stuff, do_critical_stuff) n times */</span>
+    <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>; i &lt; num; i++) {
+        <span class="ccom">/* do normal stuff */</span>
+        <span class="cfun">sleep</span>(<span class="cval">3</span> + (<span class="cfun">rand</span>() % <span class="cval">5</span>));
+        
+        <span class="ccom">/* wants to enter the critical section */</span>
+        ret = <span class="cfun">sem_trywait</span>(&amp;mysem);
+        <span class="ctyp">if</span><span class="cfun"> </span>(ret != <span class="cval">0</span>) {
+            <span class="ccom">/* either an error happened, or the semaphore is locked */</span>
+            <span class="ctyp">if</span><span class="cfun"> </span>(errno != EAGAIN) {
+                <span class="ccom">/* an event different from "the semaphore was locked" happened */</span>
+                <span class="cfun">perror</span>(<span class="cstr">" -- thread B -- error in sem_trywait. terminating -&gt; "</span>);
+                <span class="cfun">pthread_exit</span>(<span class="ctyp">NULL</span>);
+            }
+            
+            <span class="cfun">printf</span>(<span class="cstr">" -- thread B -- cannot enter critical section: semaphore locked\n"</span>);
+        } <span class="ctyp">else</span> {
+            <span class="ccom">/* CRITICAL SECTION */</span>
+            <span class="cfun">printf</span>(<span class="cstr">" -- thread B -- enter critical section\n"</span>);
+
+            <span class="cfun">sleep</span>(<span class="cfun">rand</span>() % <span class="cval">10</span>);
+            
+            <span class="ccom">/* done, now unlocking the semaphore */</span>
+            <span class="cfun">printf</span>(<span class="cstr">" -- thread B -- leaving critical section\n"</span>);
+            <span class="cfun">sem_post</span>(&amp;mysem);
+        }
+    }
+    
+    <span class="cfun">printf</span>(<span class="cstr">" -- thread B -- closing up\n"</span>);
+    
+    <span class="ccom">/* joining main() */</span>
+    <span class="cfun">pthread_exit</span>(<span class="ctyp">NULL</span>);
+}
+
+
+<span class="ctyp">void</span> <span class="cfun">signal_handler</span>(<span class="ctyp">int</span> type)
+{
+    <span class="ccom">/* do nothing */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"process got signal %d\n"</span>, type);
+    <span class="ctyp">return</span>;
+}
+</div>

@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+# onchange file1 file2 ... fileN command
+
+use strict;
+use warnings;
+
+use File::Find;
+use Digest::MD5;
+
+my $Command     = pop @ARGV;
+my $Files       = [@ARGV];
+my $Last_digest = '';
+
+sub has_changed
+{
+    my $files = shift;
+    my $ctx   = Digest::MD5->new();
+
+    find( sub { $ctx->add( $File::Find::name, ( stat($_) )[9] ) },
+        grep { -e $_ } @$files );
+
+    my $digest      = $ctx->digest();
+    my $has_changed = $digest ne $Last_digest;
+    $Last_digest    = $digest;
+
+    return $has_changed;
+}
+
+while (1)
+{
+    system( $Command ) if has_changed( $Files );
+    sleep 1;
+}

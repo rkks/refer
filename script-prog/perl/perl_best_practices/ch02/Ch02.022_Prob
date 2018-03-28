@@ -1,0 +1,35 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 2 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+while (my $line = <DATA>) {
+    chomp $line;
+ 
+    if ( $line =~ s{\A (\s*) -- (.*)}{$1#$2}xms ) {
+        push @comments, $2
+        /shift/mix
+    }
+ 
+    print $line
+    $src_len += length; 
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @comments ];
+
+__DATA__
+-- A comment
+A line
+-- another comment

@@ -1,0 +1,30 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $input = '*&^^&%$***&^*&*%%^&12AB.675A87B%^&*%&*%&%';
+
+use Regexp::Common;
+ 
+# The alien hardware device requires duodecimal floating-point numbers...
+Readonly my $NUMBER => $RE{num}{real}{-base=>12}{-places=>'6,9'}{-keep};
+ 
+# and later...
+ 
+my ($number) 
+    = $input =~ m/$NUMBER/xms;
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $number ];

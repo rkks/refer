@@ -1,0 +1,67 @@
+:
+##########################################################################
+# Shellscript:	audio - play audio files
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1995-06-21
+# Requires   :	-
+# Category   :	Desktop
+# SCCS-Id.   :	@(#) audio	1.2 04/02/18
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+: ${SOUNDPATH:=/usr/demo/SOUND/sounds}
+: ${AUDIODEV:=/dev/audio}
+Usage () {
+    echo "$PN - play audio files, $VER (stv '95)
+Usage: $PN -l
+       $PN [audiofile ...]
+$PN -l lists available audio files in SOUNDPATH=$SOUNDPATH.
+The second form plays the given audio file (the .au extension
+may be omitted).
+Default audio device is AUDIODEV=$AUDIODEV" >&2
+    exit 1
+}
+Msg () {
+    for MsgLine
+    do echo "$PN: $MsgLine" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+# Check arguments before setting them
+getopt hl "$@" > /dev/null 2>&1	|| Usage
+set -- `getopt hl "$@"`
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-l)				# list audio files
+	    [ -d "$SOUNDPATH" -a -r "$SOUNDPATH" ] &&
+		ls -C "$SOUNDPATH"
+	    exit;;
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# first file name
+    esac
+    shift
+done
+[ -c "$AUDIODEV" ] || Fatal "cannot find audio device: $AUDIODEV"
+for AudioFile
+do
+    if [ -r "$AudioFile" ]
+    then File="$AudioFile"
+    elif [ -r "$AudioFile.au" ]
+    then File="$AudioFile.au" ]
+    elif [ -r "$SOUNDPATH/$AudioFile" ]
+    then File="$SOUNDPATH/$AudioFile"
+    elif [ -r "$SOUNDPATH/$AudioFile.au" ]
+    then File="$SOUNDPATH/$AudioFile.au"
+    else
+	Msg "cannot find audio file $SOUNDPATH/$AudioFile.au"
+	continue
+    fi
+    cp "$File" "$AUDIODEV"
+done
+exit 0

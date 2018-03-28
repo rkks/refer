@@ -1,0 +1,51 @@
+#! /usr/bin/perl -wnlaF':'
+# Prints report of passwd-file data for users specified
+#   interactively, via login-ID or numeric UID
+
+BEGIN {
+    $initializing=1;                    # start with TRUE value
+
+    # Use field-name variables for field-number indices
+    ($id, undef, $uid, $gid, $name, $home, $shell)=(0..6);
+
+    # Read passwd file first, then STDIN (-) for user input
+    @ARGV=( '/etc/passwd', '-' );
+
+    $prompt="\nEnter login-ID  or  UID: ";  # Prompt string
+}
+
+if ($initializing) {
+
+  # Assign formatted string to both ID and UID keys
+  # E.g., for "root", store under both '0' and 'root'
+    $user{ $F[$id] }=
+        $user{ $F[$uid] }="             
+                ID:    $F[$id]
+                UID:   $F[$uid]
+                GID:   $F[$gid]
+                NAME:  $F[$name]
+                HOME:  $F[$home]
+                SHELL: $F[$shell]";
+
+    if (eof) {
+        $initializing=0;   # Signifies start of retrieval mode,
+        printf $prompt;    #   so prompt for user's first input
+    }
+}
+
+# Finished loading hash from file, now interact with user
+
+else {
+    if (exists $user{$_}) {     # Avoid attempts to use bad IDs
+        print $user{$_};
+    }
+    else {
+        warn "No such user: '$_'\n";
+    }
+    printf $prompt;                     # Prompt for next input
+}
+
+# On entry of <^D>, program comes here before exiting
+END {
+    print "";       # Ensure newline before Shell's next prompt
+}

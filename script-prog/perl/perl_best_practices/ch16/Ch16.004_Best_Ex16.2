@@ -1,0 +1,129 @@
+##############################################################################
+##   Example 16.2 (Recommended) from Chapter 16 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-2. Turning your psyche inside-out
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Generic base class confers an ID number and description attribute
+# on all derived classes...
+package Object;
+use Class::Std::Utils;
+{
+    # Class attribute...
+    my $next_id = 1;
+    
+    # Object attributes...
+    my %id_of;    # ID number
+    my %desc_of;  # Description
+    
+    # Constructor expects description as argument, 
+    # and automatically allocates ID number...
+    sub new {
+        my ($class, $arg_ref) = @_;
+    
+        # Create object representation...
+        my $new_object = bless anon_scalar(), $class;
+    
+        # Initialize attributes...
+        $id_of{ident $new_object}   = $next_id++;
+        $desc_of{ident $new_object} = $arg_ref->{desc};
+    
+        return $new_object;
+    }
+    
+    # Read-only access to ID number...
+    sub get_id {
+        my ($self) = @_;
+        return $id_of{ident $self};
+    }
+}
+ 
+# and later...
+ 
+# Derived class for psychological modelling...
+package Psyche;
+use Class::Std::Utils;
+{
+    # All instances need ID and description...
+    use base qw( Object );
+    
+    # Attributes...
+    my %super_ego_of; 
+    my %ego_of;
+    my %id_of;
+    
+    # Constructor expects to be passed an ego representation,
+    # but generates other psychological layers automatically...
+    sub new {
+        my ($class, $arg_ref) = @_;
+    
+        # Call base-class constructor to create object representation 
+        # and initialize identity attributes...
+        my $new_object = $class->SUPER::new($arg_ref);
+    
+        # Initialize psyche-specific attributes...
+        $super_ego_of{ident $new_object} = Ego::Superstructure->new();
+        $ego_of{ident $new_object}       = Ego->new($arg_ref->{ego});
+        $id_of{ident $new_object}        = Ego::Substrate->new();
+    
+        return $new_object;
+    }
+    
+    # Summarize a particular psyche...
+    sub describe_id {
+        my ($self) = @_;
+    
+        # List case number...
+        print 'Case ', $self->SUPER::get_id(), "...\n";
+    
+        # Describe pschological layers...
+        $super_ego_of{ident $self}->describe();
+        $ego_of{ident $self}->describe();
+        $id_of{ident $self}->describe();
+ 
+        return;
+    }
+}
+    
+# and later still...
+ 
+my $psyche = Psyche->new({ desc=>'me!', ego=>'sum' });
+ 
+$psyche->{id} = 'est';    # Exception thrown: Not a HASH reference...
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $psyche ];
+
+
+package Ego::Superstructure;
+
+sub new {
+    return 1;
+}
+
+package Ego;
+
+sub new {
+    return 1;
+}
+
+package Ego::Substrate;
+
+sub new {
+    return 1;
+}

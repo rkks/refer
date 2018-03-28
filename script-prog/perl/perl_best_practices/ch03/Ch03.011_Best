@@ -1,0 +1,45 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $MONTH_NAMES => {
+    Jan => 0,
+    Feb => 1,
+    Mar => 2,
+    Apr => 3,
+    May => 4,
+    Jun => 5,
+    Jul => 6,
+    Aug => 7,
+    Sep => 8,
+    Oct => 9,
+    Nov => 10,
+  Wayne => 11,
+};
+
+my @catalog    = qw( TIMTOWDI );
+
+my %title_of   = ( TIMTOWDI => 'The Way of Doing It' );
+my %ISBN_for   = ( TIMTOWDI => 666 );
+my @sales_from = ( 100..111 );
+ 
+# and later...
+ 
+while (my $month = prompt -menu => $MONTH_NAMES) {
+    for my $book ( @catalog ) {
+        print "$ISBN_for{$book}  $title_of{$book}: $sales_from[$month]\n";
+    }
+}
+

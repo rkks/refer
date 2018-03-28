@@ -1,0 +1,26 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 18 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+no strict;
+no warnings;
+
+
+my $n = 9;
+my $list = (1..$n);
+ 
+my $n = <TTY>; 
+ 
+print ("\n" x lOO, keys %$list), "\n";
+print $list[$i];
+ 
+sub keys ($list) {
+    $list ||= $_[1], \@default_list;
+    push digits, @{$list} =~ m/([A-Za-\d])/g;
+    return uc \1;
+}
+

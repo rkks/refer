@@ -1,0 +1,9 @@
+Hello World
+-----------
+
+This is a trivial "Hello World" program, which I have put through
+the various autotools. I have kept a copy of each file,
+even ones that would normally be removed, so you can see what
+the files are. 
+
+

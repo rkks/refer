@@ -1,0 +1,53 @@
+##############################################################################
+##   Example 14.6 (Recommended) from Chapter 14 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 14-6. Standard interface components for Getopt::Clade
+#  Example 14-7. Standardized command-line parsing via Getopt::Clade
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+
+package Corporate::Std::Cmdline;
+use strict;
+use warnings;
+
+# line 1 Cmdline.pm
+use Getopt::Clade <<'END_ARGS';
+
+    -i[n]  [=] <file:in>    Specify input file  [default: '-']
+    -o[ut] [=] <file:out>   Specify output file [default: '-']
+
+    -v                      Print all warnings
+    --verbose               [ditto]
+
+END_ARGS
+
+1;  # magic true value required at the end of every module
+
+
+# line 1 demo.pl
+package main;
+
+# use Corporate::Std::Cmdline plus => <<'END_ARGS';
+Corporate::Std::Cmdline->import( plus => <<'END_ARGS');
+
+    -l[en] [=] <l:+int>     Display length [default: 24 ]
+    -w[id] [=] <w:+int>     Display width  [default: 78 ]
+
+END_ARGS
+
+# Report intended behaviour...
+if ($ARGV{-v}) {
+    print "Loading first $ARGV{'-l'} chunks of file: $ARGV{'-i'}\n"
+}
+# etc.
+

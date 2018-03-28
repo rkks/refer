@@ -1,0 +1,43 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use List::Util qw( min max );
+
+my $curr_range = 'percentage';
+my @samples = (88..122);
+
+my %range = (
+    normalized => [-0.5,0.5],
+    greyscale  => [0,255],
+    percentage => [0,100],
+    weighted   => [0,1],
+);
+
+sub clip_to_range($$@) {  # takes two scalars and an array
+    my ($min, $max, @data) = @_;
+ 
+    return map { max($min, min($max, $_)) } @data;
+}
+
+
+# and later...
+ 
+my $range_ref = $range{$curr_range};
+@samples = clip_to_range( @{$range_ref}, @samples);
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @samples ];

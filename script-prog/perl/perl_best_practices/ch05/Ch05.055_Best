@@ -1,0 +1,39 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $file = $0;
+
+
+# This is the order in which stat() returns it's information:
+Readonly my @STAT_FIELDS
+    => qw( dev ino mode nlink uid gid rdev size atime mtime ctime blksize blocks );
+ 
+sub status_for {
+    my ($file) = @_;
+ 
+    # The hash to be returned...
+    my %stat_hash = ( file => $file );
+ 
+    # Load each stat datum into an appropriately named entry of the hash...
+    @stat_hash{@STAT_FIELDS} = stat $file;
+ 
+    return \%stat_hash;
+}
+ 
+# and later...
+ 
+warn 'File was last modified at ', status_for($file)->{mtime};
+

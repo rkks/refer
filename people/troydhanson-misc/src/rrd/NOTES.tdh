@@ -1,0 +1,4 @@
+rrd1.pl  - generate a cos wave in 36 data points
+rrd2.pl  - generate a cos wave with superimposed higher freq cos wave 3600 pts
+--------------------------------------------------------------------------------
+perldoc RRDs  -- view the Perl interface to RRDtool

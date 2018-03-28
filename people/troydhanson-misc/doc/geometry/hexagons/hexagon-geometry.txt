@@ -1,0 +1,123 @@
+Geometry notes for drawing hexagons
+-----------------------------------
+Troy D. Hanson
+
+I once wrote a program to draw some hexagons. After re-learning some
+high school trig (thanks, teachers!) I wrote these notes to remember
+the technique.
+
+You can draw a hexagon by hand by drawing a rectangle "1 unit" high
+and about twice as wide (1.7 units). Then give it a triangular hat 
+whose height is half that of the rectangle. Put a reflection of the
+hat below the rectangle.
+
+To do that in a computer program we need a drawing system and some 
+vertices. 
+
+Vertices
+--------
+Assume an xy drawing plane with +x and +y going right and down.
+In other words a drawing plane that has 0,0 at the top left with
+increasing x,y going down and to the right. The HTML5 canvas has
+this coordinate system.
+
+I'll list the six vertices in clockwise order, starting from the
+left-most upper one. In other words if the hexagon is oriented with
+its peaky points straight up and down, my 0,0 (initial vertex)
+is shown here along with the clockwise order of vertices:
+
+          x               2  
+-0,0-->  x x             1 3        
+         x x             6 4        
+          x               5        
+
+The six vertices listed in this order are:
+
+               x        y
+1.             0        0
+2.     sqrt(3)/2    -(1/2)
+3.       sqrt(3)        0
+4.       sqrt(3)        1
+5.     sqrt(3)/2      3/2
+6.             0        1
+
+That's all you need. Connect those vertices with lines and you get a hexagon.
+
+To draw tiled hexagons, translate. For horizontal neighbors, offset the x
+component of the starting vertex by the hexagon's width, sqrt(3). Vertical 
+neighbors have their y component offset by 1 unit, and their x component by
+half a hexagon width (that is, sqrt(3)/2)).
+
+---------------------------------------------------------------------------
+
+Derivation
+============================================================================
+To find the hexagon's vertices in an xy coordinate system, we can draw a unit
+hexagon, then use knowledge of its edges (all 1 unit) and its interior angles
+(all 120 degrees) then use some triangle math to figure out the exact relative
+positions of each vertex.
+
+We know the six angles inside the hexagon (angles between adjacent sides)
+are each 120 degrees. (I had to look it up, but the rule for the interior
+angle of any regular n-gon is (n-2) × 180° / n).  To find the hexagon's
+vertices, take a triangle - we'll take the one formed by the bottom three
+vertices of the hexagon, and work out the points. (Afterward the remaining
+hexagon vertices are relatively obvious from the unit edges and the mirror
+image of the bottom triangle). Here's the bottom triangle of the hexagon.
+
+         x x             6 4        
+          x               5        
+      
+This one does not have a right angle in it. We want a triangle with a right
+angle in it so we can use "sohcahtoa" (thank you, again my high school trig
+teacher). Since this triangle is left-right symmetrical, take its left half. 
+In other words, discard vertex 4; replace it with a vertex at the midpoint
+from (6-4).  Now we have a new triangle with a right angle at that position
+(labeled dot below).
+
+         x.              6.        
+          x               5        
+      
+We ultimately want to get the horizontal (x) distance between 6-5, and the
+vertical (y) distance between 6-5 so we can put a xy coordinate on each vertex.
+Here x and y are the length of the triangle's two sides other than the hypotenuse.
+
+We first need to know the three angles of this triangle: one is the 90-degree
+right angle, and the other two angles are:
+ 
+The angle at vertex 5: since the original angle 
+ (between the adjacent sides of the hexagon connected there) was 120, the half
+ triangle we just made has a 60 degree angle between the vertical
+ line rising from vertex 5 and the edge (5-6). 
+
+The angle at vertex 6: using the triangle rule about angles add to 180 
+ we now know the angle at vertex 6 is 30 degrees. That's the angle between the 
+ horizontal line extending right from vertex 6, and the 5-6 hypotenuse below.
+
+Now we use trig: to get the vertical y distance between 6-5, we use the "soh" 
+part of sohcahtoa: sin(30)=y/1 (thus y=1/2); y is the vertical component of
+distance between 6 and 5, or to say it another way, the distance the bottom
+peak of the hexagon hangs below the adjacent two vertices.  
+
+To get the horizontal x distance between 5-6, use trig again with the "cah"
+part of sohcahtoa. cos(30)=x/1 (thus x=sqrt(3)/2); x is the horizontal
+distance that the peak is from the left or right of the hexagon.  Since the
+peak is in the horizontal middle, the total hexagonal width is simply twice
+that, sqrt(3).
+
+Incidentally the denominator of 1 above comes from the length of the 
+hypotenuse (the edge from 5-6), which is 1 because this is a unit hexagon.
+
+Last is just to make a diagram of a unit hexagon, and fill in the vertex
+coordinates.
+
+          x               2  
+-0,0-->  x x             1 3        
+         x x             6 4        
+          x               5        
+
+Since we put vertex 1 at (0,0), and this is a unit hexagon, we know that
+vertex 6 is at (0,1). Vertex 3 and 4 are simply translated right by the
+hexagon width, sqrt(3). Vertex 2 and 5 are in-between them horizontally
+and 1/2 unit above and below. That gave us the coordinates above.
+

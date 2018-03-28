@@ -1,0 +1,26 @@
+:
+# html2iso - changes HTML-characters to ISO 8859 special characters
+#
+# Author:	Heiner Steven <heiner.steven@odn.de>
+# Date:		1996-11-14
+# Category:	File Conversion, HTML
+#
+# Note
+# o  This script supports German "Umlaute" only
+if [ $# -eq 1 ] && [ \( X"$1" = X"-h" -o X"$1" = X"-?" \) ]
+then
+    echo >&2 "$0 - change HTML-characters to ISO 8859 special characters
+usage: $0 [file ...]"
+    exit 1
+fi
+cat "$@" |
+    sed '
+s/&auml\;/ä/g
+s/&ouml\;/ö/g
+s/&uuml\;/ü/g
+s/&Auml\;/Ä/g
+s/&Ouml\;/Ö/g
+s/&Uuml\;/Ü/g
+s/&szlig\;/ß/g
+s/&nbsp\;/ /g
+'

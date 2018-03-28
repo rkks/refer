@@ -1,0 +1,47 @@
+#! /usr/bin/perl -s -wnl
+
+our ($debug);    # debugging switch is optional
+
+BEGIN {
+  @ARGV='/var/log/messages';     # set filename argument
+  $month='[A-Z]\w+';
+  $spaces=' +';  # for space(s) between month and day number
+  $date='\d+';
+  $hhmmss='\d+:\d+:\d+';
+  $hostname='\w+';
+  $oops_num='\d+';
+
+  # Assemble pieces into more usable form
+  $timestamp="$month$spaces$date $hhmmss $hostname kernel";
+
+  # "Codes" occur in a series of 20 hex numbers,
+  #  so allow digits and letters a-f
+  $hex_digit='[a-f0-9]';
+  $num_codes='20';
+  $gap=' ';      # one space currently, in future could change?
+
+  # RE for $num_codes reps of $gap-prefixed $hex_digit pairs
+  $codes="($gap$hex_digit$hex_digit){$num_codes}";
+
+  # Assemble RE to match first line of report
+  # Sample first line: Apr 17 19:30:04 floss kernel: Oops: 0001
+  $oops_start="$timestamp: Oops: $oops_num";
+
+  # Assemble RE to match last line of report
+  # Sample last line; wrapped onto new line after Code:
+  # Apr 17 19:30:04 floss kernel: Code: 
+  # 89 50 24 89 02 c7 43 24 00 00 00 00 89 1c 24 c7 44 24 04 ff
+
+  $oops_end="$timestamp: Code:$codes";
+
+  $debug  and  warn "Oops start RE:\n'$oops_start'",
+      "\n\nOops  end  RE:\n'$oops_end'\n\n";
+}
+
+# Now extract and print "Oops" reports
+$status=/^$oops_start/ ... /^$oops_end/  and  print;
+
+# If range operator returned E0, we just printed last line of
+# report; printing "" puts blank line before next report.
+
+$status =~ /E0$/  and  print "";

@@ -1,0 +1,45 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 11 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use List::Util qw( max );
+
+{
+    # Make variables "private" by declaring them in a limited scope
+    my @buffer;
+    my $next = -1;
+ 
+    # Get the next element stored in our cyclic buffer...
+    sub get_next_cyclic {
+        $next++;                   # ...increment cursor
+        $next %= @buffer;          # ...wrap around if at end of array
+        return $buffer[$next];     # ...return next element
+    }
+ 
+    # Grow the cyclic buffer by inserting new element(s)...
+    sub insert_cyclic {
+        # At next pos (or zero): remove zero elems, then insert args...
+        splice @buffer, max(0,$next), 0, @_;  
+ 
+        return;
+    }
+ 
+    # etc.
+}
+
+insert_cyclic(1,2,3);
+while (<>) {
+    print "next: ", get_next_cyclic();
+}

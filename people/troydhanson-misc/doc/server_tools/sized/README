@@ -1,0 +1,21 @@
+sized is a utility to keep a directory pruned to under a certain file size.
+It does not recurse, so its only meant to be used on flat directories. It 
+simply counts up the file sizes and deletes old files after a size threshold
+is reached. 
+
+It operates in either a single pass mode or as a daemon. In daemon mode it
+operates continuously by using inotify to observe when files in the directory
+are closed. The directory can actually exceed the size threshold while files
+are being written, but when they are closed, the threshold is tested.
+
+Single pass mode:
+
+	sized -o -s 10m /dir
+
+Daemon ("continuous") mode:
+
+	sized -c -s 10m /dir
+
+You can use k/m/g suffixes for kilobytes, megabytes, gigabytes. You can also
+use a percentage like "-s 10%" to indicate "10% of the filesystem" where /dir
+resides.

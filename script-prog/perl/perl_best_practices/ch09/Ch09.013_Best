@@ -1,0 +1,33 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $location = 'the dungeon';
+
+sub in_crypt  { return "You're in the tomb of @_\n"   }
+sub find_map  { return "You have found a map of @_\n" }
+sub chop_at   { return "You have chopped @_\n"        }
+sub close_the { return "The @_ is now closed\n"       }
+sub hex_upon  { return "A hex has been cast on @_\n"  }
+ 
+in_crypt( qw( Vlad Tsepes ) );
+ 
+for my $reward (qw( treasure danger )) {
+    print find_map($reward, 'in', $location);
+}
+ 
+print hex_upon('the Demon');
+print chop_at('the Demon');
+

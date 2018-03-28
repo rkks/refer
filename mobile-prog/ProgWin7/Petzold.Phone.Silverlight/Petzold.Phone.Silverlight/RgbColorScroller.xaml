@@ -1,0 +1,32 @@
+﻿<UserControl 
+    x:Class="Petzold.Phone.Silverlight.RgbColorScroller"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:petzold="clr-namespace:Petzold.Phone.Silverlight">
+    
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <petzold:ColorColumn x:Name="redColumn"
+                             Grid.Column="0"
+                             Foreground="Red"
+                             Label="Red"
+                             ValueChanged="OnColorColumnValueChanged" />
+        
+        <petzold:ColorColumn x:Name="greenColumn"
+                             Grid.Column="1"
+                             Foreground="Green"
+                             Label="Green"
+                             ValueChanged="OnColorColumnValueChanged" />
+        
+        <petzold:ColorColumn x:Name="blueColumn"
+                             Grid.Column="2"
+                             Foreground="Blue"
+                             Label="Blue"
+                             ValueChanged="OnColorColumnValueChanged" />
+    </Grid>
+</UserControl>

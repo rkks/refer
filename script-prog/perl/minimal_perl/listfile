@@ -1,0 +1,20 @@
+#! /usr/bin/perl -wl
+
+# load CPAN module whose "format_mode" function converts
+#   octal-mode --> "-rw-r--r--" format
+
+use Stat::lsMode;
+
+@ARGV == 1  or  die "Usage: $0 filename\n";
+$filename=shift;
+
+(undef, undef, $mode, $nlink, $uid, $gid,
+  undef, $size, undef, $mtime)=stat $filename;
+
+$time=localtime $mtime;     # convert seconds to time string
+$uid_name=getpwuid $uid;    # convert UID-number to string
+$gid_name=getgrgid $gid;    # convert GID-number to string
+$rwx=format_mode $mode;     # convert octal mode to rwx format
+
+printf "%s %4d %3s %9s %12d %s %s\n",
+  $rwx, $nlink, $uid_name, $gid_name, $size, $time, $filename;

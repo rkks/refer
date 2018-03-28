@@ -1,0 +1,15 @@
+<project name="IntelliJHelper" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="output" value="output" />
+  </target>
+
+  <target name="postcompile" depends="init">
+    <copy file="../wsdd/client-config.wsdd"
+          todir="${output}/" />
+  </target>
+
+  <target name="all" depends="postcompile" />
+
+</project>

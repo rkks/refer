@@ -1,0 +1,42 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 19 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+
+my $file;
+
+# This look-up table is handy, but seems to be too bloated...
+my %lookup = load_lookup_table($file);
+ 
+# So let's look at how much memory it's using...
+use Devel::Size qw( size total_size );
+use Perl6::Form;
+ 
+my $hash_mem  = size(\%lookup);           # Storage overheads only
+my $total_mem = total_size(\%lookup);     # Overheads plus actual data
+my $data_mem  = $total_mem - $hash_mem;   # Data only
+ 
+print form(
+    'hash alone: {>>>,>>>,>>} bytes', size(\%lookup),
+    'data alone: {>>>,>>>,>>} bytes', total_size(\%lookup)-size(\%lookup),
+    '==============================',
+    'total:      {>>>,>>>,>>} bytes', total_size(\%lookup),
+);
+
+
+sub load_lookup_table {
+    return map {$_ => $_} 1..100_000;
+}

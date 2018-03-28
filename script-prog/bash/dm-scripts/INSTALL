@@ -1,0 +1,6 @@
+dm-scripts INSTALLATION
+
+The dm-scripts can be installed in any environment that allows execution. User
+commands are often installed in /usr/bin or /usr/local/bin which usually must 
+be done as root. To install, simply copy the scripts to the preferred executable 
+environment.

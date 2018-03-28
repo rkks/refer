@@ -1,0 +1,197 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    ptree - print a process tree
+#
+# SYNOPSIS
+#    ptree [-n] [pid]
+#    ptree [-n] [pid] [level] [datafile]
+#
+# DESCRIPTION
+#    This command will print the process tree for the
+#    process identified by pid.  When called by the user,
+#    only the first format shown should be used.  If the
+#    process ID (pid) is not passed, process 1 is assumed.
+#
+#    The second format of this command is only used when
+#    this command calls itself recursively to print the next
+#    level of the process tree.
+#
+#    -n   Do not recurse
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Usage error
+#
+############################################################
+PATH=$PATH:`dirname $0`
+
+. SystemType.sh
+
+CMDNAME=`basename $0`
+USAGE="Usage: $CMDNAME [-n] [pid]"
+RECURSIVE=TRUE           # List processes recursively
+PROCESS=                 # PID of the starting process
+LEVEL=                   # Indentation level (num parents)
+DATAFILE=                # Reformatted output from ps
+PSFILE=/tmp/ps.$$        # Output from the ps command
+PS_OPTS=                 # Options for the ps command
+OLD_IFS=$IFS             # Original value of IFS variable
+SYSTEM=`SystemType`      # String identifying the system
+
+#
+# Temporaries
+#
+PID=                     # Process ID
+PPID=                    # Process ID of the parent process
+OWNER=                   # Owner of the process
+NAME=                    # Name of the process
+LINE=                    # Line from the data file
+OUTLINE=                 # Line of output
+INDENT=                  # Column number where line begins
+
+trap 'rm -f /tmp/*.$$; exit 1' 1 2 3 15
+
+FillLine() {
+     #
+     # SYNOPSIS
+     #    FillLine line column
+     #
+     _LINE="$1"
+     _COLUMN=$2
+     _LEN=`expr "$_LINE" : '.*'`
+     while [ $_LEN -lt $_COLUMN ]
+     do
+          _LINE="$_LINE "
+          _COLUMN=`expr $_COLUMN - 1`
+     done
+
+     echo "$_LINE"
+}
+
+while :
+do
+     case $1 in
+          -n)  RECURSIVE=FALSE
+               shift
+               ;;
+          --)  shift
+               break
+               ;;
+          -*)  echo "$USAGE" 1>&2
+               exit 1
+               ;;
+          *)   break
+               ;;
+     esac
+done
+
+#
+# Make sure the number of parameters is reasonable.
+#
+if [ $# -eq 0 ]; then
+     PROCESS=1
+     LEVEL=0
+     DATAFILE=/tmp/ptree.$$
+elif [ $# -eq 1 ]; then
+     PROCESS=$1
+     LEVEL=0
+     DATAFILE=/tmp/ptree.$$
+elif [ $# -eq 3 ]; then
+     PROCESS=$1
+     LEVEL=$2
+     DATAFILE=$3
+else
+     echo "$USAGE" 1>&2
+     exit 1
+fi
+
+if [ "$LEVEL" = 0 ]; then
+     #
+     # Determine which options to use with the ps command.
+     #
+     case $SYSTEM in
+          SUNBSD | ULTRIX )   PS_OPTS="-auwx"     ;;
+          * )                 PS_OPTS="-ef"       ;;
+     esac
+
+     #
+     # Build the data file.
+     #
+     rm -f $DATAFILE $PSFILE
+     ps -ef | sed '1d' | sort >$PSFILE
+
+     exec <$PSFILE
+     IFS=
+     while read LINE
+     do
+          IFS=$OLD_IFS
+
+          set $LINE
+          OWNER=$1
+          PID=$2
+          PPID=$3
+
+          #
+          # Determine column where the process name begins.
+          #
+          case $SYSTEM in
+               AIX | HP | SGI | SOLARIS )    COL=48 ;;
+               SUNBSD | DECOSF )             COL=57 ;;
+               ULTRIX )                      COL=51 ;;
+               * )  echo "Unexpected system type." 1>&2
+                    exit 1
+                    ;;
+          esac
+
+          LINE=`echo "$LINE" | cut -c$COL-`
+          set dummy $LINE
+          shift
+          NAME=$1
+
+          echo $PID $PPID $OWNER $NAME >>$DATAFILE
+          IFS=
+     done
+     IFS=$OLD_IFS
+fi
+
+#
+# Print the current process.
+#
+INDENT=`expr $LEVEL \* 2`
+OUTLINE=`FillLine "" $INDENT`
+
+LINE=`grep "^$PROCESS " $DATAFILE`
+set $LINE
+OUTLINE="$OUTLINE  $1"
+OUTLINE=`FillLine "$OUTLINE" 30`
+OUTLINE="$OUTLINE  $3	$4"
+echo "$OUTLINE"
+
+if [ "$RECURSIVE" = "TRUE" ];then
+     LEVEL=`expr $LEVEL + 1`
+     while read LINE
+     do
+          set $LINE
+          #
+          # For every process that is a child of the
+          # current process, invoke this command ($0)
+          # recursively.
+          #
+          if [ "$2" = "$PROCESS" ]; then
+               $0 $1 $LEVEL $DATAFILE
+          fi
+     done <$DATAFILE
+fi
+
+rm -f /tmp/*.$$
+exit 0

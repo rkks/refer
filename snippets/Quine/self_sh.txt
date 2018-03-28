@@ -1,0 +1,152 @@
+Language: Unix shell
+
+
+Author:Brian A.E. Meekings (baem@mink.mt.att.com)
+Note: sh, ksh
+
+b=\\;bb=$b$b$b$b;q=\';x='echo "b=$bb;bb=\$b\$b\$b\$b;q=$b$q;x=$q$x$q";echo $x'
+echo "b=$bb;bb=\$b\$b\$b\$b;q=$b$q;x=$q$x$q";echo $x
+
+
+Author: Matt Corks, njaharve@waterloo.ca
+Note: works for bash, ksh, zsh
+
+#!/xhbin/bash
+read foo<<'EOF';eval $foo
+echo '#!/bin/bash';echo 'read foo<<'"'EOF'"';eval $foo';echo $foo;echo EOF
+EOF
+
+
+Author: Luca Caucci
+
+#!/bin/sh
+#Questo shell script visualizza il suo codice.
+#Autore: Luca Caucci (e-mail: caucci@cs.unibo.it)
+IFS=;A="\n";B="'";C='\\'
+D='#!/bin/sh%b#Questo shell script visualizza il suo codice.%b#Autore: Luca Caucci (e-mail: caucci@cs.unibo.it)%bIFS=;A="%bn";B="%b";C=%b%b%b%b%bD=%b%b%b%bprintf $D $A $A $A $C $B $B $C $C $B $A $B $D $B $A $A $A%b%b'
+printf $D $A $A $A $C $B $B $C $C $B $A $B $D $B $A $A $A
+
+
+Author: Mark Wooding
+
+#! /bin/sh
+q="'" qq='echo \#! /bin/sh;echo q=\"$q\" qq=${q}$qq$q;echo eval \$qq'
+eval $qq
+
+
+Author: Pekka P. Pirinen (pekka@harlequin.co.uk)
+
+#! /bin/csh
+(set foo=$<; eval $foo)<<'EOF'
+echo '#! /bin/csh'; echo '(set foo=$<; eval $foo)<<'"'EOF'"; echo $foo; echo "'EOF'"
+'EOF'
+
+Author: Daniel Martin
+
+#!/bin/sh
+#This is a self-replicating shell script
+a="#!/bin/sh
+#This is a self-replicating shell script
+a=";
+b=\'
+c='cat <<EOD
+${a}"$a";
+b=\\$b
+c=$b$c$b
+$c
+EOD'
+cat <<EOD
+${a}"$a";
+b=\\$b
+c=$b$c$b
+$c
+EOD
+
+
+
+Author: Andru Luvisi
+
+q(){ d=\';s='echo "q(){ d=\\$d;s=$d$s$d;eval \"\$s\";}"';eval "$s";}
+
+Author: Bruce Ediger (ediger@rtgds1.den.mmc.com)
+
+st='echo st=$sq${st}$sq;echo dq=$sq${dq}$sq;echo sq=$dq${sq}$dq;echo $st'
+dq='"'
+sq="'"
+
+echo st=$sq${st}$sq;echo dq=$sq${dq}$sq;echo sq=$dq${sq}$dq;echo $st 
+
+
+Author: Bruce Ediger (ediger@rtgds1.den.mmc.com)  
+Note: requires a filename from the command line
+
+st='echo st=$sq${st}$sq > $1;echo dq=$sq${dq}$sq >> $1; echo sq=$dq${sq}$dq >> $1;echo
+$st >> $1; chmod +x $1' dq='"' 
+sq="'" 
+echo st=$sq${st}$sq > $1;echo dq=$sq${dq}$sq >> $1;\ echo sq=$dq${sq}$dq >> $1;echo $st
+>> $1; chmod +x $1 
+
+
+Author: Bruce Ediger (ediger@rtgds1.den.mmc.com)
+Note requires a filename
+
+st='echo st=$sq${st}$sq > $1.1;echo dq=$sq${dq}$sq >> $1.1; 
+
+echo sq=$dq${sq}$dq >> $1.1;echo $st >> $1.1; chmod +x $1.1;
+echo st=$sq${st}$sq > $1.2;echo dq=$sq${dq}$sq >> $1.2;
+echo sq=$dq${sq}$dq >> $1.2;echo $st >> $1.2; chmod +x $1.2'
+
+dq='"' 
+sq="'" 
+
+echo st=$sq${st}$sq > $1.1;echo dq=$sq${dq}$sq >> $1.1;
+echo sq=$dq${sq}$dq >> $1.1;echo $st >> $1.1; chmod +x $1.1;
+echo st=$sq${st}$sq > $1.2;echo dq=$sq${dq}$sq >> $1.2;
+echo sq=$dq${sq}$dq >> $1.2;echo $st >> $1.2; chmod +x $1.2
+
+
+
+Author: Bruce Ediger (ediger@rtgds1.den.mmc.com)
+Note: I hesitate to include this one.  Do NOT run it, as it will fill up your HD
+with ease.  
+
+a='echo a=$c${a}$c > $$;echo b=$c${b}$c >> $$;echo c=$b${c}$b >> $$; echo $a >> $$;
+chmod +x $$; ./$$' 
+b='"' 
+c="'" 
+echo a=$c${a}$c > $$;echo b=$c${b}$c >> $$; echo c=$b${c}$b >> $$;echo $a >> $$; chmod
++x $$; ./$$ 
+
+
+Author: Bruce Ediger (ediger@rtgds1.den.mmc.com)
+
+st='echo st=$sq${st}$sq > $0.1;echo dq=$sq${dq}$sq >> $0.1; 
+
+echo sq=$dq${sq}$dq >> $0.1;echo $st >> $0.1; chmod +x $0.1;
+echo st=$sq${st}$sq > $0.2;echo dq=$sq${dq}$sq >> $0.2;
+echo sq=$dq${sq}$dq >> $0.2;echo $st >> $0.2; chmod +x $0.2'
+
+dq='"' 
+sq="'" 
+
+echo st=$sq${st}$sq > $0.1;echo dq=$sq${dq}$sq >> $0.1;
+echo sq=$dq${sq}$dq >> $0.1;echo $st >> $0.1; chmod +x $0.1;
+echo st=$sq${st}$sq > $0.2;echo dq=$sq${dq}$sq >> $0.2;
+echo sq=$dq${sq}$dq >> $0.2;echo $st >> $0.2; chmod +x $0.2
+
+
+
+Author: Eli Biham
+Notes: A cheat
+
+#!/bin/csh
+cat $0 
+
+Author:Ralf Draeger (Ralf.Draeger@Intraplan.de)
+Note: the most novel cheat I've seen.  Requires Slowlaris 2.5.1
+
+#!/bin/ksh
+gcore $$ 2>/dev/null
+echo "#!/bin/ksh"
+sed -n '/^gcore/,/^\#The end/p' core.$$ 
+#The end

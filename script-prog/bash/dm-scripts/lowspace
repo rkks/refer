@@ -1,0 +1,116 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="lowspace"
+       HTML_="monitor space on device"
+    PURPOSE_="notify when space on a device is less then n Megabytes"
+   SYNOPSIS_="$NAME_ [-hlx] -i <n> -d <device> -t <n>s|m|h|d"
+   REQUIRES_="standard GNU commands, xmessage"
+    VERSION_="1.5"
+       DATE_="1999-08-10; last update: 2005-02-28"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="admin"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+    -i <n>, an integer referring to Mb
+    -d <device>, full path to the device eg: /dev/hda1
+    -t <n>s|m|h|d, n is an integer referring to time interval in
+       seconds|minutes|hours|days which refers to the frequency of how
+       often to check for low space on the device
+    -x, use xmessage to display a windowed notification if running X
+    -h, usage and options (this help)
+    -l, see this script"
+    exit 1
+}
+
+shopt -s extglob # enabling extended globbing
+
+time_validateSleepArg() {
+
+    case $1 in
+        +([0-9])[smhd] ) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# var init
+xmsg=
+
+while getopts hlxd:i:t: options; do
+
+    case $options in
+        i) mb=$OPTARG ;;
+        d) device=$OPTARG ;;
+        x) xmsg=on ;;
+        t) time=$OPTARG ;;
+        h) usage ;;
+        l) more $0; exit 1 ;;
+       \?) echo invalid argument, type $NAME_ -h for help; exit 1 ;;
+
+    esac
+
+done
+shift $(( $OPTIND - 1 ))
+
+# check if required command is in $PATH variable
+if [ $xmsg ]; then
+    which xmessage &> /dev/null
+    [[ $? != 0 ]] && { echo >&2 the required \"xmessage\" command is not in your PATH; exit 1; }
+fi
+
+# args check
+[[ $device ]] || { echo >&2 the -d option and argument must be specified; exit 1; }
+[[ $time ]] || { echo >&2 the -t option and argument must be specified; exit 1; }
+[[ $mb == *[!0-9]* ]] && { echo >&2 the argument to option -i must be an integer; exit 1; }
+
+# sleep arg check
+time_validateSleepArg $time
+[ $? = 0 ] || { echo >&2 invalid argument to option -t, type $NAME_ -h for help; exit 1; }
+
+# main
+while :;do
+
+    free=$(df -m | grep $device | { read dev blocks used avail perc mounted ; echo $avail; })
+    [ $free ] || { echo >&2 wrong device name, type $NAME_ -h for help; exit 1; }
+
+    if (( $free < $mb ));then
+
+        if [ $xmsg ];then # display windowed message if x is running; ring a bell
+
+            ps -aux | grep -q xinit
+            if [ $? = 0 ];then
+                echo -en \\a
+                xmessage -center Device $device is running low on space! Only ${free}Mb left.
+                exit
+            else
+                echo -e \\a Device $device is running low on space! Only ${free}Mb left.
+                exit
+            fi
+
+        else # write message to terminal and ring a bell
+
+            echo -e \\a Device $device is running low on space! Only ${free}Mb left.
+            exit
+
+        fi
+
+    fi
+
+    sleep $time # how often to check devices
+
+done

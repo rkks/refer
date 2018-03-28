@@ -1,0 +1,65 @@
+<project name="iFeedBackSurvey" default="all">
+
+  <path id="project.classpath">
+    <pathelement location="${J2SE_HOME}/jre/lib/rt.jar"/>
+    <fileset dir="/usr/local/j2sdkee1.3/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="work/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <property name="wardir" value="./war-stage" />
+    <property name="eardir" value="./ear-stage" />
+    <property name="bindir" value="./bin" />
+    <property name="J2SE_HOME" value="/usr/local/j2sdk1.4.0" />
+    <property name="J2EE_HOME" value="/usr/local/j2sdkee1.3" />
+    <property name="projname" value="iFeedBackSurvey" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${wardir}" />
+    <delete dir="${eardir}" />
+    <delete dir="${bindir}" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${bindir}" />
+    <mkdir dir="${wardir}" />
+    <mkdir dir="${wardir}/WEB-INF" />
+    <mkdir dir="${wardir}/WEB-INF/classes" />
+    <mkdir dir="${wardir}/WEB-INF/lib" />
+    <mkdir dir="${eardir}" />
+    <mkdir dir="${eardir}/META-INF" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="./work/src" destdir="${wardir}/WEB-INF/classes">
+      <classpath refid="project.classpath"/>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <copy file="./work/meta/web.xml" 
+          tofile="${wardir}/WEB-INF/web.xml"
+    />
+    <copy file="./work/lib/ksoap.jar" 
+          tofile="${wardir}/WEB-INF/lib/ksoap.jar"
+    />
+    <jar jarfile="${eardir}/${projname}.war"
+         basedir="${wardir}"
+    />
+    <copy file="./work/meta/application.xml" 
+          tofile="${eardir}/META-INF/application.xml"
+    />
+    <jar jarfile="${bindir}/${projname}.ear"
+         basedir="${eardir}"
+    />
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

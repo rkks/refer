@@ -1,0 +1,65 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  qegrep.c
+ *
+ *  compares its standard input against the regular
+ *  expression given (on command line), and prints
+ *  out those lines matching that RE.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on Mon Dec 29 2003.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ */</span>
+
+ <span class="ccom">/* max error message length */</span>
+<span class="cpdr">#define MAX_ERR_LENGTH </span><span class="cval">80</span><span class="cpdr">
+</span> <span class="ccom">/* max length of a line of text from stdin */</span>
+<span class="cpdr">#define MAX_TXT_LENGTH </span><span class="cval">600</span><span class="cpdr">
+</span>
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span> <span class="ccom">/* for --ansi (see off_t in regex.h) */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+</span> <span class="ccom">/* for index(): */</span>
+<span class="cpdr">#include &lt;string.h&gt;
+#include &lt;regex.h&gt;
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+     <span class="ccom">/* will contain the regular expression */</span>
+    regex_t myre;
+    <span class="ctyp">int</span> err;
+    <span class="ctyp">char</span> err_msg[MAX_ERR_LENGTH];
+    <span class="ctyp">char</span> text[MAX_TXT_LENGTH];
+    
+     <span class="ccom">/* safe check on cmd line args */</span>
+    <span class="ctyp">if</span><span class="cfun"> </span>( argc &lt; <span class="cval">2</span> || argc &gt; <span class="cval">2</span> ) {
+        <span class="cfun">printf</span>(<span class="cstr">"Usage:\n\tqegrep 'RE' &lt; file\n\tOR\n\techo \"string\" | qegrep 'RE'\n"</span>);
+        <span class="ctyp">return</span> <span class="cval">1</span>;
+    }
+    
+     <span class="ccom">/* compiles the RE. If this step fails, reveals what's wrong with the RE */</span>
+    <span class="ctyp">if</span><span class="cfun"> </span>( (err = <span class="cfun">regcomp</span>(&amp;myre, argv[<span class="cval">1</span>], REG_EXTENDED)) != <span class="cval">0</span> ) {
+        <span class="cfun">regerror</span>(err, &amp;myre, err_msg, MAX_ERR_LENGTH);
+        <span class="cfun">printf</span>(<span class="cstr">"Error analyzing regular expression '%s': %s.\n"</span>, argv[<span class="cval">1</span>], err_msg);
+        <span class="ctyp">return</span> <span class="cval">1</span>;
+    }
+    
+     <span class="ccom">/* "executes" the RE against the text taken from stdin */</span>
+    <span class="ctyp">while</span><span class="cfun"> </span>( <span class="cfun">fgets</span>(text, MAX_TXT_LENGTH, stdin) != <span class="ctyp">NULL</span> ) {
+         <span class="ccom">/* we rely on the fact that text contains newline chars */</span>
+        *(<span class="cfun">index</span>(text, '\n')) = '\<span class="cval">0</span>';
+        <span class="ctyp">if</span><span class="cfun"> </span>( (err = <span class="cfun">regexec</span>(&amp;myre, text, <span class="cval">0</span>, <span class="ctyp">NULL</span>, <span class="cval">0</span>)) == <span class="cval">0</span> ) <span class="cfun">puts</span>(text);
+        <span class="ctyp">else</span> <span class="ctyp">if</span><span class="cfun"> </span>( err != REG_NOMATCH ) {
+             <span class="ccom">/* this is when errors have been encountered */</span>
+            <span class="cfun">regerror</span>(err, &amp;myre, err_msg, MAX_ERR_LENGTH);
+            <span class="ctyp">return</span> <span class="cval">2</span>;
+        }
+    } 
+
+     <span class="ccom">/* meaningless here. Useful in many other situations. */</span>
+    <span class="cfun">regfree</span>(&amp;myre);
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+    
+    
+</div>

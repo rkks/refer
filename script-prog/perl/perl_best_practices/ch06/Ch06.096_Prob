@@ -1,0 +1,47 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $advert = 'GT YR MED NEEDS @ GRT PRICES';
+
+while (my $client_ref = get_client()) {
+    # Retrieve phone number...
+    my $phone = $client_ref->{phone};
+ 
+    # Skip client if "do not call" was requested...
+    next if $phone =~ m/do \s+ not \s+ call/ixms;
+ 
+    # Profit!
+    send_sms_to($phone, $advert);
+}
+
+BEGIN {
+
+my @clients = (
+    { client => 'Smith', phone  => '867-0309'               },
+    { client => 'Jones', phone  => '567-6718 [do not call]' },
+    { client => 'Wang',  phone  => '677-0556'               },
+);
+
+sub get_client {
+    return shift @clients;
+}
+
+sub send_sms_to {
+    my ($phone, $advert) = @_;
+    print "To: $phone\n$advert\n";
+}
+
+}

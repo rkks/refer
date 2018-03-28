@@ -1,0 +1,40 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+use Contextual::Return;
+ 
+sub guesstimate {
+    my ($criterion) = @_;
+ 
+    my @estimates;
+    my $failed;
+ 
+    # [Acquire data for specified criterion]
+
+ 
+    return undef if $failed;
+
+ 
+    # [Do guesswork based on the acquired data]
+ 
+    # Return all guesses in list context or average guess in scalar context...
+    return (
+        LIST   { @estimates if wantarray;    }
+        SCALAR { sum(@estimates)/@estimates; }
+    );
+}
+

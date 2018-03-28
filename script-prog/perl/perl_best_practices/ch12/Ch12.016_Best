@@ -1,0 +1,33 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Perl6::Slurp;
+my $text = slurp $PROGRAM_NAME;
+
+croak "Matched" if 
+
+# Capture the source of a Perl program...
+ 
+$text =~ m{\A         # From start of string...
+           (.*?)      # ...match and capture any characters (including newlines!)
+           ^__END__$  # ...until the first __END__ line
+          }xms;
+
+
+
+
+__END__
+Data here

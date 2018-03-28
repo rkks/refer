@@ -1,0 +1,165 @@
+#! /usr/bin/ksh
+##########################################################################
+# Title      :	getnetwork - print network for ip address
+# Version    :	1.1
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	2002-08-20
+# Category   :	System Administration, Network
+# Requires   :	ksh
+# SCCS-Id.   :	@(#) getnetwork	1.1 04/02/18
+##########################################################################
+# Description
+#
+##########################################################################
+PN=${0##*/}			# Program name
+VER='1.1'
+function Usage {
+    echo >&2 "$PN - print network number for ip address, $VER
+usage: $PN [-n netmask] ipaddr[/netmask] [...]
+All IP addresses and masks must be in \"dotted decimal\" format, e.g.
+192.168.1.1 . Netmasks can be specified in the same format, or as
+a number of bits, e.g.  \"24\" for 255.255.255.0 .
+The output has the format
+	ipaddr	netmask	netaddr
+Examples:
+    $PN 192.168.1.224/24
+    $PN -n 255.255.248.0 172.16.32.220"
+    exit 1
+}
+function Msg {
+    echo >&2 "$PN:" "$@"
+}
+function Fatal { Msg "$@"; exit 1; }
+##########################################################################
+# isvalidip - is argument in "dotted decimal" format: xxx.xxx.xxx.xxx ?
+##########################################################################
+function isvalidip { # ipaddr
+    typeset ip= ipv=				# IP address vector
+    integer i=0
+    for ip
+    do
+	# A valid IP address can only consist of decimal characters
+	# separated by periods
+    	[[ $ip == *[!0-9.]* ]] && return 1
+	OIFS=$IFS; IFS="."
+	set -A ipv -- $ip
+	IFS=$OIFS
+	# One to four parts, separated by a period
+	(( ${#ipv[@]} < 1 || ${#ipv[@]} > 4 )) && return 1
+	# Add "0" bytes to the end, if missing: "10" -> "10.0.0.0"
+	((i=0))
+	while (($i < 4))
+	do
+	    ipv[$i]=${ipv[$i]}
+	    ((i=$i+1))
+	done
+	# Each decimal byte must be in the range 0...255
+	((i=0))
+	while (($i < ${#ipv[@]} ))
+	do
+	    (( 0 <= ${ipv[$i]} && ${ipv[$i]} <= 255 )) || return 1
+	    ((i=$i+1))
+	done
+    done
+    return 0
+}
+##########################################################################
+# bits2ip - returns ip address for bit count (useful for netmasks)
+# Example:
+#	24 -> 255.255.255.0
+#	16 -> 255.255.0.0
+##########################################################################
+function bits2ip {	# number_of_bits 1..32
+    integer bits=$1
+    typeset -L$bits ones=
+    typeset -L32 allbits=
+    typeset ip=
+    typeset hex= rest= byte=
+    integer i=0
+    ones=$(echo "$ones" | tr ' ' 1)
+    allbits=$ones
+    allbits=$(echo "$allbits" | tr ' ' 0)
+    # Convert to hex. Do not use ksh-internal function, because it may
+    # fail for very large numbers (> 2^31)
+    hex=$(echo "obase=16; ibase=2; $allbits" | bc)
+    rest=$hex
+    i=0
+    while (( $i < 4 ))
+    do
+        # first two hex digits
+    	byte=$(echo "${rest:-00}" | sed 's/\(..\).*/\1/')
+	ip=${ip:+$ip.}$((16#$byte))	# convert to decimal
+	rest=${rest#??}			# remove first two characters
+    	((i=$i+1))
+    done
+    echo "$ip"
+}
+##########################################################################
+# Main program
+##########################################################################
+Netmask=
+while getopts :hn: opt
+do
+    case "$opt" in
+	n)
+	    Netmask=$OPTARG
+	    [[ $Netmask == ?([0-9])[0-9] ]] && Netmask=$(bits2ip "$Netmask")
+	    isvalidip "$Netmask" || Fatal "invalid netmask: $OPTARG"
+	    ;;
+	h)	Usage;;
+	?)	Usage;;
+    esac
+done
+shift OPTIND-1
+(( $# >= 1 )) || Usage
+: ${netmask:=$Netmask}
+integer i=0 byte=0
+integer firstbyte=0
+for ipaddr
+do
+    if [[ $ipaddr = */* ]]
+    then
+    	# Special handling: recognize ipaddr/netmask pairs, e.g.
+	# 192.168.1.12/24 or 172.16.1.1/255.255.0.0
+	ip=${ipaddr%%/*}
+	netmask=${ipaddr##*/}
+    else
+    	ip=$ipaddr
+        : ${netmask:=$Netmask}
+    fi
+    isvalidip "$ip" || Fatal "invalid IP address: $ip"
+    net=
+    broadcast=				# TODO
+    OIFS=$IFS; IFS="."
+    set -A ipv -- $ip
+    IFS=$OIFS
+    # If the netmask was not specified, determine the standard netmask
+    # based on the ip address
+    if [[ -z $netmask ]]
+    then
+        firstbyte=${ipv[0]}
+	if (( 0 <= $firstbyte && $firstbyte <= 127 ))
+	then netmask=255.0.0.0
+	elif (( 128 <= $firstbyte && $firstbyte <= 191 ))
+	then netmask=255.255.0.0
+	elif (( 192 <= $firstbyte && $firstbyte <= 255 ))
+	then netmask=255.255.255.0
+	fi
+    elif [[ $netmask == ?([0-3])[0-9] ]]
+    then
+    	netmask=$(bits2ip "$netmask")
+    fi
+    [[ -z $netmask ]] && Fatal "could not determine netmask for ip address: $ip"
+    OIFS=$IFS; IFS="."
+    set -A maskv -- $netmask
+    IFS=$OIFS
+    #echo "DEBUG: ipv has ${#ipv[@]} elements, maskv has ${#maskv[@]} elements"
+    ((i=0))
+    while (( $i < ${#ipv[@]} ))
+    do
+    	#echo "i=${ipv[i]}	m=${maskv[i]}	n=$((${ipv[i]} & ${maskv[i]}))"
+	net=${net:+$net.}$((${ipv[i]} & ${maskv[i]}))
+    	((i=$i+1))
+    done
+    echo "$ip	$netmask	$net"
+done

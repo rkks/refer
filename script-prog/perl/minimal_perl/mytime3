@@ -1,0 +1,32 @@
+#! /usr/bin/perl -wl
+# Shows time in custom format centered on screen
+
+(undef, $minutes, $hour)=localtime;  # we don't care about seconds
+$am_pm='AM';
+$hour > 12  and  $am_pm='PM'  and  $hour=$hour-12;
+print center_line("The time is $hour:$minutes $am_pm.");
+
+sub center_line {
+   # returns argument centered within field of size $cl_width
+
+   use Text::Tabs;  # imports expand(); converts tabs to spaces
+
+   if ( @_ != 1  or  $_[0] eq "" ) {   # needs one argument
+       warn "$0: Usage: center_line(string)\n";
+       $newstring=undef;      # to return "undefined" value
+   }
+   else {
+      defined $cl_width  and  $cl_width > 2  or  $cl_width=80;
+
+      $string=shift;          # get sub's argument
+      $string=expand $string; # convert tabs to spaces
+      $string =~ s/^\s+//;    # remove leading whitespace
+      $string =~ s/\s+$//;    # remove trailing whitespace
+
+      # calculate indentation
+      $indent=($cl_width - length $string )/2;
+      $padding=' ' x $indent;
+      $newstring="$padding$string";
+   }
+   return $newstring;        # return centered string, or undef
+}

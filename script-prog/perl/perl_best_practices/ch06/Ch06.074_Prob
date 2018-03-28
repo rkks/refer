@@ -1,0 +1,69 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+sub words_to_num {
+    my ($words) = @_;
+    
+    # Treat each sequence of non-whitespace as a word...
+    my @words = split /\s+/, $words;
+ 
+    # Translate each word to the appropriate number...
+    my $num = $EMPTY_STR;
+    for my $word (@words) {
+        if ($word =~ m/ zero | zéro /ixms) {
+            $num .= '0';
+        }
+        elsif ($word =~ m/ one | un | une /ixms) {
+            $num .= '1';
+        }
+        elsif ($word =~ m/ two | deux /ixms) {
+            $num .= '2';
+        }
+        elsif ($word =~ m/ three | trois /ixms) {
+            $num .= '3';
+        }
+        elsif ($word =~ m/ four | quatre /ixms) {
+            $num .= '4';
+        }
+        elsif ($word =~ m/ five | cinq /ixms) {
+            $num .= '5';
+        }
+        elsif ($word =~ m/ six | sixe /ixms) {
+            $num .= '6';
+        }
+        elsif ($word =~ m/ seven | sept /ixms) {
+            $num .= '7';
+        }
+        elsif ($word =~ m/ eight | huit /ixms) {
+            $num .= '8';
+        }
+        elsif ($word =~ m/ nine | neuf /ixms) {
+            $num .= '9';
+        }
+        else {
+            # Ignore unrecognized words
+        }
+    }
+ 
+    return $num;
+}
+ 
+# and later...
+ 
+print words_to_num('one zero eight neuf');    # prints: 1089
+

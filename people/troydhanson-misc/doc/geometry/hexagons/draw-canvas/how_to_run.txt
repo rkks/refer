@@ -1,0 +1,6 @@
+an example of drawing hexagons in an html5 canvas
+Uses node.js to act as a webserver for the HTML/JS
+
+npm install optimist express
+node webserver.js
+browse to http://localhost:9000/drawhex.html

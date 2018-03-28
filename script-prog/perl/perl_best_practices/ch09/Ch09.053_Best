@@ -1,0 +1,26 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub get_server_status { return 'foobar', 100, 0.02, 7; }
+my $server_ID;
+
+# In list context, return all the available information...
+my ($name, $uptime, $load, $users) = get_server_status($server_ID);
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    $name, $uptime, $load, $users,
+];

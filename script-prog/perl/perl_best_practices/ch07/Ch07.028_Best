@@ -1,0 +1,15 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 7 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+=for Workaround:
+     Have to use a localized package variable here, rather than a 
+     lexical. A closure would be better of course, but lexicals don't seem 
+     to propagate properly into regexes under 5.8.3 (or earlier). This 
+     problem has been reported via perlbug.   
+ 
+=cut
+

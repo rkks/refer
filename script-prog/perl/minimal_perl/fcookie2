@@ -1,0 +1,32 @@
+#! /usr/bin/perl -wnl
+# Interactive fortune-cookie displayer, with no repeats
+
+BEGIN {
+    @ARGV  or  # provide default fortune file
+        @ARGV=( '/usr/share/fortune/startrek' );
+    push @ARGV, '-';  # Read STDIN next, for interactive mode
+    $/='%';           # Set input record separator for fortunes
+    $initializing=1;  # Start in "initializing the array" mode
+}
+      ############# Load Fortunes into Array #############
+if ($initializing) {
+    push @fortunes, $_;         # add next fortune to list
+    if (eof)  {    # on end-of-file, switch to input from STDIN
+        $initializing=0;     # signify end of initializing mode
+        $/="\n";      # set input record separator for keyboard
+        printf 'Press <ENTER> for a fortune, or <^D>: ';
+   }
+}
+      ############# Present Fortunes to User #############
+else {          
+  # Use random sampling without replacement. After a fortune is
+  # displayed, mark its array element as "undefined" using
+  # "delete", then prune it from array using "grep" 
+ 
+    $index=rand @fortunes;             # select random index
+    printf $fortunes[ $index ];        # print random fortune
+    delete $fortunes[ $index ];        # mark fortune undefined
+    @fortunes=grep { defined } @fortunes;    # remove used ones
+    @fortunes  or  # terminate after all used
+        die "\n$0: How unfortunate; out of fortunes!\n";
+}

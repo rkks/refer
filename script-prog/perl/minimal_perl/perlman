@@ -1,0 +1,19 @@
+#! /usr/bin/perl -w
+
+use Shell::POSIX::Select;
+
+$perlpage=`man perl`;   # put name/description records into var
+
+# Man-page name & description have this format in $perlpage:
+#    perlsyn             Perl syntax
+
+# Loop creates hash that maps man-page descriptions to names
+while ( $perlpage =~ /^\s+(perl\w+)\s+(.+)$/mg ) { # get match
+
+   # Load ()-parts of regex, from $1 and $2, into hash
+   $desc2page{$2}=$1;    # e.g., $hash{'Perl syntax'}='perlsyn'
+}
+
+select $page ( sort keys %desc2page ) {  # display descriptions
+    system "man $desc2page{$page}";    # display requested page
+}

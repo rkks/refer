@@ -1,0 +1,9 @@
+#! /usr/bin/perl -00 -wnla
+# Parses "Operational Climatic Data Summary" reports to extract
+#  and print "mean annual precipitation" statistic for each file.
+#
+# Find precipitation record, and print its field #33 (index 32)
+#
+/^ 2\. +PRECIPITATION /  and  print "\u$ARGV: $F[32]";
+
+# (Data files may vary in number of spaces after "2.", so using "+")

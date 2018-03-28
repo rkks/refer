@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    Shar - create a shell archive
+#
+# SYNOPSIS
+#    Shar file [...]
+#
+# DESCRIPTION
+#    This command creates a shell archive that contains the
+#    files listed on the command line.  The shell archive
+#    is written to the standard output.  To unpack the
+#    archive, enter the following command, where archive is
+#    the name of the shell archive.
+#
+#         sh archive
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Usage error
+#
+############################################################
+CMDNAME=`basename $0`
+if [ $# -lt 1 ]; then
+     echo "Usage: $CMDNAME file ..." 1>&2
+     exit 1
+fi
+
+echo "#!/bin/sh"
+echo "# This is a shell archive; to unpack:"
+echo "# 1. Remove everything before the \"#!/bin/sh\"."
+echo "# 2. Save the rest of the archive."
+echo "# 3. Execute the archive by entering \"sh archive\"."
+echo "#"
+echo "# This archive contains the following files:"
+echo "#"
+
+for FILE
+do
+     echo "#    $FILE"
+done
+
+for FILE
+do
+     echo ""
+     echo "if [ -f $FILE ]; then"
+     echo "    echo The file $FILE already exists."
+     echo "else"
+     echo "    echo Extracting $FILE"
+     echo "    sed 's/^X//' >$FILE <<\EOF"
+     sed 's/^/X/' <$FILE
+     echo "EOF"
+     echo "fi"
+done
+echo "exit 0"
+
+exit 0

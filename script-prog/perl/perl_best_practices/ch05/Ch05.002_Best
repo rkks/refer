@@ -1,0 +1,55 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Customer;
+ 
+use Perl6::Export::Attrs;
+ 
+# State variables...
+my %customer = (
+    12345 => { name => 'Jan'    },
+    23456 => { name => 'Sascha' },
+    34567 => { name => 'Drew'   },
+);
+my %opt;
+ 
+sub set_terse {
+    $opt{terse} = 1;
+    return;
+}
+ 
+sub list_customers : Export {
+    for my $id (sort keys %customer) {
+        if ($opt{terse}) {
+            print "$customer{$id}{name}\n";
+        }
+        else {
+            print $customer{$id}->dump();
+        }
+    }
+    return;
+}
+ 
+# and elsewhere...
+ 
+package main;
+# use Customer qw( list_customers );
+ 
+Customer::set_terse();
+ 
+Customer::list_customers();
+

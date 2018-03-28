@@ -1,0 +1,49 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $topping = Topping::Dessert->new({ name=>'Yummo', patent=>987654321 });
+
+package Topping::Dessert;
+use Class::Std::Utils;
+{
+    # Attributes...
+    my %name_of;
+    my %flavour_of;
+ 
+    sub new {
+        my ($class, $arg_ref) = @_;
+        
+        my %init = extract_initializers_from($arg_ref);
+ 
+        my $new_object = bless anon_scalar(), $class;
+ 
+        $name_of{ident $new_object}    = $init{name};
+        $flavour_of{ident $new_object} = $init{flavour};
+ 
+        return $new_object;
+    }
+ 
+    sub DESTROY {
+        my ($self) = @_;
+ 
+        warn "Cleaning up $name_of{ident $self}";
+        delete $name_of{ident $self};
+        delete $flavour_of{ident $self};
+ 
+        return;
+    }
+}
+

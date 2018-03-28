@@ -1,0 +1,76 @@
+##############################################################################
+##  Example 8.1 (NOT RECOMMENDED) from Chapter 8 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 8-1. Creating subroutines via run-time compilation
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Digest::SHA qw( sha512 );
+
+my @names = (
+    'ID:002 oof',
+    'ID:001 barbar',
+    'ID:999 baz^3',
+);
+
+sub make_sorter {
+    my ($subname, $key_code) = @_;
+    my $package = caller();
+ 
+    # Create and compile the source of a new subroutine in the caller's namespace
+    eval qq{
+        # Go to the caller's namespace... 
+        package $package;
+ 
+        # Define a subroutine of the specified name...
+        sub $subname {
+            # That subroutine does a Schwartzian transform...
+            return map  { \$_->[0] }                    # 3. Return original value
+
+                   sort { \$a->[1] cmp \$b->[1] }       # 2. Compare keys
+                   map  { my (\$key) = do {$key_code};  # 1. Extract keys as asked,
+                          [\$_, \$key];                 #    and cache with values
+                        }
+                        \@_;                          # 0. Sort full arg list
+        }
+    };
+ 
+    # Check that the eval worked...
+    use English qw( -no_match_vars );
+    croak $EVAL_ERROR if $EVAL_ERROR;
+ 
+    return;
+
+}
+ 
+# and then...
+ 
+
+make_sorter(sort_sha => q{ sha512($_)    } );   # sorts by SHA-512 of each value
+
+make_sorter(sort_ids => q{ /ID:(\d+)/xms } );   # sorts by ID field from each value
+make_sorter(sort_len => q{ length        } );   # sorts by length of each value
+ 
+# and later...
+ 
+
+my @names_shortest_first = sort_len(@names);
+my @names_digested_first = sort_sha(@names);
+my @names_identity_first = sort_ids(@names);
+
+use Data::Dumper 'Dumper';
+warn Dumper [ 'SHORTEST', @names_shortest_first ];
+warn Dumper [ 'DIGESTED', @names_digested_first ];
+warn Dumper [ 'IDENTITY', @names_identity_first ];

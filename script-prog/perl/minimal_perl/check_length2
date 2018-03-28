@@ -1,0 +1,16 @@
+#! /usr/bin/perl -s -wnl
+
+use Text::Tabs;         # provides "expand" function
+
+BEGIN {
+    $maxlength  or
+        warn "Usage: $0 -maxlength=character_count [files]\n"  and
+            exit 255;
+}
+
+s/^.*$/expand $&/ge;    # replace tabs by spaces in line
+
+length > $maxlength  and
+        print "** WARNING:  Line $. is too long:";
+
+print;                  # Now print the line

@@ -1,0 +1,84 @@
+dm-scripts:
+
+ADMIN
+
+    bkernel       v1.2  build linux kernels 2.2.xx and 2.4.xx [2003-11-12]
+    lowspace      v1.5  notify when space on a device is less then n Megabytes [2005-02-28]
+    lowswap       v1.3  notify when free swap memory is less then n Megabytes [2004-09-20]
+    monproc       v1.1  monitor processies; print when specified processies are or not running [2005-02-28]
+    progsv        v1.2  list version numbers of important programs installed [2005-03-23]
+
+COMPRESS
+
+    unpack2dir    v1.2  unpack zip, tar, tgz, tar.gz, tar.bz2, tar.z to a dir of the same name as archive prefix [2006-02-03]
+    zipfile       v1.1  zip a single file [2004-12-23]
+
+DESKTOP
+
+    xbreak        v1.0  display an X window message when it's time to take a break [2004-07-01]
+    xmesg         v1.0  display an X window message on a regular basis [2004-03-14]
+
+FILE
+
+    cpfound       v1.2  recursively find files and copy to a specified dir [2006-09-07]
+    cpverify      v1.3  verify that copied or burned files have been written error free [2004-12-23]
+    crfilen       v1.0  create a file n bytes large [2004-06-14]
+    filesize      v1.2  print sum of the actual size of files [2004-02-15]
+    fnchars       v1.0  print name of file if it has more then n chars in its name [2004-06-14]
+    neatname      v1.3  neatly rename files [2005-06-15]
+    samesize      v1.0  list files of same size in current dir [2005-05-02]
+    sfiles        v1.1  recursively search files for strings; list found files in sorted order [2005-02-14]
+    subspace      v1.4  substitute space in a file and dir name with an _ [2004-02-08]
+
+GRAPHICS
+
+    2bmp          v1.1  convert image file to bmp format [2004-07-08]
+    2jpg          v1.4  convert image file to jpg format [2004-06-22]
+    2png          v1.3  convert image file to png format [2004-06-22]
+    pngoptim      v1.0  reduce the size of a PNG file if possible [2004-12-30]
+    resizeimg     v1.2  resize bitmap image [2004-10-02]
+
+MISC
+
+    loggedin      v1.1  notify when a particular user has logged in [2004-04-21]
+    loggedout     v1.1  notify when a particular user has logged out [2004-04-21]
+    obfsh         v1.2  shell script obfuscator [2004-08-09]
+    rotcmd        v1.0  rotate commands listed in a file if file execution has been interrupted [2004-04-12]
+    sman          v1.0  search man page for a string, highlight found strings [2004-07-11]
+    srfc          v1.1  search local rfc file for a string, highlight found strings [2004-12-27]
+
+NETWORK
+
+    bytetraf      v1.0  display network traffic on an interface [2004-12-16]
+    killppp       v1.0  kill ppp pid after n time of no traffic [2005-02-28]
+
+SECURITY
+
+    rootkitwr     v1.0  chkrootkit wrapper; designed to run at regular intervals [2004-05-12]
+
+SYSTEM
+
+    timelykill    v1.0  kill process pid after n time [2005-02-28]
+    whichbin      v1.0  show links and path to executable [2004-07-11]
+
+TEXT
+
+    insertext     v1.1  insert text file into another file at line n [2005-03-30]
+    longl         v1.0  print name of the file that contains lines longer then n chars [2004-06-21]
+    pdf2txt       v1.0  convert pdf file to ascii text; write the converted file to disk [2005-03-03]
+    ps2txt        v1.0  convert ps file to ascii text; write the converted file to disk [2005-03-03]
+    rmblanks      v1.2  remove empty or blank lines from an ascii file; replace the original file [2005-07-20]
+    rmdups        v1.0  remove duplicate lines from file or stdin [2002-04-25]
+    rmleads       v1.1  remove empty leading spaces from an ascii file; replace input file [2005-07-20]
+    rmlines       v1.0  remove lines that contain words stored in a list [2004-06-21]
+    word2txt      v1.0  display ms word doc file in ascii format [2004-07-22]
+    wraptext      v1.0  wrap text file at 80th column; replace file with the wrapped version [2004-06-21]
+
+WWW
+
+    emailadext    v1.0  extract email addresses from file or stdin [2004-06-25]
+    html2txt      v1.1  convert html file to ascii text; write the converted file to disk [2005-03-03]
+    htmloptim     v1.2  optimize html file by reducing its size [2006-01-29]
+    okurl         v1.0  validate a list of urls for their existence [2004-06-22]
+    urlext        v1.2  extract url addresses from file or stdin [2004-05-21]
+

@@ -1,0 +1,29 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 11 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+no strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+our $nick       = 'lock-up';
+our $serial_num = 12345;
+our @rank       = qw(and file);
+
+my $hash_name = 'tag';
+ 
+$hash_name->{nick}   = ${nick};
+$hash_name->{rank}   = 'rank'->[-1];
+$hash_name->{serial} = ${'serial_num'};
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%{$hash_name} ];

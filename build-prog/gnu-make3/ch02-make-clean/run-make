@@ -1,0 +1,4 @@
+#! /bin/bash
+touch clean
+echo '$ make clean'
+make clean

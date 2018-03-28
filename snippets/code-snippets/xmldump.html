@@ -1,0 +1,103 @@
+<?php
+
+/**
+ *	An extremely simple way to convert raw PHP arrays into raw XML 
+ *	data.  Tags it cannot infer names for, like non-associative 
+ *	arrays, become 'data' tags.
+ */
+function xmldump_str($arr, $base, $nest=0)
+{
+	$str="<$base";
+	$empty=1;
+
+	foreach($arr as $k => $v)
+	{
+		if(is_array($v))
+		{
+			$empty=0;
+			continue;
+		}
+
+		if(is_numeric($k))
+		{
+			$empty=0;
+			continue;
+		}
+
+		if($v === NULL)
+		{
+			$str.=" $k";
+			continue;
+		}
+
+		$str.=sprintf(" %s='%s'", $k,
+			htmlspecialchars($v, ENT_QUOTES));
+	}
+
+	if($empty == 1)
+	{
+		$str.= "/>";
+		return($str);
+	}
+
+	$str.= ">";
+
+	foreach($arr as $k => $v)
+	{
+		if(is_numeric($k) && !is_array($v))
+		{
+			$str.=xmldump_str(array("val" => $v), "data", $nest+1);
+			continue;
+		}
+		else if($v === NULL)
+			continue;
+		else if(!is_array($v))
+			continue;
+		if(is_numeric($k))
+		{
+			/**
+			 *	comment out the following two lines to
+			 *	not generate _order and _nest attributes.
+			 */
+			$v['_order']=$k;
+			$v['_nest']=$nest+1;
+
+			$k="data";
+		}
+		$str.=xmldump_str($v, $k, $nest+1);
+	}
+
+	$str.= "</$base>";
+	return($str);
+}
+/**
+ *	a=>b and c=>d will become attributes of the main
+ *	<test1> tag.  "d" will become its own subtag,
+ *	containing four data tags.  q becomes an empty attribute
+ *	of <test1>.
+ */
+$test1=array(	"a"	=>	"b",
+		"c"	=>	"d",
+		"e"	=>	"f",
+		"d"	=>	array("w", "x", "y", "z"),
+		"q"	=>	NULL,
+	);
+
+/**
+ *	Produces a single tag, <test1 val='0'/>
+ */
+$test2=array(	"val"	=>	0);
+
+$test3=array(	"a"	=>	"b",
+		"c",
+		"d",
+		"e"	=>	"f"	);
+
+$test4=array(	array("a", "b", "c", "d"),
+		array("w", "x", "y", "z")	);
+
+echo xmldump_str($test1, "test1"), "\n\n";
+echo xmldump_str($test2, "test2"), "\n\n";
+echo xmldump_str($test3, "test3"), "\n\n";
+echo xmldump_str($test4, "test4"), "\n\n";
+	?>

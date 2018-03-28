@@ -1,0 +1,3 @@
+alias gvim='perl -we "exec q{/cygdrive/c/Progra~1/Vim/vim63/gvim.exe},
+  map { s/^(.*)$/(-f \$1)?qx{cygpath -aw \"\$1\"}:\$1/e; chomp; \$_; }
+  (@ARGV); "'

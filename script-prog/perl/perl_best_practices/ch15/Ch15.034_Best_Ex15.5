@@ -1,0 +1,82 @@
+##############################################################################
+##   Example 15.5 (Recommended) from Chapter 15 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-5. A mildly stochastic queue
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my $waiting_list = FuzzyQueue->new();
+ 
+# Load client names...
+while (my $client = prompt 'Client: ') {
+    $waiting_list->push($client);
+}
+ 
+# Then rotate the contents of the queue (approximately) one notch...
+$waiting_list->push(  $waiting_list->shift() );
+
+while (my $next = $waiting_list->shift()) {
+    print "$next\n";
+}
+
+# Implement a queue that's slightly blurry about where it adds new elements...
+package FuzzyQueue;
+use Class::Std::Utils;
+use List::Util qw( max );
+{
+    # Attributes...
+    my %contents_of;     # The array storing each fuzzy queue's data
+    my %vagueness_of;    # How fuzzy should the queue be?
+ 
+    # The usual inside-out constructor...
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;
+ 
+        $contents_of{ident $new_object} = [];
+        $vagueness_of{ident $new_object} 
+            = exists $arg_ref->{vagueness} ? $arg_ref->{vagueness} : 1;
+ 
+        return $new_object;
+    }
+ 
+    # Push each element somewhere near the end of queue...
+    sub push    {
+        my ($self) = shift;
+ 
+        my $data_ref = $contents_of{ident $self};
+        # Grab each datum...
+        for my $datum (@_) {
+            # Scale the random fuzziness to the amount specified for this queue...
+            my $fuzziness = rand $vagueness_of{ident $self};
+ 
+            # Squeeze the datum into the array, using a negative number
+            # to count (fuzzily) back from the end, but making sure not
+            # to run off the front...
+            splice @{$data_ref}, max(-@{$data_ref}, -$fuzziness), 0, $datum;
+        }
+ 
+        return;
+    }
+ 
+    # Grab the object's data and shift off the first datum (in a non-fuzzy way)...
+    sub shift {
+        my ($self) = @_;
+        return shift @{ $contents_of{ident $self} };
+    }
+}
+

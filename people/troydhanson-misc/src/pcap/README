@@ -1,0 +1,5 @@
+sniff1: a minimal libpcap program that prints packet lengths
+sniff2: can read packets from interface or from pcap file
+sniff3: compiles a filter expression
+sniff4: filter expression hardcoded from tcpdump -dd 
+sniff5: decode link level, ip and udp or tcp header 

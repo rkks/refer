@@ -1,0 +1,31 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 5 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use Data::Alias;
+use Readonly;
+
+my $manuscript = q{Churchill was born in 1874};
+
+use English;
+ 
+my ($name, $birth_year) 
+    = $manuscript =~ m/(\S+) \s+ was \s+ born \s+ in \s+ (\d{4})/xms;
+
+ 
+if ($name) {
+    print $PREMATCH, 
+          qq{<born date="$birth_year" name="$name">},
+          $MATCH,
+          q{</born>}, 
+          $POSTMATCH;
+}
+

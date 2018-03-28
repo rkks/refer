@@ -1,0 +1,68 @@
+A quick sampler of initscripts 
+==============================
+Troy D. Hanson <tdh@tkhanson.net>
+v1.1, March 2014
+
+include::twitter.inc[]
+
+Initscripts::
+   a general term for the scripts that start and stop daemon (server)
+   processes on Unix-style OS's. Often used to start processes at boot.
+
+initscripts
+-----------
+Initscripts vary by OS.  Here's a quick sample of initscripts on four platforms:
+
+* Ubuntu
+* RedHat/CentOS
+* Debian
+* Mac OS X
+
+These examples show how to run an imaginary daemon, `exd`, at boot.
+
+.An easier way?
+*****************************************************************************
+You might find my http://troydhanson.github.io/pmtr[pmtr tool] much easier to
+use than writing an initscript. 
+*****************************************************************************
+
+These initscripts expect the daemon to stay in the *foreground*. For daemons
+that fork/detach into the background, modification would be necessary.
+
+// this defines an attribute called {t} used below
+:t: https://github.com/troydhanson/misc/tree/master/server_tools/init/
+
+Ubuntu 
+~~~~~~
+On Ubuntu, the init system is called 'upstart'. It's quite nice and easy to use.
+
+1. Place {t}ubuntu-exd.conf[this script] in `/etc/init/exd.conf`.
+2. It's all ready to go. Start it up using `start exd`
+
+RedHat/CentOS
+~~~~~~~~~~~~~
+This platform uses 'sysvinit'-style scripts. 
+
+1. Place {t}centos-exd[this script] in `/etc/rc.d/init.d/exd`.
+2. Run `chkconfig --add exd` to symlink it into the runlevel directories.
+3. Start it up using `/etc/init.d/exd start`. 
+
+Debian
+~~~~~~
+1. Place {t}debian-exd[this script] in `/etc/init.d/exd`
+2. Run `/usr/sbin/update-rc.d exd defaults` to symlink it into place.
+3. Start it: `/usr/sbin/service exd start`
+
+Mac OS X
+~~~~~~~~
+Mac uses "launchd" to start daemons. 
+
+1. Place {t}mac-exd.plist[this file] in `/Library/LaunchDaemons/exd.plist`
+2. Load and start it using, `launchctl load /Library/LaunchDaemons/exd.plist`
+
+Resources
+---------
+* back to http://troydhanson.github.io/[my GitHub page].
+* author's http://tkhanson.net/blog[blog], and twitter https://twitter.com/troydhanson[@troydhanson].
+
+// vim: set tw=80 wm=2 syntax=asciidoc: 

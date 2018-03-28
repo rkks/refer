@@ -1,0 +1,70 @@
+<project name="ConnectionTest" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="ConnectionTest" />
+
+    <property name="WTK" value="/home/juntao/J2ME/J2MEWTK/WTK104" />
+    <property name="midpclasses" value="${WTK}/lib/midpapi.zip" />
+    <property name="preverify" value="${WTK}/bin/preverify" />
+    <property name="emulator" value="${WTK}/bin/emulator" />
+
+    <property name="tmp" value="anttmp" />
+    <property name="tmpclasses" value="${tmp}/tmpclasses" />
+    <property name="pvclasses" value="${tmp}/pvclasses" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${tmp}" />
+    <delete file="bin/${projname}.jar" />
+    <delete file="bin/*.sh" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${tmp}" />
+    <mkdir dir="${tmpclasses}" />
+    <mkdir dir="${pvclasses}" />
+
+    <unzip src="lib" dest="${tmpclasses}" />
+    <delete dir="${tmpclasses}/META-INF" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${tmpclasses}"
+           bootclasspath="${midpclasses}" 
+    >
+      <classpath>
+        <pathelement path="${tmpclasses}"/>
+        <pathelement path="${midpclasses}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="preverify" depends="compile">
+    <exec executable="${preverify}">
+      <arg line="-classpath ${midpclasses}"/>
+      <arg line="-d ${pvclasses}" />
+      <arg line="${tmpclasses}" />
+    </exec>
+  </target>
+
+  <target name="package" depends="preverify">
+    <copy todir="${pvclasses}">
+      <fileset dir="res" />
+    </copy>
+    <jar jarfile="bin/${projname}.jar"
+         basedir="${pvclasses}"
+         manifest="bin/MANIFEST.MF"
+    />
+  </target>
+
+  <target name="run" depends="init" >
+    <exec executable="${emulator}" dir="bin">
+      <arg line="-classpath ${projname}.jar" />
+      <arg line="-Xdescriptor:${projname}.jad" />
+    </exec>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

@@ -1,0 +1,48 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 4 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @samples = (1..100);
+my $target = 55;
+my $pos;
+
+my ($min, $max, $found_target) = (0, $#samples, 0); 
+
+SEARCH:
+while ($min<=$max) {
+    $pos = int(($max+$min)/2);
+    my $test_val = $samples[$pos];
+ 
+    if ($target == $test_val) {
+        $found_target = 1;
+        last SEARCH;
+    }
+    elsif ($target < $test_val) {
+        $max = $pos-1;
+    }
+    else {
+        $min = $pos+1;
+    }
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $pos, $found_target];
+ 
+my $name = 'Tim Burners-Lee';
+sub check_name { return 1; }
+
+check_name($name);
+print "Sir $name, KCMG";
+

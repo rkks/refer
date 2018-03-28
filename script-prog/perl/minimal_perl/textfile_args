@@ -1,0 +1,4 @@
+#! /usr/bin/perl -wl
+# If file named as argument contains text, print its name
+$,="\n";                        # print one filename per line
+print grep { -T } @ARGV;

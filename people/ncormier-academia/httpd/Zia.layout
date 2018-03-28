@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_layout_file>
+<CodeBlocks_layout_file>
+	<File name="src/CmdParser.cpp" open="0" top="0">
+		<Cursor position="248" topLine="0"/>
+	</File>
+	<File name="src/Core.cpp" open="1" top="1">
+		<Cursor position="6106" topLine="264"/>
+	</File>
+	<File name="src/CoreMsg.cpp" open="0" top="0">
+		<Cursor position="0" topLine="2"/>
+	</File>
+	<File name="src/Dll.cpp" open="0" top="0">
+		<Cursor position="2297" topLine="0"/>
+	</File>
+	<File name="src/Module.cpp" open="0" top="0">
+		<Cursor position="191" topLine="0"/>
+	</File>
+	<File name="src/ModuleConf.cpp" open="0" top="0">
+		<Cursor position="222" topLine="0"/>
+	</File>
+	<File name="src/Mutex.cpp" open="0" top="0">
+		<Cursor position="922" topLine="26"/>
+	</File>
+	<File name="src/Semaphore.cpp" open="0" top="0">
+		<Cursor position="423" topLine="0"/>
+	</File>
+	<File name="src/Thread.cpp" open="0" top="0">
+		<Cursor position="1668" topLine="33"/>
+	</File>
+	<File name="src/Ticket.cpp" open="0" top="0">
+		<Cursor position="219" topLine="0"/>
+	</File>
+	<File name="src/TicketsHandler.cpp" open="0" top="0">
+		<Cursor position="235" topLine="3"/>
+	</File>
+	<File name="src/XmlContainer.cpp" open="0" top="0">
+		<Cursor position="258" topLine="0"/>
+	</File>
+	<File name="src/XmlParser.cpp" open="0" top="0">
+		<Cursor position="130" topLine="53"/>
+	</File>
+	<File name="src/XmlValidator.cpp" open="0" top="0">
+		<Cursor position="222" topLine="0"/>
+	</File>
+	<File name="src/includes/Exceptions.h" open="0" top="0">
+		<Cursor position="2443" topLine="60"/>
+	</File>
+	<File name="src/includes/IThread.h" open="0" top="0">
+		<Cursor position="371" topLine="0"/>
+	</File>
+	<File name="src/includes/Thread.h" open="0" top="0">
+		<Cursor position="449" topLine="0"/>
+	</File>
+	<File name="src/includes/XmlParser.h" open="0" top="0">
+		<Cursor position="167" topLine="0"/>
+	</File>
+</CodeBlocks_layout_file>

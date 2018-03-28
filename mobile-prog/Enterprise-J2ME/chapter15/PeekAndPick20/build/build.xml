@@ -1,0 +1,189 @@
+<project name="PeekAndPick20" default="dist" basedir="..">
+  <property name="project" value="PeekAndPick20"/>
+  
+  <property name="midp" value="/wtk104"/>
+  <property name="midp_lib" value="${midp}/lib/midpapi.zip"/>
+  
+  <!-- The following property is only needs for the "tools"
+       and "jad" targets. -->
+  <property name="ant" value="/jakarta-ant-1.4.1"/>
+  
+  <!-- The following properties are needed only for
+       obufscate_retroguard. -->
+  <property name="retroguard" value="/Program Files/retroguard-v1.1/retroguard.jar"/>
+  <property name="midp_lib_empty" value="${midp}/wtklib/emptyapi.zip"/>
+  
+  <!-- The following property is needed only for
+       obufscate_proguard. -->
+  <property name="proguard" value="/Program Files/proguard1.2/lib/proguard.jar"/>
+
+  <!-- Runs the application in the emulator. -->
+  <target name="run">
+    <exec executable="${midp}/bin/emulator">
+      <arg line="-Xdescriptor:build/bin/${project}.jad"/>
+    </exec>
+  </target>
+
+  <!-- Adjusts the JAR size in the JAD. -->
+  <target name="jad" depends="dist">
+    <taskdef name="jad" classname="JarSizeFix"/>
+    <jad jar="build/bin/${project}.jar" jad="build/bin/${project}.jad"/>
+  </target>
+    
+  <!-- Packages the application -->
+  <target name="dist" depends="preverify">
+    <mkdir dir="build/bin"/>
+    <jar basedir="build/preverified"
+        jarfile="build/bin/${project}.jar"
+        manifest="bin/MANIFEST.MF">
+      <fileset dir="res"/>
+    </jar>
+    <copy file="bin/${project}.jad"
+        tofile="build/bin/${project}.jad"/>
+  </target>
+  
+  <!--
+    This target runs the preverifier on the class files.
+
+    Change 'depends' attribute here to select obfuscation:
+      obfuscate_proguard
+      obfuscate_retroguard
+      obfuscate_null
+  -->
+  <target name="preverify" depends="obfuscate_null">
+    <mkdir dir="build/preverified"/>
+    <exec executable="${midp}/bin/preverify">
+      <arg line="-classpath ${midp_lib}"/>
+      <arg line="-d build/preverified"/>
+      <arg line="build/obfuscated"/>
+    </exec>
+  </target>
+  
+  <!-- Obufscates using ProGuard. -->
+  <target name="obfuscate_proguard" depends="compile, copylib">
+    <mkdir dir="build/proguard"/>
+    <jar basedir="build/classes"
+        jarfile="build/proguard/${project}-input.jar"/>
+    
+    <java fork="yes" classname="proguard.ProGuard"
+        classpath="${proguard}">
+      <arg line="-libraryjars ${midp_lib}"/>
+      <arg line="-injars build/proguard/${project}-input.jar"/>
+      <arg line="-outjar build/proguard/${project}-output.jar"/>
+      <arg line="-keep 'public class * extends javax.microedition.midlet.MIDlet'"/>
+    </java>
+
+    <mkdir dir="build/obfuscated"/>
+    <unjar src="build/proguard/${project}-output.jar"
+        dest="build/obfuscated"/>
+  </target>
+  
+  <!-- Obufscates using RetroGuard. -->
+  <target name="obfuscate_retroguard" depends="compile, copylib">
+    <mkdir dir="build/retroguard"/>
+    <jar basedir="build/classes"
+        jarfile="build/retroguard/${project}-input.jar"/>
+    
+    <java fork="yes" classname="RetroGuard"
+        classpath="${retroguard};${midp_lib_empty}">
+      <arg line="build/retroguard/${project}-input.jar build/retroguard/${project}-output.jar build/peekandpick.rgs"/>
+    </java>
+
+    <mkdir dir="build/obfuscated"/>
+    <unjar src="build/retroguard/${project}-output.jar"
+        dest="build/obfuscated"/>
+  </target>
+  
+  <!-- Doesn't obfuscate, just copies class files. -->
+  <target name="obfuscate_null" depends="compile, copylib">
+    <mkdir dir="build/obfuscated"/>
+    <copy todir="build/obfuscated">
+      <fileset dir="build/classes"/>
+    </copy>
+  </target>
+  
+  <!-- Unjars the library APIs in preparation for obfuscation. -->
+  <target name="copylib" depends="init">
+    <unjar src="lib/kxml-min.zip" dest="build/classes"/>
+  </target>
+  
+  <!-- Compiles the source code. -->
+  <target name="compile" depends="init">
+    <mkdir dir="build/classes"/>
+    <javac destdir="build/classes" srcdir="src"
+        classpath="lib/kxml-min.zip"
+        bootclasspath="${midp_lib}" target="1.1"/>
+  </target>
+  
+  <!-- Builds the JarSizeFix Ant task and installs it
+       in the Ant lib directory. -->
+  <target name="tools">
+    <mkdir dir="build/tools_classes"/>
+    <javac destdir="build/tools_classes" 
+        srcdir="build/tools"
+        target="1.1"/>
+    <jar jarfile="${ant}/lib/wd-tools.jar">
+      <fileset dir="build/tools_classes"/>
+    </jar>
+    <delete dir="build/tools_classes"/>
+  </target>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+  
+  <!-- Creates the source zip file. -->
+  <target name="src_zip" depends="init">
+    <mkdir dir="build/src"/>
+    <delete file="build/src/${project}src.zip"/>
+    <jar basedir=".."
+        jarfile="build/src/${project}src.zip"
+        includes="${project}/build/build.xml,
+            ${project}/build/tools/**,
+            ${project}/build/peekandpick.rgs,
+            ${project}/bin/${project}.jad,
+            ${project}/bin/MANIFEST.MF,
+            ${project}/server/PeekAndPickServlet.java,
+            ${project}/lib/kxml-min.zip,
+            ${project}/res/**,
+            ${project}/src/**"
+    />
+  </target>
+    
+  <!-- Creates the API javadocs. -->
+  <target name="docs" depends="init">
+    <mkdir dir="build/api"/>
+    <javadoc
+        sourcefiles="src/*.java"
+        packagenames="display.*, rss.*, util.*"
+        sourcepath="src"
+        classpath="lib/kxml-min.zip;${midp_lib}"
+        destdir="build/api"
+        author="true"
+        version="true"
+        use="true"
+        windowtitle="PeekAndPick 2.0">
+      <doctitle><![CDATA[<h1>PeekAndPick 2.0</h1>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 2002 Sun Microsystems, Inc. All Rights Reserved</i>]]></bottom>
+    </javadoc>
+  </target>
+  
+  <!-- Cleans up everything, including the binaries,
+       API documentation, and source zip. -->
+  <target name="reallyclean" depends="clean">
+    <delete dir="build/bin"/>
+    <delete dir="build/api"/>
+    <delete dir="build/src"/>
+  </target>
+    
+  <!-- Cleans up intermediate build files. -->
+  <target name="clean">
+    <delete dir="build/classes"/>
+    <delete dir="build/obfuscated"/>
+    <delete dir="build/preverified"/>
+    <!-- Retroguard -->
+    <delete dir="build/retroguard"/>
+    <!-- ProGuard -->
+    <delete dir="build/proguard"/>
+  </target>
+</project>

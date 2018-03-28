@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+local $/;
+my $hex = (@ARGV ? join("",@ARGV) : <STDIN>);
+print pack("C",hex($_)) for ($hex =~ m/../g);

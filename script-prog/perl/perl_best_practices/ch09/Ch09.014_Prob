@@ -1,0 +1,39 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+Readonly my $SPACE => q{ };
+ 
+
+# Pad a string with whitespace...
+sub padded {
+    # Compute the left and right indents required...
+
+    my $gap   = $_[1] - length $_[0];
+    my $left  = $_[2] ? int($gap/2) : 0;
+    my $right = $gap - $left;
+
+ 
+    # Insert that many spaces fore and aft...
+
+    return $SPACE x $left 
+         . $_[0] 
+         . $SPACE x $right;
+}
+
+
+print '[', padded( 'hi there', 40, 1 ), "]\n";
+print '[', padded( 'hi there', 40, 0 ), "]\n";

@@ -1,0 +1,37 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 19 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Benchmark qw( cmpthese );
+use Memoize;
+
+our @real_data = 'foo bar' x 1_000_000;
+
+sub lc_digest {
+    my ($text) = @_;
+ 
+    use Digest::SHA qw( sha512 );
+    return sha512(lc $text);
+}
+
+# Install a memoized version of lc_digest() as fast_lc_digest()...
+memoize( 'lc_digest', INSTALL=>'fast_lc_digest' );
+ 
+# See if it is actually any faster on real data sets...
+cmpthese -30, {
+    nomemo => q{ for my $text (@real_data) { my $res = lc_digest($text); }      },
+    memo   => q{ for my $text (@real_data) { my $res = fast_lc_digest($text); } },
+};
+

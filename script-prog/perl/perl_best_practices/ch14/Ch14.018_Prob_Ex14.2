@@ -1,0 +1,95 @@
+#! /usr/local/bin/perl -w
+
+##############################################################################
+## Example 14.2 (NOT RECOMMENDED) from Chapter 14 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 14-2. Command-line parsing via a hand-coded parser
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $SPACE => q{ };
+
+# Handle command-lines of the form:
+#
+#     > orchestrate -in=source.txt -out dest.orc -v
+ 
+# Create table describing argument flags, default values,
+# and how to match the remainder of each argument...
+my @options = (
+    { flag=>'-in',       val=>'-', pat=>qr/ \s* =? \s* (\S*) /xms },
+    { flag=>'-out',      val=>'-', pat=>qr/ \s* =? \s* (\S*) /xms },
+    { flag=>'-len',      val=>24,  pat=>qr/ \s* =? \s* (\d+) /xms },
+    { flag=>'--verbose', val=>0,   pat=>qr/                  /xms },
+);
+ 
+# Initialize hash for arguments...
+my %arg = map { $_->{flag} => $_->{default} } @options;
+ 
+# Create table of meta-options and associated regex...
+my %meta_option = (
+    '--version' => sub { X::Version->throw() },
+    '--usage'   => sub { X::Usage->throw()   },
+    '--help'    => sub { X::Help->throw()    },
+    '--man'     => sub { X::Man->throw()     },
+);
+my $meta_option = join '|', reverse sort keys %meta_option;
+ 
+# Reconstruct full command-line, and start matching at the start...
+# my $cmdline = join $SPACE, qw(-in=input -len=10 --verbose);
+my $cmdline = join $SPACE, qw(--man);
+pos $cmdline = 0;
+ 
+# Step through cmdline...
+ARG: 
+while (pos $cmdline < length $cmdline) {
+    # Checking for a meta-option each time...
+    if (my ($meta) = $cmdline =~ m/ \s* $meta_option \b /gcxms ) {
+        $meta_option{$meta}->();
+    }
+ 
+    # Then trying each option...
+    for my $opt_ref ( @options ) {
+        # Seeing if that option matches at this point in the cmdline...
+        if (my ($val)
+               = $cmdline =~ m/\G \s* $opt_ref->{flag} $opt_ref->{pat} /gcxms) {
+            # And, if so, storing the value and moving on...
+            $arg{$opt_ref->{flag}} = $val;
+            next ARG;
+        }
+    }
+ 
+    # Otherwise, extract the next chunk of text 
+    # and report it as an unknown flag...
+    my ($unknown) = $cmdline =~ m/ (\S*) /xms;
+    croak "Unknown cmdline flag: $unknown";
+}
+ 
+# Report intended behaviour...
+if ($arg{'--verbose'}) {
+    print "Loading first $arg{-len} chunks of file: $arg{-in}\n"
+}
+# etc.
+ 
+
+
+
+package UNIVERSAL;
+use Carp;
+
+sub throw {
+    my ($class) = @_;
+
+    croak "Show $class here\n";
+}

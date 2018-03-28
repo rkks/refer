@@ -1,0 +1,23 @@
+#! /usr/bin/perl -s -wl
+
+$DEBUG=1;     # for extra feedback during testing
+$qual=80;     # starting quality value
+
+$fname  or  die "Usage: $0 -fname=imagefile\n";
+
+# Copy original image to another directory
+! system "cp $fname /tmp/$fname" or  die "$0: cp failed\n";
+
+$DEBUG  and  # show initial size
+  print "Size of $fname: ", -s $fname, ' bytes';
+
+while ( -s $fname > 25_000 )  {  # 25_000 means 25,000 in Perl
+  # Compress copy using $qual; store under original name
+  ! system "convert -quality $qual /tmp/$fname jpg:$fname"  or
+    die "$0: convert failed\n";
+
+  $DEBUG  and   # show new size
+    print "Size of $fname: ", -s $fname, ' bytes';
+
+  $qual=$qual - 5;    # reduce for next iteration
+}

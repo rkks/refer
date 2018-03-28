@@ -1,0 +1,43 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $next_record;
+my @metadata;
+
+sub is_valid;
+sub metadata_available_for;
+sub has_end_tag;
+ 
+my $loading_finished;
+my $has_found_bad_record;
+ 
+# and later...
+ 
+if (is_valid($next_record) && !$loading_finished) {
+    METADATA:
+    while (metadata_available_for($next_record)) {
+        push @metadata, get_metadata_for($next_record);
+        last METADATA if has_end_tag($next_record);
+    }
+}
+else {
+    $has_found_bad_record = 1;
+}
+
+
+sub is_valid {}
+sub metadata_available_for {}
+sub has_end_tag {}

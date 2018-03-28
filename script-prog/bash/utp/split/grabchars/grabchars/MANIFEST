@@ -1,0 +1,19 @@
+After all the grabchars kits are run you should have the following files:
+
+Filename		Kit Description
+--------		--- -----------
+Config                   1 configure grabchars
+MANIFEST                 2 Packing list
+Makefile.dist            1 Config makes Makefile from this
+README                   1 general idea of all things grabby
+TODO                     1 some thoughts on improvements
+demo                     2 test/familiarize with grabchars
+globals.c                2 global vars
+grabchars.1              1 man page
+grabchars.c              1 main program
+grabchars.h              2 defines
+sys.c                    1 system calls
+web/README               1 README for the two types of script exmaples
+web/gensource            1 called by mkmenu
+web/mkmenu               1 use to generate menu-oriented csh scripts
+web/script.template      1 example script

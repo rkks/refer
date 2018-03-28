@@ -1,0 +1,68 @@
+#!/usr/bin/perl
+# utility to send mail from command line or scripts,
+# including attachments, customized from/subject/etc
+# (c) 2010 Troy D. Hanson, released to public domain
+use strict;
+use warnings;
+use MIME::Lite;
+use Net::SMTP;
+use Getopt::Long;
+
+sub usage {
+  print "usage: $0 --to <address> [options]\n";
+  print "options:\n";
+  print "          --from <address>\n";
+  print "          --subject <text>\n";
+  print "          --body <text>\n";
+  print "          --body-stdin\n";
+  print "          --attach-file <file> (repeatable)\n";
+  print "          --attach-stdin\n";
+  print "\n";
+  print "examples:\n";
+  print "mailpl --to a\@abc.com --subject notification --body 'job finished'\n";
+  print "cat abc.log | mailpl --to user\@abc.com --subject log --attach-stdin\n";
+  print "date | mailpl --to a\@abc.com --attach-file=abc.txt --body-stdin\n";
+
+  exit(-1);
+}
+
+our $verbose=0;
+our $to;
+our $from = scalar getpwuid($<) . "@" . ($ENV{HOSTNAME} || `hostname`);
+our $subject = "email from $0";
+our $body = "";
+our $body_stdin;
+our $attach_stdin;
+our @attachments;
+our $help;
+
+usage unless GetOptions("verbose+"      => \$verbose,
+                        "to=s"          => \$to,
+                        "from=s"        => \$from,
+                        "subject=s"     => \$subject,
+                        "attach-file=s" => \@attachments,
+                        "attach-stdin"  => \$attach_stdin,
+                        "body=s"        => \$body,
+                        "body-stdin"    => \$body_stdin,
+                        "help"          => \$help);
+usage if $help || (not $to) || ($body_stdin && $attach_stdin);
+local $/;  # slurp mode
+
+# create the container for the mail
+my $msg = MIME::Lite->new(From=>$from, To=>$to, Subject=>$subject,
+          Type=>"multipart/mixed") or die "MIME::Lite->new failed: $!\n";
+
+# add the message body 
+$body = <STDIN> if $body_stdin;
+$msg->attach(Type=>'TEXT', Data=>$body) or die "failed to add body text: $!\n";
+
+# add any attachments
+$msg->attach(Type=>'TEXT',Data=><STDIN>,Disposition=>"inline") if $attach_stdin;
+$msg->attach(Path=>$_, Disposition=>"attachment") or die for @attachments;
+
+# use the defaults, but here is an example of changing the mail delivery method
+#MIME::Lite->send("sendmail", "/usr/sbin/exim -t -oi -oem");
+MIME::Lite->send("sendmail");
+$msg->send;
+
+print STDERR "sent to $to\n" if $verbose;

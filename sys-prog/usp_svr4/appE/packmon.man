@@ -1,0 +1,192 @@
+.TH PACKMON 8 "27 Jan 95" "Purdue ECN"
+.SH NAME
+packmon \- monitor and summarize network traffic
+.SH SYNOPSIS
+.B packmon
+[
+.B \-a
+] [
+.B \-i
+.I interface
+] [
+.B \-l
+.I logfile
+] [
+.B \-n
+.I count
+] [
+.B \-p
+.I portlist
+] [
+.B \-r
+] [
+.B \-s
+.I count
+] [
+.B \-t
+.I seconds
+] [
+.B \-v
+]
+.SH DESCRIPTION
+.PP
+.B Packmon
+places the network interface on the system into promiscuous mode, and
+captures all packets traversing the network.  It examines each packet,
+and categorizes it by Ethernet packet type, IP protocol number, route,
+TCP/UDP port number, and multicast address.  For each category in
+which the packet fits, the total number of bytes, including all headers,
+in the packet are recorded.
+.PP
+Monitoring is performed in intervals; at the end of each interval, a
+counter record is written to a log file.  Each counter record requires
+just over one megabyte of disk space to store; the logfile should be
+written to a file system with ample free space.  Using the default
+interval of one hour,
+.B packmon
+will generate just over 24 megabytes of data per day.
+.SH REPORTS
+.PP
+When called with the
+.B \-r
+(report) option,
+.B packmon
+will read an existing log file, total up all of the interval counters,
+and generate a report.  The first section of the report provides some
+overall statistics: total bytes captured, total packets captured,
+total packets dropped, average bytes/packet, average bytes/second, and
+average packets/second.  The ``total packets dropped'' figure indicates
+the number of packets that had to be discarded by the packet capturing
+interface due to lack of buffer space; these packets are not counted in
+any of the other totals.  To keep the packets dropped to a minimum,
+.B packmon
+should be run on a fast processor (e.g., a SPARCstation 5) with little
+or no other load on the system.
+.PP
+The second section of the report describes the traffic in terms of the
+``route'' it took.  This is done by looking at the source and
+destination addresses of all IP protocol packets.  If the source and
+destination addresses are on the same subnetwork as the monitoring
+host, this is counted as local subnetwork traffic.  If the source or
+destination addresses are not on the same subnetwork, but are on the
+same network (e.g., in the case of a subnetted Class B network, one or
+both of the addresses is on a different subnet of the same Class B),
+this is counted as local network traffic.  (In organizations that do
+not use subnetting, the local network and local subnetwork figures
+will be identical.)  If the source or destination addresses are not on
+the local network, this is counted as foreign network traffic, i.e.,
+traffic from networks in other organizations.  If the destination
+address is a multicast address, this is counted as multicast traffic.
+.PP
+The next section of the report classifies packets by their Ethernet
+packet type field.  Only the most ``interesting'' (as defined by the
+author) types are counted separately; everything else is grouped as
+``other.''
+.PP
+The next section of the report classifies IP protocol packets by their
+IP protocol number.  Only the most ``interesting'' (as defined by the
+author) types are counted separately; everything else is grouped as
+``other.''
+.PP
+The next section of the report classifies multicast packets by their
+destination address.  Only the most ``interesting'' (as defined by the
+author) addresses are counted separately; everything else is grouped as
+``other.''
+.PP
+The last two sections of the report summarize TCP and UDP packets by
+their source and destination ports.  Note that each packet is counted
+.IR twice ;
+once by its source port and again by its destination port.  By
+default, only the ports that are registered in the services file are
+printed; the
+.B \-v
+option will cause all ports with data sent from or received by them to
+be printed.  Note that this information must be carefully interpreted
+\- just because a port is registered in the services file does not
+mean that the traffic flowing on that port is of that type.  For
+example, if the port is not a reserved port, and there is no server
+sitting on the port waiting for connections, then the operating system
+is free to give that port to any program that requests a socket.
+.SH OPTIONS
+.PP
+The following options are accepted by
+.BR packmon :
+.TP
+.B \-a
+When printing reports, print a report for each interval in addition to the
+total at the end.  Each report is separated from the next by a form feed.
+.TP
+.BI \-i " interface"
+Monitor packets from interface
+.IR interface .
+By default, the first configured interface on the system is used.
+.TP
+.BI \-l " logfile"
+Use the log file named
+.IR logfile .
+The default is
+.IR packmon.log .
+.TP
+.BI \-n " count"
+Process
+.I count
+intervals and exit.  When monitoring, only this many interval records will
+be written to the log file.  When making a report, only this many interval
+records will be read and summarized.
+.TP
+.BI \-p " portlist"
+Read the names for TCP and UDP ports from the file
+.IR portlist ,
+which must be in the same format as
+.IR /etc/services .
+The default is to read the list from
+.IR /etc/services .
+.TP
+.B \-r
+Generate a report from the log file, instead of monitoring the network.
+.TP
+.BI \-s " count"
+Skip the first
+.I count
+interval records in the log file when making a report.  This option is
+ignored when in monitoring mode.
+.TP
+.BI \-t " seconds"
+Set the interval time to
+.I seconds
+seconds.  The default is 3600 (one hour).  Note that all counters are
+unsigned longs.  This means that, given that Ethernet operates at 10
+Mb/s, it is possible to capture about one megabyte per second.  This
+has the potential to use 20 bits of counter per second, leaving 12
+bits.  Thus the maximum interval length to avoid overflow is
+approximately 4096 seconds.
+.TP
+.B \-v
+When making a report, print the data for all TCP and UDP ports that had
+traffic on them.  The default is to print only those ports registered
+in the services file.
+.SH SEE ALSO
+.BR snoop (1m)
+.SH MISFEATURES
+.PP
+.B Packmon
+currently only understands Ethernet interfaces.  If called to monitor
+an FDDI interface (or some other medium), the results will not be
+accurate.  (It would be a ``small matter of programming'' to fix this,
+for someone who knows what's going on.)
+.PP
+The specific types of packets to look at are compiled into the code.
+They are easy to change, but ideally should be read from a
+configuration file at run time.
+.SH AUTHOR
+David A. Curry
+.br
+Manager, UNIX Systems Programming Group
+.br
+Purdue University Engineering Computer Network
+.br
+1285 Electrical Engineering Building
+.br
+West Lafayette, IN 47907-1285 USA
+.br
+davy@ecn.purdue.edu

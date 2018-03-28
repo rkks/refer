@@ -1,0 +1,81 @@
+Hextiles: hexagonal coordinate system
+-------------------------------------
+Troy D. Hanson
+
+If you've seen the floor of a subway station made of hexagon tiles, you
+have seen a planar tiling of hexagons. They fit together perfectly with
+every successive row being offset by half a hexagon width. In other words
+the peaks of one row sit in the recess between hexagons in the row above.
+
+If we draw hexagons like that, you can uniquely identify every hexagon by
+its initial (x,y) vertex. If they are unit hexagons (sides of length 1) 
+then neighbors in the same row are offset by sqrt(3) sideways. If you go 
+up or down a row, you translate an additional sqrt(3)/2 sideways too. 
+
+When writing a program that deals with tiled hexagons in the plane, you 
+could deal with those vertex coordinates. An alternative is just to assign
+an integer pair to each hexagon. They're "almost" in a grid, right? Then we
+can hop from hexagon to hexagon along any of their six edges with just an
+integer addition.  Our program can do hexagonal layout with purely integer
+coordinates. And we only mess around with square roots at the end when we 
+translate these to drawing coordinates.
+
+My convention for these 'hextile coordinates' is that you pick an "origin 
+hexagon", call it (x,y) then (almost like a grid but not quite) you reach
+any of its six 'compass' neighbors using these integer offsets:
+
+       odd-y        even-y
+      =======      ========
+  e:   +1, 0        +1, 0
+ ne:   +1,-1         0,-1
+ nw:    0,-1        -1,-1
+  w:   -1, 0        -1, 0
+ sw:    0,+1        -1,+1
+ se:   +1,+1         0,+1
+
+The "y-parity" (whether the starting hexagon has an even or odd y-coordinate)
+determines which set of offsets you use to reach its six neighbors.
+
+Conversion of Hextile Coordinates to Drawing Coordinates
+---------------------------------------------------------------------
+To draw a hexagon given its hextile coordinates (x,y), convert to an
+initial drawing vertex (dx,dy) like this (sq3 is the square root of 3):
+
+  dx = sq3*x + (odd(y)?(sq3/2):0)
+  dy = (3/2)*y
+
+This scales the hextile coordinate horizontally by the hexagon width (sq3 for
+the unit hexagon) and hexagon height (3/2 for unit hexagon), as measured
+vertically from initial vertex to the offset initial vertex below; also it
+translates alternating rows of hexagons by half a hexagon width, sq3/2, so they
+tile properly. 
+
+Here the ternary operator (the question mark) is used with odd(y). You can
+define odd(y) as (y&1) for integer y. (Don't define odd(x) as (x%2) because
+modulo operator on negative inputs is implementation dependent).
+
+The remaining vertices can then be drawn by appropriate translation.
+
+Scaling and Translating
+~~~~~~~~~~~~~~~~~~~~~~~
+This drawing translation has an implied scale factor of 1, which means each
+edge of the unit hexagon would be "one pixel long" if drawn on a canvas.
+
+To scale the hexagons up by a factor s, multiply dx and dy times s to position
+the initial vertex. Then, when drawing the hexagon's edges, multiply each 
+x and y component to the next vertex by the same scaling factor.  A translation
+xo/yo can be added to every vertex for a global translation effect.
+
+  dx = s * ( sq3*x + (odd(y)?(sq3/2):0) ) + xo
+  dy = s * ( (3/2)*y )                    + yo
+
+Gapped hexagons
+~~~~~~~~~~~~~~~
+Sometimes, e.g. in HTML canvas, we like to draw the hexagons with little gaps
+between them so they look more distinct from each other (sort of like the grout
+in the subway tiles). To do this, compute each hexagon's initial vertex
+according to the global scale factor- this defines the hexagonal "turf" that
+hexagon alone occupies; but tweak the scale factor smaller when drawing the six
+edges. This will "tighten up" the hexagon so it occupies a slightly smaller
+portion of its turf. This creates gaps between neighboring hexagons.
+

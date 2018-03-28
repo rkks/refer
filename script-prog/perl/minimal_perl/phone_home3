@@ -1,0 +1,20 @@
+#! /usr/bin/perl -wl
+
+use strict;
+
+{  # Braces cause two $home's to require separate declarations
+  my $home='415 123-4567';             # store my home phone number
+  print 'Calling phone at: ',          # show my address
+            get_home_address(); 
+  dial_phone($home);                   # dial my home phone
+}
+
+sub get_home_address {
+     my %name2address=(
+          ozniak => '1234 Disk Drive, Pallid Alto, CA',
+                                   # I'll add other addresses later
+     );
+     my $home=($name2address{$ENV{LOGNAME}}  or  'unknown');
+     return $home;
+}
+sub dial_phone { 1; }               # left to the imagination

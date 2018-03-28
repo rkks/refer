@@ -1,0 +1,28 @@
+#*******************************************************************************
+#
+#	Name:			Make.defines
+#
+#	Description:	This file contains the defines that every Makefile in
+#					the source directories below this one include.  It is
+#					used to build the example programs for Solaris Systems
+#					Programming.
+#
+#
+#			Copyright © 2001-2004 by Rich Teer.  All rights reserved.
+#
+#*******************************************************************************
+
+# Uncomment the following two lines if you are using cc (Sun's compiler).
+CFLAGS = -I../lib -D__EXTENSIONS__ -v
+MTFLAGS = -mt
+
+# Uncomment the following two lines if you are using gcc.
+# CFLAGS = -I../lib -D__EXTENSIONS__ -Wall
+# MTFLAGS = -D_REENTERANT -lthread
+
+# Uncomment the following line ONLY if you are building on
+# Solaris 2.5 or Solaris 2.5.1.
+# CFLAGS += -DNEED_SNPRINTF
+
+CLEAN_TARGETS = *.o core core.* *.core *.out
+SSP_LIB = ../lib/ssp.a

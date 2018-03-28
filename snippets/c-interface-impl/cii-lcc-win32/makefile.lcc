@@ -1,0 +1,191 @@
+# $Id: nt.m4,v 0.2 1998/12/04 03:42:44 rj Exp $
+#
+# Makefile for C Interfaces and Implementations library by drh
+# Modified for lcc-win32 and GNU make by Rob Judd <judd@alphalink.com.au>
+#
+
+BUILDDIR=build
+A=.lib
+O=.obj
+E=.exe
+I=include
+CC=lcc
+B=$(BUILDDIR)\\
+CFLAGS=-O -DWIN32 -D__LCC__ -D_MSC_VER -Iinclude
+LD=lcclnk 
+LDFLAGS=-s -subsystem console
+AR=lcclib
+THREADS=$Bthreadnt$O
+
+# RJ Might try to get the Unix version running later
+# EXTRAS=$Bmemcmp$O $Bmemmove$O $Bstrncmp$O
+# THREADS=$Bthread$O $Bswtch$O
+
+
+OBJS=	$Bap$O \
+	$Barena$O \
+	$Barith$O \
+	$Barray$O \
+	$Bassert$O \
+	$Batom$O \
+	$Bbit$O \
+	$Bchan$O \
+	$Bexcept$O \
+	$Bfmt$O \
+	$Blist$O \
+	$Bmem$O \
+	$Bmp$O \
+	$Bring$O \
+	$Bseq$O \
+	$Bset$O \
+	$Bstack$O \
+	$Bstr$O \
+	$Btable$O \
+	$Btext$O \
+	$Bxp$O \
+	$(THREADS)
+
+EXAMPLES=	$Bdouble$E \
+		$Bcalc$E \
+		$Bids$E \
+		$Bmpcalc$E \
+		$Bwf$E \
+		$Bxref$E \
+		$Bcref$E \
+		$Biref$E \
+		$Bkref$E \
+		$Bidents$E \
+		$Bwords$E \
+		$Bbasename$E \
+		$Bdirname$E \
+		$Bsort$E \
+		$Bspin$E \
+		$Bsieve$E
+
+all::		$Blibcii$A $Bmemchk$O $(EXAMPLES)
+
+$Blibcii$A::	$(OBJS) $(EXTRAS)
+				$(AR) -out:$@ $(OBJS) $(EXTRAS)
+
+$Bap$O:	src/ap.c;		$(CC) $(CFLAGS)  -Fo$@  src/ap.c 
+$Barena$O:	src/arena.c;	$(CC) $(CFLAGS)  -Fo$@  src/arena.c 
+$Barith$O:	src/arith.c;	$(CC) $(CFLAGS)  -Fo$@  src/arith.c 
+$Barray$O:	src/array.c;	$(CC) $(CFLAGS)  -Fo$@  src/array.c 
+$Bassert$O:	src/assert.c;	$(CC) $(CFLAGS)  -Fo$@  src/assert.c 
+$Batom$O:	src/atom.c;		$(CC) $(CFLAGS)  -Fo$@  src/atom.c 
+$Bbit$O:	src/bit.c;		$(CC) $(CFLAGS)  -Fo$@  src/bit.c 
+$Bchan$O:	src/chan.c;		$(CC) $(CFLAGS)  -Fo$@  src/chan.c 
+$Bexcept$O:	src/except.c;	$(CC) $(CFLAGS)  -Fo$@  src/except.c 
+$Bfmt$O:	src/fmt.c;		$(CC) $(CFLAGS)  -Fo$@  src/fmt.c 
+$Blist$O:	src/list.c;		$(CC) $(CFLAGS)  -Fo$@  src/list.c 
+$Bmem$O:	src/mem.c;		$(CC) $(CFLAGS)  -Fo$@  src/mem.c 
+$Bmemchk$O:	src/memchk.c;	$(CC) $(CFLAGS)  -Fo$@  src/memchk.c 
+$Bmp$O:	src/mp.c;		$(CC) $(CFLAGS)  -Fo$@  src/mp.c 
+$Bring$O:	src/ring.c;		$(CC) $(CFLAGS)  -Fo$@  src/ring.c 
+$Bseq$O:	src/seq.c;		$(CC) $(CFLAGS)  -Fo$@  src/seq.c 
+$Bset$O:	src/set.c;		$(CC) $(CFLAGS)  -Fo$@  src/set.c 
+$Bstack$O:	src/stack.c;	$(CC) $(CFLAGS)  -Fo$@  src/stack.c 
+$Bstr$O:	src/str.c;		$(CC) $(CFLAGS)  -Fo$@  src/str.c 
+$Btable$O:	src/table.c;	$(CC) $(CFLAGS)  -Fo$@  src/table.c 
+$Btext$O:	src/text.c;		$(CC) $(CFLAGS)  -Fo$@  src/text.c 
+$Bthread$O:	src/thread.c;	$(CC) $(CFLAGS)  -Fo$@  src/thread.c 
+# RJ  Renamed to threadnt for DOS/DJGPP 8.3 file system compatibility
+$Bthreadnt$O:	src/threadnt.c;	$(CC) $(CFLAGS)  -Fo$@  src/threadnt.c 
+$Bxp$O:	src/xp.c;		$(CC) $(CFLAGS)  -Fo$@  src/xp.c 
+#  RJ  Renamed to swtch.asm in line with standard DOS/Win practices,
+#      and because lcc-win32 won't try to compile it otherwise.
+#      This isn't called by make anyhow ... it's for Penix  :]
+$Bswtch$O:	src/swtch.asm;	$(CC) $(CFLAGS)  -Fo$@  src/swtch.asm
+
+$Bmemcmp$O:		src/memcmp.c;	$(CC) $(CFLAGS)  -Fo$@  src/memcmp.c 
+$Bmemmove$O:	src/memmove.c;	$(CC) $(CFLAGS)  -Fo$@  src/memmove.c 
+$Bstrncmp$O:	src/strncmp.c;	$(CC) $(CFLAGS)  -Fo$@  src/strncmp.c 
+
+$Bdouble$O:	examples/double.c;	$(CC) $(CFLAGS)  -Fo$@  examples/double.c 
+$Bcalc$O:	examples/calc.c;		$(CC) $(CFLAGS)  -Fo$@  examples/calc.c 
+$Bids$O:	examples/ids.c;		$(CC) $(CFLAGS)  -Fo$@  examples/ids.c 
+$Bmpcalc$O:	examples/mpcalc.c;	$(CC) $(CFLAGS)  -Fo$@  examples/mpcalc.c 
+$Biref$O:	examples/iref.c;		$(CC) $(CFLAGS)  -Fo$@  examples/iref.c 
+$Bkref$O:	examples/kref.c;		$(CC) $(CFLAGS)  -Fo$@  examples/kref.c 
+$Bidents$O:	examples/idents.c;	$(CC) $(CFLAGS)  -Fo$@  examples/idents.c 
+$Bwords$O:	examples/words.c;		$(CC) $(CFLAGS)  -Fo$@  examples/words.c 
+$Bbasename$O:examples/basename.c;	$(CC) $(CFLAGS)  -Fo$@  examples/basename.c
+$Bwf$O:	examples/wf.c;		$(CC) $(CFLAGS)  -Iexamples -Fo$@  examples/wf.c
+$Bgetword$O:examples/getword.c;	$(CC) $(CFLAGS)  -Iexamples -Fo$@  examples/getword.c
+$Bxref$O:	examples/xref.c;		$(CC) $(CFLAGS)  -Iexamples -Fo$@  examples/xref.c
+$Binteger$O:examples/integer.c;	$(CC) $(CFLAGS)  -Iexamples -Fo$@  examples/integer.c
+$Bcref$O:	examples/cref.c;		$(CC) $(CFLAGS)  -Iexamples -Fo$@  examples/cref.c
+$Bsort$O:	examples/sort.c;		$(CC) $(CFLAGS)  -Fo$@  examples/sort.c
+$Bspin$O:	examples/spin.c;		$(CC) $(CFLAGS)  -Fo$@  examples/spin.c
+$Bsieve$O:	examples/sieve.c;		$(CC) $(CFLAGS)  -Fo$@  examples/sieve.c
+
+$Bwf$O $Bxref$O $Bgetword$O:	examples/getword.h
+$Bcref$O $Binteger$O:		examples/integer.h
+
+$Bdouble$E:	$Bdouble$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bdouble$O $Blibcii$A 
+$Bcalc$E:	$Bcalc$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bcalc$O $Blibcii$A 
+$Bids$E:	$Bids$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bids$O $Blibcii$A 
+$Bmpcalc$E:	$Bmpcalc$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bmpcalc$O $Blibcii$A 
+$Biref$E:	$Biref$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Biref$O $Blibcii$A 
+$Bkref$E:	$Bkref$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bkref$O $Blibcii$A 
+$Bidents$E:	$Bidents$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bidents$O $Blibcii$A 
+$Bwords$E:	$Bwords$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bwords$O $Blibcii$A 
+$Bbasename$E:$Bbasename$O $Blibcii$A;	$(LD) $(LDFLAGS) -o $@ $Bbasename$O $Blibcii$A 
+$Bdirname$E:$Bbasename$O $Blibcii$A;	$(LD) $(LDFLAGS) -o $@ $Bbasename$O $Blibcii$A 
+$Bwf$E:	$Bwf$O $Bgetword$O $Blibcii$A;$(LD) $(LDFLAGS) -o $@ $Bwf$O $Bgetword$O $Blibcii$A 
+$Bxref$E:	$Bxref$O $Bgetword$O $Blibcii$A;$(LD) $(LDFLAGS) -o $@ $Bxref$O $Bgetword$O $Blibcii$A 
+$Bcref$E:	$Bcref$O $Binteger$O $Blibcii$A;$(LD) $(LDFLAGS) -o $@ $Bcref$O $Binteger$O $Blibcii$A 
+$Bsort$E:	$Bsort$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bsort$O $Blibcii$A msvcrt.lib
+$Bspin$E:	$Bspin$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bspin$O $Blibcii$A msvcrt.lib
+$Bsieve$E:	$Bsieve$O $Blibcii$A;		$(LD) $(LDFLAGS) -o $@ $Bsieve$O $Blibcii$A msvcrt.lib
+
+# RJ The clean and clobber targets will fail for various reasons. Do it manually
+clean::
+		-del /q $B*$O
+		-del /q $(EXAMPLES)
+
+clobber::	clean
+		-del /q $Blibcii$A
+
+libcii.dll:	$Blibcii.dll
+
+# This doesn't work due to DJGPP make's 256 char limit - use batch instead
+$Blibcii.dll:	$(OBJS) $(EXTRAS)
+		$(LD) -dll -Fo $@ $(OBJS) $(EXTRAS) src/libcii.def
+
+clean::
+		-del /q $B*.ilk *.pdb
+		-move $Blibcii.pdb $Blibcii.bak
+		-del /q $B*.pdb
+		-move $Blibcii.bak $Blibcii.pdb
+
+clobber::
+		-del /q $Blibcii.dll $Blibcii.exp
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+$Bap$O:	$I/assert.h $I/except.h $I/ap.h $I/fmt.h $I/xp.h $I/mem.h
+$Barena$O:	$I/assert.h $I/except.h $I/arena.h
+$Barith$O:	$I/arith.h
+$Barray$O:	$I/assert.h $I/except.h $I/array.h $I/arrayrep.h $I/mem.h
+$Bassert$O:	$I/assert.h $I/except.h
+$Batom$O:	$I/atom.h $I/assert.h $I/except.h $I/mem.h
+$Bbit$O:	$I/assert.h $I/except.h $I/bit.h $I/mem.h
+$Bchan$O:	$I/assert.h $I/except.h $I/mem.h $I/chan.h $I/sem.h
+$Bexcept$O:	$I/assert.h $I/except.h
+$Bfmt$O:	$I/assert.h $I/except.h $I/fmt.h $I/mem.h
+$Blist$O:	$I/assert.h $I/except.h $I/mem.h $I/list.h
+$Bmem$O:	$I/assert.h $I/except.h $I/mem.h
+$Bmemchk$O:	$I/assert.h $I/except.h $I/mem.h
+$Bmp$O:	$I/assert.h $I/except.h $I/fmt.h $I/mem.h $I/xp.h $I/mp.h
+$Bring$O:	$I/assert.h $I/except.h $I/ring.h $I/mem.h
+$Bseq$O:	$I/assert.h $I/except.h $I/seq.h $I/array.h $I/arrayrep.h $I/mem.h
+$Bset$O:	$I/mem.h $I/except.h $I/assert.h $I/arith.h $I/set.h
+$Bstack$O:	$I/assert.h $I/except.h $I/mem.h $I/stack.h
+$Bstr$O:	$I/assert.h $I/except.h $I/fmt.h $I/str.h $I/mem.h
+$Btable$O:	$I/mem.h $I/except.h $I/assert.h $I/table.h
+$Btext$O:	$I/assert.h $I/except.h $I/fmt.h $I/text.h $I/mem.h
+$Bthread$O:	$I/assert.h $I/except.h $I/mem.h $I/thread.h $I/sem.h
+$Bthreadnt$O:	$I/assert.h $I/except.h $I/mem.h $I/thread.h $I/sem.h
+$Bxp$O:	$I/assert.h $I/except.h $I/xp.h

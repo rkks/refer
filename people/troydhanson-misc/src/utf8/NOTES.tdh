@@ -1,0 +1,3 @@
+utf.h is a set of macros that implement UTF8 to UTF32 conversion
+in either direction and give other useful UTF8 utilities, e.g.
+getting the length of a multi-byte UTF8 character, etc.

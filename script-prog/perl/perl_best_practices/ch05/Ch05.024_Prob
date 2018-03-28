@@ -1,0 +1,46 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 5 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub trimmed_copy_of {
+    # Trim explicit arguments...
+    if (@_ > 0) {
+        my ($string) = @_;
+        $string =~ s{\A \s* (.*?) \s* \z}{$1}xms;
+        return $string;
+
+    }
+
+    # Otherwise, trim the default argument (i.e. $_)...
+    else {
+        s{\A \s* (.*?) \s* \z}{$1}xms;
+        return $_;
+    }
+}
+
+my $text = '     This is the text     ';
+      $_ = '     More text      ';
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    trimmed_copy_of($text)
+];
+
+warn Dumper [
+    trimmed_copy_of
+];
+
+warn Dumper [ $text, $_ ];

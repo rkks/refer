@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: Populate-UTF8.xml,v 1.5 2003/03/24 22:43:11 zull Exp $ -->
+
+<!DOCTYPE Populate [
+    <!ELEMENT Populate (Movies, Theaters, Accounts)>
+
+        <!ELEMENT Movies (Movie+)>
+            <!ELEMENT Movie (Title, Summary, Rating, PosterURL)>
+                <!ATTLIST Movie
+                        id ID #REQUIRED
+                >
+                <!ELEMENT Title (#PCDATA)>
+                <!ELEMENT Summary (#PCDATA)>
+                <!ELEMENT Rating (#PCDATA)>
+                <!ELEMENT PosterURL (#PCDATA)>
+
+        <!ELEMENT Theaters (Theater+)>
+            <!ELEMENT Theater (Name, Address, ZipCode, TheaterSchedule)>
+                <!ATTLIST Theater
+                        id ID #REQUIRED
+                >
+                <!ELEMENT Name (#PCDATA)>
+                <!ELEMENT Address (#PCDATA)>
+                <!ELEMENT ZipCode (#PCDATA)>
+                <!ELEMENT TheaterSchedule (ExpirationDate, MovieSchedule+)>
+                    <!ELEMENT ExpirationDate (#PCDATA)>
+                    <!ELEMENT MovieSchedule (ShowTimePattern+, SeatingPlan)>
+                        <!ATTLIST MovieSchedule
+                            movie IDREF #REQUIRED
+                        >
+                        <!ELEMENT ShowTimePattern (#PCDATA)>
+                        <!ELEMENT SeatingPlan (SeatingRow*)>
+                            <!ELEMENT SeatingRow (#PCDATA)>
+
+        <!ELEMENT Accounts (Account+)>
+            <!ELEMENT Account (Password, FirstName, LastName, EMail, ZipCode,
+                    CreditCardNumber,  CreditCardHolderName,  CreditCardExpirationDate,  CreditCardType)>
+                <!ATTLIST Account
+                    userName ID #REQUIRED
+                >
+                <!ELEMENT Password (#PCDATA)>
+                <!ELEMENT FirstName (#PCDATA)>
+                <!ELEMENT LastName (#PCDATA)>
+                <!ELEMENT EMail (#PCDATA)>
+                <!--<!ELEMENT ZipCode (#PCDATA)> - already defined -->
+                <!ELEMENT CreditCardNumber (#PCDATA)>
+                <!ELEMENT CreditCardHolderName (#PCDATA)>
+                <!ELEMENT CreditCardExpirationDate (#PCDATA)>
+                <!ELEMENT CreditCardType (#PCDATA)>
+]>
+
+<Populate>
+    <Movies>
+		<Movie id="MOVIE-1">
+			<Title>Big and Badder</Title>
+			<Summary>Sun servers, big and badder.</Summary>
+			<Rating>pg</Rating>
+			<PosterURL>/posters/BiggerBadder.png</PosterURL>
+		</Movie>
+		<Movie id="MOVIE-2">
+			<Title>The Dot</Title>
+			<Summary>The dot tolls for thee.</Summary>
+			<Rating>r</Rating>
+			<PosterURL>/posters/TheDot.png</PosterURL>
+		</Movie>
+		<Movie id="MOVIE-3">
+			<Title>Uber Coder</Title>
+			<Summary>One big, bad... uber coder.</Summary>
+			<Rating>pg</Rating>
+			<PosterURL>/posters/Ubercoder.png</PosterURL>
+		</Movie>
+		<Movie id="MOVIE-4">
+			<Title>Invasion of the Dots</Title>
+			<Summary>They're coming to get ya!</Summary>
+			<Rating>g</Rating>
+			<PosterURL>/posters/Invasion.png</PosterURL>
+	    </Movie>
+    </Movies>
+    <Theaters>
+		<Theater id="THEATER-1">
+			<Name>AMC Saratoga 14</Name>
+			<Address>95130</Address>
+			<ZipCode>95130</ZipCode>
+			<TheaterSchedule>
+				<ExpirationDate></ExpirationDate>
+				<MovieSchedule movie="MOVIE-1">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9009000000009009</SeatingRow>
+						<SeatingRow>0119110001119000</SeatingRow>
+						<SeatingRow>0009110011119110</SeatingRow>
+						<SeatingRow>0119111000119111</SeatingRow>
+						<SeatingRow>1119110110009100</SeatingRow>
+						<SeatingRow>1119001101119100</SeatingRow>
+						<SeatingRow>0119110111109111</SeatingRow>
+						<SeatingRow>1119011111109110</SeatingRow>
+						<SeatingRow>1119111111119111</SeatingRow>
+						<SeatingRow>9999111110119999</SeatingRow>
+						<SeatingRow>0099911001099910</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+				<MovieSchedule movie="MOVIE-2">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9009000000009009</SeatingRow>
+						<SeatingRow>0119110001119000</SeatingRow>
+						<SeatingRow>0009110011119110</SeatingRow>
+						<SeatingRow>0119111000119111</SeatingRow>
+						<SeatingRow>1119110110009100</SeatingRow>
+						<SeatingRow>1119001101119100</SeatingRow>
+						<SeatingRow>0119110111109111</SeatingRow>
+						<SeatingRow>1119011111109110</SeatingRow>
+						<SeatingRow>1119111111119111</SeatingRow>
+						<SeatingRow>9999111110119999</SeatingRow>
+						<SeatingRow>0099911001099910</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+				<MovieSchedule movie="MOVIE-3">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9009000000009009</SeatingRow>
+						<SeatingRow>0119110001119000</SeatingRow>
+						<SeatingRow>0009110011119110</SeatingRow>
+						<SeatingRow>0119111000119111</SeatingRow>
+						<SeatingRow>1119110110009100</SeatingRow>
+						<SeatingRow>1119001101119100</SeatingRow>
+						<SeatingRow>0119110111109111</SeatingRow>
+						<SeatingRow>1119011111109110</SeatingRow>
+						<SeatingRow>1119111111119111</SeatingRow>
+						<SeatingRow>9999111110119999</SeatingRow>
+						<SeatingRow>0099911001099910</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+				<MovieSchedule movie="MOVIE-4">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9009000000009009</SeatingRow>
+						<SeatingRow>0119110001119000</SeatingRow>
+						<SeatingRow>0009110011119110</SeatingRow>
+						<SeatingRow>0119111000119111</SeatingRow>
+						<SeatingRow>1119110110009100</SeatingRow>
+						<SeatingRow>1119001101119100</SeatingRow>
+						<SeatingRow>0119110111109111</SeatingRow>
+						<SeatingRow>1119011111109110</SeatingRow>
+						<SeatingRow>1119111111119111</SeatingRow>
+						<SeatingRow>9999111110119999</SeatingRow>
+						<SeatingRow>0099911001099910</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+			</TheaterSchedule>
+		</Theater>
+		<Theater id="THEATER-2">
+			<Name>AMC Mercado 20</Name>
+			<Address>95054</Address>
+			<ZipCode>95054</ZipCode>
+			<TheaterSchedule>
+				<ExpirationDate></ExpirationDate>
+				<MovieSchedule movie="MOVIE-1">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9900900000000000090099</SeatingRow>
+						<SeatingRow>9000900000000000090009</SeatingRow>
+						<SeatingRow>0000900001110001190000</SeatingRow>
+						<SeatingRow>9000900110101101190019</SeatingRow>
+						<SeatingRow>9011900001110011190009</SeatingRow>
+						<SeatingRow>0011911110011111190000</SeatingRow>
+						<SeatingRow>0000911001111011191100</SeatingRow>
+						<SeatingRow>0011911100000001191110</SeatingRow>
+						<SeatingRow>0111911011111000091000</SeatingRow>
+						<SeatingRow>9111911110000011191009</SeatingRow>
+						<SeatingRow>9011910011101111191119</SeatingRow>
+						<SeatingRow>0111911001100111191111</SeatingRow>
+						<SeatingRow>1111911111011011191111</SeatingRow>
+						<SeatingRow>9999911110110110199999</SeatingRow>
+						<SeatingRow>0009991110111011999100</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+				<MovieSchedule movie="MOVIE-2">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9900900000000000090099</SeatingRow>
+						<SeatingRow>9000900000000000090009</SeatingRow>
+						<SeatingRow>0000900001110001190000</SeatingRow>
+						<SeatingRow>9000900110101101190019</SeatingRow>
+						<SeatingRow>9011900001110011190009</SeatingRow>
+						<SeatingRow>0011911110011111190000</SeatingRow>
+						<SeatingRow>0000911001111011191100</SeatingRow>
+						<SeatingRow>0011911100000001191110</SeatingRow>
+						<SeatingRow>0111911011111000091000</SeatingRow>
+						<SeatingRow>9111911110000011191009</SeatingRow>
+						<SeatingRow>9011910011101111191119</SeatingRow>
+						<SeatingRow>0111911001100111191111</SeatingRow>
+						<SeatingRow>1111911111011011191111</SeatingRow>
+						<SeatingRow>9999911110110110199999</SeatingRow>
+						<SeatingRow>0009991110111011999100</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+				<MovieSchedule movie="MOVIE-3">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9900900000000000090099</SeatingRow>
+						<SeatingRow>9000900000000000090009</SeatingRow>
+						<SeatingRow>0000900001110001190000</SeatingRow>
+						<SeatingRow>9000900110101101190019</SeatingRow>
+						<SeatingRow>9011900001110011190009</SeatingRow>
+						<SeatingRow>0011911110011111190000</SeatingRow>
+						<SeatingRow>0000911001111011191100</SeatingRow>
+						<SeatingRow>0011911100000001191110</SeatingRow>
+						<SeatingRow>0111911011111000091000</SeatingRow>
+						<SeatingRow>9111911110000011191009</SeatingRow>
+						<SeatingRow>9011910011101111191119</SeatingRow>
+						<SeatingRow>0111911001100111191111</SeatingRow>
+						<SeatingRow>1111911111011011191111</SeatingRow>
+						<SeatingRow>9999911110110110199999</SeatingRow>
+						<SeatingRow>0009991110111011999100</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+				<MovieSchedule movie="MOVIE-4">
+					<ShowTimePattern>1:13:30</ShowTimePattern>
+					<ShowTimePattern>1:15:20</ShowTimePattern>
+					<ShowTimePattern>2:13:30</ShowTimePattern>
+					<ShowTimePattern>2:15:20</ShowTimePattern>
+					<ShowTimePattern>1:20:00</ShowTimePattern>
+					<ShowTimePattern>1:22:00</ShowTimePattern>
+					<ShowTimePattern>3:13:30</ShowTimePattern>
+					<ShowTimePattern>*:17:45</ShowTimePattern>
+					<ShowTimePattern>*:19:30</ShowTimePattern>
+					<ShowTimePattern>*:22:00</ShowTimePattern>
+					<SeatingPlan>
+						<SeatingRow>9900900000000000090099</SeatingRow>
+						<SeatingRow>9000900000000000090009</SeatingRow>
+						<SeatingRow>0000900001110001190000</SeatingRow>
+						<SeatingRow>9000900110101101190019</SeatingRow>
+						<SeatingRow>9011900001110011190009</SeatingRow>
+						<SeatingRow>0011911110011111190000</SeatingRow>
+						<SeatingRow>0000911001111011191100</SeatingRow>
+						<SeatingRow>0011911100000001191110</SeatingRow>
+						<SeatingRow>0111911011111000091000</SeatingRow>
+						<SeatingRow>9111911110000011191009</SeatingRow>
+						<SeatingRow>9011910011101111191119</SeatingRow>
+						<SeatingRow>0111911001100111191111</SeatingRow>
+						<SeatingRow>1111911111011011191111</SeatingRow>
+						<SeatingRow>9999911110110110199999</SeatingRow>
+						<SeatingRow>0009991110111011999100</SeatingRow>
+					</SeatingPlan>
+				</MovieSchedule>
+			</TheaterSchedule>
+		</Theater>
+    </Theaters>
+    <Accounts>
+		<Account userName="bond">
+			<Password>007007</Password>
+			<FirstName>James</FirstName>
+			<LastName>Bond</LastName>
+			<EMail>James.Bond@bigben.gov</EMail>
+			<ZipCode>95130</ZipCode>
+			<CreditCardNumber>1234567890123456</CreditCardNumber>
+			<CreditCardHolderName>James Bond</CreditCardHolderName>
+			<CreditCardExpirationDate>07/07</CreditCardExpirationDate>
+			<CreditCardType>VISA</CreditCardType>
+		</Account>
+		<Account userName="power">
+			<Password>danger</Password>
+			<FirstName>Austin</FirstName>
+			<LastName>Power</LastName>
+			<EMail>Austin.Power@bigben.gov</EMail>
+			<ZipCode>95054</ZipCode>
+			<CreditCardNumber>1234567890123456</CreditCardNumber>
+			<CreditCardHolderName>Austin Power</CreditCardHolderName>
+			<CreditCardExpirationDate>06/06</CreditCardExpirationDate>
+			<CreditCardType>VISA</CreditCardType>
+		</Account>
+    </Accounts>
+</Populate>

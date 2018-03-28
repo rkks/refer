@@ -1,0 +1,16 @@
+# overwrite:  copy standard input to output after EOF
+# version 1.  BUG here
+
+PATH=/bin:/usr/bin
+
+case $# in
+1)	;;
+*)	echo 'Usage: overwrite file' 1>&2; exit 2
+esac
+
+new=/tmp/overwr.$$
+trap 'rm -f $new; exit 1' 1 2 15
+
+cat >$new		# collect the input
+cp $new $1		# overwrite the input file
+rm -f $new

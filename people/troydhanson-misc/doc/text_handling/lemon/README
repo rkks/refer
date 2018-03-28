@@ -1,0 +1,28 @@
+An example of using the Lemon parser generator. 
+
+Lemon itself is a public domain parser generator by D. Richard Hipp.
+
+LEMON FILES
+===============================================================================
+lemon.c      The lemon source code
+lempar.c     The lemon parser standard template
+lemon.txt    The lemon documentation 
+
+OUR FILES
+===============================================================================
+cfg.y        The grammar we want to parse (see test.txt for a sample file)
+readcfg.c    The main program, which directs the parsing of the config file 
+readcfg.h    Headers for things common to main program and generated parser 
+tok.c        A function to split the configuration file into parseable tokens
+slurp.c      A utility to read a whole file into a malloc'd buffer
+test.txt     Sample file that we want to parse using the grammar in cfg.y
+
+TRY IT
+===============================================================================
+make
+./readcfg test.txt
+
+MORE INFO
+===============================================================================
+See http://troydhanson.github.io/misc/lemon_notes.html
+

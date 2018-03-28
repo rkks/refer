@@ -1,0 +1,33 @@
+Language: Vi (yes, the editor)
+
+
+Author: njharve@waterloo.ca
+Note: macro works for VIM, elVIs, nvi, _ not _ standard vi
+
+map g o^[ko^V^V^V^V^["adli^V^V^V^[^["bdliimap g oz"bpakoz"a4p"bpa"adliz"a3p"bpJ"bPls"bdliz$"bpa08l"dylo:s///gz"bpah"aP"bp"cddkyyP@c0571"dp0"cd$@cz"bpajdd^[08l"dylo:s/z//g^[h"aP"bp"cddkyyP@c057l"dp0"cd$@c^[jdd
+
+
+Author: Rodney (rodney@worf.netins.net)
+Note: the next few don't work exactly the same way as regular quines.  Just
+type them into vi...no macros involved
+
+ii^V^V^V^[BDuplxbbpp^[BDuplxbbpp
+
+
+
+
+Author: Alex Postnikov (apost@math.mit.edu)
+
+:s//:s\/\\"a4xyyP"aP.xuhP3hxuP
+"a4xyyP"aP.xuhP3hxuP
+
+
+Author: Eli the bearded 
+Note: actually uses ex...won't run under VIM
+
+a
+a
+1t1|1t$|$s/././|4t$
+2y a|@a|%p
+.
+2y a|@a|%p

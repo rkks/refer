@@ -1,0 +1,40 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub fix {
+    my (@args) = @_ ? @_ : $_;    # Default to fixing $_ if no args provided
+ 
+    # Fix each argument by grammatically transforming it and then printing it...
+    for my $arg (@args) {
+        $arg =~ s/\A the \b/some/xms;
+        $arg =~ s/e \z/es/xms;
+        print $arg, "\n";
+    }
+ 
+    return;
+}
+ 
+# and later...
+ 
+&fix('the race');    # works as expected, prints: 'some races'
+ 
+for ('the gaze', 'the adhesive') {
+    &fix;            # doesn't work as expected: looks like it should fix($_),
+                     # but actually means fix(@_), using this scope's @_!
+                     # See the 'perlsub' manpage for details
+}
+

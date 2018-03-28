@@ -1,0 +1,17 @@
+#! /usr/bin/perl -wnl
+
+$unique{$_}++;               # increment counter for each input
+
+END {
+  @inputs=sort keys %unique;          # determine unique inputs
+  if (defined $ENV{DEBUG_unique_inputs}) {
+    foreach $input (@inputs) {
+      $unique{$input} > 1  and
+        print "$0: '$input' appeared $unique{$input} times";
+    }
+    print "";    # for spacing
+  }
+  # Now print the sorted, unique, inputs
+  $,="\n";                  # re-supply newlines stripped by -l
+  print @inputs;
+}

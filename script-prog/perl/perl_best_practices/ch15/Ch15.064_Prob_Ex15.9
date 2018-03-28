@@ -1,0 +1,58 @@
+##############################################################################
+## Example 15.9 (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-9. A bit-string class with the smallest possible interface
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+
+
+package Bit::String;
+use Class::Std::Utils;
+use Readonly;
+{
+    Readonly my $BIT_PACKING => 'b*';    # i.e. vec() compatible binary
+    Readonly my $BIT_DENSITY => 1;       # i.e. 1 bit/bit
+ 
+    # Attributes...
+    my %bitset_of;
+ 
+    # Internally, bits are packed eight-to-the-character...
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;
+ 
+        $bitset_of{ident $new_object} 
+            = pack $BIT_PACKING, map {$_ ? 1 : 0} @{$arg_ref->{bits}};
+ 
+        return $new_object;
+    }
+ 
+    # Retrieve a specified bit...
+    sub get_bit {
+        my ($self, $bitnum) = @_;
+ 
+        return vec($bitset_of{ident $self}, $bitnum, $BIT_DENSITY);
+    }
+ 
+    # Update a specified bit...
+    sub set_bit {
+        my ($self, $bitnum, $newbit) = @_;
+ 
+        vec($bitset_of{ident $self}, $bitnum, $BIT_DENSITY) = $newbit ? 1 : 0;
+ 
+        return 1;
+    }
+}
+

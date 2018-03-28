@@ -1,0 +1,483 @@
+# depslib dependency file v1.0
+1142595820 /mnt/diablotin_home/nico/lang/c++/zia/src/Zia.cpp
+	"Core.h"
+	"LeakWatcher.h"
+
+1142808022 /mnt/diablotin_home/nico/lang/c++/zia/src/CmdParser.cpp
+	<iostream>
+	<string>
+	"CmdParser.h"
+	"LeakWatcher.h"
+
+1142808023 /mnt/diablotin_home/nico/lang/c++/zia/src/Core.cpp
+	"Core.h"
+	"Exceptions.h"
+	"XmlParser.h"
+	"ModuleConf.h"
+	"Actions.h"
+	<iostream>
+	"utils/Console.h"
+	"utils/debug.h"
+	"LeakWatcher.h"
+
+1142806749 /mnt/diablotin_home/nico/lang/c++/zia/src/CoreMsg.cpp
+	"CoreMsg.h"
+	"LeakWatcher.h"
+
+1142888660 /mnt/diablotin_home/nico/lang/c++/zia/src/Dll.cpp
+	<iostream>
+	"Dll.h"
+	"Exceptions.h"
+	"LeakWatcher.h"
+
+1134412890 /mnt/diablotin_home/nico/lang/c++/zia/src/Module.cpp
+	"Module.h"
+	"LeakWatcher.h"
+
+1134412891 /mnt/diablotin_home/nico/lang/c++/zia/src/ModuleConf.cpp
+	<iostream>
+	"ModuleConf.h"
+	"LeakWatcher.h"
+
+1142849303 /mnt/diablotin_home/nico/lang/c++/zia/src/Mutex.cpp
+	"Mutex.h"
+	<iostream>
+	"utils/Console.h"
+	"LeakWatcher.h"
+
+1142850943 /mnt/diablotin_home/nico/lang/c++/zia/src/Semaphore.cpp
+	"Semaphore.h"
+	"Exceptions.h"
+	<iostream>
+	"LeakWatcher.h"
+
+1142850944 /mnt/diablotin_home/nico/lang/c++/zia/src/Thread.cpp
+	"Thread.h"
+	"Exceptions.h"
+	"LeakWatcher.h"
+
+1142878017 /mnt/diablotin_home/nico/lang/c++/zia/src/Ticket.cpp
+	"Ticket.h"
+	"Actions.h"
+	"LeakWatcher.h"
+
+1142877259 /mnt/diablotin_home/nico/lang/c++/zia/src/TicketsHandler.cpp
+	"TicketsHandler.h"
+	<iostream>
+	"utils/Console.h"
+	"LeakWatcher.h"
+
+1134412889 /mnt/diablotin_home/nico/lang/c++/zia/src/UrlEncoding.cpp
+	<string>
+	"UrlEncoding.h"
+	"LeakWatcher.h"
+
+1142877260 /mnt/diablotin_home/nico/lang/c++/zia/src/XmlContainer.cpp
+	<map>
+	<iostream>
+	"XmlContainer.h"
+	"LeakWatcher.h"
+
+1142595820 /mnt/diablotin_home/nico/lang/c++/zia/src/XmlParser.cpp
+	"Exceptions.h"
+	"XmlParser.h"
+	<iostream>
+	"LeakWatcher.h"
+
+1142595820 /mnt/diablotin_home/nico/lang/c++/zia/src/XmlValidator.cpp
+	"XmlValidator.h"
+
+1142806640 /mnt/diablotin_home/nico/lang/c++/zia/src/CharT.cpp
+	<string>
+	"CharT.h"
+	"LeakWatcher.h"
+
+1142877260 /mnt/diablotin_home/nico/lang/c++/zia/src_common/XmlContainer.cpp
+	<map>
+	<iostream>
+	"XmlContainer.h"
+	"LeakWatcher.h"
+
+1142876685 /mnt/diablotin_home/nico/lang/c++/zia/src_common/Ticket.cpp
+	"Ticket.h"
+	"DBuffer.h"
+	"Actions.h"
+	"LeakWatcher.h"
+
+1142876691 /mnt/diablotin_home/nico/lang/c++/zia/src_common/TicketsHandler.cpp
+	"TicketsHandler.h"
+	<iostream>
+	"utils/Console.h"
+	"LeakWatcher.h"
+
+1142877263 /mnt/diablotin_home/nico/lang/c++/zia/src_common/includes/XmlContainer.h
+	<map>
+	<string>
+	<vector>
+	"utils/cmpfunc.h"
+
+1142595819 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Core.h
+	<list>
+	<map>
+	<stack>
+	"Ticket.h"
+	"Module.h"
+	"CmdParser.h"
+	"IModuleData.h"
+	"XmlContainer.h"
+
+1142878019 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Ticket.h
+	<string>
+	<map>
+	<iostream>
+	"IModuleData.h"
+	"ICData.h"
+
+1133388664 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IModuleData.h
+
+1133388664 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ICData.h
+	<string>
+
+1142808032 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Module.h
+	"Exceptions.h"
+	"Dll.h"
+	"Thread.h"
+	"Mutex.h"
+	"Semaphore.h"
+	"Ticket.h"
+	"TicketsHandler.h"
+	"XmlContainer.h"
+	"ModuleConf.h"
+	<iostream>
+	<stack>
+
+1134412885 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Exceptions.h
+	<string>
+
+1142850944 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Dll.h
+	<windows.h>
+	<dlfcn.h>
+	"IDll.h"
+	"ModuleConf.h"
+
+1134412886 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IDll.h
+
+1133388624 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ModuleConf.h
+	<string>
+	<vector>
+	"XmlContainer.h"
+
+1142877263 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/XmlContainer.h
+	<map>
+	<string>
+	<vector>
+	"utils/cmpfunc.h"
+
+1133388661 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/utils/cmpfunc.h
+	"ZiaString.h"
+
+1142806670 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ZiaString.h
+	<string.h>
+
+1142850946 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Thread.h
+	<windows.h>
+	<pthread.h>
+	<signal.h>
+	"IThread.h"
+
+1131980577 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IThread.h
+	"IDll.h"
+
+1142849118 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Mutex.h
+	<windows.h>
+	<pthread.h>
+	"IMutex.h"
+
+1142806623 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IMutex.h
+
+1142850945 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Semaphore.h
+	<windows.h>
+	<semaphore.h>
+	"ISemaphore.h"
+
+1133388624 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ISemaphore.h
+
+1142877262 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/TicketsHandler.h
+	<stack>
+	<string>
+	"Ticket.h"
+	"Mutex.h"
+	"Module.h"
+	"Semaphore.h"
+
+1131980573 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/CmdParser.h
+	<map>
+	<vector>
+	<string>
+	"utils/cmpfunc.h"
+
+1142806525 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/LeakWatcher.h
+	<crtdbg.h>
+
+1142595818 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/XmlParser.h
+	<list>
+	<string>
+	<vector>
+	<tinyxml.h>
+	"XmlContainer.h"
+
+1131978202 /mnt/diablotin_home/nico/lang/c++/zia/lib/tinyxml/tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<windows.h>
+	<string>
+	<iostream>
+	"tinystr.h"
+
+1131978201 /mnt/diablotin_home/nico/lang/c++/zia/lib/tinyxml/tinystr.h
+	<assert.h>
+	<string.h>
+
+1142595817 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Actions.h
+
+1142806683 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/utils/Console.h
+	<iostream>
+	<iomanip>
+	<windows.h>
+
+1142806802 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/utils/debug.h
+	<crtdbg.h>
+
+1142806740 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/CoreMsg.h
+	"Ticket.h"
+
+1142595818 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/XmlValidator.h
+	"XmlContainer.h"
+
+1145206066 /usr/home/nico/zia/src/Zia.cpp
+	"Core.h"
+	"Exceptions.h"
+
+1145206675 /usr/home/nico/zia/src/includes/Core.h
+	<list>
+	<map>
+	<stack>
+	"Ticket.h"
+	"Module.h"
+	"CmdParser.h"
+	"IModuleData.h"
+	"XmlContainer.h"
+
+1145095290 /usr/home/nico/zia/src/includes/Ticket.h
+	<string>
+	<map>
+	<iostream>
+	"IModuleData.h"
+	"ICData.h"
+
+1144691291 /usr/home/nico/zia/src/includes/IModuleData.h
+
+1144691291 /usr/home/nico/zia/src/includes/ICData.h
+	<string>
+
+1144691291 /usr/home/nico/zia/src/includes/Module.h
+	"Exceptions.h"
+	"Dll.h"
+	"Thread.h"
+	"Mutex.h"
+	"Semaphore.h"
+	"Ticket.h"
+	"TicketsHandler.h"
+	"XmlContainer.h"
+	"ModuleConf.h"
+	<iostream>
+	<stack>
+
+1145206611 /usr/home/nico/zia/src/includes/Exceptions.h
+	<string>
+	<sstream>
+
+1144707203 /usr/home/nico/zia/src/includes/Dll.h
+	<windows.h>
+	<dlfcn.h>
+	"IDll.h"
+	"ModuleConf.h"
+
+1144707203 /usr/home/nico/zia/src/includes/IDll.h
+
+1144691291 /usr/home/nico/zia/src/includes/ModuleConf.h
+	<string>
+	<vector>
+	"XmlContainer.h"
+
+1144691291 /usr/home/nico/zia/src/includes/XmlContainer.h
+	<map>
+	<string>
+	<vector>
+	"utils/cmpfunc.h"
+
+1144691289 /usr/home/nico/zia/src/includes/utils/cmpfunc.h
+	"ZiaString.h"
+
+1144691291 /usr/home/nico/zia/src/includes/ZiaString.h
+	<string.h>
+
+1144707203 /usr/home/nico/zia/src/includes/Thread.h
+	<windows.h>
+	<pthread.h>
+	<signal.h>
+	"IThread.h"
+
+1144707203 /usr/home/nico/zia/src/includes/IThread.h
+	"IDll.h"
+
+1144691291 /usr/home/nico/zia/src/includes/Mutex.h
+	<windows.h>
+	<pthread.h>
+	"IMutex.h"
+
+1144691291 /usr/home/nico/zia/src/includes/IMutex.h
+
+1144707203 /usr/home/nico/zia/src/includes/Semaphore.h
+	<windows.h>
+	<semaphore.h>
+	"ISemaphore.h"
+
+1144707203 /usr/home/nico/zia/src/includes/ISemaphore.h
+
+1144691291 /usr/home/nico/zia/src/includes/TicketsHandler.h
+	<stack>
+	<string>
+	"Ticket.h"
+	"Mutex.h"
+	"Module.h"
+	"Semaphore.h"
+
+1144691291 /usr/home/nico/zia/src/includes/CmdParser.h
+	<map>
+	<vector>
+	<string>
+	"utils/cmpfunc.h"
+
+1144691291 /usr/home/nico/zia/src/includes/LeakWatcher.h
+	<crtdbg.h>
+
+1145095290 /usr/home/nico/zia/src/Core.cpp
+	<iostream>
+	"Core.h"
+	"Exceptions.h"
+	"XmlParser.h"
+	"ModuleConf.h"
+	"Actions.h"
+	"utils/debug.h"
+
+1144691291 /usr/home/nico/zia/src/includes/XmlParser.h
+	<list>
+	<string>
+	<vector>
+	<tinyxml.h>
+	"XmlContainer.h"
+
+1144691334 /usr/home/nico/zia/lib/tinyxml/tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<windows.h>
+	<string>
+	<iostream>
+	"tinystr.h"
+
+1144691333 /usr/home/nico/zia/lib/tinyxml/tinystr.h
+	<assert.h>
+	<string.h>
+
+1144691291 /usr/home/nico/zia/src/includes/Actions.h
+
+1144691289 /usr/home/nico/zia/src/includes/utils/Console.h
+	<iostream>
+	<iomanip>
+	<windows.h>
+
+1144691289 /usr/home/nico/zia/src/includes/utils/debug.h
+	<crtdbg.h>
+
+1144691293 /usr/home/nico/zia/src/CoreMsg.cpp
+	"CoreMsg.h"
+	"LeakWatcher.h"
+
+1144691291 /usr/home/nico/zia/src/includes/CoreMsg.h
+	"Ticket.h"
+
+1145095290 /usr/home/nico/zia/src/Dll.cpp
+	<iostream>
+	<sstream>
+	"Dll.h"
+	"Exceptions.h"
+	<errno.h>
+	<string.h>
+
+1144707203 /usr/home/nico/zia/src/Module.cpp
+	"Module.h"
+
+1145095290 /usr/home/nico/zia/src/ModuleConf.cpp
+	<iostream>
+	"ModuleConf.h"
+
+1144707203 /usr/home/nico/zia/src/Semaphore.cpp
+	<iostream>
+	<sstream>
+	"Semaphore.h"
+	"Exceptions.h"
+	<errno.h>
+	<string.h>
+
+1144707203 /usr/home/nico/zia/src/Thread.cpp
+	<iostream>
+	<sstream>
+	"Thread.h"
+	"Exceptions.h"
+	<errno.h>
+	<string.h>
+
+1144707115 /usr/home/nico/zia/src/Ticket.cpp
+	"Ticket.h"
+	"Actions.h"
+
+1144706068 /usr/home/nico/zia/src/TicketsHandler.cpp
+	<iostream>
+	"TicketsHandler.h"
+
+1144707119 /usr/home/nico/zia/src/XmlContainer.cpp
+	<map>
+	<iostream>
+	"XmlContainer.h"
+
+1144707065 /usr/home/nico/zia/src/XmlParser.cpp
+	<iostream>
+	"Exceptions.h"
+	"XmlParser.h"
+
+1144691293 /usr/home/nico/zia/src/XmlValidator.cpp
+	"XmlValidator.h"
+
+1144691291 /usr/home/nico/zia/src/includes/XmlValidator.h
+	"XmlContainer.h"
+
+1145095290 /usr/home/nico/zia/src/CmdParser.cpp
+	<iostream>
+	<string>
+	"CmdParser.h"
+
+1144706861 /usr/home/nico/zia/src/Mutex.cpp
+	<iostream>
+	<sstream>
+	"Mutex.h"
+	"Exceptions.h"
+	<errno.h>
+	<string.h>
+

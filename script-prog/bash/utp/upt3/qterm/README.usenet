@@ -1,0 +1,32 @@
+Subject:  v24i082:  Qterm5.0 -- Query terminal for its type, Part01/02
+Newsgroups: comp.sources.unix
+Approved: rsalz@uunet.UU.NET
+X-Checksum-Snefru: 23817b14 f66cb394 106806de f16726fa
+
+Submitted-by: "Michael A. Cooper" <mcooper@usc.edu>
+Posting-number: Volume 24, Issue 82
+Archive-name: qterm5.0/part01
+
+Qterm is a program that queries terminals to find out what kind of
+terminal is responding.  It is useful to automagically define your
+terminal type.  It prints the name of the terminal (compatible,
+hopefully, with a termcap/terminfo name) such as "vt100" to standard
+output.  See the manual for details.
+
+The major changes in these version of qterm is a re-write of command
+line parsing and the options qterm accepts.  I've written a new,
+"generic" command line parsing package called "options" which is
+included as part of this distribution of qterm.  (See the options.3
+man page for details on programming with the options package.)  Qterm
+now has a totally new set of (hopefully) clear and concise options.
+The old command line options are still accepted if qterm is compiled
+with OPT_COMPAT defined (see Makefile).  WARNING: Some of the old
+options conflict with the new options.  i.e.  If OPT_COMPAT is
+defined, "qterm -file foo" does not do what you think it will.  This
+is parsed as "qterm -f ile foo".
+
+Qterm was written under 4.[23] BSD and will probably run without
+modification on other Berkeley Unix systems.  This version has also
+been tested under UTS 2.1 which is a System V.3 derivative.  It was
+compiled with "USG5" defined and setting $(LIBS) to "-lPW".  (See
+Makefile for more info).  It should work on other System V platforms.

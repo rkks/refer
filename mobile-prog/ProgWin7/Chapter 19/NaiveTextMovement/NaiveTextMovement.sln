@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaiveTextMovement", "NaiveTextMovement\NaiveTextMovement\NaiveTextMovement.csproj", "{A1022729-3069-49ED-8A32-086151A5FD7D}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "NaiveTextMovementContent", "NaiveTextMovement\NaiveTextMovementContent\NaiveTextMovementContent.contentproj", "{A87074E3-7DFF-4C4A-BD43-17C0F32B8E11}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{A1022729-3069-49ED-8A32-086151A5FD7D}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{A87074E3-7DFF-4C4A-BD43-17C0F32B8E11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A87074E3-7DFF-4C4A-BD43-17C0F32B8E11}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{A87074E3-7DFF-4C4A-BD43-17C0F32B8E11}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A87074E3-7DFF-4C4A-BD43-17C0F32B8E11}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

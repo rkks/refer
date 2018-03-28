@@ -1,0 +1,67 @@
+<project name="SmartPhrases" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="SmartPhrases" />
+    <property name="tmp" value="anttmp" />
+    <property name="tmpclasses" value="${tmp}/tmpclasses" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${tmp}" />
+    <delete file="bin/${projname}.jar" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${tmp}" />
+    <mkdir dir="${tmpclasses}" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${tmpclasses}" >
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <jar jarfile="bin/${projname}.jar"
+         basedir="${tmpclasses}"
+    />
+  </target>
+
+  <target name="deploy">
+    <java classname="org.apache.axis.client.AdminClient"
+          fork="true"
+          dir="bin/"
+    >
+      <arg value="deploy.wsdd"/>
+      <classpath>
+        <fileset dir="axislib/">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </java>
+    <echo>
+      Now, make sure bin/${projname}.jar is copied to axis/WEB-INF/lib dir
+    </echo>
+  </target>
+
+  <target name="undeploy">
+    <java classname="org.apache.axis.client.AdminClient"
+          fork="true"
+          dir="bin/"
+    >
+      <arg value="undeploy.wsdd"/>
+      <classpath>
+        <fileset dir="axislib/">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </java>
+    <echo>
+      Now, make sure bin/${projname}.jar is removed from axis/WEB-INF/lib dir
+    </echo>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

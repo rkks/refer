@@ -1,0 +1,6 @@
+:
+# errout - redirect stdout to stderr
+#
+# Author:      Heiner Steven <heiner.steven@odn.de>
+# Category:    Debugging
+exec >&2 cat "$@"

@@ -1,0 +1,75 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  getopt-long.c
+ *  
+ *  Parsing long-option command lines with getopt.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 11/08/05.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* for getopt_long() */</span>
+<span class="cpdr">#include &lt;getopt.h&gt;
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    <span class="ctyp">char</span> ch;                   <span class="ccom">/* service variables */</span>
+    <span class="ctyp">int</span> long_opt_index = <span class="cval">0</span>;
+    <span class="ctyp">int</span> longval;
+    <span class="ctyp">char</span> *my_argument;
+    <span class="ctyp">struct</span> option long_options[] = {        <span class="ccom">/* long options array. Items are all caSe SensiTivE! */</span>
+        { <span class="cstr">"add"</span>, <span class="cval">0</span>, <span class="ctyp">NULL</span>, <span class="cval">'a'</span>   },      <span class="ccom">/* --add or -a  */</span>
+        { <span class="cstr">"back"</span>, <span class="cval">0</span>, <span class="ctyp">NULL</span>, <span class="cval">'b'</span>  },      <span class="ccom">/* --back or -b */</span>
+        { <span class="cstr">"check"</span>, <span class="cval">0</span>, &amp;longval, <span class="cval">'c'</span> },  <span class="ccom">/* return 'c', or return 0 and set longval to 'c' if "check" is parsed */</span>
+        { <span class="cstr">"extra"</span>, <span class="cval">1</span>, &amp;longval, <span class="cval">'x'</span> },
+        { <span class="cval">0</span>,    <span class="cval">0</span>,    <span class="cval">0</span>,    <span class="cval">0</span>   }       <span class="ccom">/* terminating -0 item */</span>
+    };
+    
+    
+    <span class="ctyp">while</span><span class="cfun"> </span>((ch = <span class="cfun">getopt_long</span>(argc, argv, <span class="cstr">"abchx:"</span>, long_options, &amp;long_opt_index)) != -<span class="cval">1</span>) {
+       <span class="ctyp">switch</span><span class="cfun"> </span>(ch) {
+           <span class="ctyp">case</span> <span class="cval">'a'</span>:   <span class="ccom">/* long_opt_index does not make sense for these */</span>
+               <span class="ccom">/* 'a' and '--add' are confused (aliased) */</span>
+               <span class="cfun">printf</span>(<span class="cstr">"Option a, or --add.\n"</span>);
+               <span class="ctyp">break</span>;
+           <span class="ctyp">case</span> <span class="cval">'b'</span>:
+               <span class="ccom">/* 'b' and '--back' are confused (aliased) */</span>
+               <span class="cfun">printf</span>(<span class="cstr">"Option b, or --back.\n"</span>);
+               <span class="ctyp">break</span>;
+           <span class="ctyp">case</span> <span class="cval">'c'</span>:
+               <span class="ccom">/* 'c' and '--check' are distinguished, but handled the same way */</span>
+               <span class="cfun">printf</span>(<span class="cstr">"Option c, not --check.\n"</span>);
+               <span class="ctyp">break</span>;
+           <span class="ctyp">case</span> <span class="cval">'x'</span>:
+               my_argument = optarg;
+               <span class="cfun">printf</span>(<span class="cstr">"Option x, not --extra. Argument %s.\n"</span>, my_argument);
+               <span class="ctyp">break</span>;
+           <span class="ctyp">case</span> <span class="cval">0</span>:     <span class="ccom">/* this is returned for long options with option[i].flag set (not NULL). */</span>
+                       <span class="ccom">/* the flag itself will point out the option recognized, and long_opt_index is now relevant */</span>
+               <span class="ctyp">switch</span><span class="cfun"> </span>(longval) {
+                   <span class="ctyp">case</span> <span class="cval">'c'</span>:
+                       <span class="ccom">/* '--check' is managed here */</span>
+                       <span class="cfun">printf</span>(<span class="cstr">"Option --check, not -c (Array index: %d).\n"</span>, long_opt_index);
+                       <span class="ctyp">break</span>;
+                   <span class="ctyp">case</span> <span class="cval">'x'</span>:
+                       <span class="ccom">/* '--extra' is managed here */</span>
+                       my_argument = optarg;
+                       <span class="cfun">printf</span>(<span class="cstr">"Option --extra, not -x (Array index: %d). Argument: %s.\n"</span>, long_opt_index, my_argument);
+                       <span class="ctyp">break</span>;
+                   <span class="ccom">/* there's no default here */</span>
+               }
+               <span class="ctyp">break</span>;
+           <span class="ctyp">case</span> <span class="cval">'h'</span>:   <span class="ccom">/* mind that h is not described in the long option list */</span>
+               <span class="cfun">printf</span>(<span class="cstr">"Usage: getopt-long [-a or --add] [-b or --back] [-c or --check] [-x or --extra]\n"</span>);
+               <span class="ctyp">break</span>;
+           <span class="ctyp">default</span>:
+               <span class="cfun">printf</span>(<span class="cstr">"You, lamah!\n"</span>);
+       }
+    }
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

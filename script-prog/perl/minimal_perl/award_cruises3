@@ -1,0 +1,15 @@
+#! /usr/bin/perl -s -wl
+
+$alaska     or  warn "Designate recipient for Alaska cruise\n";
+$panama     or  warn "Designate recipient for Panama cruise\n";
+$perlistan  or  warn "Designate recipient for Perlistan cruise\n";
+
+# The switch variables would be referenced again in a real program, to
+# register the named individuals for the cruises.
+# The following lines are placeholders for those additional
+# references, which serve here to suppress "variable used only once--
+# possible typo" warnings.
+
+$perlistan and 1;
+$panama and 1;
+$alaska and 1;

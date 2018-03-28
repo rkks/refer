@@ -1,0 +1,30 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 12 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $ITEM => qr/\d/xms;
+my $str = '(1,2,3,4,5,6,7,8,9,';
+
+croak 'oops!' if 
+
+$str =~ m{ [(]               # A literal opening paren
+           $ITEM             # At least one item
+           (?:               # Followed by...
+               ,             #     a comma
+               $ITEM         #     and another item
+           )*                #  as many times as possible (but none is okay too)
+           [)]               # A literal closing paren
+         }xms;
+

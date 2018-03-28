@@ -1,0 +1,10 @@
+server {
+  name host1.abc.com
+  port 5050
+}
+
+server {
+  name host2.abc.com
+  port 8080
+}
+

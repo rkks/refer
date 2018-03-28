@@ -1,0 +1,45 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $curr_state = 'Bitstring';
+Readonly my $VERBOSITY_BIT => 27;
+
+$curr_state->set_bit($_, !$curr_state->get_bit($_)) for $VERBOSITY_BIT;
+ 
+print 'The current state is: ', 
+      do {
+          my @bits;
+          while (defined(my $bit = $curr_state->get_bit(scalar @bits))) {
+              push @bits, $bit;
+          }
+          @bits;
+       }, 
+       "\n";
+
+
+package Bitstring;
+
+sub get_bit {
+    my ($self, $n) = @_;
+    return if $n > 12;
+    return int rand 2;
+}
+
+sub set_bit {
+    my ($self, $n, $new_val) = @_;
+    print "Setting bit $n to $new_val\n";
+    return;
+}

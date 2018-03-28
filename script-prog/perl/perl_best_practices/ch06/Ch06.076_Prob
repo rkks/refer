@@ -1,0 +1,41 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @words;
+my $num;
+
+for my $word (@words) {
+        if ($word =~ m/ zero | zéro | shunya /ixms) {
+            $num .= '0';
+        }
+        elsif ($word =~ m/ one | un | une | ek /ixms) {
+            $num .= '1';
+        }
+        elsif ($word =~ m/ two | deux | do /ixms) {
+            $num .= '2';
+        }
+        elsif ($word =~ m/ three | trois | teen /ixms) {
+            $num .= '3';
+        }
+        # etc.
+        elsif ($word =~ m/ nine | neuf | nau /ixms) {
+            $num .= '9';
+        }
+        else {
+            # Ignore unrecognized words
+        }
+    }
+

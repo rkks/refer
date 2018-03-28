@@ -1,0 +1,49 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 12 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %option = (
+    eat   => 'fruit',
+    drink => 'water',
+    head  => 'clear',
+);
+
+CONFIG_LINE:
+while (my $config = <DATA>) {
+    # Ignore lines that are unrecognisable...
+    next CONFIG_LINE 
+        if $config !~ m/ \A  (\S+)  \s* = \s*  ([^;]+) ;  \s* \# (.*)/xms;
+ 
+    # Verify the option makes sense...
+    debug($3);
+    croak "Unknown option ($1)" 
+        if not exists $option{$2};
+ 
+    # Record the configuration option...
+    $option{$2} = $1;
+}
+
+
+sub debug {
+    my ($msg) = @_;
+    print "Found: $msg\n";
+}
+use Data::Dumper 'Dumper';
+warn Dumper [ \%option ];
+
+__DATA__
+eat = cake;     # Food
+drink = wine;   # Drink
+head = off;     # Revolution!

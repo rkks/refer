@@ -1,0 +1,36 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $SPACE => q{ };
+
+sub padded {
+    my ($text, $cols_count, $want_centering) = @_;
+ 
+    # Compute the left and right indents required...
+    my $gap   = $cols_count - length $text;
+    my $left  = $want_centering ? int($gap/2) : 0;
+    my $right = $gap - $left;
+
+ 
+    # Insert that many spaces fore and aft...
+    return $SPACE x $left 
+         . $text 
+         . $SPACE x $right;
+}
+
+
+print '[', padded( 'hi there', 40, 1 ), "]\n";
+print '[', padded( 'hi there', 40, 0 ), "]\n";

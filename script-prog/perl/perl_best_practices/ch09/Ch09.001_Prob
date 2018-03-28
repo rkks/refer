@@ -1,0 +1,32 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $input = "2345";
+
+Readonly my $INTEGER    => 1;
+Readonly my $ROUND_ZERO => 1;
+
+sub coerce;
+ 
+# and later...
+ 
+my $expected_count = coerce $input, $INTEGER, $ROUND_ZERO; 
+
+
+
+sub coerce {
+    return 1;
+}

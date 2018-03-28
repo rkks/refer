@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="StudentCardFile.StudentCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="{StaticResource PhoneFontFamilyNormal}"
+             FontSize="{StaticResource PhoneFontSizeNormal}"
+             Foreground="{StaticResource PhoneForegroundBrush}"
+             Width="240" Height="240">
+    
+    <UserControl.RenderTransform>
+        <TranslateTransform x:Name="translate" />
+    </UserControl.RenderTransform>
+    
+    <Border BorderBrush="{StaticResource PhoneAccentBrush}"
+            BorderThickness="1"
+            Background="{StaticResource PhoneChromeBrush}"
+            CornerRadius="12"
+            Padding="6 0">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Open">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="translate"
+                             Storyboard.TargetProperty="X"
+                             To="220" Duration="0:0:1" />
+                    </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="Normal">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="translate"
+                             Storyboard.TargetProperty="X"
+                             Duration="0:0:1" />
+                </Storyboard>
+            </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" 
+                       Text="{Binding FullName}" />
+
+            <Rectangle Grid.Row="1"
+                       Fill="{StaticResource PhoneAccentBrush}"
+                       Height="1"
+                       Margin="0 0 0 4" />
+
+            <Image Grid.Row="2"
+                   Source="{Binding PhotoFilename}" />
+
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <TextBlock Text="GPA = " />
+                <TextBlock Text="{Binding GradePointAverage}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

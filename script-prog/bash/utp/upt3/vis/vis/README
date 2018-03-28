@@ -1,0 +1,51 @@
+Vis repeatedly executes a specified command and refreshes the display
+of its output on the screen.  This has the effect of making any
+normally non-screen oriented command into a screen oriented one.
+
+The first line on the output screen is reserved for vis status and will
+contain the command on the left side with the current execution count
+on the right side.  If command is too long to fit, vis will truncate it
+in the status line and append an ellipsis ("...").
+
+The output of the command normally begins on the third line and
+continues to the end of the screen.  Lines which can not fit will be
+discarded.  When this occurs, vis will automatically place the output
+of following passes starting on line two in order to maximize the
+amount of displayed information.
+
+See the manual page for a complete information.
+
+
+     Copyright (c) 1988 by George M. Sipe.  All rights reserved.
+
+This software may only be redistributed without fee and without any
+other form of monetary gain (including sold, rented, leased, or
+traded), unless the express written permission of the copyright holder
+is obtained in advance.
+
+This copyright notice must be reproduced in its entirety on all copies
+of this software.  Further, acknowledgment of the authorship of this
+software must not be removed from its current or derived
+documentation.
+
+No expressed or implied warranty is made for this software.  No party
+connected with this software assumes any liability or responsibility
+for its use, the correctness of its operation, or its fitness for any
+purpose.
+
+Any distributor of copies of this software shall grant the recipient
+permission for further redistribution as permitted by this notice.
+
+Permission is hereby granted to copy, reproduce, redistribute and
+otherwise use this software as long as the conditions above are
+strictly adhered to.
+
+NOTE:	This software was originally written by Dan Heller
+	(argv@sri-spam.arpa) and enhanced / generalized by
+	George M.  Sipe (rebel!george) to the point where Dan
+	would no longer recoginze it.  No copyright notices
+	were embodied in the original net distribution.
+
+	Steve Alter (alter@ttidca.tti.com) added the -h option.
+
+	Anton Chernoff (abc@lpi.uucp) added the -s option.

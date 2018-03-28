@@ -1,0 +1,67 @@
+##############################################################################
+##   Example 19.8 (Recommended) from Chapter 19 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 19-8. Benchmarking the uniqueness functions
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# A short list of not-quite-unique values...
+our @data = qw( do re me fa so la ti do );
+ 
+# Various candidates...
+sub unique_via_anon {
+    return keys %{ { map {$_=>1} @_ } };
+}
+ 
+sub unique_via_grep {
+    my %seen;
+    return grep { !$seen{$_}++ } @_;
+}
+ 
+sub unique_via_slice {
+    my %uniq;
+    @uniq{@_} = ();
+    return keys %uniq;
+}
+ 
+# Compare the current set of data in @data
+sub compare {
+    my ($title) = @_;
+ 
+    print "\n[$title]\n";
+ 
+    # Create a comparison table of the various timings, making sure that
+    # each test runs at least 10 CPU seconds...
+    use Benchmark qw( cmpthese );
+    cmpthese -10, {
+        anon   => 'my @uniq = unique_via_anon(@data)',
+        grep   => 'my @uniq = unique_via_grep(@data)',
+        slice  => 'my @uniq = unique_via_slice(@data)',
+    };
+ 
+    return;
+}
+ 
+compare('8 items, 10% repetition');
+ 
+# Two copies of the original data...
+@data = (@data) x 2;
+compare('16 items, 56% repetition');
+ 
+# One hundred copies of the original data...
+@data = (@data) x 50;
+compare('800 items, 99% repetition');
+

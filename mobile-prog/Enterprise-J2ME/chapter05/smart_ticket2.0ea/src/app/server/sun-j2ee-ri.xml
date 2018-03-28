@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="Cp1252"?>
+
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: sun-j2ee-ri.xml,v 1.2 2003/03/24 22:43:09 zull Exp $ -->
+
+<j2ee-ri-specific-information>
+    <server-name>SunEEAppServer</server-name>
+    <rolemapping/>
+    <web>
+        <display-name>SmartTicketWAR</display-name>
+        <module-name>smart_ticket.war</module-name>
+        <servlet>
+               <servlet-name>SmartTicketServlet</servlet-name>
+        </servlet>
+        <servlet>
+               <servlet-name>PopulateServlet</servlet-name>
+        </servlet>
+        <context-root>smartticket</context-root>
+    </web>
+    <enterprise-beans>
+        <display-name>SmartTicketJAR</display-name>
+        <module-name>smart_ticket-ejb.jar</module-name>
+        <ejb>
+            <ejb-name>TheaterBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/Theater</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>TheaterScheduleBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/TheaterSchedule</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>MovieShowBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/MovieShow</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>MovieBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/Movie</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>MovieRatingBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/MovieRating</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>AccountBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/Account</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>ReservationBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/Reservation</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>SynchronizingBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/Synchronizing</jndi-name>
+        </ejb>
+        <ejb>
+            <ejb-name>SyncMetaDataBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/SyncMetaData</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>TicketingBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/Ticketing</jndi-name>
+        </ejb>
+        <ejb>
+            <ejb-name>SyncConduitBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/SyncConduit</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>SyncClientBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/SyncClient</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>MovieScheduleBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/MovieSchedule</jndi-name>
+            <ejb20-cmp>
+                <sql-statement>
+                    <operation>loadRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>storeRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createRow</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>createTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <sql-statement>
+                    <operation>deleteTable</operation>
+                    <sql></sql>
+                </sql-statement>
+                <create-table-deploy>true</create-table-deploy>
+                <delete-table-undeploy>true</delete-table-undeploy>
+            </ejb20-cmp>
+        </ejb>
+        <ejb>
+            <ejb-name>SmartTicketFacadeBean</ejb-name>
+            <jndi-name>ejb/smartticket/smartticket/SmartTicketFacade</jndi-name>
+        </ejb>
+        <cmpresource>
+            <ds-jndi-name>jdbc/Cloudscape</ds-jndi-name>
+            <default-resource-principal>
+                <name></name>
+                <password></password>
+            </default-resource-principal>
+        </cmpresource>
+    </enterprise-beans>
+</j2ee-ri-specific-information>

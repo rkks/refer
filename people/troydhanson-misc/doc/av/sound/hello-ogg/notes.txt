@@ -1,0 +1,36 @@
+================================================================================
+INSTALLATION PREREQS ON UBUNTU/MINT
+
+apt-get install libgstreamer1.0-dev libgstreamer-perl gstreamer1.0-doc gstreamer-tools
+
+
+================================================================================
+HOW TO SCREENCAST FROM VLC and RECEIVE VIA GSTREAMER
+
+screen broadcast from VLC on Mac: 
+  Open Capture Device
+   Capture
+     Screen
+       x Streaming/Saving:
+         Settings
+           Transcoding
+             x Video
+               h264
+
+screen view from Linux gstreamer:
+   gst-launch playbin uri=http://192.168.0.108:1234
+
+================================================================================
+
+CLI inspection of elements:
+  gst-inspect <element>
+  gst-launch
+
+Elements have PADS 
+PADS are for connecting to other elements
+PADS transmit only specific kinds of data
+
+a BIN is a collection of Elements
+the PIPELINE is a kind of bin
+
+================================================================================

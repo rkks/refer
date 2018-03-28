@@ -1,0 +1,37 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 2 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @items;
+my @requested_items = qw( world peace free love );
+
+my @months = qw( January   February   March   April   May   June   July   August
+                 September   October   November   December 
+                );
+ 
+for my $item (@requested_items) {
+    push @items, "A brand new $item"
+               , "A fully refurbished $item"
+               , "A ratty old $item"
+               ;
+}
+ 
+print 'Processing '
+      , scalar(@items)
+      , ' items at '
+      , time
+      , "\n"
+      ;
+

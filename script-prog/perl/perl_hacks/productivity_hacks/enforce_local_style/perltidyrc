@@ -1,0 +1,3 @@
+-ci=4 # indent 4 spaces when breaking a long line
+-et=4 # replace 4 leading spaces with a tab
+-bl   # place opening braces on newlines

@@ -1,0 +1,39 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub odd { 
+    my ($n) = @_;
+    return $n % 2;
+}
+
+sub find_second_odd {
+    my $prev_odd_found = 0;
+ 
+    # Check through args...
+    for my $num (@_) {
+        # Find an odd number...
+        if (odd($num)) {
+            # Return it if it's not the first (must be the second)...
+            return $num if $prev_odd_found;
+ 
+            # Otherwise, remember it's been seen...
+
+            $prev_odd_found = 1;
+        }
+    }
+    # Otherwise, fail
+}
+

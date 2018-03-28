@@ -1,0 +1,52 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 16 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Phonebook;
+use Class::Std;
+use Carp;
+{
+    my %entries_of : ATTR;
+ 
+    # Any method call is someone's name: store their phone number or get it...
+    sub AUTOLOAD {
+        my ($self, $number) = @_;
+ 
+        # Extract get/set mode and person's name from method name...
+        our $AUTOLOAD;
+        my ($mode, $name) = $AUTOLOAD =~ m/.* :: ([gs]et)_(.*)/xms
+            or croak "Can't call $AUTOLOAD on object";
+ 
+        # Update if it's a set_<name> operation...
+        if ($mode eq 'set') {
+            croak "Missing argument for set_$name" if @_ == 1;
+            $entries_of{ident $self}->{$name} = $number;
+        }
+ 
+        return $entries_of{ident $self}->{$name};
+    }
+}
+ 
+# and later...
+ 
+my $lbb = Phonebook->new();
+ 
+$lbb->set_Jenny(867_5309);
+$lbb->set_Glenn(736_5000);
+ 
+print $lbb->get_Jenny(), "\n";
+print $lbb->get_Glenn(), "\n";
+
+$lbb->call_Jenny();

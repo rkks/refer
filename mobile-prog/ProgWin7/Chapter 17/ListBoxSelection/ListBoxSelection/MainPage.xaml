@@ -1,0 +1,278 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="ListBoxSelection.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:petzold="clr-namespace:Petzold.Phone.Silverlight;assembly=Petzold.Phone.Silverlight"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="480"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <phone:PhoneApplicationPage.Resources>
+        <petzold:StringFormatConverter x:Name="stringFormat" />
+        
+        <Style x:Key="listBoxStyle" 
+               TargetType="ListBox">
+            <Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}" />
+            <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Padding" Value="3" />
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="LISTBOX SELECTION" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ListBox Name="brushListBox"
+                     Grid.Row="0"
+                     SelectedIndex="0"
+                     Style="{StaticResource listBoxStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="48" Height="36"
+                                       Margin="2"
+                                       Fill="{Binding}" />
+
+                            <StackPanel Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Color.R,
+                                                          Converter={StaticResource stringFormat},
+                                                          ConverterParameter=' {0:X2}'}" />
+                                <TextBlock Text="{Binding Color.G,
+                                                          Converter={StaticResource stringFormat},
+                                                          ConverterParameter='-{0:X2}'}" />
+                                <TextBlock Text="{Binding Color.B,
+                                                          Converter={StaticResource stringFormat},
+                                                          ConverterParameter='-{0:X2}'}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <SolidColorBrush Color="AliceBlue" />
+                <SolidColorBrush Color="AntiqueWhite" />
+                <SolidColorBrush Color="Aqua" />
+                <SolidColorBrush Color="Aquamarine" />
+                <SolidColorBrush Color="Azure" />
+                <SolidColorBrush Color="Beige" />
+                <SolidColorBrush Color="Bisque" />
+                <SolidColorBrush Color="Black" />
+                <SolidColorBrush Color="BlanchedAlmond" />
+                <SolidColorBrush Color="Blue" />
+                <SolidColorBrush Color="BlueViolet" />
+                <SolidColorBrush Color="Brown" />
+                <SolidColorBrush Color="BurlyWood" />
+                <SolidColorBrush Color="CadetBlue" />
+                <SolidColorBrush Color="Chartreuse" />
+                <SolidColorBrush Color="Chocolate" />
+                <SolidColorBrush Color="Coral" />
+                <SolidColorBrush Color="CornflowerBlue" />
+                <SolidColorBrush Color="Cornsilk" />
+                <SolidColorBrush Color="Crimson" />
+                <SolidColorBrush Color="Cyan" />
+                <SolidColorBrush Color="DarkBlue" />
+                <SolidColorBrush Color="DarkCyan" />
+                <SolidColorBrush Color="DarkGoldenrod" />
+                <SolidColorBrush Color="DarkGray" />
+                <SolidColorBrush Color="DarkGreen" />
+                <SolidColorBrush Color="DarkKhaki" />
+                <SolidColorBrush Color="DarkMagenta" />
+                <SolidColorBrush Color="DarkOliveGreen" />
+                <SolidColorBrush Color="DarkOrange" />
+                <SolidColorBrush Color="DarkOrchid" />
+                <SolidColorBrush Color="DarkRed" />
+                <SolidColorBrush Color="DarkSalmon" />
+                <SolidColorBrush Color="DarkSeaGreen" />
+                <SolidColorBrush Color="DarkSlateBlue" />
+                <SolidColorBrush Color="DarkSlateGray" />
+                <SolidColorBrush Color="DarkTurquoise" />
+                <SolidColorBrush Color="DarkViolet" />
+                <SolidColorBrush Color="DeepPink" />
+                <SolidColorBrush Color="DeepSkyBlue" />
+                <SolidColorBrush Color="DimGray" />
+                <SolidColorBrush Color="DodgerBlue" />
+                <SolidColorBrush Color="Firebrick" />
+                <SolidColorBrush Color="FloralWhite" />
+                <SolidColorBrush Color="ForestGreen" />
+                <SolidColorBrush Color="Fuchsia" />
+                <SolidColorBrush Color="Gainsboro" />
+                <SolidColorBrush Color="GhostWhite" />
+                <SolidColorBrush Color="Gold" />
+                <SolidColorBrush Color="Goldenrod" />
+                <SolidColorBrush Color="Gray" />
+                <SolidColorBrush Color="Green" />
+                <SolidColorBrush Color="GreenYellow" />
+                <SolidColorBrush Color="Honeydew" />
+                <SolidColorBrush Color="HotPink" />
+                <SolidColorBrush Color="IndianRed" />
+                <SolidColorBrush Color="Indigo" />
+                <SolidColorBrush Color="Ivory" />
+                <SolidColorBrush Color="Khaki" />
+                <SolidColorBrush Color="Lavender" />
+                <SolidColorBrush Color="LavenderBlush" />
+                <SolidColorBrush Color="LawnGreen" />
+                <SolidColorBrush Color="LemonChiffon" />
+                <SolidColorBrush Color="LightBlue" />
+                <SolidColorBrush Color="LightCoral" />
+                <SolidColorBrush Color="LightCyan" />
+                <SolidColorBrush Color="LightGoldenrodYellow" />
+                <SolidColorBrush Color="LightGray" />
+                <SolidColorBrush Color="LightGreen" />
+                <SolidColorBrush Color="LightPink" />
+                <SolidColorBrush Color="LightSalmon" />
+                <SolidColorBrush Color="LightSeaGreen" />
+                <SolidColorBrush Color="LightSkyBlue" />
+                <SolidColorBrush Color="LightSlateGray" />
+                <SolidColorBrush Color="LightSteelBlue" />
+                <SolidColorBrush Color="LightYellow" />
+                <SolidColorBrush Color="Lime" />
+                <SolidColorBrush Color="LimeGreen" />
+                <SolidColorBrush Color="Linen" />
+                <SolidColorBrush Color="Magenta" />
+                <SolidColorBrush Color="Maroon" />
+                <SolidColorBrush Color="MediumAquamarine" />
+                <SolidColorBrush Color="MediumBlue" />
+                <SolidColorBrush Color="MediumOrchid" />
+                <SolidColorBrush Color="MediumPurple" />
+                <SolidColorBrush Color="MediumSeaGreen" />
+                <SolidColorBrush Color="MediumSlateBlue" />
+                <SolidColorBrush Color="MediumSpringGreen" />
+                <SolidColorBrush Color="MediumTurquoise" />
+                <SolidColorBrush Color="MediumVioletRed" />
+                <SolidColorBrush Color="MidnightBlue" />
+                <SolidColorBrush Color="MintCream" />
+                <SolidColorBrush Color="MistyRose" />
+                <SolidColorBrush Color="Moccasin" />
+                <SolidColorBrush Color="NavajoWhite" />
+                <SolidColorBrush Color="Navy" />
+                <SolidColorBrush Color="OldLace" />
+                <SolidColorBrush Color="Olive" />
+                <SolidColorBrush Color="OliveDrab" />
+                <SolidColorBrush Color="Orange" />
+                <SolidColorBrush Color="OrangeRed" />
+                <SolidColorBrush Color="Orchid" />
+                <SolidColorBrush Color="PaleGoldenrod" />
+                <SolidColorBrush Color="PaleGreen" />
+                <SolidColorBrush Color="PaleTurquoise" />
+                <SolidColorBrush Color="PaleVioletRed" />
+                <SolidColorBrush Color="PapayaWhip" />
+                <SolidColorBrush Color="PeachPuff" />
+                <SolidColorBrush Color="Peru" />
+                <SolidColorBrush Color="Pink" />
+                <SolidColorBrush Color="Plum" />
+                <SolidColorBrush Color="PowderBlue" />
+                <SolidColorBrush Color="Purple" />
+                <SolidColorBrush Color="Red" />
+                <SolidColorBrush Color="RosyBrown" />
+                <SolidColorBrush Color="RoyalBlue" />
+                <SolidColorBrush Color="SaddleBrown" />
+                <SolidColorBrush Color="Salmon" />
+                <SolidColorBrush Color="SandyBrown" />
+                <SolidColorBrush Color="SeaGreen" />
+                <SolidColorBrush Color="SeaShell" />
+                <SolidColorBrush Color="Sienna" />
+                <SolidColorBrush Color="Silver" />
+                <SolidColorBrush Color="SkyBlue" />
+                <SolidColorBrush Color="SlateBlue" />
+                <SolidColorBrush Color="SlateGray" />
+                <SolidColorBrush Color="Snow" />
+                <SolidColorBrush Color="SpringGreen" />
+                <SolidColorBrush Color="SteelBlue" />
+                <SolidColorBrush Color="Tan" />
+                <SolidColorBrush Color="Teal" />
+                <SolidColorBrush Color="Thistle" />
+                <SolidColorBrush Color="Tomato" />
+                <SolidColorBrush Color="Transparent" />
+                <SolidColorBrush Color="Turquoise" />
+                <SolidColorBrush Color="Violet" />
+                <SolidColorBrush Color="Wheat" />
+                <SolidColorBrush Color="White" />
+                <SolidColorBrush Color="WhiteSmoke" />
+                <SolidColorBrush Color="Yellow" />
+                <SolidColorBrush Color="YellowGreen" />
+            </ListBox>
+
+            <ListBox Name="fontFamilyListBox"
+                     Grid.Row="1"
+                     SelectedIndex="5"
+                     Style="{StaticResource listBoxStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   FontFamily="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <system:String>Arial</system:String>
+                <system:String>Arial Black</system:String>
+                <system:String>Calibri</system:String>
+                <system:String>Comic Sans MS</system:String>
+                <system:String>Courier New</system:String>
+                <system:String>Georgia</system:String>
+                <system:String>Lucida Sans Unicode</system:String>
+                <system:String>Portable User Interface</system:String>
+                <system:String>Segoe WP</system:String>
+                <system:String>Segoe WP Black</system:String>
+                <system:String>Segoe WP Bold</system:String>
+                <system:String>Segoe WP Light</system:String>
+                <system:String>Segoe WP Semibold</system:String>
+                <system:String>Segoe WP SemiLight</system:String>
+                <system:String>Tahoma</system:String>
+                <system:String>Times New Roman</system:String>
+                <system:String>Trebuchet MS</system:String>
+                <system:String>Verdana</system:String>
+                <system:String>Webdings</system:String>
+            </ListBox>
+
+            <TextBlock Grid.Row="2" 
+                       Text="Sample Text"
+                       FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                       HorizontalAlignment="Center"
+                       Margin="12"
+                      
+                       Foreground="{Binding ElementName=brushListBox,
+                                            Path=SelectedItem}"
+                       
+                       FontFamily="{Binding ElementName=fontFamilyListBox,
+                                            Path=SelectedItem}" />
+        </Grid>
+    </Grid>
+ 
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>

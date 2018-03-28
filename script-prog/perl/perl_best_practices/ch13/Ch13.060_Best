@@ -1,0 +1,38 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Define the X::EOF class, inheriting useful behaviours 
+# from Exception::Class::Base...
+use Exception::Class (
+    'X::EOF' => {
+        # Specify that X::EOF objects have a 'handle' attribute 
+        # and a corresponding handle() method...
+        fields => [ 'handle' ],
+    },
+);
+ 
+# Redefine the message to which an X::EOF object stringifies...
+sub X::EOF::full_message {
+    my ($self) = @_;
+    return 'Filehandle ' . $self->handle . ' at EOF';
+}
+
+
+use Carp;
+eval { croak( X::EOF->new(handle => 'none') ) }
+    or warn $OS_ERROR;
+X::EOF->throw( handle => 'some' );

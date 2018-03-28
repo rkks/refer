@@ -1,0 +1,197 @@
+: 
+##########################################################################
+# Shellscript:	bib2html - format refer(1) database as HTML
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1998-02-06
+# Category   :	File Conversion, HTML
+# SCCS-Id.:  :	@(#) bib2html	1.1 04/02/18
+##########################################################################
+# Description
+#
+# Valid fields (see addbib(1)):
+#	%A	Author's name
+#	%B	Book containing article reference
+#	%C	City (place of publication)
+#	%D	Date of publication
+#	%E	Editor of book containing article referenced
+#	%F	Footnote number or label (suppied by refer)
+#	%G	Government order number
+#	%H	Header commentary, printed before reference
+#	%I	Issuer (publisher)
+#	%J	Journal containing article
+#	%K	Keywords to use in locating reference
+#	%L	Label field used by -k option of refer
+#	%M	Bell Labs Memorandum (undefined)
+#	%N	Number within volume
+#	%O	Other commentary, printed at end of reference
+#	%P	Page number(s)
+#	%Q	Corporate or Foreign Author (unreversed)
+#	%R	Report, paper, or thesis (unpublished)
+#	%S	Series title
+#	%T	Title of article or book
+#	%V	Volume number
+#	%X	Abstract - used by roffbib, not by refer
+#	%Y, Z	Ignored by refer
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.1'
+Usage () {
+    echo >&2 "$PN - Convert refer(1) database to HTML, Version $VER
+usage: $PN [database]"
+    exit 1
+}
+[ -z "$AWK" -a -x /bin/nawk ] && AWK=/bin/nawk
+: ${AWK:=awk}
+set -- `getopt 'h' "$@"`
+Args=
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)		break;;		# End of switches
+	-h|-*)		Usage;;
+	*)		break;;		# First file name
+    esac
+    shift
+done
+shift					# Remove terminating '--' from getopt
+cat <<-!
+	<TABLE BORDER=1 CELLPADDING=5>
+	  <TR>
+	    <TH>Rating</TH>
+	    <TD>&nbsp<BR></TD>
+	  </TR>
+	!
+$AWK '
+    BEGIN {
+    	RatingsImg = "<IMG SRC=\"images/star_rating.gif\" ALT=\"*\" WIDTH=12 HEIGHT=10>"
+        Ratings ["?"] = 0
+        Ratings ["-"] = 1
+        Ratings ["+"] = 2
+        Ratings ["!"] = 2
+        Ratings ["++"] = 3
+        Ratings ["!!"] = 2
+    }
+    ($1 ~ /%[A-Z]$/) {
+	Author = ""
+	Comment = ""
+	Year = ""
+	Journal = ""
+	Rating = ""
+	City = ""
+	Pages = ""
+	Serie = ""
+	Title = ""
+	Publisher = ""
+	Vol = ""
+	do
+	{
+	    Rest = $0
+	    if ( index (Rest, $1) > 0 )
+		Rest = substr (Rest, index (Rest, $1)+length ($1)+1)
+	    if ( $1 == "%A" ) {			# Author
+		if ( NF > 2 ) {			# determine surname
+		    Surname = Append = ""
+		    # Find surname in lines like
+		    #	"Prof. Dr. Guenther Drodowski et. al. (Hrsg.)"
+		    # and change to
+		    #	"Drodowski, Prof. Dr. Guenter et.al (Hrsg.)"
+		    for ( i=NF; i>1; i-- ) {
+			if ( !match ($i, "[\).]$") ) {
+			    Surname = $i
+			    break;
+			}
+		    }
+		    A = Surname ","
+		    for ( i=2; i<=NF; i++ )
+			if ( $i != Surname ) A = A " " $i
+		} else				# only surname
+		    A = $NF
+		if ( Author == "" )
+		    Author = A
+		else
+		    Author = Author "; " A
+	    }
+	    else if ( $1 == "%T" ) {
+		Title = Rest
+		++bookno
+	    } else if ( $1 == "%I" ) {
+		Publisher = Rest
+	    } else if ( $1 == "%C" ) {
+		City = Rest
+	    } else if ( $1 == "%D" ) {
+		Year = Rest
+	    } else if ( $1 == "%Y" ) {
+		Rating = Rest
+	    } else if ( $1 == "%X" ) {
+		Comment = Rest
+		while ( getline && $0 != "" ) {
+		    Comment = Comment " " $0
+		}
+		break				# NOTE: EXIT OF LOOP
+	    } else if ( $1 == "%V" ) {
+		if ( Rest ~ /^[0-9][0-9]*$/ )
+		    Vol = "Vol. " Rest
+		else
+		    Vol = Rest
+	    } else if ( $1 == "%S" ) {
+		Serie = Rest
+	    } else if ( $1 == "%J" ) {
+		Journal = Rest
+	    } else if ( $1 == "%P" ) {
+		Pages = Rest
+	    } else if ( $1 == "%O" ) {
+		if ( Comment != "" )
+		    Comment = Comment " "
+		Comment = Comment Rest
+	    } else if ( $1 == "%K" || $1 == "%G" ) {
+		# ignore
+	    } else {
+		for ( i=2; i<=NF; i++ )
+		    Comment = Comment " " $i
+	    }
+	} while ( getline && $0 != "" )
+	print "  <TR>"
+	print "    <TD>" 
+	n = Ratings [Rating]
+	if ( n > 0 ) {
+	    for ( i=0; i<n; i++ ) {
+	    	print "      " RatingsImg
+	    }
+	} else {
+	    print "      &nbsp;"
+	}
+	
+	print "    </TD>"
+	print "    <TD>"
+	print "      <SMALL>"
+	print "\t"
+	print "<A NAME=\"book" bookno "\">" Author "</A>: "
+	print "<EM>" Title "</EM>.<BR>"
+	if ( Vol != "" || Serie != "" ) {
+	    if ( Vol != "" ) print "\t" Vol
+	    if ( Serie != "" ) print "\t" Serie
+	    print ".<BR>"
+	}
+	if ( Publisher != "" ) {
+	    print "\t" Publisher ";"
+	}
+	if ( City != "" ) {
+	    print "\t" City
+	}
+	if ( Year != "" ) {
+	    print "\t" Year "."
+	}
+	if ( Comment != "" ) {
+	    print "\t<BLOCKQUOTE>"
+	    print "\t" Comment
+	    print "\t</BLOCKQUOTE>"
+	}
+	print "      </SMALL>"
+	print "    <BR></TD>"
+	print "  </TR>"
+	print ""
+    }
+' "$@"
+cat <<-!
+	</TABLE>
+	!

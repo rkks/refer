@@ -1,0 +1,15 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 7 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+=for Optimization:
+     This parser would almost certainly benefit from the use of  
+     progressive matching with m/\G.../gcxms, rather than relying
+     on successive prefix substitutions. 
+     Reconsider when everyone is using at least Perl 5.6.1.
+ 
+=cut
+

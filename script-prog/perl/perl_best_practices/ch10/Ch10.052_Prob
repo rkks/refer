@@ -1,0 +1,28 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 10 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $PROMPT => q{> };
+
+sub is_interactive {
+    return -t *ARGV && -t *STDOUT;
+}
+ 
+# and later...
+ 
+if (is_interactive()) {
+    print $PROMPT;
+}
+

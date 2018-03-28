@@ -1,0 +1,40 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @external_results;
+
+use English qw( -no_match_vars );
+ 
+local $OUTPUT_AUTOFLUSH         = 1;
+
+local $SUBSCRIPT_SEPARATOR      = qq{\0};
+local $LIST_SEPARATOR           =  q{, };
+local $OUTPUT_FIELD_SEPARATOR   =  q{, };
+local $OUTPUT_RECORD_SEPARATOR  = qq{\n}; 
+ 
+eval {
+    open my $pipe, '/cdrom/install |'
+        or croak "open failed: $OS_ERROR";
+ 
+    @external_results = <$pipe>;
+ 
+    close $pipe 
+        or croak "close failed: CHILD_ERROR, $OS_ERROR";
+};
+ 
+warn "Internal error: $EVAL_ERROR" 
+    if $EVAL_ERROR;
+

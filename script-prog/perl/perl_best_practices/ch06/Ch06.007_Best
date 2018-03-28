@@ -1,0 +1,48 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EPSILON => 0.01;
+
+sub find_anomolous_sample_in {
+    my ($samples_ref) = @_;
+ 
+    MEASUREMENT:
+    for my $measurement(@{$samples_ref}) {
+        last MEASUREMENT if $measurement < 0;
+ 
+        my $floor = int($measurement);
+        next MEASUREMENT if $floor == $measurement;
+ 
+        my $allowed_inaccuracy = scale($EPSILON, $floor);
+        return $measurement 
+            if $measurement-$floor > $allowed_inaccuracy;
+    }
+    return;
+}
+
+
+
+my @samples = (1..10, 12.2);
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    find_anomolous_sample_in(\@samples)
+];
+
+sub scale {
+    my ($eps, $val) = @_;
+    return $eps * $val;
+}

@@ -1,0 +1,46 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub get_big_int { 
+    while (1) {
+        print 'Enter a valid integer: ';
+        my $int = <>;
+ 
+        chomp $int;
+ 
+        return $int if is_big($int);
+    }
+ 
+    return;
+}
+
+
+Readonly my $MAX_NUMBER_OF_ATTEMPTS => 10;
+
+sub is_big {
+    my ($n) = @_;
+    return $n > 10;
+}
+
+
+ 
+# and later...
+ 
+for (1..$MAX_NUMBER_OF_ATTEMPTS) {
+    print '[', sqrt get_big_int(), "]\n";
+}
+

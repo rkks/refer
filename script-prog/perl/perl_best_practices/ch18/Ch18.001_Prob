@@ -1,0 +1,42 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 18 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Test my shiny new English inflections module...
+use Lingua::EN::Inflect qw( inflect );
+ 
+# Try some plurals (both standard and unusual inflections)...
+my %plural_of = (
+    'house'         => 'houses',
+    'mouse'         => 'mice',
+    'box'           => 'boxes',
+    'ox'            => 'oxen',
+    'goose'         => 'geese',
+    'mongoose'      => 'mongooses',
+    'law'           => 'laws',
+    'mother-in-law' => 'mothers-in-law',
+);
+ 
+# For each of them, print both the expected result and the actual inflection...
+for my $word ( keys %plural_of ) {
+    my $expected = $plural_of{$word};
+    my $computed = inflect( "PL_N($word)" );
+ 
+    print "For $word:\n",
+          "\tExpected: $expected\n",
+          "\tComputed: $computed\n";
+}
+

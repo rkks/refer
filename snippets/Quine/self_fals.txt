@@ -1,0 +1,6 @@
+Language: False
+
+Author: Mathew Hendry (m.hendry@dial.pipex.com)
+
+["'[,34,$!34,'],!"]'[,34,$!34,'],!
+

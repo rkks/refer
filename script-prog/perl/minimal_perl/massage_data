@@ -1,0 +1,10 @@
+#! /usr/bin/perl -wnl
+
+BEGIN {
+    @ARGV == 1  or  warn "Usage: $0 filename\n"  and  exit 1;
+}
+/^#/  and  $!=2  and die "$0: Comments not allowed in data file\n";
+
+# The remainder of this (fictitious) script was not shown in the book
+# We'll simply print the input lines
+print;

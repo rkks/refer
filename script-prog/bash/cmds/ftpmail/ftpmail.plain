@@ -1,0 +1,129 @@
+:
+##########################################################################
+# Shellscript:	ftpmail - get remote file via email
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date	     :	1994-08-15
+# Category   :	Mail, Internet
+# SCCS-Id.   :	@(#) ftpmail	1.2 04/02/18
+##########################################################################
+# Description:
+# 06.09.94 stv	"cd $Dir; get $File" instead of "get $Path" (for easier
+#		'uudecode'ing
+# 13.09.94 stv	added history file, parameter -l and -r (0.3)
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+: ${USER:=`expr "\`LANG=C id\`" : 'uid=[0-9]*(\([^\)]*\)).*`} # my name
+: ${FTPUSER:=$USER@`uname -n`}		# my E-mail address
+: ${FTPMAIL:=ftpmail@ftp.uni-stuttgart.de}	# name of ftpmail service user
+: ${FTPHIST:=$HOME/.ftpmail-hist}	# name of history file
+: ${FTPHISTSIZE:=20}			# no. of lines in FTPHIST
+AWK=awk
+[ -x /bin/nawk ] && AWK=/bin/nawk
+Usage () {
+    echo >&2 "$PN - get remote file via email, Version $VER (stv '94)
+usage: $PN [-sh] [-l] [-r n] filespec [filespec]
+    -s:    (silent), do not print messages
+    -l:    list file requests in history file
+    -r:    repeat file request n
+    -h:    print this help
+If the parameter -l is given, no file requests are sent.
+Only one number can be specified with -r, multiple -r may occur.
+Each file specification has the form
+    host:[directory/]filename
+Example
+    $PN ftp.germany.eu.net:/INDEX
+    $PN -l
+    $PN -r 1"
+    exit 1
+}
+Err () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+Msg () 	 { [ "$silent" = no ] && Err "$@"; }
+Fatal () { Msg "$@"; exit 1; }
+Tmp=${TMPDIR:-/tmp}/fm$$
+trap "rm -f $Tmp" 0
+trap "echo ***INTERRUPT***; exit 2" 1 2 3 15
+User=anonymous				# user name for ftpmail
+Passwd=${USER}@domain.com		# password for ftpmail
+silent=no
+list=no
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-s)	silent=yes;;
+	-h)	Usage;;
+	-l)	list=yes;;
+	-r)	shift
+		[ $# -gt 0 ] || Fatal "Number required after -r"
+		repeat="$repeat $1";;
+	-*)	Usage;;
+	*)	break;;			# Filename
+    esac
+    shift
+done
+[ -r "$FTPHIST" ] || touch $FTPHIST
+if [ "$list" = yes ]
+then
+    nl $FTPHIST
+    exit 0
+fi
+if [ -n "$repeat" ]
+then
+    # read the requested lines from the history file
+    Files=`
+	$AWK '
+	    BEGIN { n = split ("'"$repeat"'", numbers) }
+	    {
+		for ( i=1; i<=n; i++ )
+		    if ( NR == numbers [i] )
+			printf "%s ", $0
+	    }
+	    END { if ( n > 0 ) print "" }
+	' $FTPHIST
+    `
+    set -- $Files "$@"
+fi
+[ $# -lt 1 ] && Usage
+n=0
+for file
+do
+    if echo "$file" | grep ':' > /dev/null 2>&1
+    then
+	Host=`echo $file | cut -f1 -d':'`
+	Path=`echo $file | cut -f2 -d':'`
+	Dir=`dirname $Path`
+	Base=`basename $Path`
+    else
+	Err "illegal filename $file: name must be in the format host:filename"
+	continue
+    fi
+    [ -z "$Host" ] && { Err "$file: no host name given - ignored"; continue; }
+    [ -z "$Path" ] && { Err "$file: no file name given - ignored"; continue; }
+    [ "$Dir/$Base" != "$Path" -a "$Dir" != "/" ] &&
+     { Err "cannot split Path into directory/file name - ignored"; continue; }
+    # append file to history
+    grep "^$file$" $FTPHIST || {
+	echo "$file" >> $FTPHIST
+	tail -$FTPHISTSIZE < $FTPHIST > $Tmp && mv $Tmp $FTPHIST
+    }
+    cat <<! > $Tmp
+open $Host $User $Passwd
+mode binary
+cd $Dir
+get $Base
+quit
+!
+    Msg "getting file \"$Dir/$Base\" from host $Host"
+    mail $FTPMAIL < $Tmp; sleep 2
+    n=`expr $n + 1`
+done
+if [ "$n" -gt 0 ]
+then
+    Msg "sent $n file request(s) to $FTPMAIL" \
+    	"The file(s) will arrive in some days days via email."
+fi
+exit 0

@@ -1,0 +1,131 @@
+hardware dependant launcher
+===========================
+  "setup hardware to init a temporary kernel virtual address space"
+  lang C no object
+  
+      -> init GDT
+      -> init a static stack (temporary)
+      -> detect amount of RAM
+      -> build temp_kernel_vaddr_space(ext_mem_base, ext_mem_top)
+      -> init paging
+      -> init real kernel stack
+      -> jmp kernel
+         
+         
+      Physical Address (low)
+      ======================
+
+
+                             PHYSICAL ADDRESS SPACE
+                    
+   0x10000                                                             0xA0000    
+      +----------------+--------------+-----------------------------------+
+      |  launcher.bin  |  kernel.bin  |  Launcher usage (page dir/table)  |
+      +----------------+--------------+-----------------------------------+
+      |                                                                   |
+      |                                                                   |
+      |                                                                   |
+      |-------------------------------------------------------------------+
+      |                          low memory                               |
+      +-------------------------------------------------------------------+
+   0x10000                                                             0xA0000    
+                                  (576 ko)
+
+                            VIRTUAL ADDRESS SPACE 
+
+
+
+
+
+                                      PHYSICAL ADDRESS SPACE
+                    
+             0x10000                                                             0xA0000    
+                +----------------+--------------+-----------------------------------+
+                |  launcher.bin  |  kernel.bin  |  Launcher usage (page dir/table)  |
+                +----------------+--------------+-----------------------------------+
+        _______/                                                                   /
+       /    ______________________________________________________________________/
+      |   /
+      |--|------------------------------------------------------------------------------------+
+      |                                   low memory                                          |
+      +---------------------------------------------------------------------------------------+
+  0xBFF00000                                                                              0xCFF00000
+                                            (256 mo)
+
+                                      VIRTUAL ADDRESS SPACE 
+
+
+
+
+
+      VGA Display
+      ===========
+
+
+                             PHYSICAL ADDRESS SPACE
+                    
+   0xA0000                                                             0xC0000    
+      +-------------------------------------------------------------------+
+      |                           VGA display                             |
+      +-------------------------------------------------------------------+
+      |                                                                   |
+      |                                                                   |
+      |                                                                   |
+      |-------------------------------------------------------------------|
+      |                           VGA display                             |
+      +-------------------------------------------------------------------+
+   0xA0000                                                             0xC0000    
+                                   (128 ko)
+
+                            VIRTUAL ADDRESS SPACE 
+
+
+
+
+
+      Physical Address (extended)
+      ===========================
+
+
+                              PHYSICAL ADDRESS SPACE
+              
+              (32 pages)                (18 pages)          (4 pages)
+  0x100000                  0x120000                0x132000          0x136000
+      +-------------------------+-----------------------+----------------+
+      |  kpageget() start with  |  kalloc() start with  |  kernel stack  |
+      +-------------------------+-----------------------+----------------+
+       \                       / \                     / \                \__________
+        \___________        _/    \_____________      |   \______________________    |
+                    \      /                    \     /                          \   |
+      +--------------|----|----------------------|---|----------------------------|--|
+      |  low memory  |  kernel pages collection  |  heap ->               <- stack   |
+      +--------------+---------------------------+-----------------------------------+
+  0xBFF00000    0xCFF00000                  0xDFF00000                          0xFFF00000
+          (256 mo)             (256 mo)                        (512 mo)
+
+                              VIRTUAL ADDRESS SPACE 
+
+ 
+ 
+kernel
+======
+
+      -> init MemoryHAL
+      -> init KernelMemory
+      -> init PhysicalMemory
+      -> init VM
+      -> init kernel address space
+      -> init kernel task
+      -> apply kerrnel address space
+      -> apply kernel task
+
++ premier memory object a faire : nonpageable memory object (utilise pour tous les segments du kernel ?
+  faire un segment pageble avec un attribut dans kalloc ?)
+
+ 
+(MemoryHAL, utilise par HATL seulement)
+
+      -> apply GDT (?) pas pour le mmt mettre en commentaire
+      -> map(p, v)
+      -> umap(v)
+      -> apply_context

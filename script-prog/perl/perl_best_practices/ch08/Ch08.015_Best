@@ -1,0 +1,24 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $email_address = 'spam.to.damian@recursor.net';
+
+add_email_addr(scalar reverse $email_address);
+
+
+sub add_email_addr {
+    print @_;
+}

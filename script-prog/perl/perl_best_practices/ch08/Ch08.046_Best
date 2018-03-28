@@ -1,0 +1,43 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Digest::SHA qw( sha512 );
+
+my @names = (
+    'ID:002 oof',
+    'ID:001 barbar',
+    'ID:999 baz^3',
+);
+
+
+use Sort::Maker;
+ 
+# Create sort subroutines (ST flag enables Schwartzian transform)...
+make_sorter(name => 'sort_sha', code => sub{ sha512($_)    }, ST => 1 );
+make_sorter(name => 'sort_ids', code => sub{ /ID:(\d+)/xms }, ST => 1 );
+make_sorter(name => 'sort_len', code => sub{ length        }, ST => 1 );
+ 
+# and later...
+ 
+my @names_shortest_first = sort_len(@names);
+my @names_digested_first = sort_sha(@names);
+my @names_identity_first = sort_ids(@names);
+
+use Data::Dumper 'Dumper';
+warn Dumper [ 'SHORTEST', @names_shortest_first ];
+warn Dumper [ 'DIGESTED', @names_digested_first ];
+warn Dumper [ 'IDENTITY', @names_identity_first ];
+

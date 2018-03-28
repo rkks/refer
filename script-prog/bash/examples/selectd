@@ -1,0 +1,13 @@
+selectd ()
+{
+    PS3='directory? '
+    select selection in $DIRSTACK; do
+        if [ $selection ]; then
+            #statements that manipulate the stack...
+            break
+        else
+            echo 'invalid selection.'
+        fi
+    done
+}
+

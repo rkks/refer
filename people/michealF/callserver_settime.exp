@@ -1,0 +1,159 @@
+#!/usr/bin/expect -f
+#
+# Filename: /usr/local/etc/callserver_settime.exp
+#
+# Purpose:  Expect script designed to RLOGIN into a Nortel Call Servers and
+#           set the correct (accurate) time and date based on the time from
+#           this Linux system (which is an NTP server).
+#
+# Devices:  Nortel Succession 1000M CallServer v4.5
+#           Nortel Succession 1000B CallServer v4.5
+#
+# Author:   Michael McNamara 
+#
+# Date:     May 9, 2007
+#
+# Version:  1.0
+#
+# Changes:
+#
+#  May 10, 2007 (M.McNamara)
+#    add documentation and ARGV command line checks
+#
+##############################################################################
+#
+set force_conservative 1  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#######################################################################
+# M A I N    P R O G R A M
+#######################################################################
+
+# Let's check that we have the proper number of command line arguments
+if {[llength $argv] != 2} usage
+
+# Set environment varaibles
+set DEBUG 0
+set PATH "/usr/local/etc"
+set USERNAME "admin1"
+set CALLSERVER [lindex $argv 0]
+set PASSWORD [lindex $argv 1]
+
+# Set logging information and filenames
+log_file $PATH/logs/$CALLSERVER.callserver.expect.log
+log_user 0      # Disable logging to STDOUT
+#log_user 1     # Enable logging to STDOUT
+
+# Let's set the current time/date information
+# We'll use the following variables: $DAY $MONTH $YEAR $HOUR $MIN $SEC
+set DAY [timestamp -format %d ]
+set MONTH [timestamp -format %m ]
+set YEAR [timestamp -format %y ]
+set HOUR [timestamp -format %H ]
+set MIN [timestamp -format %M ]
+set SEC [timestamp -format %S ]
+
+set TODAY [timestamp -format %y%m%d ]
+set WEEKDAY [timestamp -format %a ]
+set DATE [timestamp -format %c ]
+
+# Let's set the timeout for any expect command
+set timeout 60
+
+# Let's spawn the RLOGIN process
+spawn /usr/bin/rlogin $CALLSERVER -l CPSID
+match_max 100000
+
+# We need to hit the ENTER key twice to get going
+send -- "\r"
+sleep 1
+send -- "\r"
+sleep 1
+expect "TTY"
+
+# Let's login to the Call Server using the ADMIN1 account
+send -- "LOGI $USERNAME\r"
+expect "PASS?"
+send -- "$PASSWORD\r"
+expect "LOGGED IN"
+
+# Let's get into LD 2 and stat/set the time/date
+send -- "LD 2\r"
+expect -exact "LD 2\r"
+expect "TFC000"
+
+send -- "TTAD\r"
+sleep 1
+
+# Let's set the current time/date information
+# We'll use the following variables: $DAY $MONTH $YEAR $HOUR $MIN $SEC
+#
+# Note: we set these variables here so there are as accurate as possible.
+# If we set them at the top of the script the time might be off by a few
+# seconds by the time the script gets to actually setting the time on the
+# call server.
+set DAY [timestamp -format %d ]
+set MONTH [timestamp -format %m ]
+set YEAR [timestamp -format %y ]
+set HOUR [timestamp -format %H ]
+set MIN [timestamp -format %M ]
+set SEC [timestamp -format %S ]
+
+set TODAY [timestamp -format %y%m%d ]
+set WEEKDAY [timestamp -format %a ]
+set DATE [timestamp -format %c ]
+
+######################################################################
+######################################################################
+# IF  YOU  ONLY  WISH  TO  DISPLAY  THE  TIME  AND  NOT  SET  IT 
+# YOU  SHOULD  COMMENT  OUT  THE  FOLLOWING  THREE  LINES 
+######################################################################
+######################################################################
+send -- "STAD"
+send -- "$DAY $MONTH $YEAR $HOUR $MIN $SEC\r"
+sleep 1
+send -- "TTAD\r"
+sleep 1
+send -- "******\r"
+sleep 1
+
+# Let's logout of the Call Server
+send -- "LOGO\r"
+sleep 1
+
+# Let's disconnect from the Call Server
+send -- "~."
+expect eof
+
+exit 0
+
+######################################################################
+# E N D    P R O G R A M
+######################################################################
+
+######################################################################
+# proc usage
+#
+# Purpose: display the usage information to the enduser.
+######################################################################
+proc usage {} {
+	send_user "\n"
+	send_user "ERROR: command line paramaters incorrect\n"
+	send_user "\n"
+	send_user "usage: callserver_settime.exp <HOSTNAME> <ADMIN1 PASSWORD>\n"
+	send_user "\n"
+	send_user "    hostname		the DNS or IP address of switch	\n"
+	send_user "    admin1 passwd	the password for the admin1 account	\n"
+	send_user "\n"
+	send_user "\n"
+	exit
+}
+#######################################################################
+

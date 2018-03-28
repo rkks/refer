@@ -1,0 +1,43 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;forkvswaitpid.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;The parent loops forking and waiting.<br />
+&nbsp;* &nbsp;Notice the behaviour of both the post-fork()<br />
+&nbsp;* &nbsp;and post-waitpid() messages.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on Wed Dec 31 2003.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+#include &lt;sys/types.h&gt;<br />
+#include &lt;unistd.h&gt;<br />
+#include &lt;sys/wait.h&gt;<br />
+</span><br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>() {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;pid_t pid;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> status;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Hi. Your OS would get a bit busy right now. Please kill pressing ctrl+C\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>(<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pid = <span style="color:#003369;">fork</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>( pid == -<span style="color:#0000ff;">1</span> ) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Error on fork()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">1</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(pid == <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* we're the child */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"One more child born.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* we're the parent and we want to purge the queue of childs exited */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>( <span style="color:#003369;">waitpid</span>(-<span style="color:#0000ff;">1</span>, &amp;status, WNOHANG) &gt; <span style="color:#0000ff;">0</span> ) <span style="color:#003369;">printf</span>(<span style="color:#760f15;">"One more child dead.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

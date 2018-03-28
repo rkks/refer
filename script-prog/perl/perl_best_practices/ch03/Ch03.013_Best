@@ -1,0 +1,27 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub get_record;                        # imperative_verb noun
+sub get_record_for;                    # imperative_verb noun preposition
+ 
+sub eat_cookie;                        # imperative_verb noun
+sub eat_previous_cookie;               # imperative_verb adjective noun
+ 
+sub build_profile;                     # imperative_verb noun
+sub build_execution_profile;           # imperative_verb adjective noun
+sub build_execution_profile_using;     # imperative_verb adjective noun participle
+

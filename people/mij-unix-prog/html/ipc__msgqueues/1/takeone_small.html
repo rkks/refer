@@ -1,0 +1,65 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  takeone.c
+ *  
+ *  simply request a message from a queue, and displays queue
+ *  attributes.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 07/08/05.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* mq_* functions */</span>
+<span class="cpdr">#include &lt;mqueue.h&gt;
+</span><span class="ccom">/* exit() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span><span class="ccom">/* getopt() */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+</span><span class="ccom">/* ctime() and time() */</span>
+<span class="cpdr">#include &lt;time.h&gt;
+</span><span class="ccom">/* strlen() */</span>
+<span class="cpdr">#include &lt;string.h&gt;
+</span>
+
+<span class="ccom">/* name of the POSIX object referencing the queue */</span>
+<span class="cpdr">#define MSGQOBJ_NAME    "/myqueue123"
+</span><span class="ccom">/* max length of a message (just for this process) */</span>
+<span class="cpdr">#define MAX_MSG_LEN     </span><span class="cval">10000</span><span class="cpdr">
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    mqd_t msgq_id;
+    <span class="ctyp">char</span> msgcontent[MAX_MSG_LEN];
+    <span class="ctyp">int</span> msgsz;
+    <span class="ctyp">unsigned</span> <span class="ctyp">int</span> sender;
+    <span class="ctyp">struct</span> mq_attr msgq_attr;
+    
+    
+    <span class="ccom">/* opening the queue        --  mq_open() */</span>
+    msgq_id = <span class="cfun">mq_open</span>(MSGQOBJ_NAME, O_RDWR);
+    <span class="ctyp">if</span><span class="cfun"> </span>(msgq_id == (mqd_t)-<span class="cval">1</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In mq_open()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="ccom">/* getting the attributes from the queue        --  mq_getattr() */</span>
+    <span class="cfun">mq_getattr</span>(msgq_id, &amp;msgq_attr);
+    <span class="cfun">printf</span>(<span class="cstr">"Queue \"%s\":\n\t- stores at most %ld messages\n\t- large at most %ld bytes each\n\t- currently holds %ld messages\n"</span>, MSGQOBJ_NAME, msgq_attr.mq_maxmsg, msgq_attr.mq_msgsize, msgq_attr.mq_curmsgs);
+
+    <span class="ccom">/* getting a message */</span>
+    msgsz = <span class="cfun">mq_receive</span>(msgq_id, msgcontent, MAX_MSG_LEN, &amp;sender);
+    <span class="ctyp">if</span><span class="cfun"> </span>(msgsz == -<span class="cval">1</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In mq_receive()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    <span class="cfun">printf</span>(<span class="cstr">"Received message (%d bytes) from %d: %s\n"</span>, msgsz, sender, msgcontent);
+    
+    <span class="ccom">/* closing the queue    --  mq_close() */</span>
+    <span class="cfun">mq_close</span>(msgq_id);
+    
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

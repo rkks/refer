@@ -1,0 +1,823 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.2" />
+<title>Measuring Entropy in a Byte Stream</title>
+<style type="text/css">
+/* Debug borders */
+p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
+/*
+  border: 1px solid red;
+*/
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+tt {
+  color: navy;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  font-family: sans-serif;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+
+div.sectionbody {
+  font-family: serif;
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+span#author {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+span#email {
+}
+span#revnumber, span#revdate, span#revremark {
+  font-family: sans-serif;
+}
+
+div#footer {
+  font-family: sans-serif;
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+div#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+div#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+div#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #dddddd;
+  color: #777777;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > div.content {
+  white-space: pre;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+
+@media print {
+  div#footer-badges { display: none; }
+}
+
+div#toc {
+  margin-bottom: 2.5em;
+}
+
+div#toctitle {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+/* Workarounds for IE6's broken and incomplete CSS2. */
+
+div.sidebar-content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+div.sidebar-title, div.image-title {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-top: 0.0em;
+  margin-bottom: 0.5em;
+}
+
+div.listingblock div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock-attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock-content {
+  white-space: pre;
+}
+div.verseblock-attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+
+div.exampleblock-content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+/* IE6 sets dynamically generated links as visited. */
+div#toc a:visited { color: blue; }
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+window.onload = function(){asciidoc.footnotes();}
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([2-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  var cont = document.getElementById("content");
+  var noteholder = document.getElementById("footnotes");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      // Use [\s\S] in place of . so multi-line matches work.
+      // Because JavaScript has no s (dotall) regex flag.
+      note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      spans[i].innerHTML =
+        "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+        "' title='View footnote' class='footnote'>" + n + "</a>]";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+}
+
+}
+/*]]>*/
+</script>
+</head>
+<body>
+<div id="header">
+<h1>Measuring Entropy in a Byte Stream</h1>
+<span id="author">Troy D. Hanson</span><br />
+<span id="email"><tt>&lt;<a href="mailto:tdh@tkhanson.net">tdh@tkhanson.net</a>&gt;</tt></span><br />
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">June 2011</span>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Entropy is a measure of the unpredictability of an information stream. A
+perfectly consistent stream of bits (all zeroes, or all ones) is totally
+predictable (has no entropy). A stream of completely unpredictable bits
+has maximum entropy. The idea of entropy of information is credited to
+Claude Shannon who gave a formula to express it.</p></div>
+<div class="paragraph"><p>Compression of information without loss (lossless compression) is bounded
+by how entropic the information is. Totally unpredictable streams of bits
+are not compressible. A totally consistent stream of bits is completely
+compressible. We say that such a stream has little information content.
+So information content and entropy are used casually as synonyms. A
+compression algorithm is bounded mathematically by Shannon&#8217;s formula which
+tells us, based on probabilities of the symbols being compressed, what is
+the maximum amount of compression that can be acheived. (It does not tell
+us how to actually implement that level of compression however. But using it
+we can gauge how well a particular compression algorithm does versus the most
+optimal possible compression).</p></div>
+<div class="paragraph"><p>While entropy is mathematically described in generic terms, we will describe
+here how to apply the formula to a stream of bytes to measure its entropy.
+The quantity of entropy we will use is "bits per byte".</p></div>
+<div class="paragraph"><p>Let&#8217;s explain this unit more carefully. We know that (at least in modern
+computers) all bytes have 8 bits. We&#8217;re not talking about measuring that. This
+measure tells us how many bits are <em>necessary to encode</em> each byte.</p></div>
+</div>
+</div>
+<h2 id="_calculating_entropy_from_a_probability_distribution">Calculating entropy from a probability distribution</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Suppose that we have a stream of bytes where every byte has only of two values
+(so two of the possible 256 values are used). We can tell immediately that
+every byte really only needs one bit to represent it. The entropy measure will
+confirm that this stream has "1 bit per byte" of information content.</p></div>
+<h3 id="_recall">Recall</h3><div style="clear:left"></div>
+<div class="paragraph"><p>First recall that the base2-logarithm of a number n (we&#8217;ll call it ln(n)) just
+tells us "how many bits are needed to distinguish n states". A byte has 256
+values, so it requires ln(256)=8 bits to distinguish them. (2<sup>8</sup> = 256).</p></div>
+<div class="paragraph"><p>Also recall negative exponents are a way of writing an inverse to a power; in
+other words 2<sup>-3</sup> is the same as 1/(2<sup>3</sup>). So, the base-2 log of a fractional
+value like 1/4 is -2 (because 2<sup>-2</sup> = 1/(2<sup>2</sup>) = 1/4).</p></div>
+<h3 id="_formula">Formula</h3><div style="clear:left"></div>
+<div class="paragraph"><p>The theoretical entropy of a stream of bytes is,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>E = -SUM[v in 0..255]( p(v) * ln(p(v)) )</tt></pre>
+</div></div>
+<div class="paragraph"><p>Where p(v) is the probability of the byte value v. We&#8217;ve used SUM to
+mean the sigma notation.  Notice the entropy does not depend on the length
+of the byte stream (the length is factored in by virtue of the probabilities
+which are individually a count of a certain byte value v over the total count
+of bytes). The entropy can be calculated over any length of byte stream.</p></div>
+<h3 id="_example_1">Example 1</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Let&#8217;s apply the formula to the example mentioned where a stream of bytes only
+takes on two distinct values with equal probabilities. Since 254 of the 256
+values of a byte never occur, their probability is zero, so they do not
+contribute to the entropy measure. The two remaining byte values occur with
+p(v)=1/2. The base-2 logarithm of 1/2 is -1 (because 2<sup>-1</sup> = 1/2). Summing
+both of those terms (since they&#8217;re the same, just multiply the term by two),</p></div>
+<div class="paragraph"><p>2 * (1/2 * -1)  == -1</p></div>
+<div class="paragraph"><p>Finally the entropy formula has a leading negation (whose purpose is now
+apparent) so the resulting entropy is 1. That is, 1 bit per byte, q.e.d.</p></div>
+<h3 id="_example_2">Example 2</h3><div style="clear:left"></div>
+<div class="paragraph"><p>As a quick confirmation that we&#8217;re doing the math right, if we had four
+equally likely bytes, the formula gives us an entropy of,</p></div>
+<div class="paragraph"><p>-1 * 4 * (1/4 * -2) == 2 bits per byte.</p></div>
+<h3 id="_example_3">Example 3</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Suppose we had a stream with only two byte values that ever occur, and they
+occur with probability 2/3 and 1/3. The formula tells us the entropy is,</p></div>
+<div class="paragraph"><p>-1 * ( (2/3 * ln(2/3)) + (1/3 * ln(1/3)) ) == .913 bits per byte</p></div>
+<div class="paragraph"><p>So we see that entropy can be fractional. To put it concrete terms this
+suggests that if we had 1000 of these bytes we could encode them with 913 bits
+(115 bytes).</p></div>
+<h3 id="_example_4">Example 4</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Let&#8217;s try one last example with an even more predictable probability
+of 9/10 and 1/10. This should have lower entropy than the last example.</p></div>
+<div class="paragraph"><p>-1 * ( (9/10 * ln(9/10)) + (1/10 * ln(1/10)) ) = .467</p></div>
+<div class="paragraph"><p>This is consistent with our expectation. About 467 bits (58 bytes) would be
+needed to encode a stream of 1000 bytes with this probability distribution.</p></div>
+<h4 id="_reality_check">Reality check</h4>
+<div class="paragraph"><p>Let&#8217;s try making a file with 1000 bytes where every byte is either <em>y</em> or <em>n</em>
+(the ASCII value for those characters) with probability 9/10 and 1/10.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>perl -e 'my $y; $y .= int(rand(100))&gt;90 ? "y" : "n" for (0..999); print $y;'</tt></pre>
+</div></div>
+<div class="paragraph"><p>Run that and put its output into a temporary file /tmp/y.</p></div>
+<div class="paragraph"><p>Let&#8217;s run the popular compression tool <em>bzip2</em> on it, and see how it does
+compared to the (approximate) 58 byte ideal compressed size:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>% ls -l /tmp/y
+-rw-r--r-- 1 thanson thanson 1000 2011-06-15 18:56 /tmp/y
+% bzip2 /tmp/y
+% ls -l /tmp/y.bz2
+-rw-r--r-- 1 thanson thanson 118 2011-06-15 18:56 /tmp/y.bz2</tt></pre>
+</div></div>
+<div class="paragraph"><p>So it reduced the file from 1000 bytes to 118 bytes. That&#8217;s still twice
+as large we think the best compression can achieve. Let&#8217;s see if increasing
+the stream size allows bzip2 to more closely approach the entropic limit.</p></div>
+<div class="paragraph"><p>Change the Perl program to generate 1,000,000 y/n bytes, run, and compare:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>% ls -l /tmp/y
+-rw-r--r-- 1 thanson thanson 1000000 2011-06-15 18:58 /tmp/y
+% bzip2 /tmp/y
+% ls -l /tmp/y.bz2
+-rw-r--r-- 1 thanson thanson 62957 2011-06-15 18:58 /tmp/y.bz2</tt></pre>
+</div></div>
+<div class="paragraph"><p>So, the compressed file is about 6% of its original size, which is close
+to the entropic limit of (58/1000) or about 5.8% of original size. Good job,
+bzip2.</p></div>
+<h3 id="_back_to_theory_for_a_moment">Back to theory for a moment</h3><div style="clear:left"></div>
+<div class="paragraph"><p>We never justified how our unit is "bits per byte". Actually, bytes in the
+document here are just our specific choice of <em>symbols in some alphabet</em>. The
+formula does not depend on the specific unit being bytes. Then where did the
+bits come from? From the choice of a base-2 logarithm (a base 2 number is a
+bit). So our unit is really "bits per symbol". The symbol could be changed to
+"integers" (a 4 byte quantity typically) or something else, and everything
+would still work, as long as the probabilities are expressed on the symbols.</p></div>
+<h3 id="_range_of_entropy">Range of entropy</h3><div style="clear:left"></div>
+<div class="paragraph"><p>When our symbols are bytes, the entropy will always be in the range 0-8.
+If our symbols were in some other alphabet (not bytes) the range would
+be 0-n where n is the "bits per symbol" needed to distinguish all the
+symbols from each other. (E.g., If there are 16 symbols, n=ln(16)=4.)</p></div>
+<h3 id="_entropic_limit_as_percent">Entropic limit as percent</h3><div style="clear:left"></div>
+<div class="paragraph"><p>One last observation. Above, we turned an entropy measure into a ideal
+percentage for a file size reduction. To be explicit about how to calculate
+that, we take minimal bits per symbol (the entropy) and divide by the
+natural bits per symbol (for bits per byte, that&#8217;s 8). E.g.,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>.467 / 8  = .058</tt></pre>
+</div></div>
+<div class="paragraph"><p>So a file whose entropy is .467 can be compressed to about 5.8% of its size.</p></div>
+<h3 id="_empirical_measurement_of_entropy">Empirical measurement of entropy</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Here we describe how to take an arbitrary byte stream (data read from a file,
+for example) and calculate its entropy.</p></div>
+<div class="paragraph"><p>With the preceding background, this is a simple. First zero a counter for
+every possible symbol. Since we&#8217;re dealing with bytes, we need an array of 256
+counters initialized to zero. Now step over every symbol (byte) in the input
+stream and increment its counter. At the end of the stream (or, every so many
+bytes, if you want to calculate entropy for chunks of the stream), calculate
+the probabilities from the counts. This is just dividing each count by the
+total number of symbols encountered. The result is a probability for each
+symbol, in the range 0-1. Now the entropy formula may be applied.</p></div>
+<h4 id="_practical_considerations">Practical considerations</h4>
+<h5 id="_no_base_2_log_function">No base-2 log function?</h5>
+<div class="paragraph"><p>You might have noticed your programming language does not have a base2-log
+function, but it probably does have a function (called log(n)) which computes
+the natural log (base e). There&#8217;s nothing to worry about because you can
+multiply a log in one base by a constant to express it in another base.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>ln(n) = log(n) / log(2)</tt></pre>
+</div></div>
+<div class="paragraph"><p>So here the constant is 1/log(2). You could even do all the entropy
+calculations with log(n), and then scale the final entropy afterwards, by
+multiplying it by this constant c. (Because SUM(abc) = c(SUM(ab)).)</p></div>
+<h5 id="_maybe_log_n_is_slow">Maybe log(n) is slow?</h5>
+<div class="paragraph"><p>Here is a final practical consideration. Maybe we don&#8217;t want to call the log
+function all the time (suppose it&#8217;s slow).  If we could just pre-calculate all
+the possible values we want from the log (or ln) we could make a nice table.
+But we need the log of all kinds of fractional values (probabilities a/b)!</p></div>
+<div class="paragraph"><p>Here the properties of the logarithm are useful again:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>log(a/b) = log(a) - log(b)</tt></pre>
+</div></div>
+<div class="paragraph"><p>If we can figure out all the possible values of integers a and b we might use,
+maybe that&#8217;s more amenable to making a table than the fractional range of a/b.</p></div>
+<div class="paragraph"><p>Most likely, in a real program we can figure out the range of a and b. Why?
+First remember that in our probability calculation, a is always less than b
+(a is in the range [0,b]), so we only need to consider the range of b. What
+is the range of b? It is the maximum size of a stream (in other words, the
+maximum number of symbols) over which we might want to know the entropy.</p></div>
+<div class="paragraph"><p>Suppose this size is, say, 1000 symbols (bytes). Then we only need to compute
+the first thousand log values.  (That is, for integers in the range [1,1000]).
+We left out zero because log(0) is not defined. In our program we&#8217;ll need to
+notice any symbols whose count is 0, and just ignore that term of the entropy
+(since it contributes nothing) rather than trying to figure out the log of 0.</p></div>
+<div class="paragraph"><p>When we make our table of these first thousand log values, we can scale them
+too (to convert natural log to base-2 log) so we don&#8217;t have to do that after
+each entropy calculation. Our table will be constructed like this:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>tbl[i] = log(i) / log(2)</tt></pre>
+</div></div>
+<div class="paragraph"><p>And now tbl has the base-2 logarithm for i, for integer values of i in
+[1,1000]. Now in our program simply do a table lookup for ln(a) and ln(b)
+and subtract, in order to know the ln(a/b).</p></div>
+<h3 id="_other_thoughts">Other thoughts</h3><div style="clear:left"></div>
+<h4 id="_isn_8217_t_entropy_of_a_known_file_an_oxymoron">Isn&#8217;t entropy of a known file an oxymoron?</h4>
+<div class="paragraph"><p>In college it used to bother me to think of "probabilities" when we&#8217;re talking
+about a stream of known values. In other words, if I already have a file, then
+I know its contents, and there is no more information needed&#8201;&#8212;&#8201;it seemed to
+me that the probability of each byte didn&#8217;t make sense. I knew with certainty
+what each byte already was. So does entropy of a known file make sense?  Well,
+this was not a mathematical mystery- I just had the wrong perspective on the
+terminology. Entropy is invoked when communicating a stream from a sender to a
+receiver who has no prior knowledge of the stream (or compressing and then
+de-compressing a stream without a priori knowledge of the result). It tells us
+how much information the receiver needs to reconstruct the stream. If every
+symbol were equally likely, we&#8217;d need to send enough bits to distinguish each
+symbol (every time we send a symbol); since they&#8217;re not necessarily equally
+likely, we can use fewer bits for the common ones.</p></div>
+<h4 id="_entropy_reflects_the_data_not_how_you_send_it">Entropy reflects the data not how you send it</h4>
+<div class="paragraph"><p>Just because the entropy of a file is (for example), 2 bits per byte, we can
+still transmit it inefficiently (using 8 bits per byte). That doesn&#8217;t change the
+entropy measure of the file itself. If the sender and receiver do not have an
+encoding scheme, they are disregarding an opportunity for efficiency
+quantified by entropy, but the entropy is unchanged. The entropy is a limit
+to which encoding schemes can strive to attain.</p></div>
+</div>
+<h2 id="_resources">Resources</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here are <a href="http://tkhanson.net/cgit.cgi/misc.git/tree/entropy/">some C programs</a>
+that implement entropy measure. These are placed in the public domain.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+A <a href="http://tkhanson.net/cgit.cgi/misc.git/plain/entropy/entropy1.c">program</a>
+  that prints the entropy of stdin or a file, in bits per byte.
+</p>
+</li>
+<li>
+<p>
+This <a href="http://tkhanson.net/cgit.cgi/misc.git/plain/entropy/shlimit.c">version</a>
+  also shows the percentage to which the input file could be compressed.
+</p>
+</li>
+<li>
+<p>
+A <a href="http://tkhanson.net/cgit.cgi/misc.git/plain/entropy/mkprob.c">tool</a> that
+  produces byte streams having a given probability distribution, for testing.
+</p>
+</li>
+</ul></div>
+<h3 id="_example_1_2">Example 1</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Calculate entropy of a stream having (approx.) 1/3 and 2/3 ratio of two symbols:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>./mkprob -c 10000 33 67 | ./entropy1
+0.92 bits per byte</tt></pre>
+</div></div>
+<h3 id="_example_2_2">Example 2</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Calculate the limit to which a particular stream of 10000 bytes could be compressed:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>./mkprob -c 10000 10 20 30 40 | ./shlimit
+1.85 bits per byte
+This data can be reduced to 23% of its original size,
+from 10000 bytes to about 2312 bytes.</tt></pre>
+</div></div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br />
+Last updated 2011-06-17 16:59:58 EDT
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+pushd ()
+{
+    dirname=$1
+    if cd ${dirname:?"missing directory name."}   # if cd was successful
+    then
+        DIRSTACK="$dirname ${DIRSTACK:-$PWD' '}"
+        echo $DIRSTACK
+    else
+        echo still in $PWD.
+    fi
+}
+
+popd ()
+{
+    if [ -n "$DIRSTACK" ]; then
+        DIRSTACK=${DIRSTACK#* }
+        cd ${DIRSTACK%% *}
+        echo "$PWD"
+    else
+        echo "stack empty, still in $PWD."
+    fi
+}

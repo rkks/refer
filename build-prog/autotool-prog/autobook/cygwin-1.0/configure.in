@@ -1,0 +1,29 @@
+# Process this file with autoconf to create configure.
+
+AC_INIT(hello.h)
+AM_CONFIG_HEADER(config.h:config.in)
+AM_INIT_AUTOMAKE(hello, 1.0)
+
+AC_PROG_CC
+AC_C_CONST
+
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+
+# ----------------------------------------------------------------------
+# Win32 objects need to tell the header whether they will be linking
+# with a dll or static archive in order that everything is imported
+# to the object in the same way that it was exported from the
+# archive (``extern'' for static, ``__declspec(dllimport)'' for dlls).
+# ----------------------------------------------------------------------
+LIBHELLO_DLL_IMPORT=
+case "$host" in
+*-*-cygwin* | *-*-mingw* | *-*-os2)
+  if test "X$enable_shared" = Xyes; then
+    LIBHELLO_DLL_IMPORT=-DLIBHELLO_DLL_IMPORT
+  fi
+  ;;
+  esac
+AC_SUBST(LIBHELLO_DLL_IMPORT)
+
+AC_OUTPUT(Makefile)

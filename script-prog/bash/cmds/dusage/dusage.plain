@@ -1,0 +1,50 @@
+:
+##########################################################################
+# Title      :	dusage - show top 10 disk usage users
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-10-21
+# Requires   :	nawk
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) dusage	1.2 03/12/19
+##########################################################################
+PN=`basename $0`			# program name
+VER='1.2'
+# Determine mail spool directory (BSD/SYSV)
+for MailDir in /usr/spool/mail /var/mail
+do
+    [ -d "$MailDir" -a -r "$MailDir" ] && break
+done
+Usage () {
+    echo >&2 "$PN - show top 10 directory users, $VER (hs '94)
+usage: $PN [directory ...]
+If no directory is specified, $MailDir is the default."
+    exit 1
+}
+[ $# -gt 0 -a "$1" = "-h" ] && Usage
+# set the default directory
+[ $# -lt 1 ] && set $MailDir
+echo "NAME		       BYTES	FILES	PERCENT"
+ls -lL "$@" |
+    nawk '
+	(NF == 8 || NF == 9 ) {			# BSD or SYSV
+	    # example of a line:
+	    # -rw-------  1 andrea     286282 Oct 21 11:24 andrea
+	    #		or
+	    # -rw-------  1 andrea entw  286282 Oct 21 11:24 andrea
+	    Usage [$3] += $(NF-4)	# used bytes, username is index
+	    Count [$3]++
+	    TotalBytes += $(NF-4)
+	}
+	END {
+	    for ( user in Usage ) {
+	    	if ( Totalbytes != 0 ) {
+		    percent = Usage [user] * 100 / TotalBytes
+		} else {
+		    percent = 0
+		}
+		printf "%-15s %12d	%d	%2d\n", \
+		    user, Usage [user], Count [user], percent
+	    }
+	}
+    ' | sort -nr +1 | head
+exit 0

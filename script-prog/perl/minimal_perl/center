@@ -1,0 +1,26 @@
+#! /usr/bin/perl -wnl
+
+use Text::Tabs; # imports "expand" function
+BEGIN {
+    $width=80;  # or use `tput cols` to get width
+}  
+
+# Each tab will be counted by "length" as one character,
+#  but it may act like more!
+
+$_=expand $_;   # rewrite line with tabs replaced by spaces
+
+# Leading/trailing whitespace can make line look uncentered
+s/^\s+//;       # strip leading whitespace
+s/\s+$//;       # strip trailing whitespace
+
+# Now calculate left-padding required for centering.
+#   If string length is 10, (80-10)/2 = 35
+#   If string length is 11, (80-11)/2 = 34.5
+
+$indent=($width - length)/2;       # "length" means "length $_"
+$indent < 0  and  $indent=0;       # avoid negative indents!
+
+# Perl will truncate decimal portion of $indent
+$padding=' ' x $indent;     # generate spaces for left-padding
+print "$padding$_";         # print, with padding for centering

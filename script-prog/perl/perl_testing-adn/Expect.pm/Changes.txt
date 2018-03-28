@@ -1,0 +1,86 @@
+Ver .92 -
+	Finally figured out how to generate an EOF on a terminal (stty 0 but 
+you knew that already ;). Whole module needs a spring cleaning but seems to be
+pretty functional. After the (later) introduction of a POSIX stty function the
+code involving stty should get a little cleaner.
+	Interact, interconnect and expect should all benefit from the EOF fix.
+interconnect also looks for FH exceptions, which it treats as EOFs.
+Ver .94 -
+	Think I fixed the problem of opening /dev/tty. Should work now. Also 
+fixed a typo which caused the initial value of Log_Stdout to be set wrong.
+Ver .95 -
+	Linux had this bizarre problem of stty occasionally not returning when
+setting raw -echo. My solution was to run it twice, once for raw and once for
+echo. The real solution is of course to write an stty function using the POSIX
+module.. any volunteers? :-)
+ver .96 -
+	Fixed a couple of idiot mistakes concerning DEBUG mode and printing
+debug info to STDERR. Changed some debugging spots so debugging info will 
+always be printed in readable escaped format rather than raw input.
+ver .97 -
+	Forced baud rate to get set at startup to make sure it wasn't set to 0
+and sending EOFs. Linux now hangs consistently. It will probably not work until
+I get to the stty module. Sigh. Time to stop being lazy :)
+	Also forced complete handle flushing after handles are opened. Probably
+a bit anal but I'd rather err on the side of safety.
+	After the stty problem gets fixed I'll probably change over eveything
+to use the IO::Pty module. 
+ver .972 -
+	Fixed setpgrp to be setsid. Oops. Processes opening /dev/tty should be
+much happier now.
+ver .98 -
+	Changed everything. Now requires IO::Tty and uses IO::Stty. This
+should make it work on any posix-supporting platform that includes a method
+of obtaining a pty. Got rid of the 'detach' stuff, as it cluttered stuff up
+too much. Do your own forking.
+	Default settings are now done by directly setting Expect::Values, such
+as $Expect::Debug and $Expect::Log_Stdout. Things now use 'spawn ids' and
+'handle ids' instead of handle numbers. This makes debugging a little more 
+sensible.
+	Though there may be more bugs in the ver. I'm hopeful it should prove
+to be much more stable, reliable, intuitive and portable than previously.
+ver .99 -
+	Changed expect() to return the index of the matched pattern + 1. This
+enables the 'quick and dirty'   $process->expect($timeout,'patern') || die;
+sort of behavior.
+ver 1.00 -
+	exp_close no longer sends an exp_kill() to the process. This was kind
+of a dumb thing to do in the first place. Processes should go away after they
+are close()d. In fact, there really isn't any point in using exp_close. Just
+use $process->close();. -This isn't true as of 1.03, where soft and hard close
+were added to help deal with buffering issues.
+ver 1.01 -
+	Dropped process still alive during expect. Sometimes the process dies
+before the handle finishes getting read. Fixed a typo that caused a response
+of 'child process died' if a successfull pattern had a null value.
+	Added the ability to do expect() literals instead of regular
+expressions. see $process->use_regexps and the package global 
+$Expect::Use_Regexps.
+	Fixed internals to work with the documented fashion for using file
+ojects. everything is internally represented as ${*$process}{exp_variable} 
+instead of ${*$process}{variable}. Pids should be checked with 
+$process->pid() now, since $process->{Pid} no longer exists.
+	exp_kill() is obsolete. Use kill($signal,$process->pid()).
+ver 1.02 -
+	Killed the $Expect::Use_Regexps stuff. Changed expect to look for '-re'
+strings indicating the subsequent pattern is to be matched as a regular
+expression.
+ver 1.03 -
+	Reworked expect() to make the code more fluid. Removed ~50 lines of
+cruft. Added soft_close() and hard_close() (see Expect.pod for details).
+ver 1.04 -
+	Made all handles exp_inited autoflush. IO::Pty does the spawned 
+processes for us. All regexp patterns passed to expect() are now 
+multiline matched-- this makes matching ^ work for the beginning of lines.
+Unfortunately due to limitations in perl matching $ as the end of a line
+doesn't work if you are being returned \r\n instead of just \n. In this case
+you can use \r?$ to match the end of a line.
+	exp_stty now checks to make sure the FH is a tty.
+ver 1.05 -
+	Added debug level '3'. Fixed/added to tutorial, fixed a couple of
+minor bugs.
+ver 1.06 -
+	Added exp_before(), exp_after(), exp_match(), exp_match_number(),
+exp_error().
+ver 1.07 -
+	Changed the ver by .01 so I could get it up on CPAN :P

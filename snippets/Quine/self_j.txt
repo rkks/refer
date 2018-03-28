@@ -1,0 +1,5 @@
+Language: J
+
+Author: josh@cs.rutgers.edu
+
+".a=.'''".a=.'',q,q,~a#~1+a=q=.39{a.' 

@@ -1,0 +1,42 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $topping = Topping::Dessert->new({ name=>'Yummo', flavour=>'vanilla' });
+print $topping->describe(), "\n";
+
+package Topping::Dessert;
+use Class::Std;
+{
+    # Attributes...
+    my %name_of     :ATTR;
+    my %flavour_of  :ATTR;
+ 
+    sub BUILD {
+        my ($self, $ident, $arg_ref) = @_;
+        
+        $name_of{$ident}    = $arg_ref->{name};
+        $flavour_of{$ident} = $arg_ref->{flavour};
+ 
+        return;
+    }
+ 
+    # etc.
+
+    sub describe {
+        my ($self) = @_;
+        return "$name_of{ident $self}: $flavour_of{ident $self}";
+    }
+}

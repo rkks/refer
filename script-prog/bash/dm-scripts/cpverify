@@ -1,0 +1,169 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="cpverify"
+       HTML_="validate backup script"
+    PURPOSE_="verify that copied or burned files have been written error free"
+   SYNOPSIS_="$NAME_ [-hml] -d <source_dir> <copy_dir> | -s <source_file> -c <copy_file>"
+   REQUIRES_="standard GNU commands, md5sum"
+    VERSION_="1.3"
+       DATE_="2002-12-28; last update: 2004-12-23"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="file"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+# HISTORY:
+# 2002-12-28 v1.0
+# 2004-06-14 v1.1 - complete rewrite
+# 2004-08-18 v1.2 - added more argument checking
+#                 - added support for relative and full paths
+# 2004-12-23 v1.3 - added support for files with spaces
+#                 - improved matching of FAILED files
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -s <source_file>, source file location
+     -c <copy_file>, copied file location
+     -d <source_dir> <copy_dir>, paths to the source and copy dirs
+     -h, usage and options (this help)
+     -m, manual
+     -l, see this script"
+    exit 1
+}
+
+manual () { echo >&2 "
+
+NAME
+
+    $NAME_ $VERSION_ - $PURPOSE_
+
+SYNOPSIS
+
+    $SYNOPSIS_
+
+DESCRIPTION
+
+    $NAME_ verifies that a file or directory structure has been copied or
+    burned without errors. That is, the copied file(s) is exactly the same
+    as the original. This is done by calculating a cryptographic checksum
+    using the md5 message-digest algorithm on each file from the source and
+    the copy destination. The checksums for each file are then compared. Any
+    difference indicates that the copied file is not the same as the
+    original source file. Name of the file that fail to match the original
+    source file is printed to stdo.
+
+    Initially this script was written to verify that a CD ROM backup has
+    been burned error free. Currently the script can verify whole
+    directory trees as well as single files.
+
+EXAMPLES
+
+    To verify that a file ~/dev/src.tar.bz2 is the same as ~/backup/src.tar.bz2
+
+        $ $NAME_ -s ~/dev/src.tar.bz2 -c ~/backup/src.tar.bz2
+
+    To verify that dir structure ~/backup have been burned correctly to
+    the /mnt/cdrom
+
+        $ $NAME_ -d ~/backup /mnt/cdrom
+
+    To verify that two CD ROMS are identical, where the mounting points are
+    /mnt/cdrom and  /mnt/cdrom2
+
+        $ $NAME_ -d /mnt/cdrom /mnt/cdrom2
+
+NOTE
+
+    In August 2004 a collision has been found in MD5 and other hash functions.
+    This means that it is possible to find two messages with the same hash, but
+    the attacker can't determine what the hash will be. Immediate implications of
+    this depend on how and where MD5 is used. I can only advise to learn about
+    this issue and judge whether it is safe to keep on using MD5 until it will
+    get replaced by a safer alternative.
+
+AUTHOR
+
+    $AUTHOR_ Suggestions and bug reports are welcome.
+    For updates and more scripts visit $URL_
+
+"; exit 1; }
+
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# tmp file set up
+tmp_dir=/tmp/${RANDOM}${RANDOM}
+mkdir $tmp_dir
+tmp_1=$tmp_dir/tmp.${RANDOM}${RANDOM}
+
+# signal trapping and tmp file removal
+trap 'rm -f $tmp_1; rmdir $tmp_dir >/dev/null 2>&1' 0
+trap "exit 1" 1 2 3 15
+
+# var init
+source_file=
+copy_file=
+check_dir=
+
+while getopts hmlds:c: options; do
+
+    case "$options" in
+        s) source_file="$OPTARG" ;;
+        c) copy_file="$OPTARG" ;;
+        d) check_dir=on ;;
+        h) usage ;;
+        m) manual | more; exit 1 ;;
+        l) more $0; exit 1 ;;
+       \?) echo invalid argument, type $NAME_ -h for help; exit 1 ;;
+
+    esac
+
+done
+shift $(( $OPTIND - 1 ))
+
+# main
+if [[ -n $check_dir ]];then # checking dir structures
+
+    [ -d "$1" ] || { echo >&2 source dir "$1" does not exist; exit 1; }
+    [ -d "$2" ] || { echo >&2 copy dir "$2" does not exist; exit 1; }
+
+    # relative and full path support
+    sdir=($(cd "$1"; pwd;))
+    cdir=($(cd "$2"; pwd;))
+
+    cd "$sdir" # source dir
+    find . -type f -print0 | xargs -0 md5sum > $tmp_1
+
+    cd "$cdir" # copy dir
+    md5sum --check $tmp_1 | grep -e ": FAILED"$ -e ^"md5sum: WARNING: "
+    [[ $? == 0 ]] && exit 1
+
+
+elif [[ -n $source_file && -n $copy_file ]];then # checking files
+
+    [ -f "$source_file" ] || { echo >&2 source file "$source_file" does not exist; exit 1; }
+    [ -f "$copy_file" ] || { echo >&2 copy file "$copy_file" does not exist; exit 1; }
+
+    source=$(md5sum "$source_file" | { read sum path ; echo $sum; })
+    copy=$(md5sum "$copy_file" | { read sum path ; echo $sum; }) 
+
+    if [[ $source != $copy ]];then
+        echo WARNING: "$source_file" is different from "$copy_file"
+        exit 1
+    fi
+    
+else
+    echo missing argument, type $NAME_ -h for help
+    exit 1
+fi

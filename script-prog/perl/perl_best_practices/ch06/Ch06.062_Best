@@ -1,0 +1,44 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @disqualified_candidates = qw(
+    Nixon
+    Washington
+    Clinton
+    Bush
+);
+open my $headline, '>-' or croak $OS_ERROR;
+
+use List::Util qw( first );
+ 
+# Find a juicy story...
+my $scapegoat 
+    = first { chopped_down_cherry_tree($_) }  @disqualified_candidates;
+ 
+# Otherwise victimize someone at random...
+if (!defined $scapegoat) {
+    $scapegoat = $disqualified_candidates[rand @disqualified_candidates];
+}
+ 
+# Publish and be-damn...
+print {$headline} "Disgraced $scapegoat Disqualified From Election!!!\n";
+
+
+
+sub chopped_down_cherry_tree {
+    my ($name) = @_;
+    return $name eq 'Washington';
+}

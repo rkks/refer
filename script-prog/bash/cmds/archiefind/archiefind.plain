@@ -1,0 +1,99 @@
+##########################################################################
+# Shellscript:	archiefind - search program via request to archie
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-08-22
+# Category   :	Internet
+# SCCS-Id.   :	@(#) archiefind	1.2 04/02/18
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.2'
+Usage () {
+    echo >&2 "$PN - search program via request to archie $VER (stv '94)
+usage: $PN regex [regex ...]
+$PN searches programs matching the given regular expressions.
+It mails a request to the archie-database
+(ARCHIE=$ARCHIE), which responds via e-mail."
+    exit 1
+}
+Fatal () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+    exit 1
+}
+# List of archie servers (1996-05-05)
+#     archie.au                  139.130.23.2     Australia
+#     archie.univie.ac.at        131.130.1.23     Austria
+#     archie.belnet.be           193.190.248.18   Belgium
+#     archie.bunyip.com          192.77.55.2      Canada
+#     archie.cs.mcgill.ca        132.206.51.250   Canada
+#     archie.uqam.ca             132.208.250.10   Canada
+#     archie.funet.fi            128.214.6.102    Finland
+#     archie.univ-rennes1.fr     129.20.254.2     France
+#     archie.th-darmstadt.de     130.83.22.1      Germany
+#     archie.ac.il               132.65.16.8      Israel
+#     archie.unipi.it            131.114.21.10    Italy
+#     archie.wide.ad.jp          133.4.3.6        Japan
+#     archie.kornet.nm.kr        168.126.63.10    Korea
+#     archie.sogang.ac.kr        163.239.1.11     Korea
+#     archie.nz                  130.217.96.24    New Zealand
+#     archie.uninett.no          128.39.2.20      Norway
+#     archie.icm.edu.pl          148.81.209.2     Poland
+#     archie.rediris.es          130.206.1.2      Spain
+#     archie.luth.se             130.240.12.23    Sweden
+#     archie.switch.ch           130.59.1.40      Switzerland
+#     archie.switch.ch           130.59.10.40     Switzerland
+#     archie.ncu.edu.tw          192.83.166.12    Taiwan
+#     archie.doc.ic.ac.uk        146.169.16.11    UK
+#     archie.doc.ic.ac.uk        146.169.17.5     UK
+#     archie.doc.ic.ac.uk        146.169.2.10     UK
+#     archie.doc.ic.ac.uk        146.169.32.5     UK
+#     archie.doc.ic.ac.uk        146.169.33.5     UK
+#     archie.doc.ic.ac.uk        146.169.43.1     UK
+#     archie.doc.ic.ac.uk        155.198.1.40     UK
+#     archie.doc.ic.ac.uk        155.198.191.4    UK
+#     archie.hensa.ac.uk         129.12.43.17     UK
+#     archie.sura.net            128.167.254.195  USA (MD)
+#     archie.unl.edu             129.93.1.14      USA (NE)
+#     archie.internic.net        192.20.225.200   USA (NJ)
+#     archie.internic.net        192.20.239.132   USA (NJ)
+#     archie.internic.net        198.49.45.10     USA (NJ)
+#     archie.rutgers.edu         128.6.18.15      USA (NJ)
+#     archie.ans.net             147.225.1.10     USA (NY)
+: ${ARCHIE:=archie@archie.th-darmstadt.de}
+# : ${ARCHIE:=archie@switch.ch}
+Tmp=${TMPDIR:-/tmp}/ar$$
+silent=no
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-s)	silent=yes;;
+	-*)	Usage;;
+	*)	break;;
+    esac
+    shift
+done
+[ $# -gt 0 ] || Usage
+trap "rm -f $Tmp >/dev/null 2>&1" 0
+trap "exit 2" 1 2 3 15
+# set default settings
+# th-darmstadt does not allow regex searches
+> $Tmp
+: '
+cat <<! > $Tmp
+set search regex
+!
+'
+n=0
+for regex
+do
+    echo "find $regex" >> $Tmp
+    n=`expr $n + 1`
+done
+mail $ARCHIE < $Tmp || Fatal "cannot send mail"
+[ "$silent" = no ] &&
+    echo "$PN: $n request(s) - archie will respond with e-mail"
+exit 0

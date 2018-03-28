@@ -1,0 +1,129 @@
+Language: Java
+
+
+Author: Bertram Felgenhauer
+
+class S{public static void main(String[]a){String s="class S{public static void main(String[]a){String s=;char c=34;System.out.println(s.substring(0,52)+c+s+c+s.substring(52));}}";char c=34;System.out.println(s.substring(0,52)+c+s+c+s.substring(52));}}
+
+
+Author: Bertram Felgenhauer
+Note: Character set independent
+
+class S{public static void main(String[]a){String s="class S{public static void main(String[]a){String s=;char c='';System.out.println(s.substring(0,52)+c+s+c+s.substring(52,61)+c+s.substring(61));}}";char c='"';System.out.println(s.substring(0,52)+c+s+c+s.substring(52,61)+c+s.substring(61));}}
+
+
+Author: Dario Dariol 
+
+import java.text.*;class a{public static void main(String x[]){char b[]={34};
+char c[]={123};String s[]=new String[3];s[0]="import java.text.*;class a{2}
+public static void main(String x[]){2}char b[]={2}34};char c[]={2}123};
+String s[]=new String[3];s[0]={1}{0}{1};s[1]=new String(b);s[2]=new String(c);
+System.out.println(MessageFormat.format(s[0],s));}}";s[1]=new String(b);s[2]=
+new String(c);System.out.println(MessageFormat.format(s[0],s));}}
+
+
+Author: Doug Orleans (dougo@ccs.neu.edu)
+
+class S{public static void main(String[]a){new S().p('"',"'","class S{public static void main(String[]a){new S().p('",");}void p(char d,String q,String a,String b){System.out.println(a+d+q+','+d+q+d+','+d+a+d+','+d+b+d+b);}}");}void p(char d,String q,String a,String b){System.out.println(a+d+q+','+d+q+d+','+d+a+d+','+d+b+d+b);}}
+
+
+Author: Doug Orleans (dougo@ccs.neu.edu)
+
+class S{static char q='"';static String s="class S{static char q='';static String s=;public static void main(String[]a){StringBuffer b=new StringBuffer(s);b.insert(41,q+s+q);b.insert(23,q);System.out.println(b);}}";public static void main(String[]a){StringBuffer b=new StringBuffer(s);b.insert(41,q+s+q);b.insert(23,q);System.out.println(b);}}
+
+
+Author: Sam Holden
+
+class n { public static void main(String a[]) { Character q = new Character((char)34); Character s = new Character((char)59); String l = "class n { public static void main(String a[]) { Character q = new Character((char)34); Character s = new Character((char)59); String l = System.out.println(l.substring(0,137)+q+l+q+s+l.substring(136,207));}}"; System.out.println(l.substring(0,137)+q+l+q+s+l.substring(136,207));}}
+
+
+Author: Andy Kurnia (andykurn@comp.nus.edu.sg) 
+
+class Q{static void main(String[]a){char q=34;String t="class Q{static void main(String[]a){char q=34;String t=;System.out.println(t.substring(0,55)+q+t+q+t.substring(55));}}";System.out.println(t.substring(0,55)+q+t+q+t.substring(55));}}
+
+
+Author: Masahiro Sekiguchi (seki@sysrap.cs.fujitsu.co.jp) 
+
+class P{public static void main(String[]a){char d=34,e=39;String t="+d+t;System.out.println(t+d+';t='+d+t.replace(e,d));}}";t="class P{public static void main(String[]a){char d=34,e=39;String t="+d+t;System.out.println(t+d+";t="+d+t.replace(e,d));}}
+
+
+Author: Klil Neori
+
+class P{public static void main(String args[]){String a="class P{public static void
+main(String args[]){String
+a=;System.out.println(a.substring(0,56)+((char)0x22)+a+((char)0x22)+a.substring(56));}}";System.out.println(a.substring(0,56)+((char)0x22)+a+((char)0x22)+a.substring(56));}}
+
+
+Author: Wayne O. Cochran (wcochran@eecs.wsu.edu )
+
+public class Myself {
+  static String[] me = {
+    "public class Myself {",
+    "  static String[] me = {",
+    "  };",
+    "  static char quote =",
+    "  public static void main(String argv[]) {",
+    "    for (int i = 0; i < 2; i++)",
+    "      System.out.println(me[i]);",
+    "    for (int i = 0; ; ) {",
+    "      for (int j = 0; j < 4; j++)",
+    "        System.out.print(' ');",
+    "      System.out.print(quote + me[i] + quote);",
+    "      if (++i == me.length) {",
+    "        System.out.println();",
+    "        break;",
+    "      }",
+    "      System.out.println(',');",
+    "    }",
+    "    for (int i = 2; i <= 3; i++)",
+    "      System.out.println(me[i]);",
+    "    for (int i = 0; i < 4; i++)",
+    "      System.out.print(' ');",
+    "    System.out.print(''');",
+    "    System.out.print(quote);",
+    "    System.out.print(''');",
+    "    System.out.println(';');",
+    "    for (int i = 4; i < me.length; i++)",
+    "      System.out.println(me[i]);",
+    "  }",
+    "}"
+  };
+  static char quote =
+    '"';
+  public static void main(String argv[]) {
+    for (int i = 0; i < 2; i++)
+      System.out.println(me[i]);
+    for (int i = 0; ; ) {
+      for (int j = 0; j < 4; j++)
+        System.out.print(' ');
+      System.out.print(quote + me[i] + quote);
+      if (++i == me.length) {
+        System.out.println();
+        break;
+      }
+      System.out.println(',');
+    }
+    for (int i = 2; i <= 3; i++)
+      System.out.println(me[i]);
+    for (int i = 0; i < 4; i++)
+      System.out.print(' ');
+    System.out.print(''');
+    System.out.print(quote);
+    System.out.print(''');
+    System.out.println(';');
+    for (int i = 4; i < me.length; i++)
+      System.out.println(me[i]);
+  }
+}
+
+
+Author: Daniel Lyle
+
+import java.io.*;
+
+class selfrep{
+  public static void main(String arguments[]){
+    String S = "System.out.print((char)105);System.out.print((char)109);System.out.print((char)112);System.out.print((char)111);System.out.print((char)114);System.out.print((char)116);System.out.print((char)32);System.out.print((char)106);System.out.print((char)97);System.out.print((char)118);System.out.print((char)97);System.out.print((char)46);System.out.print((char)105);System.out.print((char)111);System.out.print((char)46);System.out.print((char)42);System.out.print((char)59);System.out.print((char)13);System.out.print((char)10);System.out.print((char)13);System.out.print((char)10);System.out.print((char)99);System.out.print((char)108);System.out.print((char)97);System.out.print((char)115);System.out.print((char)115);System.out.print((char)32);System.out.print((char)115);System.out.print((char)101);System.out.print((char)108);System.out.print((char)102);System.out.print((char)114);System.out.print((char)101);System.out.print((char)112);System.out.print((char)123);System.out.print((char)13);System.out.print((char)10);System.out.print((char)32);System.out.print((char)32);System.out.print((char)112);System.out.print((char)117);System.out.print((char)98);System.out.print((char)108);System.out.print((char)105);System.out.print((char)99);System.out.print((char)32);System.out.print((char)115);System.out.print((char)116);System.out.print((char)97);System.out.print((char)116);System.out.print((char)105);System.out.print((char)99);System.out.print((char)32);System.out.print((char)118);System.out.print((char)111);System.out.print((char)105);System.out.print((char)100);System.out.print((char)32);System.out.print((char)109);System.out.print((char)97);System.out.print((char)105);System.out.print((char)110);System.out.print((char)40);System.out.print((char)83);System.out.print((char)116);System.out.print((char)114);System.out.print((char)105);System.out.print((char)110);System.out.print((char)103);System.out.print((char)32);System.out.print((char)97);System.out.print((char)114);System.out.print((char)103);System.out.print((char)117);System.out.print((char)109);System.out.print((char)101);System.out.print((char)110);System.out.print((char)116);System.out.print((char)115);System.out.print((char)91);System.out.print((char)93);System.out.print((char)41);System.out.print((char)123);System.out.print((char)13);System.out.print((char)10);System.out.print((char)32);System.out.print((char)32);System.out.print((char)32);System.out.print((char)32);System.out.print((char)83);System.out.print((char)116);System.out.print((char)114);System.out.print((char)105);System.out.print((char)110);System.out.print((char)103);System.out.print((char)32);System.out.print((char)83);System.out.print((char)32);System.out.print((char)61);System.out.print((char)32);System.out.print((char)34);System.out.print(S);System.out.print((char)34);System.out.print((char) 59);System.out.print((char) 10);System.out.print(S);System.out.print((char) 10);System.out.print((char) 32);System.out.print((char) 32);System.out.print((char) 125);System.out.print((char) 10);System.out.print((char) 125);";
+System.out.print((char)105);System.out.print((char)109);System.out.print((char)112);System.out.print((char)111);System.out.print((char)114);System.out.print((char)116);System.out.print((char)32);System.out.print((char)106);System.out.print((char)97);System.out.print((char)118);System.out.print((char)97);System.out.print((char)46);System.out.print((char)105);System.out.print((char)111);System.out.print((char)46);System.out.print((char)42);System.out.print((char)59);System.out.print((char)13);System.out.print((char)10);System.out.print((char)13);System.out.print((char)10);System.out.print((char)99);System.out.print((char)108);System.out.print((char)97);System.out.print((char)115);System.out.print((char)115);System.out.print((char)32);System.out.print((char)115);System.out.print((char)101);System.out.print((char)108);System.out.print((char)102);System.out.print((char)114);System.out.print((char)101);System.out.print((char)112);System.out.print((char)123);System.out.print((char)13);System.out.print((char)10);System.out.print((char)32);System.out.print((char)32);System.out.print((char)112);System.out.print((char)117);System.out.print((char)98);System.out.print((char)108);System.out.print((char)105);System.out.print((char)99);System.out.print((char)32);System.out.print((char)115);System.out.print((char)116);System.out.print((char)97);System.out.print((char)116);System.out.print((char)105);System.out.print((char)99);System.out.print((char)32);System.out.print((char)118);System.out.print((char)111);System.out.print((char)105);System.out.print((char)100);System.out.print((char)32);System.out.print((char)109);System.out.print((char)97);System.out.print((char)105);System.out.print((char)110);System.out.print((char)40);System.out.print((char)83);System.out.print((char)116);System.out.print((char)114);System.out.print((char)105);System.out.print((char)110);System.out.print((char)103);System.out.print((char)32);System.out.print((char)97);System.out.print((char)114);System.out.print((char)103);System.out.print((char)117);System.out.print((char)109);System.out.print((char)101);System.out.print((char)110);System.out.print((char)116);System.out.print((char)115);System.out.print((char)91);System.out.print((char)93);System.out.print((char)41);System.out.print((char)123);System.out.print((char)13);System.out.print((char)10);System.out.print((char)32);System.out.print((char)32);System.out.print((char)32);System.out.print((char)32);System.out.print((char)83);System.out.print((char)116);System.out.print((char)114);System.out.print((char)105);System.out.print((char)110);System.out.print((char)103);System.out.print((char)32);System.out.print((char)83);System.out.print((char)32);System.out.print((char)61);System.out.print((char)32);System.out.print((char)34);System.out.print(S);System.out.print((char)34);System.out.print((char) 59);System.out.print((char) 10);System.out.print(S);System.out.print((char) 10);System.out.print((char) 32);System.out.print((char) 32);System.out.print((char) 125);System.out.print((char) 10);System.out.print((char) 125);
+  }
+}

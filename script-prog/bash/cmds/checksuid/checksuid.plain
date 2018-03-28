@@ -1,0 +1,68 @@
+:
+##########################################################################
+# Shellscript:	checksuid - check for S[UG]ID programs
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1995-09-12
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) checksuid	1.2 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+: ${POSTMASTER:=${LOGNAME:-${USER}}}
+: ${HOSTNAME:=`uname -n`}
+Dirs="/ /usr"				# Searched directories
+: ${SUIDList:=/var/adm/suid.list}
+Tmp=${TMPDIR:=/tmp}/cs$$
+Tmp2=${TMPDIR:=/tmp}/cs$$1
+# Determine mail program knowing "-s" argument
+Mail=mail
+[ -x /bin/mailx ] && Mail=mailx
+Usage () {
+    echo >&2 "$PN - check for SUID/SGID programs, $VER (stv '95)
+usage: $PN [directory ...]
+Compares all files with a file list, and reports new files.
+Searched directories:	$Dirs
+SUID/SGID list:		SUIDList=$SUIDList
+The output is mailed to user POSTMASTER=$POSTMASTER"
+    exit 1
+}
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+[ $# -lt 1 ] && set -- $Dirs
+# Remove temporary file after signal or exit
+trap "rm -f $Tmp $Tmp2 > /dev/null 2>&1" 0
+trap "exit 2" 1 2 3 15
+# Convert directory names to absulute path names
+Dirs=
+for Dir
+do
+    [ -d "$Dir" ] && Dirs="$Dirs `cd $Dir; pwd`"
+done
+set -- $Dirs
+find "$@" -xdev -perm -4000 -type f -print > $Tmp	# SUID
+find "$@" -xdev -perm -2000 -type f -print >> $Tmp	# SGID
+# comm only works with sorted files
+sort -u $Tmp > $Tmp2 && mv $Tmp2 $Tmp
+sort -u "$SUIDList" > $Tmp2 || exit
+mv $Tmp2 "$SUIDList"
+comm -23 "$Tmp" "$SUIDList" > "$Tmp2"
+if [ -s $Tmp2 ]
+then
+    xargs ls -lgad < $Tmp2 > $Tmp || exit
+    cat - $Tmp <<! | $Mail -s "New SUID or SGID Programs on $HOSTNAME" $POSTMASTER
+*** Output from program $0
+New SUID/SGID files on $HOSTNAME:
+!
+fi
+exit 0

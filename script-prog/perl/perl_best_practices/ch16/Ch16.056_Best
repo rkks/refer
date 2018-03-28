@@ -1,0 +1,55 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Phonebook;
+use Class::Std;
+use Carp;
+{
+    my %entries_of : ATTR;
+ 
+    # Set numbers...
+    sub set_number_of {
+        croak 'Missing argument for set_number_of()' if @_ < 3;
+ 
+        my ($self, $name, $number) = @_;
+ 
+        $entries_of{ident $self}->{$name} = $number;
+ 
+        return;
+    }
+ 
+    # Get numbers...
+    sub get_number_of {
+        croak 'Missing argument for get_number_of()' if @_ < 2;
+ 
+        my ($self, $name) = @_;
+ 
+        return $entries_of{ident $self}->{$name};
+    }
+}
+ 
+# and later...
+ 
+my $lbb = Phonebook->new();
+ 
+$lbb->set_number_of(Jenny => 867_5309);
+$lbb->set_number_of(Glenn => 736_5000);
+ 
+print $lbb->get_number_of('Jenny'), "\n";
+print $lbb->get_number_of('Glenn'), "\n";
+
+$lbb->call_Jenny();

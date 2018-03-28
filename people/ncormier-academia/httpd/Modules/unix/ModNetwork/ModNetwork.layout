@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_layout_file>
+<CodeBlocks_layout_file>
+	<File name="ClientSocket.cpp" open="0" top="0">
+		<Cursor position="614" topLine="19"/>
+	</File>
+	<File name="ClientSocket.h" open="0" top="0">
+		<Cursor position="258" topLine="0"/>
+	</File>
+	<File name="ModNetwork.cpp" open="0" top="0">
+		<Cursor position="305" topLine="0"/>
+	</File>
+	<File name="Network.cpp" open="1" top="0">
+		<Cursor position="7368" topLine="263"/>
+	</File>
+	<File name="Network.h" open="0" top="0">
+		<Cursor position="443" topLine="2"/>
+	</File>
+	<File name="../../../src/TicketsHandler.cpp" open="0" top="0">
+		<Cursor position="824" topLine="24"/>
+	</File>
+</CodeBlocks_layout_file>

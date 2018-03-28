@@ -1,0 +1,20 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 17 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+use IO::Prompt 0.002;              # must be 0.2.0 or better
+use List::Util 1.13   qw( max );   # must be 1.13 or better
+

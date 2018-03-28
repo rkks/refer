@@ -1,0 +1,36 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 17 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Test::Utils;
+ 
+use base qw( Exporter );
+ 
+our @EXPORT    = qw( ok );                # Default export
+our @EXPORT_OK = qw( skip pass fail );    # By explicit request only
+ 
+our %EXPORT_TAGS = (
+    ALL  => [@EXPORT, @EXPORT_OK],        # Everything if :ALL tagset requested
+    TEST => [qw( ok pass fail )],         # These if :TEST tagset requested
+    PASS => [qw( ok pass )],              # These if :PASS tagset requested
+);
+
+ 
+sub ok   {}
+sub pass {}
+sub fail {}
+sub skip {}
+

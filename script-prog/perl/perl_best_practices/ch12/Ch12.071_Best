@@ -1,0 +1,57 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %option = (
+    eat   => 'fruit',
+    drink => 'water',
+    head  => 'clear',
+);
+
+CONFIG_LINE:
+while (my $config = <DATA>) {
+    # Match config line in list context, capturing components into named vars...
+    my ($opt_name, $operator, $opt_val, $comment)
+        = $config =~ m/ \A  (\S+)  \s* (=|[+]=) \s*  ([^;]+) ;  \s* \# (.*)/xms;
+ 
+    # Only process line if it was recognizable...
+    next CONFIG_LINE if !defined $opt_name;
+ 
+    # Verify the option makes sense...
+    debug($comment);
+    croak "Unknown option ($opt_name)" 
+        if not exists $option{$opt_name};
+ 
+    # Replace or append value depending on specified operator...
+    if ($operator eq '=') {
+        $option{$opt_name} = $opt_val;
+    }
+    else {
+        $option{$opt_name}.= $opt_val;
+    }
+}
+
+
+sub debug {
+    my ($msg) = @_;
+    print "Found: $msg\n";
+}
+use Data::Dumper 'Dumper';
+warn Dumper [ \%option ];
+
+__DATA__
+eat = cake;     # Food
+drink = wine;   # Drink
+head = off;     # Revolution!

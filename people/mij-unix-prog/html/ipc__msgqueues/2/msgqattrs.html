@@ -1,0 +1,70 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;msgqattrs.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;creates a posix message queue requesting custom attributes,<br />
+&nbsp;* &nbsp;and displays what attributes are taken into account and what<br />
+&nbsp;* &nbsp;are not, while both creating and while setting at a later time.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 31/08/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+#include &lt;mqueue.h&gt;<br />
+#include &lt;sys/stat.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#683821;">#define MSGQOBJ_NAME &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/fooasd1431"<br />
+#define MAX_QMSG_SIZE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">30</span><span style="color:#683821;"><br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;mqd_t myqueue;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> mq_attr wanted_attrs, actual_attrs;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* filling the attribute structure */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_flags = <span style="color:#0000ff;">0</span>; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* no exceptional behavior (just O_NONBLOCK currently available) &nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_maxmsg = <span style="color:#0000ff;">100</span>; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* room for at most 100 messages in the queue */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_msgsize = MAX_QMSG_SIZE; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* maximum size of a message */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_curmsgs = <span style="color:#0000ff;">123</span>; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this (current number of messages) will be ignored */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* mq_open() for creating a new queue (using default attributes) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;myqueue = <span style="color:#003369;">mq_open</span>(MSGQOBJ_NAME, O_RDWR | O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, &amp;wanted_attrs);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(myqueue == (mqd_t)-<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In mq_open()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Message queue created.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting queue attributes after creation &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_getattr() &nbsp;&nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_getattr</span>(myqueue, &amp;actual_attrs);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Attributes right after queue creation:\n\t- non blocking flag: %d\n\t- maximum number of messages: %ld\n\t- maximum size of a message: %ld\n\t- current number of messages: %ld\n"</span>, (actual_attrs.mq_flags == <span style="color:#0000ff;">0</span> ? <span style="color:#0000ff;">0</span> : <span style="color:#0000ff;">1</span>), actual_attrs.mq_maxmsg, actual_attrs.mq_msgsize, actual_attrs.mq_curmsgs);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* building the structure again for modifying the existent queue */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_flags = O_NONBLOCK;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_maxmsg = <span style="color:#0000ff;">350</span>; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this will be ignored by mq_setattr() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_msgsize = MAX_QMSG_SIZE; &nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this will be ignored by mq_setattr() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;wanted_attrs.mq_curmsgs = <span style="color:#0000ff;">123</span>; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this will be ignored by mq_setattr() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* trying to later set different attributes on the queue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_setattr() &nbsp;&nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_setattr</span>(myqueue, &amp;wanted_attrs, <span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting queue attributes after creation */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_getattr</span>(myqueue, &amp;actual_attrs);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Attributes after setattr():\n\t- non blocking flag: %d\n\t- maximum number of messages: %ld\n\t- maximum size of a message: %ld\n\t- current number of messages: %ld\n"</span>, (actual_attrs.mq_flags == <span style="color:#0000ff;">0</span> ? <span style="color:#0000ff;">0</span> : <span style="color:#0000ff;">1</span>), actual_attrs.mq_maxmsg, actual_attrs.mq_msgsize, actual_attrs.mq_curmsgs);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* removing the queue from the system &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_unlink() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_unlink</span>(MSGQOBJ_NAME);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+</div>

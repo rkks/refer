@@ -1,0 +1,28 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @raw_samples = (undef, undef, 2, 3, -1, undef, 1);
+
+sub how_many_defined {
+    return grep {defined $_} @_;
+}
+ 
+# and "always" thereafter:
+ 
+my $found = how_many_defined(@raw_samples);
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $found ];

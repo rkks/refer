@@ -1,0 +1,299 @@
+.\" @(#)pfmod.7 1.9 92/03/28 SMI; new for 5.0
+.\" Copyright 1991 Sun Microsystems
+.TH pfmod 7 "9 Oct 1991"
+.SH NAME
+pfmod \- STREAMS Packet Filter Module
+.SH SYNOPSIS
+.B #include <sys/pfmod.h>
+.LP
+\f3ioctl(fd, I_PUSH, "pfmod");\f1
+.SH DESCRIPTION
+.IX "STREAMS Packet Filter Module" "" "STREAMS Packet Filter Module \(em \fLpfmod\fP"
+.IX "pfmod" "" "\fLpfmod\fP \(em STREAMS packet filter module"
+.LP
+.B pfmod
+is a
+.SM STREAMS
+module that subjects messages arriving on its read queue
+to a packet filter
+and passes only those messages that the filter accepts on
+to its upstream neighbor.
+Such filtering can be very useful for user-level protocol implementations
+and for networking monitoring programs
+that wish to view only specific types of events.
+.SS "Read-side Behavior"
+.B pfmod
+applies the current packet filter to all
+.SB M_DATA
+and
+.SB M_PROTO
+messages arriving on its read queue.
+The module prepares these messages for examination
+by first skipping over all leading
+.SB M_PROTO
+message blocks to arrive at the beginning of the message's data portion.
+If there is no data portion,
+.B pfmod
+accepts the message and passes it along to its upstream neighbor.
+Otherwise,
+the module ensures that the part of the message's data
+that the packet filter might examine
+lies in contiguous memory, calling the
+.I msgpullup(D3DK)
+utility routine if necessary to force contiguity.
+(Note: this action destroys any sharing relationships
+that the subject message might have had with other messages.)
+Finally, it applies the packet filter to the message's data,
+passing the entire message upstream to the next module
+if the filter accepts, and discarding the message otherwise.
+See
+.SM "PACKET FILTERS"
+below for details on how the filter works.
+.LP
+If there is no packet filter yet in effect,
+the module acts as if the filter exists but does nothing,
+implying that all incoming messages are accepted.
+.SM IOCTLS
+below describes how to associate a packet filter
+with an instance of
+.BR pfmod .
+.LP
+.B pfmod
+passes all other messages through unaltered to its upper neighbor.
+.SS "Write-side Behavior"
+.B pfmod
+intercepts
+.SB M_IOCTL
+messages for the
+.IR ioctl
+described below.
+The module passes all other messages through unaltered
+to its lower neighbor.
+.SH IOCTLS
+.LP
+.B pfmod
+responds to the following
+.IR ioctl .
+.TP 12
+.SB PFIOCSETF
+This
+.I ioctl
+directs the module to replace its current packet filter,
+if any, with the filter specified by the
+.B "struct packetfilt"
+pointer named by its final argument.
+This structure is defined in
+.B <sys/pfmod.h>
+as:
+.RS 15
+.ft 3
+.nf
+.ta +1 +4 +15
+struct packetfilt {
+	u_char	Pf_Priority;	/* priority of filter */
+	u_char	Pf_FilterLen;	/* length of filter cmd list */
+	u_short	Pf_Filter[\s-1ENMAXFILTERS\s0];	/* filter command list */
+};
+.DT
+.fi
+.ft 1
+.RE
+The
+.B Pf_Priority
+field is included only for compatibility
+with other packet filter implementations
+and is otherwise ignored.
+The packet filter itself is specified in the
+.B Pf_Filter
+array as a sequence of two-byte commands, with the
+.B Pf_FilterLen
+field giving the number of commands in the sequence.
+This implementation restricts
+the maximum number of commands in a filter
+.RB ( \s-1ENMAXFILTERS\s0 )
+to 255.
+The next section describes the available commands and their semantics.
+.SH "PACKET FILTERS"
+.LP
+A packet filter consists of the filter command list length
+(in units of
+.BR u_short s),
+and the filter command list itself.
+(The priority field mentioned above
+is ignored in this implementation.)
+Each filter command list specifies a sequence of actions
+that operate on an internal stack of
+.BR u_short s
+(\*(lqshortwords\*(rq).
+Each shortword of the command list specifies one of the actions
+.SM ENF_PUSHLIT\s0,
+.SM ENF_PUSHZERO\s0,
+.SM ENF_PUSHONE\s0,
+.SM ENF_PUSHFFFF\s0,
+.SM ENF_PUSHFF00\s0,
+.SM ENF_PUSH00FF\s0,
+or
+.SM ENF_PUSHWORD\s0\c
+.RI + n ,
+which respectively push the next shortword of the command list,
+zero,
+one,
+0xFFFF,
+0xFF00,
+0x00FF,
+or shortword
+.I n
+of the subject message on the stack,
+and a binary operator
+from the set
+{\s-1ENF_EQ\s0,
+.SM ENF_NEQ\s0,
+.SM ENF_LT\s0,
+.SM ENF_LE\s0,
+.SM ENF_GT\s0,
+.SM ENF_GE\s0,
+.SM ENF_AND\s0,
+.SM ENF_OR\s0,
+.SM ENF_XOR\s0}
+which then operates on the top two elements of the stack
+and replaces them with its result.
+When both an action and operator are specified in the same shortword,
+the action is performed followed by the operation.
+.LP
+The binary operator can also be from the set
+{\s-1ENF_COR\s0,
+.SM ENF_CAND\s0,
+.SM ENF_CNOR\s0,
+.SM ENF_CNAND\s0}.
+These are \*(lqshort-circuit\*(rq operators,
+in that they terminate the execution of the filter immediately
+if the condition they are checking for is found,
+and continue otherwise.
+All pop two elements from the stack and compare them for equality;
+.SM ENF_CAND
+returns false if the result is false;
+.SM ENF_COR
+returns true if the result is true;
+.SM ENF_CNAND
+returns true if the result is false;
+.SM ENF_CNOR
+returns false if the result is true.
+Unlike the other binary operators,
+these four do not leave a result on the stack,
+even if they continue.
+.LP
+The short-circuit operators should be used when possible,
+to reduce the amount of time spent evaluating filters.
+When they are used,
+you should also arrange the order of the tests
+so that the filter will succeed or fail as soon as possible;
+for example, checking the
+.SM IP
+destination field of a
+.SM UDP
+packet is more likely to indicate failure than the packet type field.
+.LP
+The
+special action
+.SM ENF_NOPUSH
+and the special operator
+.SM ENF_NOP
+can be used to only
+perform the binary operation or to only push a value on the stack.
+Since both are (conveniently) defined to be zero,
+indicating only an action actually specifies the action followed by
+.SM ENF_NOP\s0,
+and indicating only an operation actually specifies
+.SM ENF_NOPUSH
+followed by the operation.
+.LP
+After executing the filter command list,
+a non-zero value (true) left on top of the stack
+(or an empty stack) causes the incoming
+packet to be accepted
+and a zero value (false) causes the packet to be rejected.
+(If the filter exits as the result of a short-circuit operator,
+the top-of-stack value is ignored.)
+Specifying an undefined operation or action in the command list
+or performing an illegal operation or action
+(such as pushing a shortword offset past the end of the packet
+or executing a binary operator with fewer than two shortwords on the stack)
+causes a filter to reject the packet.
+.SH EXAMPLES
+.LP
+The packet filter module is not dependent on any particular
+device driver or module but is commonly used with
+datalink drivers such as the Ethernet driver.
+If the underlying datalink driver supports
+the Data Link Provider Interface (DLPI) message set,
+the appropriate
+.SM "STREAMS DLPI"
+messages must be issued
+to attach the stream to a particular hardware device
+and bind a datalink address to the stream
+before the underlying driver will route received packets upstream.
+Refer to the
+.SM DLPI
+Version 2 specification for details on this interface.
+.LP
+The reverse
+.SM ARP
+daemon program
+may use code similar to the following fragment to construct a filter
+that rejects all but
+.SM RARP
+packets.
+That is,
+is accepts only packets whose Ethernet type field
+has the value
+.SM ETHERTYPE_REVARP\s0.
+.RS
+.ft 3
+.nf
+struct ether_header eh;		/* used only for offset values */
+struct packetfilt pf;
+register u_short *fwp = pf.Pf_Filter;
+u_short offset;
+int	fd;
+
+/*
+ * Push packet filter streams module.
+ */
+if (ioctl(fd, I_PUSH, "pfmod") < 0)
+	syserr("pfmod");
+
+/*
+ * Set up filter.  Offset is the displacement of the Ethernet
+ * type field from the beginning of the packet in units of
+ * u_shorts.
+ */
+.br
+.ne 10
+offset = ((u_int) &eh.ether_type - (u_int) &eh.ether_dhost) / sizeof (u_short);
+*fwp++ = \s-1ENF_PUSHWORD\s0 + offset;
+*fwp++ = \s-1ENF_PUSHLIT\s0;
+*fwp++ = htons(\s-1ETHERTYPE_REVARP\s0);
+*fwp++ = \s-1ENF_EQ\s0;
+pf.Pf_FilterLen = fwp - &pf.Pf_Filter[0];
+.ft 1
+.fi
+.RE
+.LP
+This filter can be abbreviated by taking advantage
+of the ability to combine actions and operations:
+.RS
+.nf
+.\" .\|.\|.
+.ft 3
+*fwp++ = \s-1ENF_PUSHWORD\s0 + offset;
+*fwp++ = \s-1ENF_PUSHLIT\s0 | \s-1ENF_EQ\s0;
+*fwp++ = htons(\s-1ETHERTYPE_REVARP\s0);
+.ft 1
+.\".\|.\|.
+.fi
+.RE
+.SH SEE ALSO
+.BR bufmod (7),
+.BR dlpi (7),
+.BR ie (7),
+.BR le (7)

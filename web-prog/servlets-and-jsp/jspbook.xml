@@ -1,0 +1,23 @@
+<Context path="/jspbook" docBase="jspbook" debug="0">
+  <Resource name="jdbc/jspbook" 
+    auth="Container"  
+    type="javax.sql.DataSource"/>
+  <ResourceParams name="jdbc/jspbook">
+    <parameter>
+      <name>username</name>
+      <value>sa</value>
+    </parameter>
+    <parameter>
+      <name>password</name>
+      <value></value>
+    </parameter>
+    <parameter>
+      <name>driverClassName</name>
+      <value>org.hsqldb.jdbcDriver</value>
+    </parameter>
+    <parameter>
+      <name>url</name>
+      <value>jdbc:hsqldb:/usr/jakarta-tomcat-5/webapps/jspbook/WEB-INF/jspbookdb</value>
+    </parameter>
+  </ResourceParams>
+</Context>

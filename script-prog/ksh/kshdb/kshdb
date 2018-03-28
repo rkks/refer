@@ -1,0 +1,16 @@
+# kshdb -- Korn Shell debugger
+# Main driver: constructs full script (with preamble) and runs it
+
+print 'Korn Shell Debugger version 1.0\n'
+_guineapig=$1
+if [[ ! -r $1 ]]; then		# file not found or readable
+    print "Cannot read $_guineapig." >&2
+    exit 1
+fi
+shift
+
+_tmpdir=/tmp
+_libdir=.
+_dbgfile=$_tmpdir/kshdb$$	# temp file for script being debugged (copy)
+cat $_libdir/kshdb.pre $_guineapig > $_dbgfile
+exec ksh $_dbgfile $_guineapig $_tmpdir $_libdir "$@"

@@ -1,0 +1,5 @@
+#! /usr/bin/perl -wl
+
+while ( ($key, $value)=each %ENV ) {
+    $key =~ /PATH/  and  print "$key=$value";
+}

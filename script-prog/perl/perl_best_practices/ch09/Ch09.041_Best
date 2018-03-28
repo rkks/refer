@@ -1,0 +1,36 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Readonly;
+
+Readonly my $MIN_SAMPLE_COUNT => 5;
+
+my @raw_samples = (undef, undef, 2, 3, -1, undef, 1);
+
+sub valid_samples_in {
+    return grep {defined($_) && $_ >= 0} @_;
+}
+ 
+
+if (valid_samples_in(@raw_samples) < $MIN_SAMPLE_COUNT) {
+    report_sensor_malfunction();
+}
+
+
+
+sub report_sensor_malfunction {
+    print "reporting sensor malfunction\n";
+}

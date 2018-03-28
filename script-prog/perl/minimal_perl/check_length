@@ -1,0 +1,10 @@
+#! /usr/bin/perl -wnl
+
+use Text::Tabs;         # provides "expand" function
+
+s/^.*$/expand $&/ge;    # replace tabs by spaces in line
+
+length > 55  and
+    print "** WARNING:  Line $. is too long:";
+
+print;                  # Now print the line

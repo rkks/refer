@@ -1,0 +1,28 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub defined_samples_in {
+    croak q{Useless use of 'defined_samples_in' in a non-list context}
+        if !wantarray;
+ 
+    return grep {defined $_} @_;
+}
+
+my @raw_samples = (undef, 1, 9, undef, 8, undef, 4);
+
+print defined_samples_in(@raw_samples), "\n";
+print scalar defined_samples_in(@raw_samples), "\n";

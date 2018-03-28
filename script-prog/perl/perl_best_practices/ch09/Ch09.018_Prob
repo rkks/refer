@@ -1,0 +1,30 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Trim some text and put a "box" around it...
+sub boxed {
+    $_[0] =~ s{\A \s+ | \s+ \z}{}gxms;
+    return "[$_[0]]";
+}
+
+
+my $text = 'hi there';
+print boxed($text), "\n";
+use Data::Dumper 'Dumper';
+warn Dumper [ $text ];
+
+print boxed('hi there'), "\n";

@@ -1,0 +1,158 @@
+# Here after each statement in script being debugged.
+# Handle single-step and breakpoints.
+function _steptrap {
+    _curline=$1                         # arg is no. of line that just ran
+
+    (( $_trace )) && _msg "$PS4 line $_curline: ${_lines[$_curline]}"
+
+    if (( $_steps >= 0 )); then         # if in step mode
+        let _steps="$_steps - 1"        # decrement counter 
+    fi
+
+    # first check if line num or string breakpoint reached
+    if _at_linenumbp || _at_stringbp; then
+        _msg "Reached breakpoint at line $_curline"
+        _cmdloop                        # breakpoint, enter debugger
+                                        
+    # if not, check whether break condition exists and is true
+    elif [[ -n $_brcond ]] && eval $_brcond; then
+        _msg "Break condition $_brcond true at line $_curline"
+        _cmdloop
+
+    # next, check if step mode and number of steps is up
+    elif (( $_steps == 0 )); then       # if step mode and time to stop
+        _msg "Stopped at line $_curline"
+        _cmdloop                        # enter debugger
+    fi
+}
+
+
+# Debugger command loop.
+# Here at start of debugger session, when breakpoint reached,
+# or after single-step.
+function _cmdloop {
+    typeset cmd args
+
+    while read -s cmd"?kshdb> " args; do
+        case $cmd in
+            \*bp ) _setbp $args ;;      # set breakpoint at line num or string.
+
+            \*bc ) _setbc $args ;;      # set break condition.
+
+            \*cb ) _clearbp ;;          # clear all breakpoints.
+
+            \*g  ) return ;;            # start/resume execution
+
+            \*s  ) let _steps=${args:-1} # single-step N times (default 1)
+                   return ;;
+        
+            \*x  ) _xtrace ;;           # toggle execution trace
+
+            \*\? | \*h ) _menu ;;       # print command menu        
+
+            \*q  ) exit ;;              # quit
+
+            \**  ) _msg "Invalid command: $cmd" ;; 
+
+            *  ) eval $cmd $args ;;     # otherwise, run shell command
+        esac
+    done
+}
+
+ 
+# See if next line no. is a breakpoint.
+function _at_linenumbp {
+    [[ $_curline = @(${_linebp%\|}) ]]
+}
+
+
+# Search string breakpoints to see if next line in script matches.
+function _at_stringbp {
+    [[ -n $_stringbp && ${_lines[$_curline]} = *@(${_stringbp%\|})* ]]
+}
+
+
+# Print the given message to standard error.
+function _msg {
+    print "$@" >&2
+}
+
+
+# Set breakpoint(s) at given line numbers and/or strings
+# by appending lines to breakpoint file
+function _setbp {
+    if [[ -z $1 ]]; then
+        _listbp
+    elif [[ $1 = +([0-9]) ]]; then  # number, set bp at that line
+        _linebp="${_linebp}$1|"
+        _msg "Breakpoint at line " $1
+    else                            # string, set bp at next line w/string
+        _stringbp="${_stringbp}$@|"
+        _msg "Breakpoint at next line containing $@."
+    fi
+}
+
+
+# List breakpoints and break condition.
+function _listbp {
+    _msg "Breakpoints at lines:"
+    _msg "$(print $_linebp | tr '|' ' ')" 
+    _msg "Breakpoints at strings:"
+    _msg "$(print $_stringbp | tr '|' ' ')"
+    _msg "Break on condition:"
+    _msg "$_brcond"
+}
+
+
+# Set or clear break condition
+function _setbc {
+    if [[ -n "$@" ]]; then
+        _brcond=$args   
+        _msg "Break when true: $_brcond"
+    else
+        _brcond=
+        _msg "Break condition cleared."
+    fi
+}
+
+
+# Clear all breakpoints.
+function _clearbp {
+    _linebp=
+    _stringbp=
+    _msg "All breakpoints cleared."
+}
+
+
+# Toggle execution trace feature on/off
+function _xtrace {
+    let _trace="! $_trace"
+    _msg "Execution trace \c"
+    if (( $_trace )); then
+        _msg "on."
+    else
+        _msg "off."
+    fi
+}
+
+# Print command menu
+function _menu {
+    _msg 'kshdb commands: 
+         *bp N                  set breakpoint at line N
+         *bp str                set breakpoint at next line containing str
+         *bp                    list breakpoints and break condition 
+         *bc str                set break condition to str 
+         *bc                    clear break condition 
+         *cb                    clear all breakpoints 
+         *g                     start/resume execution 
+         *s [N]                 execute N statements (default 1)
+         *x                     toggle execution trace on/off 
+         *h, *?                 print this menu 
+         *q                     quit'
+}
+
+
+# Erase temp files before exiting.
+function _cleanup {
+    rm $_dbgfile 2>/dev/null
+}

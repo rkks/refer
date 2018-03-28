@@ -1,0 +1,40 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub swap_domain_and_range_of {
+    my ($table_ref) = @_;
+    
+    my @pivotted_table;
+    for my $x (0..$#{$table_ref}) {
+        for my $y (0..$#{$table_ref->[$x]}) {
+            $pivotted_table[$y][$x] = $table_ref->[$x][$y];
+        }
+    } 
+ 
+    return \@pivotted_table;
+}
+
+my $table = [
+    [1, 2, 3,],
+    [4, 5, 6,],
+    [7, 8, 9,],
+];
+
+my $pivotted = swap_domain_and_range_of($table);
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $table, $pivotted ];

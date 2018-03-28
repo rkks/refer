@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="Petzold.Phone.Silverlight.FlipPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="480" d:DesignWidth="480">
+
+    <UserControl.Resources>
+        <Storyboard x:Name="flipStoryboard">
+            <DoubleAnimation Storyboard.TargetName="planeProjection1"
+                             Storyboard.TargetProperty="RotationX"
+                             To="90"
+                             Duration="0:0:0.5" />
+
+            <DoubleAnimation Storyboard.TargetName="planeProjection2"
+                             Storyboard.TargetProperty="RotationX"
+                             To="0"
+                             BeginTime="0:0:0.5"
+                             Duration="0:0:0.5" />
+        </Storyboard>
+
+        <Storyboard x:Name="flipBackStoryboard">
+            <DoubleAnimation Storyboard.TargetName="planeProjection1"
+                             Storyboard.TargetProperty="RotationX"
+                             To="0"
+                             BeginTime="0:0:0.5"
+                             Duration="0:0:0.5" />
+
+            <DoubleAnimation Storyboard.TargetName="planeProjection2"
+                             Storyboard.TargetProperty="RotationX"
+                             To="-90"
+                             Duration="0:0:0.5" />
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <ContentControl Name="child1Container">
+            <ContentControl.Projection>
+                <PlaneProjection x:Name="planeProjection1" />
+            </ContentControl.Projection>
+        </ContentControl>
+        
+        <ContentControl Name="child2Container">
+            <ContentControl.Projection>
+                <PlaneProjection x:Name="planeProjection2" 
+                                 RotationX="-90" />
+            </ContentControl.Projection>
+        </ContentControl>
+    </Grid>
+</UserControl>

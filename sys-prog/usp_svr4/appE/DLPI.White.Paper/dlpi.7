@@ -1,0 +1,61 @@
+.\" @(#)dlpi.7 1.8 92/03/25 SMI; new for 5.0
+.TH dlpi 7 "2 Oct 1991"
+.SH NAME
+dlpi \- Data Link Provider Interface
+.SH SYNOPSIS
+.B #include <sys/dlpi.h>
+.SH DESCRIPTION
+.IX "dlpi" "" "\fLdlpi\fP \(em Data Link Provider Interface"
+.IX "I/O"  "data link provider interface" "" "data link provider interface \(em \fLdlpi\fP" 
+.IX "Data Link Provider Interface" "dlpi" "" "\(em \fLdlpi\fP"
+.LP
+SunOS STREAMS-based device drivers wishing to support
+the STREAMS TCP/IP and other STREAMS-based networking protocol
+suite implementations
+support Version 2 of the Data Link Provider Interface (DLPI).
+DLPI V2 enables a data link service user to access
+and use any of a variety of conforming
+data link service providers
+without special knowledge of the provider's protocol.
+Specifically,
+the interface is intended to support Ethernet,
+X.25 LAPB,
+SDLC,
+ISDN LAPD,
+CSMA/CD,
+FDDI,
+token ring,
+token bus,
+Bisync,
+and other datalink-level protocols.
+.LP
+The interface specifies access to the data link service provider
+in the form of M_PROTO and M_PCPROTO type STREAMS messages
+and does not define a specific protocol implementation.
+The interface defines the syntax and semantics of primitives
+exchanged between the data link user and the data link provider
+to attach a physical device with physical-level address to a stream,
+bind a datalink-level address to the stream,
+get implementation-specific information from the data link provider,
+exchange data with a peer data link user in one of three
+communication modes
+(connection,
+connectionless,
+acknowledged connectionless),
+enable/disable multicast group and promiscuous mode
+reception of datalink frames,
+get and set the physical address associated with a stream,
+and several other operations.
+.LP
+For details on this interface refer to the 
+.B <sys/dlpi.h>
+header and
+to the STREAMS DLPI Specification,
+800-6915-01.
+.SH FILES
+.LP
+Files in or under
+.BR /dev .
+.SH "SEE ALSO"
+.BR ie (7),
+.BR le (7)

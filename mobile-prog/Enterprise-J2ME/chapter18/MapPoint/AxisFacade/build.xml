@@ -1,0 +1,92 @@
+<project name="AxisMPFacade" default="all">
+
+  <path id="project.classpath">
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="AxisMPFacade" />
+    <property name="tmp" value="anttmp" />
+    <property name="tmpclasses" value="${tmp}/tmpclasses" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${tmp}" />
+    <delete file="bin/${projname}.jar" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${tmp}" />
+    <mkdir dir="${tmpclasses}" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${tmpclasses}">
+      <classpath refid="project.classpath"/>
+    </javac>
+    <copy file="wsdd/client-config.wsdd"
+          todir="${tmpclasses}/" />
+  </target>
+  
+  <target name="run1" depends="init">
+    <java classname="com.enterprisej2me.MapPoint.textui.MapQuery"
+          fork="true">
+      <classpath> 
+        <path refid="project.classpath"/>
+        <pathelement path="${tmpclasses}"/>
+      </classpath>
+    </java>
+  </target>
+  
+  <target name="run2" depends="init">
+    <java classname="com.enterprisej2me.MapPoint.awtui.MapQuery"
+          fork="true">
+      <classpath> 
+        <path refid="project.classpath"/>
+        <pathelement path="${tmpclasses}"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="package" depends="compile">
+    <jar jarfile="bin/${projname}.jar"
+         basedir="${tmpclasses}"
+    />
+    <copy file="wsdd/deploy.wsdd"
+          todir="bin/" />
+    <copy file="wsdd/undeploy.wsdd"
+          todir="bin/" />
+  </target>
+  
+  <target name="deploy">
+    <java classname="org.apache.axis.client.AdminClient"
+          fork="true"
+          dir="bin/"
+    >
+      <arg value="deploy.wsdd"/>
+      <classpath refid="project.classpath"/>
+    </java>
+    <echo>
+      Now, make sure bin/${projname}.jar is copied to axis/WEB-INF/lib dir
+    </echo>
+  </target>
+  
+  <target name="undeploy">
+    <java classname="org.apache.axis.client.AdminClient"
+          fork="true"
+          dir="bin/"
+    >
+      <arg value="undeploy.wsdd"/>
+      <classpath refid="project.classpath"/>
+    </java>
+    <echo>
+      Now, make sure bin/${projname}.jar is removed from axis/WEB-INF/lib dir
+    </echo>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

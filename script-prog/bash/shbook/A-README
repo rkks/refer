@@ -1,0 +1,41 @@
+This directory contains the examples from the book "Shell Programming Examples"
+by Bruce Blinn, published by Prentice Hall.  The files in this directory may be
+copied free of charge for personal, non-commercial use provided that the
+copyright notice appears in all files.  There is no warranty, either expressed
+or implied, supplied with this code.
+
+The following files are contained in this directory:
+
+	A-README		this file
+	Cat			concatenate files
+	CheckHostname.sh	determine if a hostname is valid
+	Clear.sh		clear the terminal screen
+	DirCmp			compare the files in two directories
+	DownShift.sh		downshift the characters in a string
+	FullName.sh		return full name of a file or directory
+	GetYesNo.sh		ask a yes or no question
+	IsNewer.sh		compare the dates of two files
+	IsNumeric.sh		determine if a string is numeric
+	IsSuperuser.sh		determine if current user is superuser
+	IsSystemType.sh		compare string with current system
+	Kill			kill a process (send signal) by name
+	MailPkg			package files for mailing
+	MkDir			create directory and missing path components
+	Prompt.sh		print a message without a newline
+	Question.sh		ask a question
+	Shar			create a shell archive
+	SpaceAvail.sh		determine the space available in a directory
+	SpaceUsed.sh		determine the space used by a directory
+	StrCmp.sh		compare two strings
+	SystemType.sh		return the type of the system
+	Wc			recursive version of the wc command
+	addcolumn		add a column of numbers
+	append			append files
+	decimal2hex.sh		convert decimal number to hexadecimal
+	dircopy			copy the contents of a directory
+	findcmd			search for a command
+	findfile		recursively search for a file
+	findstr			recursively search for a string
+	hex2decimal.sh		convert hexadecimal number to decimal
+	hostaddr		return the IP address for a system
+	ptree			print a process tree

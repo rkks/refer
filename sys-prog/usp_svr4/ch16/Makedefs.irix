@@ -1,0 +1,23 @@
+#
+# $Header$
+#
+# IRIX 5.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -xansi
+
+#
+# Location of the -lgen library.
+#
+GENLIBS=	-lgen
+
+#
+# Location of the DBM library.
+#
+DBMLIBS=

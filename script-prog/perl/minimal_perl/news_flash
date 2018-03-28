@@ -1,0 +1,20 @@
+#! /usr/bin/perl -wl
+
+$width=(`tput cols`  or  80); # supply a reasonable default
+$line='-' x $width;           # make a line the width of screen
+
+$heading='NEWS FLASH:';
+$heading.=' ' . `date '+%X'`;  # append date's formatted output
+chomp $heading;                # remove date-added newline
+
+# Calculate offset from left, to center the string
+$heading_length=length $heading;
+$offset=($width - $heading_length) / 2;
+
+# Offset may have decimal component, but Perl will
+# convert to integer automatically for use with "x" operator
+$padding=' ' x $offset; # generate spaces for calculated offset
+
+print "$line";                # dashed line
+print "$padding$heading";     # the centered heading
+print "$line\n";              # dashed line

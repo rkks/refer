@@ -1,0 +1,223 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;pipes.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;A set of processes randomly messaging each the other, with pipes.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 05/01/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#236e25;">/* ... */</span><br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* for read() and write() */</span><br />
+<span style="color:#683821;">#include &lt;sys/types.h&gt;<br />
+#include &lt;sys/uio.h&gt;<br />
+</span><span style="color:#236e25;">/* for strlen and others */</span><br />
+<span style="color:#683821;">#include &lt;string.h&gt;<br />
+</span><span style="color:#236e25;">/* for pipe() */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* for [s]random() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><span style="color:#236e25;">/* for time() [seeding srandom()] */</span><br />
+<span style="color:#683821;">#include &lt;time.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#683821;">#define PROCS_NUM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">15</span><span style="color:#683821;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* </span><span style="color:#0000ff;">1</span><span style="color:#683821;"> &lt; number of processes involved &lt;= </span><span style="color:#0000ff;">255</span><span style="color:#683821;"> */<br />
+#define MAX_PAYLOAD_LENGTH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">50</span><span style="color:#683821;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* message length */<br />
+#define DEAD_PROC &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-</span><span style="color:#0000ff;">1</span><span style="color:#683821;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* a value to mark a dead process' file descriptors with */<br />
+</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA TYPES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*** &nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+<span style="color:#236e25;">/* a process address */</span><br />
+<span style="color:#881350;">typedef</span> <span style="color:#881350;">char</span> proc_addr;<br />
+<br />
+<span style="color:#236e25;">/* a message */</span><br />
+<span style="color:#881350;">struct</span> message_s {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;proc_addr src_id;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">short</span> <span style="color:#881350;">int</span> length;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> *payload;<br />
+};<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FUNCTION PROTOTYPES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*** &nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+<span style="color:#236e25;">/* send message to process with id dest */</span><br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">send_proc_message</span>(proc_addr dest, <span style="color:#881350;">char</span> *message);<br />
+<span style="color:#236e25;">/* receive a message in the process' queue of received ones */</span><br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">receive_proc_message</span>(<span style="color:#881350;">struct</span> message_s *msg);<br />
+<span style="color:#236e25;">/* mark process file descriptors closed */</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">mark_proc_closed</span>(proc_addr process);<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLOBAL VARS &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*** &nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+<span style="color:#236e25;">/* they are OK to be global here. */</span><br />
+proc_addr my_address; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* stores the id of the process */</span><br />
+<span style="color:#881350;">int</span> proc_pipes[PROCS_NUM][<span style="color:#0000ff;">2</span>]; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* stores the pipes of every process involved */</span><br />
+<br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[])<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;pid_t child_pid;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;pid_t my_children[PROCS_NUM]; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* PIDs of the children */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> i, ret;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> msg_text[MAX_PAYLOAD_LENGTH]; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* payload of the message to send */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;proc_addr msg_recipient; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> message_s msg;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* create a pipe for me (the parent) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">pipe</span>(proc_pipes[<span style="color:#0000ff;">0</span>]);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* initializing proc_pipes struct */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">1</span>; i &lt; PROCS_NUM; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* creating one pipe for every (future) process */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">pipe</span>(proc_pipes[i]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Error creating pipe"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">abort</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* fork [1..NUM_PROCS] children. 0 is me. */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">1</span>; i &lt; PROCS_NUM; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* setting the child address */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my_address = my_address + <span style="color:#0000ff;">1</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child_pid = <span style="color:#003369;">fork</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(! child_pid) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* child */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#0000ff;">1</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* closing other process' pipes read ends */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; PROCS_NUM; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(i != my_address)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(proc_pipes[i][<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* init random num generator */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">srandom</span>(<span style="color:#003369;">time</span>(<span style="color:#881350;">NULL</span>));<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* my_address is now my address, and will hereby become a "constant" */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* producing some message for the other processes */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>(<span style="color:#003369;">random</span>() % (<span style="color:#0000ff;">2</span>*PROCS_NUM)) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* interleaving... */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>((<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)(<span style="color:#003369;">random</span>() % <span style="color:#0000ff;">2</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* choosing a random recipient (including me) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg_recipient = (proc_addr)(<span style="color:#003369;">random</span>() % PROCS_NUM);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* preparing and sending the message */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sprintf</span>(msg_text, <span style="color:#760f15;">"hello from process %u."</span>, (<span style="color:#881350;">int</span>)my_address);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">send_proc_message</span>(msg_recipient, msg_text);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret &gt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* message has been correctly sent */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" &nbsp;&nbsp;&nbsp;--&gt; %d: sent message to %u\n"</span>, my_address, msg_recipient);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">else</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* the child we tried to message does no longer exist */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mark_proc_closed</span>(msg_recipient);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" &nbsp;&nbsp;&nbsp;--&gt; %d: recipient %u is no longer available\n"</span>, my_address, msg_recipient);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* now, reading the first 2 messages we've been sent */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; <span style="color:#0000ff;">2</span>; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">receive_proc_message</span>(&amp;msg);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret &lt; <span style="color:#0000ff;">0</span>) <span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"&lt;-- &nbsp;&nbsp;&nbsp;&nbsp;Process %d, received message from %u: \"%s\".\n"</span>, my_address, msg.src_id, msg.payload);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* i'm exiting. making my pipe widowed */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(proc_pipes[my_address][<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"# %d: i am exiting.\n"</span>, my_address);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* saving the child pid (for future killing) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my_children[my_address] = child_pid;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* parent. I don't need the read descriptor of the pipe */</span> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(proc_pipes[my_address][<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this is for making srandom() consistent */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* expecting the user request to terminate... */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Please press ENTER when you like me to flush the children...\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">getchar</span>();<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Ok, terminating dandling processes...\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* stopping freezed children */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">1</span>; i &lt; PROCS_NUM; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">kill</span>(my_children[i], SIGTERM);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Done. Exiting.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">send_proc_message</span>(proc_addr dest, <span style="color:#881350;">char</span> *message)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> ret;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> *msg = (<span style="color:#881350;">char</span> *)<span style="color:#003369;">malloc</span>(<span style="color:#881350;">sizeof</span>(message) + <span style="color:#0000ff;">2</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* the write should be atomic. Doing our best */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;msg[<span style="color:#0000ff;">0</span>] = (<span style="color:#881350;">char</span>)dest;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">memcpy</span>((<span style="color:#881350;">void</span> *)&amp;(msg[<span style="color:#0000ff;">1</span>]), (<span style="color:#881350;">void</span> *)message, <span style="color:#003369;">strlen</span>(message)+<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* send message, including the "header" the trailing '\0' */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">write</span>(proc_pipes[dest][<span style="color:#0000ff;">1</span>], msg, <span style="color:#003369;">strlen</span>(msg)+<span style="color:#0000ff;">2</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">free</span>(msg);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> ret;<br />
+}<br />
+<br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">receive_proc_message</span>(<span style="color:#881350;">struct</span> message_s *msg)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> c = <span style="color:#0000ff;">'x'</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> temp_string[MAX_PAYLOAD_LENGTH];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> ret, i = <span style="color:#0000ff;">0</span>;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* first, getting the message sender */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">read</span>(proc_pipes[my_address][<span style="color:#0000ff;">0</span>], &amp;c, <span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret == <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;msg-&gt;src_id = (proc_addr)c;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">do</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">read</span>(proc_pipes[my_address][<span style="color:#0000ff;">0</span>], &amp;c, <span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp_string[i++] = c;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">while</span><span style="color:#003369;"> </span>((ret &gt; <span style="color:#0000ff;">0</span>) &amp;&amp; (c != '\<span style="color:#0000ff;">0</span>') &amp;&amp; (i &lt; MAX_PAYLOAD_LENGTH));<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(c == '\<span style="color:#0000ff;">0</span>') {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* msg correctly received. Preparing message packet */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg-&gt;payload = (<span style="color:#881350;">char</span> *)<span style="color:#003369;">malloc</span>(<span style="color:#003369;">strlen</span>(temp_string) + <span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">strncpy</span>(msg-&gt;payload, temp_string, <span style="color:#003369;">strlen</span>(temp_string) + <span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> -<span style="color:#0000ff;">1</span>;<br />
+}<br />
+<br />
+<br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">mark_proc_closed</span>(proc_addr process)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;proc_pipes[process][<span style="color:#0000ff;">0</span>] = DEAD_PROC;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;proc_pipes[process][<span style="color:#0000ff;">1</span>] = DEAD_PROC;<br />
+}<br />
+</div>

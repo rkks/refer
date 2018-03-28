@@ -1,0 +1,192 @@
+Convert GIF images to PNG inside a Java program
+
+http://forum.java.sun.com/thread.jsp?forum=20&thread=272564
+
+
+The driving direction text and map
+
+For north america, the datasource is "MapPoint.NA"
+
+distance unit: DistanceUnit.Mile
+
+private static final String findStagingUrl = "http://findv3.staging.mappoint.net/Find-30/FindService.asmx";
+
+private static final String routeStagingUrl = "http://routev3.staging.mappoint.net/Route-30/RouteService.asmx";
+
+private static final String renderStagingUrl = "http://renderv3.staging.mappoint.net/Render-30/RenderService.asmx";
+
+String findUrl = findStagingUrl;
+FindServiceSoap findService = new FindServiceLocator().getFindServiceSoap(new URL(findUrl));
+((FindServiceSoapStub) findService).setUsername(userName);
+((FindServiceSoapStub) findService).setPassword(password);
+ 
+String routeUrl = routeStagingUrl;
+FindServiceSoap routeService = new RouteServiceLocator().getRouteServiceSoap(new URL(routeUrl));
+((RouteServiceSoapStub) routeService).setUsername(userName);
+((RouteServiceSoapStub) routeService).setPassword(password);
+
+String renderUrl = renderStagingUrl;
+renderService = new RenderServiceLocator().getRenderServiceSoap(new URL(renderUrl));
+((RenderServiceSoapStub) renderService).setUsername(userName);
+((RenderServiceSoapStub) renderService).setPassword(password);
+
+Location fromLocation = findAddress(fromStreet, fromCity, fromSecondaryCity, fromState, fromPostalCode, fromCountry);
+
+Location toLocation = findAddress(toStreet, toCity, toSecondaryCity, toState, toPostalCode, toCountry);
+
+Route route = findRoute(fromLocation, toLocation);
+
+// route instruction in this vector
+Vector directions = new Vector();
+DecimalFormat distanceFormatter = new DecimalFormat("0.#");
+Segment[] segments = route.getItinerary().getSegments().getSegment();
+for (int i=0; i < segments.length; i++) {
+  Direction[] segmentDirections = segments[i].getDirections().getDirection();
+  for (int j=0; j < segmentDirections.length; j++) {
+    String instruction = segmentDirections[j].getInstruction();
+    double distance = segmentDirections[j].getDistance();
+    // convert distance to mile
+    distance *= milesPerKilometer;
+    distanceUnitAbbr = "mi";
+    distance = Math.max(distance, 0.1);
+    instruction += ":  " + distanceFormatter.format(distance) + " " + distanceUnitAbbr;
+    directions.add(instruction);
+  }
+}
+
+// display route
+mapSpec = new MapSpecification();
+mapSpec.setDataSourceName("MapPoint.NA");
+
+MapOptions mapOptions = new MapOptions();
+mapOptions.setIsOverviewMap(Boolean.FALSE);
+mapOptions.setStyle(MapStyle.DefaultStyle);
+mapOptions.setFontSize(MapFontSize.Smaller);
+mapOptions.setReturnType(MapReturnType.ReturnImage);
+mapOptions.setRouteHighlightColor(RouteHighlightColor.DefaultColor);
+mapOptions.setConstructionDelayHighlightColor(RouteHighlightColor.DefaultColor);
+mapOptions.setConstructionClosureHighlightColor(RouteHighlightColor.DefaultColor);
+mapSpec.setOptions(mapOptions);
+    
+displayedRoute = new Route();
+displayedRoute.setCalculatedRepresentation(route.getCalculatedRepresentation());
+ 
+// Create pushpins for the start and end points of the route.
+Segment[] segments = route.getItinerary().getSegments().getSegment();
+ 
+Pushpin startPushpin = new Pushpin();
+Waypoint startWaypoint = segments[0].getWaypoint();
+startPushpin.setLatLong(startWaypoint.getLocation().getLatLong());
+startPushpin.setLabel(startWaypoint.getName());
+startPushpin.setIconName("Car");
+startPushpin.setIconDataSource("MapPoint.Icons");
+
+Pushpin endPushpin = new Pushpin();
+Waypoint endWaypoint = segments[segments.length - 1].getWaypoint();
+endPushpin.setLatLong(endWaypoint.getLocation().getLatLong());
+endPushpin.setLabel(endWaypoint.getName());
+endPushpin.setIconName("33");
+endPushpin.setIconDataSource("MapPoint.Icons");
+    
+pushpins = new ArrayOfPushpin();
+pushpins.setPushpin(new Pushpin[] {startPushpin, endPushpin});
+
+// Set the map's data source to match the route.
+mapSpec.setDataSourceName(startWaypoint.getLocation().getDataSourceName());
+ 
+// Adjust the map view to display the entire route.
+mapView = route.getItinerary().getView().getByHeightWidth());
+
+// Ensure that the width and height of the requested map fall within
+// the valid range of 32 to 2000 pixels.
+ImageFormat format = new ImageFormat();
+format.setWidth(new Integer(Math.min(Math.max(getWidth(), 32), 2000)));
+format.setHeight(new Integer(Math.min(Math.max(getHeight(), 32), 2000)));
+mapSpec.getOptions().setFormat(format);
+ 
+// Specify what the map should display.
+ArrayOfMapView mapViews = new ArrayOfMapView();
+mapViews.setMapView(new MapView[] {mapView});
+mapSpec.setViews(mapViews);
+mapSpec.setRoute(displayedRoute);
+mapSpec.setPushpins(pushpins);
+
+// Call the MapPoint .NET server to render the map, and save the returned
+// map views.
+ArrayOfMapImage mapImages = renderService.getMap(mapSpec);
+MapImage mapImage = mapImages.getMapImage(0);
+mapViewReps = mapImage.getView();
+mapView = mapViewReps.getByHeightWidth();
+      
+image = getToolkit().createImage(mapImage.getMimeData().getBits());
+
+
+// more methods
+private Location findAddress(JTextField street, JTextField city, JTextField secondaryCity, JTextField state, JTextField postalCode, JComboBox country) {
+
+
+  // Set the data source that corresponds with the selected country.
+  FindAddressSpecification findSpec = new FindAddressSpecification();
+  findSpec.setDataSourceName(dataSources[country.getSelectedIndex()]);
+ 
+  // Construct an Address from the various text fields.
+  Address address = new Address();
+  address.setAddressLine(street.getText());
+  address.setPrimaryCity(city.getText());
+  address.setSecondaryCity(secondaryCity.getText());
+  address.setSubdivision(state.getText());
+  address.setPostalCode(postalCode.getText());
+  address.setCountryRegion((String) country.getSelectedItem());
+  findSpec.setInputAddress(address);
+ 
+  // Call the MapPoint .NET server to find the specified address.
+  FindResults results = findService.findAddress(findSpec);
+  Location location = null;
+      
+  if (results.getNumberFound() == 0) {
+   // not found
+  } else {
+    // get first result
+    location = results.getResults().getFindResult(0).getFoundLocation();
+  }
+      
+  return location;
+}
+
+
+private Route findRoute(Location fromLocation, Location toLocation) {
+
+  RouteSpecification routeSpec = new RouteSpecification();
+  routeSpec.setDataSourceName(fromLocation.getDataSourceName());
+
+  SegmentSpecification[] segmentSpecs = new SegmentSpecification[2];
+
+  // Construct the waypoints representing the two locations, and
+  // use the street address as the name of each waypoint.  The names
+  // are included in the driving directions, and we also use them
+  // for the pushpins in the MapDisplay.
+  Waypoint fromWaypoint = new Waypoint();
+  fromWaypoint.setLocation(fromLocation);
+  fromWaypoint.setSnap(SnapType.Normal);
+  fromWaypoint.setName(fromLocation.getAddress().getAddressLine());
+  segmentSpecs[0] = new SegmentSpecification();
+  segmentSpecs[0].setWaypoint(fromWaypoint);
+      
+  Waypoint toWaypoint = new Waypoint();
+  toWaypoint.setLocation(toLocation);
+  toWaypoint.setSnap(SnapType.Normal);
+  toWaypoint.setName(toLocation.getAddress().getAddressLine());
+  segmentSpecs[1] = new SegmentSpecification();
+  segmentSpecs[1].setWaypoint(toWaypoint);
+ 
+  ArrayOfSegmentSpecification segments = new ArrayOfSegmentSpecification();
+  segments.setSegmentSpecification(segmentSpecs);
+  routeSpec.setSegments(segments);
+ 
+  // Call the MapPoint .NET server to calculate the route.
+  // Unfortunately, Axis doesn't let us pass a UserInfoRouteHeader
+  // to the route service, so we cannot specify the distance units to
+  // use for the route.  Instead, we use the default (kilometers) and
+  // convert to the desired units in the DrivingDirectionsWindow.
+  return routeService.calculateRoute(routeSpec);
+}

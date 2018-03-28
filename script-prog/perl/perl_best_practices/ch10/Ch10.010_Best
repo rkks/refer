@@ -1,0 +1,36 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Wrap the Bozo::get_data() subroutine cleanly.
+# (Apparently this subroutine is hard-wired to only read from a filehandle
+#  named DATA::SRC. And it's used in hundreds of places throughout our
+#  buffoon-monitoring system, so we can't change it. At least we fired the 
+#  clown that wrote this, didn't we???)...
+sub get_fool_stats {
+    my ($filename) = @_;
+ 
+    # Create a temporary version of the hardwired filehandle...
+    local *DATA::SRC;
+ 
+    # Open it to the specified file...
+    open *DATA::SRC, '<', $filename
+        or croak "Can't open $filename: $OS_ERROR";
+ 
+    # Call the legacy subroutine...
+    return Bozo::get_data();
+}
+

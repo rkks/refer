@@ -1,0 +1,23 @@
+:
+# asc27bit - Convert German "Umlaute" to a 7-bit representation 
+#
+# Author:	Heiner Steven <heiner.steven@odn.de>
+# Date:		1992-01-17
+# Category:	File Conversion
+# SCCS-Id.:	@(#) asc27bit	1.3 04/02/18
+#
+# see also: 7bit2asc
+#
+# Changes:
+# 29.07.92 stv	first version based on "asctoiso"
+if [ $# -eq 1 -a \( "$1" = "-h" -o "$1" = "-?" \) ]
+then
+    echo "$0 - convert German \"Umlaute\" to 7-bit representation"
+    echo "usage: $0 [file ...]"
+    echo
+    echo "\"Umlaute\" are converted to a ASCII-7-bit equivalent"
+    echo "(\"ae\" to \"open curly brace\", ...)"
+    exit 1
+fi
+cat "$@" |
+    tr '\204\224\201\216\231\232\341' '{|}\[\\\]~'

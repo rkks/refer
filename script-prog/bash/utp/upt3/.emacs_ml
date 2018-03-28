@@ -1,0 +1,25 @@
+;; Make CTRL-h delete the previous character. Normally, this gets
+;; you into the "help" system.
+ (define-key global-map "\C-h" 'backward-delete-char)
+;; make sure CTRL-h works in searches, too
+ (setq search-delete-char (string-to-char "\C-h"))
+;; bind the "help" facility somewhere else (CTRL-underscore).
+;; NOTE:  CTRL-underscore is not defined on some terminals.
+ (define-key global-map "\C-_" 'help-command) ;; replacement
+ (setq help-char (string-to-char "\C-_"))
+;; Make ESC-h delete the previous word.
+ (define-key global-map "\M-h" 'backward-kill-word)
+;; Make CTRL-x CTRL-u the "undo" command; this is better than "CTRL-x
+u"
+;; because you don't have to release the CTRL key.
+ (define-key global-map "\C-x\C-u" 'undo)
+;; scroll the screen "up" or "down" one line with CTRL-z and ESC z
+ (defun scroll-up-one () "Scroll up 1 line." (interactive)
+   (scroll-up (prefix-numeric-value current-prefix-arg)))
+ (defun scroll-down-one () "Scroll down 1 line." (interactive)
+   (scroll-down (prefix-numeric-value current-prefix-arg)))
+ (define-key global-map "\C-z" 'scroll-up-one)
+ (define-key global-map "\M-z" 'scroll-down-one)
+;; Use CTRL-x CTRL-v to "visit" a new file, keeping the current file
+;; on the screen
+ (define-key global-map "\C-x\C-v" 'find-file-other-window)

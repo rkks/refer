@@ -1,0 +1,124 @@
+#!/usr/bin/perl
+# utility to store/print daily and cumulative access.log hit counts
+# (c) 2010 Troy D. Hanson, released to public domain
+use strict;
+use warnings;
+use DB_File;
+use Getopt::Long;
+use Date::Calc qw(Add_Delta_Days Today);
+
+our $verbose=0;
+our $update;
+our $force;
+our $quiet;
+our $daily;
+our $yesterday;
+our $help;
+our $dbmfile = $ENV{HOME} . "/.pagehits";
+
+sub usage {
+  print "usage: $0 [--daily|--yesterday] (print cumulative [daily|yesterday] stats)\n";
+  print "usage: $0 --update [--force] [--quiet] <access.log> [access.log] (parse and store hits)\n";
+  print "\ncommon options:\n";
+  print "          --dbmfile <file> (default: $dbmfile)\n";
+  #print "          --verbose\n";
+  print "\n";
+
+  exit(-1);
+}
+
+
+sub timestamp_to_date {
+  my $timestamp = shift;
+  my %months = ("Jan"=>"01", "Feb"=>"02", "Mar"=>"03", "Apr"=>"04", 
+                "May"=>"05", "Jun"=>"06", "Jul"=>"07", "Aug"=>"08", 
+                "Sep"=>"09", "Oct"=>"10", "Nov"=>"11", "Dec"=>"12"); 
+  if ($timestamp =~ m{^\[(\d{2})/(...)/(\d{4}):}) {
+     my ($dd,$mon,$year) = ($1,$2,$3); 
+     my $mm = $months{$mon} or goto fail;
+     return "$year$mm$dd";
+  } 
+ fail:
+  die "failed to parse timestamp $timestamp\n";
+}
+
+sub count_hit {
+  my $hits = shift;
+  my $line = shift;
+  if ($line =~ m/^([\d\.:]+) (-) (-) (\[.+\]) ("[^"]+") (\d+|-) (\d+|-)/) {
+    my ($ip,$id,$user,$time,$request,$code,$sz)=($1,$2,$3,$4,$5,$6,$7);
+    my $date = timestamp_to_date $time;
+    if ($request =~ /^"\w+ ([^\s]+).*"$/) {
+      my $url = $1;
+      $url = $1 if $url =~ m/^([^?]+)\?/; # trim any query data
+      $hits->{$date,$url}++;
+    } else { print STDERR "could not parse request\n"; goto fail };
+  } else {
+
+   fail:
+    die "failed to parse access.log line: $line\n";
+  }
+}
+
+sub do_update {
+  die "no access.log files specified\n" unless @ARGV;
+  our %h;
+  my %hits;
+  for my $log (@ARGV) {
+    open LOG, "<$log" or die "can't open $log: $!\n";
+    count_hit(\%hits,$_) for (<LOG>);
+  }
+  # record the hits in the persistent hash h (dbm file) 
+  for my $du (keys %hits) {
+    my ($date,$url) = split /$;/, $du;
+    if ($h{$du} and ($h{$du} > $hits{$du}) and not $force) {
+      die "would reduce hits for $url $date, re-run with force\n";
+    }
+    $h{$du} = $hits{$du};
+  }
+} 
+
+sub yesterdate {
+  my ($y,$m,$d) = Today();
+  ($y,$m,$d) = Add_Delta_Days($y,$m,$d, -1);
+  $m = "0$m" if length($m)==1;
+  $d = "0$d" if length($d)==1;
+  return "$y$m$d";
+}
+
+sub show_hits {
+  our %h;
+  my %cumulative; # hit count per url (over all days)
+  my @du_all = sort keys %h;
+  my $yesterdate = yesterdate;
+  print "$yesterdate:\n" if $yesterday;
+  for my $du (@du_all) {
+    my ($date,$url) = split /$;/, $du;
+    $cumulative{$url} += $h{$du};
+    print "$date $h{$du} $url\n" if $daily;
+    print "$h{$du} $url\n" if $yesterday && ($date == $yesterdate);
+  }
+  return if $daily || $yesterday;
+  # print cumulative hit counts, greatest first
+  for my $url (sort {$cumulative{$b} <=> $cumulative{$a}} keys %cumulative) {
+    print $cumulative{$url}, " $url\n";
+  }
+}
+
+usage unless GetOptions("verbose+"      => \$verbose,
+                        "daily"         => \$daily,
+                        "yesterday"     => \$yesterday,
+                        "update"        => \$update,
+                        "force"         => \$force,
+                        "quiet"         => \$quiet,
+                        "dbmfile=s"     => \$dbmfile,
+                        "help"          => \$help);
+usage if $help;
+our %h;
+my $H = tie %h, "DB_File", $dbmfile, O_RDWR|O_CREAT, 0666, $DB_HASH or die;
+
+do_update if $update;
+show_hits unless $quiet;
+
+undef $H;
+untie %h;

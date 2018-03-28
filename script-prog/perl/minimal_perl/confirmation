@@ -1,0 +1,14 @@
+#! /usr/bin/perl -wl
+
+while (1) {                         # seek confirmation
+    printf 'Are you sure? [y/n] ';
+    $answer=<STDIN>;
+    defined $answer  or  exit;      # exit on <^D>
+    chomp $answer;                  # remove newline
+    $answer eq ""   and  next;      # execute continue; re-prompt
+    ($answer ne 'y'  and  $answer ne 'n')  or  last;
+}
+continue { # executed before all prompts after first
+    print "\nPlease respond with 'y'  or  'n'";
+}
+# code to handle y/n choice goes here

@@ -1,0 +1,54 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $sales_data = \*DATA;
+my @sales;
+
+sub translate_ID {
+    my ($id) = @_;
+    return $id;
+}
+
+# Specify order and lengths of fields...
+Readonly my $RECORD_LAYOUT => 'A6 A10 A8';  # 6 ASCII, then 10 ASCII, then 8 ASCII
+
+ 
+
+# Grab each line/record...
+while (my $record = <$sales_data>) {
+ 
+    # Extract all fields...
+    my ($ident, $sales, $price) 
+        = unpack $RECORD_LAYOUT, $record;
+ 
+    # Append each record, translating ID codes and
+    # normalizing sales (which are stored in 1000s)...
+    push @sales, {
+        ident => translate_ID($ident),
+        sales => $sales * 1000,
+        price => $price,
+    };
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @sales ];
+
+
+__DATA__
+X123-S000001324700000199
+SFG-AT000000010200009099
+Y811-Q000010030000000033

@@ -1,0 +1,53 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 17 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Process::Queue;
+use Carp;
+{
+    use overload (
+        # Type coercions don't make sense for process queues...
+        q{""}   => sub {
+            croak q{Can't stringify a Process::Queue};
+        },
+        q{0+}   => sub { 
+            croak q{Can't numerify a Process::Queue };
+        },
+        q{bool} => sub { 
+            croak q{Can't get the boolean value of a Process::Queue };
+        },
+    );
+}
+ 
+# and later...
+ 
+package Socket;
+use Carp;
+{
+    use overload (
+        # Type coercions don't make sense for sockets...
+        q{""}   => sub {
+            croak q{Can't convert a Socket to a string};
+        },
+        q{0+}   => sub { 
+            croak q{Can't convert a Socket to a number};
+        },
+        q{bool} => sub { 
+            croak q{Can't get the boolean value of a Socket };
+        },
+    );
+}
+

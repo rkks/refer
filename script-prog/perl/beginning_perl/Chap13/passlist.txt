@@ -1,0 +1,16 @@
+Tim:Briggs:Glasgow
+Simon:Cozens:Japan
+Richard:Collins:Japan
+Daniel:Maharry:Glasgow
+Emma:Batch:Thailand
+Peter:Morgan:Thailand
+John:Smith:Glasgow
+Jordan:Miller:San Diego
+Philip:Nyman:Auckland
+Buster:Michaels:San Diego
+Larry:Wall:Japan
+Bill:Gates:Seattle
+Henry:Rollins:San Francisco
+Brian:Walsh:Japan
+James:Schaffer:Glasgow
+Robb:Flynn:San Francisco

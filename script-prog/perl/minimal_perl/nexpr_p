@@ -1,0 +1,6 @@
+#! /bin/sh
+# This script uses the Shell to create and run a custom Perl
+# program that evaluates and prints its arguments.
+# Sample transformation: nexpr_p '2 * 21' --> perl ... print 2 * 21;
+
+perl -wl -e "print $*;"

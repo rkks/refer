@@ -1,0 +1,49 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $MAX_TRIES => 3;
+sub acquire_resource { croak 'No resources available'; }
+sub fibonacci {
+    my ($n) = @_;
+    return 1 if $n < 2;
+    return fibonacci($n-1) + fibonacci($n-2);
+}
+sub nap {
+    sleep @_;
+}
+sub do_something_using {
+    print "doing something, man!\n";
+}
+my $resource;
+my $resource_id;
+
+TRY:
+for my $try (1..$MAX_TRIES) {
+    # If resource successfully acquired, we're done...
+    eval { 
+        $resource = acquire_resource($resource_id);
+        last TRY;
+    };
+ 
+    # Report non-recoverable failure if no more tries
+    croak( $EVAL_ERROR ) if $try == $MAX_TRIES;
+ 
+    # Otherwise, try again after an increasing randomized interval...
+    nap( rand fibonacci($try) ); 
+}
+ 
+do_something_using($resource);
+

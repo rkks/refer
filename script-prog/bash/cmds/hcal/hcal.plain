@@ -1,0 +1,28 @@
+:
+##########################################################################
+# Title      :	hcal - cal with highlighted current date
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+#		based on an idee by R.G. Sage
+# Date       :	1994-04-20
+# Requires   :	cal, tput
+# Category   :	Text Utilities
+# SCCS-Id.   :	@(#) hcal	1.4 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+SMSO=`tput smso`			# Start highlighting
+RMSO=`tput rmso`			# Stop highlighting
+if [ $# -eq 0 ]
+then
+    # Date output example: Wed Apr 20 12:29:56 MET DST 1994
+    set -- `date`
+    Day="$3"; Year="$7"
+    cal |
+    	# Find day 1. in the middle, 2. at the end, 3. at the beginning
+    	sed -e "s/ $Day[ ]/ $SMSO$Day$RMSO /" \
+    	      -e "s/ $Day\$/ $SMSO$Day$RMSO/"	\
+    	      -e "s/^$Day /$SMSO$Day$RMSO /"
+else
+    cal "$@"
+fi

@@ -1,0 +1,28 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 19 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub lc_digest {
+    my ($text) = @_;
+ 
+    use Digest::SHA qw( sha512 );
+    return sha512(lc $text);
+}
+
+
+for my $text ( ('foo was here' x 1_000_000) x 100 ) {
+    print lc_digest($text), "\n";
+}

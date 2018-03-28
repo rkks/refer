@@ -1,0 +1,73 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub _ascertain_server_status {
+    return (load=>0.02, users=>7, uptime=>100, name=>'foobar');
+}
+
+use Contextual::Return;
+ 
+sub get_server_status {
+    my ($server_ID) = @_;
+ 
+    # Acquire server data somehow...
+    my %server_data 
+        = _ascertain_server_status($server_ID);
+ 
+    # Return different components of that data, depending on call context...
+    return (
+        LIST    { @server_data{ qw( name uptime load users ) };                   }
+        BOOL    { $server_data{uptime} > 0;                                       }
+        NUM     { $server_data{load};                                             }
+        STR     { "$server_data{name}: $server_data{uptime}, $server_data{load}"; }
+        HASHREF { \%server_data;                                                  }
+    );
+}
+
+my $server_ID;
+my $total_users;
+
+# Total users is sum of users on each server...
+$total_users += get_server_status($server_ID)->{users};
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $total_users ];
+
+my $servers_summary;
+
+# Compile report on all servers...
+$servers_summary .= get_server_status($server_ID) . "\n";
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $servers_summary ];
+
+my $total_load;
+
+# Total load is sum of individual server loads...
+$total_load += get_server_status($server_ID);
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    $total_load
+];
+
+# In list context, return all the available information...
+my ($name, $uptime, $load, $users) = get_server_status($server_ID);
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    $name, $uptime, $load, $users,
+];

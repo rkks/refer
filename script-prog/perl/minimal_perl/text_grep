@@ -1,0 +1,13 @@
+#! /usr/bin/perl -s -wnl
+
+BEGIN {
+    @ARGV  and  $pattern or  # must have argument, and pattern
+      warn "Usage: text_grep -pattern='RE' f1 [f2 ...]\n"  and
+        exit 255;
+}
+
+# Close current file, if not text-file, and get next input
+-T $ARGV  or  close ARGV  and  next;
+
+# On match, show "filename: matching-line"
+/$pattern/i  and  print "$ARGV: $_";

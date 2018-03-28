@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFingerRotation", "OneFingerRotation\OneFingerRotation\OneFingerRotation.csproj", "{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "OneFingerRotationContent", "OneFingerRotation\OneFingerRotationContent\OneFingerRotationContent.contentproj", "{BC3B8799-8529-4E88-92EC-AC90ED0BAF63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{C23F02A5-9E01-4D2F-8828-BF0F4CBA8261}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{BC3B8799-8529-4E88-92EC-AC90ED0BAF63}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{BC3B8799-8529-4E88-92EC-AC90ED0BAF63}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

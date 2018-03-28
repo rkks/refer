@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    findfile - recursively search for a file
+#
+# SYNOPSIS
+#    findfile file [directory ...]
+#
+# DESCRIPTION
+#    This command searches the directories and their
+#    subdirectories for the file.  If no directories are
+#    listed on the command line, the current directory is
+#    searched.  If the file is found, the path name of the
+#    file is printed.
+#
+#    If the file name contains wildcard characters, it must
+#    be quoted so that the wildcard characters can be
+#    processed inside this shell script rather than being
+#    expanded into file names on the command line.
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Usage error
+#
+############################################################
+CMDNAME=`basename $0`
+if [ $# -eq 0 ]; then
+     echo "Usage: $CMDNAME file [directory ...]" 1>&2
+     exit 1
+fi
+
+NAME=$1
+shift
+
+find "${@:-.}" -name "$NAME" -print

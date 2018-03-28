@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragPinchRotate", "DragPinchRotate\DragPinchRotate\DragPinchRotate.csproj", "{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "DragPinchRotateContent", "DragPinchRotate\DragPinchRotateContent\DragPinchRotateContent.contentproj", "{6EFA9577-4A20-4A7C-A395-E01B869A7527}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{A096E0E0-9B46-4AC4-9C43-CE968A7E5250}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{6EFA9577-4A20-4A7C-A395-E01B869A7527}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{6EFA9577-4A20-4A7C-A395-E01B869A7527}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

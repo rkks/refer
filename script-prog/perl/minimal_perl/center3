@@ -1,0 +1,16 @@
+#! /usr/bin/perl -s -wnl
+# center3: centers input lines using a module's function
+
+# Usage: center3 [ -width=columns ] [ file1 file2 ... ]
+
+use strict;
+
+our ($width);                             # switch variable
+
+use Center  qw( center_line  $cl_width ); # import sub, scalar
+
+BEGIN {
+    $cl_width=$width;     # load value into Module's variable
+}
+
+print center_line $_;     # Note: parentheses unnecessary

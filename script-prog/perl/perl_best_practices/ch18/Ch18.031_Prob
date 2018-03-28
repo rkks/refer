@@ -1,0 +1,41 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 18 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Perl6::Export::Attrs;
+
+sub track_sub : Export {
+    my ($sub_name) = @_;
+ 
+    no strict 'refs';
+    
+    # Locate the (currently untracked) subroutine in the caller's symbol table...
+    my $caller = caller;
+    my $full_sub_name = $caller.'::'.$sub_name;
+    my $sub_ref = *{$full_sub_name}{CODE};
+ 
+    # Or die trying...
+    croak "Can't track nonexistent subroutine '$full_sub_name'"
+        if !defined $sub_ref;
+ 
+    # Then build a tracked version of it...
+    my $tracker_ref = _make_tracker_for($sub_name, $sub_ref);
+ 
+    # And install that version back in the caller's symbol table...
+    *{$full_sub_name} = $tracker_ref;
+ 
+    return;
+}
+

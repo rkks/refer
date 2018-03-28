@@ -1,0 +1,41 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 19 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @candidates = (
+    "ID: 12345\nNome: Jones\nParty: Animal\n",
+    "ID: 23454\nName: Smith\nParty: Hard\n",
+    "Name: Nguyen; \n",
+);
+my $target_name;
+
+# Find the first candidate with a valid Name: field...
+CANDIDATE:
+for my $candidate (@candidates) {
+    # Extract the contents of the Name: field...
+    my ($name) 
+        = $candidate =~ m/^Name: (.+?);$/xms;
+ 
+    # ...or try elsewhere...
+    next CANDIDATE if !defined $name;
+ 
+    # If name found, save it and we're done...
+    $target_name = $name;
+    last CANDIDATE;
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $target_name ];

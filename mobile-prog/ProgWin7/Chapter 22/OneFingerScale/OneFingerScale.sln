@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneFingerScale", "OneFingerScale\OneFingerScale\OneFingerScale.csproj", "{70082E05-D2D5-45E7-9424-9F52A17DED57}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "OneFingerScaleContent", "OneFingerScale\OneFingerScaleContent\OneFingerScaleContent.contentproj", "{FA06B9C6-F53F-4EF8-AD3B-49D478BE1E53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70082E05-D2D5-45E7-9424-9F52A17DED57}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{70082E05-D2D5-45E7-9424-9F52A17DED57}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{70082E05-D2D5-45E7-9424-9F52A17DED57}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{70082E05-D2D5-45E7-9424-9F52A17DED57}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{70082E05-D2D5-45E7-9424-9F52A17DED57}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{70082E05-D2D5-45E7-9424-9F52A17DED57}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{FA06B9C6-F53F-4EF8-AD3B-49D478BE1E53}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{FA06B9C6-F53F-4EF8-AD3B-49D478BE1E53}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

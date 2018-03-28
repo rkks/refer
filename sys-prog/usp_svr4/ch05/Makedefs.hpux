@@ -1,0 +1,13 @@
+#
+# $Header$
+#
+# HP-UX 10.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -Ae

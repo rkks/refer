@@ -1,0 +1,29 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 2 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %predicted_val;
+my $current_data_set = 'guesses';
+my $next_iteration   = 12;
+my $average          = 10;
+my $predicted_change = 1;
+my $fudge_factor     = 0.3;
+
+$predicted_val{$current_data_set}[$next_iteration]
+    = $average + $predicted_change * $fudge_factor;
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%predicted_val ];

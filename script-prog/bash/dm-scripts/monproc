@@ -1,0 +1,197 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="monproc"
+       HTML_="monitor process activity"
+    PURPOSE_="monitor processies; print when specified processies are or not running"
+   SYNOPSIS_="$NAME_ [-hml] -t <n>s|m|h|d"
+   REQUIRES_="standard GNU commands"
+    VERSION_="1.1"
+       DATE_="2001-01-25; last update: 2005-02-28"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="admin"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+read_vars() {
+
+# ------------------------------------------- #
+# user defined variables start
+# ------------------------------------------- #
+
+# add names of the processies that should be running.
+
+run[0]=
+#run[1]=
+#run[2]=
+# ..
+
+# add the process names that should not be running.
+
+not[0]=
+#not[1]=
+#not[2]=
+# ..
+
+# ------------------------------------------- #
+# user defined variables end
+# ------------------------------------------- #
+
+}
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+    -t <n>s|m|h|d, n is an integer referring to time interval in
+                seconds|minutes|hours|days which refers to the frequency of how
+                often to check the running processies
+    -h, usage and options (this help)
+    -m, manual
+    -l, see this script"
+    exit 1
+}
+
+manual() { echo >&2 "
+
+NAME
+
+    $NAME_ $VERSION_ - $PURPOSE_
+
+SYNOPSIS
+
+    $SYNOPSIS_
+
+DESCRIPTION
+
+    $NAME_ is a simple process monitor. It prints to stdo when specified
+    processies that should run are not running, and/or when specified processies
+    that should not run are running. The script depends on the output produced
+    by the \"ps -ax\" command.
+
+    To specify which processies to monitor add names of the processies in the
+    \"user defined variables\" section at the beginning of this script. Use
+    whole output from the \"ps -ax\" COMMAND column, including the spaces. If
+    spaces are present, the variable value must be double quoted. Example:
+
+    run[0]=\"/usr/sbin/klogd -c 3 -x\"
+    run[1]=[keventd]
+
+AUTHOR
+
+    $AUTHOR_ Suggestions and bug reports are welcome.
+    For updates and more scripts visit $URL_
+
+"; exit 1; }
+
+read_vars
+shopt -s extglob # enabling extended globbing
+
+time_validateSleepArg() {
+
+    case $1 in
+        +([0-9])[smhd] ) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# tmp file set up
+tmp_dir=/tmp/${RANDOM}${RANDOM}
+mkdir $tmp_dir
+tmp_1=$tmp_dir/tmp.${RANDOM}${RANDOM}
+
+# signal trapping and tmp file removal
+trap 'rm -f $tmp_1; rmdir $tmp_dir >/dev/null 2>&1' 0
+trap "exit 1" 1 2 3 15
+
+while getopts hlmt: options; do
+
+    case $options in
+        t) time=$OPTARG ;;
+        h) usage ;;
+        l) more $0; exit 1 ;;
+        m) manual | more; exit 1 ;;
+       \?) echo invalid argument, type $NAME_ -h for help; exit 1 ;;
+
+    esac
+
+done
+shift $(( $OPTIND - 1 ))
+
+# sleep arg check
+time_validateSleepArg $time 
+[ $? = 0 ] || { echo >&2 invalid arg to option -t, type $NAME_ -h for help; exit 1; }
+
+while : ;do
+
+    [[ $run || $not ]] || { echo >&2 the "user defined variables" in the \
+    script have not been defined, type $NAME_ -h for help; exit 1; }
+
+    ps -ax > $tmp_1  
+
+    #------------------------------------------------
+    # checking for processies that should be running
+    #------------------------------------------------
+
+    if [[ "$run" ]];then
+
+        while read pid tty stat tim command ;do
+            c=0
+            for proc in "${run[@]}";do
+                if [[ "$proc" == "$command" ]];then
+                    unset -v run[$c]
+                    run=("${run[@]}") # resequencing the array to remove empty elements
+                    ((c++))
+                else
+                    ((c++))
+                fi
+            done
+        done < $tmp_1
+
+        # displaying the processies that should be running but are not
+        c=0
+        if [[ $run ]]; then 
+            while (( ${#run[@]} > $c ));do
+                echo $(date +%d.%m.%Y" "%H:%M:%S) SHOULD run, is not: ${run[$c]} 
+                ((c++))
+            done
+        fi
+
+    fi
+
+    #----------------------------------------------------
+    # checking for processies that should not be running
+    #----------------------------------------------------
+
+    if [[ "$not" ]];then
+
+        while read pid tty stat tim command ;do
+            c=0
+            for proc in "${not[@]}";do
+                if [[ "$proc" == "$command" ]];then   
+                    echo $(date +%d.%m.%Y" "%H:%M:%S) is running, should NOT: $proc
+                    unset -v not[$c]
+                    not=("${not[@]}") # resequencing the array to remove empty elements
+                    ((c++))
+                else
+                    ((c++))
+                fi
+            done
+        done <  $tmp_1
+
+    fi
+
+    sleep $time # time interval for how often to check processies
+    read_vars
+
+done

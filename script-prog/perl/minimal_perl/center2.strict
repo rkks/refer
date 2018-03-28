@@ -1,0 +1,40 @@
+#! /usr/bin/perl -s -wnl
+#  Usage: center2.strict [ -width=columns ] [ file1 file2 ... ]
+
+use strict;
+
+our ($width);          # makes this switch optional
+my  ($cl_width);       # "private", from here to file's end
+
+BEGIN {
+  $cl_width=$width;    # center_line() validates $cl_width
+}
+
+print center_line($_); # $cl_width needn't be passed
+
+sub center_line {
+  # returns argument centered within field of size $cl_width
+
+  use Text::Tabs;   # imports expand(); converts tabs to spaces
+
+  my $newstring;    # private, from here to file's end
+  if ( @_ != 1  or  $_[0] eq "" )  {  # needs one argument
+     warn "$0: Usage: center_line(string)\n";
+     $newstring=undef;       # to return "undefined" value
+  }
+  else {
+    defined $cl_width  and $cl_width > 2  or  $cl_width=80;
+
+    my ($string, $indent, $padding);  # private, from here to }
+    $string=shift;            # get required arg
+    $string=expand $string;   # convert tabs to spaces
+    $string =~ s/^\s+//;      # remove leading whitespace
+    $string =~ s/\s+$//;      # remove trailing whitespace
+
+    # calculate indentation
+    $indent=($cl_width - length $string )/2;
+    $padding=' ' x $indent;
+    $newstring="$padding$string";
+  }
+  return $newstring;         # return centered string, or undef
+}

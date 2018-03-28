@@ -1,0 +1,62 @@
+Using ditaa with Asciidoc
+=========================
+
+This is a working example of using ditaa Ascii art in an Asciidoc document.
+It is based on http://vanderwijk.info/2009/4/23/full-text-based-document-generation-using-asciidoc-and-ditaa[a post on Ivo's blog].
+
+Setting up ditaa
+----------------
+1. Ubuntu 10.04 Java installation
+
+	 sudo add-apt-repository 'deb http://archive.canonical.com/ lucid partner'
+	 sudo apt-get update
+	 sudo apt-get install sun-java6-jre sun-java6-plugin sun-java6-fonts
+
+2. Check out ditaa
+
+  svn co https://ditaa.svn.sourceforge.net/svnroot/ditaa ditaa
+
+3. Test
+
+  cd ditaa/trunk/web/lib
+  java -jar ditaa0_9.jar
+
+
+4. Test with a real diagram
+
+Run ditaa on this file in sample1.txt:
+
+  +-------------+     +-------------+
+  |             |     |             |
+  |  SUPER      |---->|  CONDUCTING |
+  |             |     +-------------+
+  +-------------+
+
+    java -jar ditaa0_9.jar sample1.txt
+
+This writes the file sample1.png: 
+
+image::sample1.png[]
+
+Above, we manually included the png image into this Asciidoc text. 
+The final section of this document will automate the process.
+
+Ditaa within Asciidoc
+---------------------
+
+For this we pre-process the Asciidoc source using Ivo's `handleimages.py`
+script. We'll run it on the very document you're reading, which should
+convert the image below to a png that gets included back in the final html.
+
+[ASCIIART sample2.png (Sample drawing)]
+/----------\  /--------\  /---------\
+| asciidoc |  | mumble |  |         |
+|    +     |->| mumble |->| PROFIT! |
+|  ditaa   |  | mumble |  |         |
+\----------/  \--------/  \---------/
+[TRAIICSA]
+
+To perform this conversion our Asciidoc command will be augmented as such:
+
+  ./handleimages.py ditaa_asciidoc.txt | asciidoc -o ditaa_asciidoc.html -
+

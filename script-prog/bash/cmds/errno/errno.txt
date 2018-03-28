@@ -1,0 +1,101 @@
+:
+##########################################################################
+# Title      :	errno - show messages to system errors
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1995-07-19
+# Requires   :	xargs
+# Category   :	Programming
+# SCCS-Id.   :	@(#) errno	1.5 03/11/04
+##########################################################################
+# Description
+#    -	Searches the systems "errno.h" include file, and extracts all
+#	error numbers with descriptions
+#    -	The processed ERRNO-table will be cached for faster lookup
+#
+# Note
+#    o	Needs the following non-standard programs or features:
+#	    xargs, "find ... -follow"
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.5'
+: ${NAWK:=nawk}
+: ${GREP:=grep}
+Errnos=/tmp/$PN.cache			# "database" with errnos
+Usage () {
+    echo "$PN - print name and description of error codes, $VER (stv '95)
+usage: $PN {number|name|regex} [...]
+   or  $PN -l
+    -l 		list all error codes
+    number	system error number, i.e. 10
+    name	system error name, i.e. EPERM
+    regex	string to 'grep' for" >&2
+    exit 1
+}
+Msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+# Check arguments before setting them
+getopt hl "$@" > /dev/null 2>&1	|| Usage
+set -- `getopt hl "$@"`
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-l)	set -- '.'; break;;	# List all errnos
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First argument
+    esac
+    shift
+done
+[ $# -lt 1 ] && Usage
+[ -s "$Errnos" ] || {
+    echo >&2 "creating errno table (will be cached for faster lookup)..."
+    umask 000				# Everybody may read and write
+    : ${INCLUDE=/usr/include}
+    find `echo "$INCLUDE" | tr : ' '`	\
+    	    -follow			\
+   	    -type f -name 'errno*.h' -print |
+    sort -u |
+    # Create "database" of errno values in the following format:
+    #	2	ENOENT	No such file or directory
+    xargs $NAWK '
+	# Example:
+	# #define ENOENT          2    /* No such file or directory */
+	($1 == "#define") && ($2 ~ /^E[A-Z][A-Z]*$/) && (NF >= 3) {
+	    # $2=name, $3=errno
+	    Desc = ""
+	    for ( i=4; i<=NF; i++ ) {
+		if ( $i == "/*" || $i == "*/" ) continue;
+		# Remove comment delimiters from description:
+		#	"/*Not owner*/" -> "Not owner"
+		if ( $i ~ /^\/\*/ ) {
+		    sub (/\/\*[ 	]*/, "", $i)
+		} else if ( $i ~ /\*\/$/ ) {
+		    sub (/[ 	]*\*\/$/, "", $i)
+		}
+		if ( Desc == "" )
+		    Desc = $i
+		else
+		    Desc = Desc " " $i
+	    }
+	    print $3 "	" $2 "	" Desc
+	}
+    ' > "$Errnos" || exit	# awk will print error message
+    [ -s "$Errnos" ] || Fatal "could not find include file(s)"
+}
+# Search "database" for given strings
+for i
+do
+    case "$i" in
+	E[A-Z]*) Col=2;;	# Symbolic name given
+	*[!0-9]*)		# No number: just grep for pattern
+		$GREP -i "$i" "$Errnos"
+		continue;;
+	*)	Col=1;;		# This seems to be a number
+    esac
+    $NAWK '$'$Col' == "'$i'"' "$Errnos"
+done

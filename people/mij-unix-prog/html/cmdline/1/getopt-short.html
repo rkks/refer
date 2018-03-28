@@ -1,0 +1,67 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;getopt-short.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;Parsing short-options command lines with getopt.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 07/08/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+#include &lt;unistd.h&gt;<br />
+</span><br />
+<span style="color:#683821;">#define OPT_NUM &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">4</span><span style="color:#683821;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* a, b, c and x (h is not relevant here) */<br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> want_opt[OPT_NUM]; &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* want option? */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> ch; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* service variables */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> i;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> *my_argument;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* init want_opt array */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; OPT_NUM; i++)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;want_opt[i] = <span style="color:#0000ff;">0</span>;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* optstring: a, b, c, h; and x taking an argument */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>((ch = <span style="color:#003369;">getopt</span>(argc, argv, <span style="color:#760f15;">"abchx:"</span>)) != -<span style="color:#0000ff;">1</span>) { &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getopt() iterates over argv[] */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">switch</span><span style="color:#003369;"> </span>(ch) { &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* what getopt() returned */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'a'</span>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* a has been recognized (possibly for the second or more time) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;want_opt[<span style="color:#0000ff;">0</span>] = want_opt[<span style="color:#0000ff;">0</span>] + <span style="color:#0000ff;">1</span>; &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* remember about a */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'b'</span>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* b */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;want_opt[<span style="color:#0000ff;">1</span>]++;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'c'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;want_opt[<span style="color:#0000ff;">2</span>]++;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'x'</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;want_opt[<span style="color:#0000ff;">3</span>]++;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;my_argument = optarg; &nbsp;&nbsp;<span style="color:#236e25;">/* preserve the pointer to x' argument */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'h'</span>: &nbsp;&nbsp;<span style="color:#236e25;">/* want help */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">default</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* no options recognized: print options summary */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Usage:\n%s [-a] [-b] [-c] [-h] [-x]\n"</span>, argv[<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* typically here: <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(EXIT_FAILURE);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* print out results */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"You requested:\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(want_opt[<span style="color:#0000ff;">0</span>]) <span style="color:#003369;">printf</span>(<span style="color:#760f15;">"a [%d]\n"</span>, want_opt[<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(want_opt[<span style="color:#0000ff;">1</span>]) <span style="color:#003369;">printf</span>(<span style="color:#760f15;">"b [%d]\n"</span>, want_opt[<span style="color:#0000ff;">1</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(want_opt[<span style="color:#0000ff;">2</span>]) <span style="color:#003369;">printf</span>(<span style="color:#760f15;">"c [%d]\n"</span>, want_opt[<span style="color:#0000ff;">2</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(want_opt[<span style="color:#0000ff;">3</span>]) <span style="color:#003369;">printf</span>(<span style="color:#760f15;">"x [%d]: %s"</span>, want_opt[<span style="color:#0000ff;">3</span>], my_argument); &nbsp;<span style="color:#236e25;">/* but only the last one rests */</span><br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

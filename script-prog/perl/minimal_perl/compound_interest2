@@ -1,0 +1,22 @@
+#! /usr/bin/perl -s -wn
+
+use Lingua::EN::Inflect 'PL_N'; # import noun pluralizer
+
+BEGIN {
+    $Usage="Usage: $0 -amount=dollars -rate=percent";
+
+    # Check for proper invocation
+    $amount  and  $rate  or  warn "$Usage\n"  and  exit 255;
+   
+    $pct_rate=$rate/100;          #   5 becomes .05
+    $multiplier=1 + $pct_rate;    # .05 becomes 1.05
+    # Instruct user
+    print "Press <ENTER> to see \$$amount compound at $rate%.";
+}
+
+$amount=$amount * $multiplier;        # accumulate growth
+
+# $. counts input lines, which represent years
+print "\$$amount after $. ",  PL_N 'year', $.;
+
+END { print "\n"; } # start shell prompt on fresh line after <^D>

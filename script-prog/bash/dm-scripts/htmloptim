@@ -1,0 +1,217 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="htmloptim"
+       HTML_="optimize html script"
+    PURPOSE_="optimize html file by reducing its size"
+   SYNOPSIS_="$NAME_ [-vhlrdospbtm] [-c <n>] <file> [file...]"
+   REQUIRES_="standard GNU commands, file"
+    VERSION_="1.2"
+       DATE_="2005-07-20; last update: 2006-01-29"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="www"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+# NOTE: 
+# Do not edit in editor which automatically transaltes tabs to spaces! This 
+# script needs embedded tabs for pattern matching.
+
+# HISTORY:
+# 2005-07-20 v1.0
+# 2005-07-22 v1.1 - added -t option
+#                 - added skipping files with <pre> tags
+#                 - better handling of stdo and stdr messages
+# 2006-01-29 v1.2 - added the -p option (remove trailing spaces and tabs)
+#                 - added skipping of more <pre> like tags: <listing> 
+#                   <plaintext> <xmp>
+#                 - added script description
+#                 - renamed the script from htmoptim to htmloptim
+
+# TODO:
+#    - more testing of option -t
+#    - optimize around <pre> like tags
+#    - remove html comments
+#    - remove script tags
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -r, replace the input file, default output is stdo
+     -d, convert DOS to Unix endline (remove CR)
+     -t, remove empty space between > and < (end and begin tag indicators)
+     -o, put all html content on one line (remove LF)
+     -s, remove leading spaces and tabs
+     -p, remove trailing spaces and tabs
+     -b, remove blank lines and lines containing only spaces or tabs
+     -c <n>, compact text, fold text at line <n> width
+     -v, verbose
+     -m, manual
+     -h, usage and options (help)
+     -l, see this script"
+exit 1
+}
+
+manual() { echo >&2 "
+
+NAME
+
+    $NAME_ $VERSION_ - $PURPOSE_
+
+SYNOPSIS
+
+    $SYNOPSIS_
+
+DESCRIPTION
+
+    $NAME_ reduces the size of html file by optimizing its content. This is 
+    done by removing unnecessary characters like spaces, tabs, line feeds or
+    blank lines. 
+
+    If the -r option is used, the optimized version will replace the original
+    only if it is smaller. 
+
+    Files with <pre> <listing> <plaintext> and <xmp> tags are skipped.
+    To unoptimize a file, or to make it easily readable, use the tidy tool:
+    tidy.sourgeforge.net
+
+AUTHOR
+
+    $AUTHOR_ Suggestions and bug reports are welcome.
+    For updates and more scripts visit $URL_
+
+"; }
+
+# check if required command is in $PATH variable
+which file &> /dev/null
+[ $? != 0 ] && { echo >&2 ${NAME_}: the \"file\" command needed to run this script is not in your \$PATH; exit 1; }
+
+# arg check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# tmp file set up
+tmp_1=/tmp/tmp1.${RANDOM}$$
+tmp_2=/tmp/tmp2.${RANDOM}$$
+
+# signal trapping and tmp file removal
+trap 'rm -f $tmp_1 $tmp_2 >/dev/null 2>&1' 0
+trap "exit 1" 1 2 3 15
+
+# var init
+verbose=    # verbose output
+replace=    # replace the input file, default output is stdo
+rmblanks=   # remove blank lines
+rmtrail=    # remove trailing spaces and tabs
+rmleads=    # remove leading spaces and tabs
+dtu=        # convert DOS to Unix endline; remove CR
+oneline=    # remove LF; put all html content one one line
+compact=    # compact text; fold text at specified line width
+tagspace=   # remove empty space between > and < tags
+text=       # boolean, is input file an ascii file
+
+# option and arg handling
+while getopts vhlc:otdspmbr options; do
+
+    case $options in
+
+        c) compact=$OPTARG ;;
+        t) tagspace=on ;;
+        o) oneline=on ;;
+        d) dtu=on ;;
+        s) rmleads=on ;;
+        p) rmtrail=on ;;
+        b) rmblanks=on ;;
+        r) replace=on ;;
+        v) verbose=on ;;
+        m) manual | more ; exit ;;
+        h) usage ;;
+        l) more $0 ; exit ;;
+       \?) echo invalid or missing argument, type $NAME_ -h for help; exit 1 ;;
+
+    esac
+
+done
+
+shift $(( $OPTIND - 1 ))
+
+# input file check
+[ $# -eq 0 ] && { echo >&2 specify file"(s)" to work on, type $NAME_ -h for help; exit 1; }
+
+# arg int check
+[[ $compact == *[!0-9]* ]] && { echo >&2 ${NAME_}: the argument to option c must be an integer; exit 1; }
+
+# local funcs
+file_GetSize() {
+
+    set -- $(ls -l "$1"); echo $5
+ }
+
+str_DelimitInt() {
+
+    echo $1 | sed '{ s/$/@/; : loop; s/\(...\)@/@.\1/; t loop; s/@//; s/^\.//; }'
+ }
+
+# main
+for a in "$@"; do
+
+    # does file exist
+    [ -f "$a" ] || { echo >&2 ${NAME_}: file \"$a\" does not exist; exit 1; }
+
+    # is input an ascii file
+    file "$a" | grep -q text
+    [ $? == 0 ] && text=0 || text=1
+
+    cp -- "$a" $tmp_1
+
+    if [[ $text == 0 ]]; then
+
+        # files with <pre> <listing> <plaintext> and <xmp> tags are skipped
+        grep -qi -e "<[ 	]*pre" -e "<[ 	]*listing[ 	]*>" -e "<[ 	]*plaintext[ 	]*>" -e "<[ 	]*xmp[ 	]*>" "$tmp_1"
+        [ $? == 0 ] && { echo >&2 ${NAME_}: skipping \"$a\"  - it contains one of the following tags "<pre> <listing> <plaintext> <xmp>" ; continue; }
+
+        # original file size
+        osize=$(file_GetSize $tmp_1)
+
+        # html optimizing
+        [[ $dtu ]] && { tr -d \\015 < $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+        [[ $rmblanks ]] && { sed '/^[ 	]*$/d' < $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+        [[ $rmleads ]] && { sed 's/^[ 	]*//' < $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+        [[ $rmtrail ]] && { sed 's/[ 	]*$//g' < $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+        [[ $compact ]] && { fmt -w $compact $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+        [[ $oneline ]] && { tr '\012' ' ' < $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+        [[ $tagspace ]] && { sed 's/>[  	]*</></g' < $tmp_1 > $tmp_2 ; cp $tmp_2 $tmp_1; }
+
+        # replacing only files that are smaller then the original
+        nsize=$(file_GetSize $tmp_1) # new, optimized file size
+
+        if (( $nsize < $osize ));then
+
+            [[ $replace ]] && mv -- $tmp_1 "$a" || cat $tmp_1
+
+            # so we dont get verbose output appended to stdo
+            if [[ $verbose ]] && [[ $replace ]]; then
+                echo "$a" $(str_DelimitInt $osize) "->" $(str_DelimitInt $nsize) bytes
+            fi
+
+        else
+
+            # so we dont get verbose output appended to stdo
+             echo >&2 ${NAME_}: "$a" optimization did not decrease the size
+
+        fi
+
+    elif [[ $text == 1 ]];then
+
+        echo >&2 ${NAME_}: skipping: "$a" not an ascii file
+
+    fi
+
+done

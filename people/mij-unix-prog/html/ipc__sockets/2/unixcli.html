@@ -1,0 +1,79 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* unixcli.c<br />
+&nbsp;*<br />
+&nbsp;* connects to an UNIX domain socket, sends a message to it, and disconnects.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* Created by Mij &lt;mij@bitchx.it&gt; on 18/12/05.<br />
+&nbsp;* Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* socket(), bind() */</span><br />
+<span style="color:#683821;">#include &lt;sys/types.h&gt;<br />
+#include &lt;sys/socket.h&gt;<br />
+#include &lt;sys/un.h&gt;<br />
+</span><span style="color:#236e25;">/* write(), close() */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* strlen() */</span><br />
+<span style="color:#683821;">#include &lt;string.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><br />
+<span style="color:#236e25;">/* maximum size available for an incoming message payload */</span><br />
+<span style="color:#683821;">#define MAX_MSGLEN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">100</span><span style="color:#683821;"><br />
+</span><span style="color:#236e25;">/* path of the UNIX domain socket in filesystem */</span><br />
+<span style="color:#683821;">#define SERVERSOCK_PATH &nbsp;&nbsp;&nbsp;&nbsp;"/tmp/mytmpunixsock"<br />
+</span><br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>() {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> sock, err, i = <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> ch, messagebuf[MAX_MSGLEN];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> sockaddr_un servaddr;<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* create a UNIX domain, connectionful socket */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;sock = <span style="color:#003369;">socket</span>(AF_UNIX, SOCK_STREAM, <span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(sock &lt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In socket()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* connect the socket to the server socket described by "servaddr" */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;servaddr.sun_family = AF_UNIX;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sprintf</span>(servaddr.sun_path, SERVERSOCK_PATH);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;err = <span style="color:#003369;">connect</span>(sock, (<span style="color:#881350;">struct</span> sockaddr *)&amp;servaddr, <span style="color:#881350;">sizeof</span>(servaddr));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(err) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In connect()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* write a message to the server */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;err = <span style="color:#003369;">write</span>(sock, <span style="color:#760f15;">"Hello server.\n"</span>, <span style="color:#003369;">strlen</span>(<span style="color:#760f15;">"Hello server.\n"</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(err &lt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In write()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Message sent:\n\t@length: %d bytes\n\t@content: %s\n"</span>, err, <span style="color:#760f15;">"Hello server.\n"</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* receive the response from the server */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">do</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err = <span style="color:#003369;">read</span>(sock, &amp;ch, <span style="color:#0000ff;">1</span>); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* read one byte from the socket */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(err &lt;= <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Premature end-of-file (0) or read() error (&lt;0)? %d\n"</span>, err);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;messagebuf[i++] = ch;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">while</span><span style="color:#003369;"> </span>(ch != '\n');<br />
+&nbsp;&nbsp;&nbsp;&nbsp;messagebuf[i] = '\<span style="color:#0000ff;">0</span>';<br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* close the socket */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(sock);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Response received:\n\t@length: %lu bytes\n\t@content: %s\n"</span>, <span style="color:#003369;">strlen</span>(messagebuf), messagebuf);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+</div>

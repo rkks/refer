@@ -1,0 +1,42 @@
+##############################################################################
+##   Example 14.4 (Recommended) from Chapter 14 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 14-4. Command-line parsing via Getopt::Clade
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Handle command-lines of the form:
+#
+#    > orchestrate -in source.txt -o=dest.orc -verbose
+
+# Specify and parse valid command-line arguments...
+use Getopt::Clade q{
+    -i[n]  [=] <file:in>    Specify input file  [default: '-']
+    -o[ut] [=] <file:out>   Specify output file [default: '-']
+
+    -l[en] [=] <l:+int>     Display length [default: 24 ]
+    -w[id] [=] <w:+int>     Display width  [default: 78 ]
+
+    -v                      Print all warnings
+    --verbose               [ditto]
+};
+
+# Report intended behaviour...
+if ($ARGV{-v}) {
+    print "Loading first $ARGV{'-l'} chunks of file: $ARGV{'-i'}\n"
+}
+# etc.
+

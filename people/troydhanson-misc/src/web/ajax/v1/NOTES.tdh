@@ -1,0 +1,6 @@
+This is a basic example of a web page that uses jQuery with AJAX
+to periodically poll a PHP script (in the background) and update
+a graphic element's position based on the AJAX reply.
+
+Install the files in /var/www/ajax/v1 and view by browsing to 
+  http://localhost/ajax/v1/v1.html

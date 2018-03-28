@@ -1,0 +1,31 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 2 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+for(@results) {
+    print_sep();
+    print;
+}
+ 
+while($min < $max) {
+    my $try = ($max - $min) / 2;
+    if($value[$try] < $target) {
+        $max = $try;
+    }
+    else{
+        $min = $try;
+    }
+}
+

@@ -1,0 +1,34 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 15 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %selector_of;
+my %data_of;
+
+sub clone {
+    my ($self) = @_;
+ 
+    # Work out the object's class (and verify that it actually has one)...
+    my $class = ref $self
+        or croak( qq{Can't clone non-object: $self} );
+ 
+    # Construct a new object, 
+    # copying the current object's state into the constructor's argument list...
+    return $class->new({ 
+        selector => $selector_of{ident $self},
+        data     => $data_of{ident $self} 
+    });
+}
+

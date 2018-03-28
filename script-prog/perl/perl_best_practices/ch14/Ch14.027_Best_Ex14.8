@@ -1,0 +1,111 @@
+##############################################################################
+##   Example 14.8 (Recommended) from Chapter 14 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 14-8. Standard interface components for Getopt::Euclid
+#  Example 14-9. Standardized command-line parsing via Getopt::Euclid
+
+package Corporate::Std::Cmdline;
+use Getopt::Euclid;
+
+1;  # POD-only modules still need a magic true value at the end
+
+=head1 STANDARD OPTIONS
+
+=over
+
+=item  -i[nfile] [=] <file>    
+
+Specify input file
+
+=for Euclid:
+    file.type:    readable
+    file.default: '-'
+
+=item  -o[utfile] [=] <file>    
+
+Specify output file
+
+=for Euclid:
+    file.type:    writable
+    file.default: '-'
+
+=item -v[erbose]
+
+Print all warnings
+
+=item --version
+
+=item --usage
+
+=item --help
+
+=item --man
+
+Print the usual program information
+
+=back
+
+=cut
+
+
+# Handle command-lines of the form:
+#
+#    > orchestrate -in source.txt -o=dest.orc -verbose
+
+# Create a command-line parser that implements the documentation below...
+# use Corporate::Std::Cmdline;
+
+# Report intended behaviour...
+if ($ARGV{-v}) {
+    print "Loading first $ARGV{-l} chunks of file: $ARGV{-i}\n"
+}
+
+# etc.
+
+__END__
+
+=head1 NAME
+
+orchestrate - Convert a file to Melkor's .orc format
+
+=head1 VERSION
+
+This documentation refers to orchestrate version 1.9.4
+
+=head1 USAGE
+
+    orchestrate  -in source.txt  -out dest.orc  -verbose  -len=24
+
+=head1 OPTIONS
+
+=over
+
+=item  -l[en] [=] <l>
+
+Display length (default is 24 lines)
+
+=for Euclid:
+    l.type:    integer > 0
+    l.default: 24
+
+=item  -w[id] [=] <w>
+
+Display width (default is 78 columns)
+
+=for Euclid:
+    w.type:    integer > 0
+    w.default: 78
+
+=back
+
+=head1 STANDARD INTERFACE
+
+See L<Corporate::Std::Cmdline> for a description of the standard 
+command-line arguments available for all applications in the Strate suite.
+
+=begin remainder of documentation here...
+

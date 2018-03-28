@@ -1,0 +1,48 @@
+#!/bin/sh
+#*******************************************************************************
+#
+#	Name:			build
+#
+#	Description:	This file is a build script for the examples in Solaris
+#					Systems Prorgamming.  It just determines which releas of
+#					the OS we're running on, and calls make with the appropriate
+#					target.
+#
+#
+#			Copyright © 2001-2004 by Rich Teer.  All rights reserved.
+#
+#*******************************************************************************
+
+OS_REL=`uname -r`
+
+case "$OS_REL" in
+	'5.5')
+		echo "Building examples for Solaris 2.5"
+		make sol-2.5
+		;;
+
+	'5.5.1')
+		echo "Building examples for Solaris 2.5.1"
+		make sol-2.5.1
+		;;
+
+	'5.6')
+		echo "Building examples for Solaris 2.6"
+		make sol-2.6
+		;;
+
+	'5.7')
+		echo "Building examples for Solaris 7"
+		make sol-7
+		;;
+
+	'5.8')
+		echo "Building examples for Solaris 8"
+		make sol-8
+		;;
+
+	*)
+		echo "Building examples for Solaris 9 and later"
+		make sol-9
+		;;
+esac

@@ -1,0 +1,19 @@
+#
+# $Header$
+#
+# IRIX 5.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -xansi
+EXTRACFLAGS=
+
+#
+# Location of the signal library.
+#
+SIGLIBS=

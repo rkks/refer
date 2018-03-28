@@ -1,0 +1,76 @@
+##############################################################################
+## Example 16.3 (NOT RECOMMENDED) from Chapter 16 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-3. Positional arguments to constructors
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Client;
+use Class::Std::Utils;
+{
+    my %client_num_of;
+ 
+    sub new {
+        my ($class, $client_num) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;   
+ 
+        $client_num_of{ident $new_object} = $client_num;
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of ];
+    }
+}
+ 
+package Client::Corporate;
+use base qw( Client );
+use Class::Std::Utils;
+{
+    my %corporation_of;
+
+    sub new {
+        my ($class, $client_num, $corp_name) = @_;
+ 
+        my $new_object = $class->SUPER::new($client_num);
+ 
+        $corporation_of{ident $new_object} = $corp_name;
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%corporation_of ];
+    }
+}
+ 
+# and later...
+
+package main;
+ 
+my $new_client 
+    = Client::Corporate->new( '124C1', 'Florin' );
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $new_client ];

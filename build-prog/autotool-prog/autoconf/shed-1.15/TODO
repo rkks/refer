@@ -1,0 +1,9 @@
+ - Replace
+ - Cut/Copy/Paste
+ - Undo
+ - Config (~/.shedrc) to set things like hex mode by default.m
+ - Make offset more readable
+ - Fix search in /dev
+ - jump to %
+ - highlight every nth line (colors!)
+ - Toggle whether file is treated as signed or unsigned chars.

@@ -1,0 +1,53 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @clients = qw( Ackroyd Belushi );
+
+
+sub get_next_holding_client {
+    # Search for and return any client on hold...
+    for my $client (@_) {
+        return $client if $client->holding();
+    }
+ 
+    # Fail if no clients on hold...
+    return;
+}
+ 
+# and later...
+ 
+my $client_on_hold = get_next_holding_client(@clients);
+ 
+if ($client_on_hold) {
+    $client_on_hold->resume_conversation();
+}
+
+
+
+package Ackroyd;
+sub holding { return 0 }
+
+sub resume_conversation {
+    print "Hi, John...\n";
+}
+
+package Belushi;
+
+sub holding { return 1 }
+
+sub resume_conversation {
+    print "Hi, John...\n";
+}

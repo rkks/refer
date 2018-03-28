@@ -1,0 +1,280 @@
+#!/bin/csh -f
+
+
+goto basic_setup
+
+#	start of mkscript_main_menu_routines
+
+mkscript_main_menu_routines:
+
+onintr mkscript_main_menu_routines
+
+cat << menu_screen
+`clear`
+
+		Mkscript Main Menu
+
+	!	shell
+	?	help
+	a	add a menu
+	e	edit a routine
+	l	list menus and routines
+	r	run it!
+
+	q	quit
+
+menu_screen
+
+	set noglob
+	set choice=`$grabchars -q "	your choice >> " | cat -v`
+	if ($choice =~ '?') set choice=help
+	switch ($choice)
+		case "!":
+			sh
+			breaksw
+		case "help":
+			echo -n "help..."
+			push_point help_menu_routines
+			breaksw
+		case "a":
+			echo -n "add..."
+			push_point add_menu_routines
+			breaksw
+		case "e":
+			echo -n "edit..."
+			push_point edit_a_routine
+			breaksw
+		case "l":
+			echo -n "list..."
+			push_point list_routines
+			breaksw
+		case "r":
+			echo "test run...hit ^C to exit..."
+			push_point run_routines
+			breaksw
+		case "q":
+			echo "quit..."
+			exit
+			breaksw
+		default:
+			if ($ret_pos > 1) then
+				echo -n "	back..."
+				pop_point
+			else
+				echo no such option...
+			endif
+			breaksw
+	endsw
+	goto mkscript_main_menu_routines
+
+#	end of mkscript_main_menu_routines
+
+#	start of add_menu_routines
+
+add_menu_routines:
+
+	echo ""
+	../gensource
+	unset noglob
+	set known_routines=(`ls -t *menu`)
+	if (! $?real_proj_name) then
+		set real_proj_name=`echo $known_routines[1]:r`
+	endif
+	pop_point
+
+#	end of add_menu_routines
+
+#	start of edit_a_routine
+edit_a_routine:
+	echo nothing yet...
+	pop_point
+
+#	end of edit_a_routine
+
+
+#	start of list_routines
+list_routines:
+
+	unset noglob
+	set known_routines=(`ls -t *menu`)
+	foreach rout ($known_routines)
+		echo ""
+		echo the menu "$rout:r" has these entries:
+		grep 'source' $rout | awk '{ print $2 }'
+		echo ""
+	end
+	$grabchars -s -t 30 -q 'press any key...'
+
+	pop_point
+
+#	end of list_routines
+
+
+#	start of run_routines
+run_routines:
+
+	if ( ! $?real_proj_name) then
+		echo hey\! nothing to run...
+		sleep 2
+		pop_point
+	endif
+	echo name of project: $real_proj_name
+	sleep 3
+
+	set proj_name=${real_proj_name}_run
+	cp /dev/null $proj_name && chmod 755 $proj_name
+
+	cat << +++ >> $proj_name
+#! /bin/csh -f
+
+goto basic_setup
+
++++
+
+	cat $real_proj_name >> $proj_name
+
+	echo adding basic startup routine...
+	cat << +++ >> $proj_name
+
+`echo basic_setup:`
+	set base_dir=$cwd
+	set menu_loop=""
+
+	#	these three aliases allow me to make a very flexible menu
+	#	structure...you "push" every menu you go to, and pop out
+	#	to get back to where you came from..
+
+	alias push_point 'set return_point=(\$return_point[1-\$ret_pos] \!*); @ ret_pos++; goto \!*; if (\$?pverbose) echo push_point produces \$return_point'
+
+	alias pop_point 'set back_pos=\$return_point[\$ret_pos]; @ ret_pos--; goto \$return_point[\$ret_pos]; if (\$?pverbose) echo push_point produces \$return_point'
+
+	alias local_point '@ ret_pos--; set return_point=(\$return_point[1-\$ret_pos] \!*); @ ret_pos++; if (\$?pverbose) echo local point produces \$return_point'
+
+	#	initialize this, just in case it gets hit...
+	set back_pos=$real_proj_name
+	set return_point=$real_proj_name
+	@ ret_pos=0
+
+
+	if (! \$?EDITOR) setenv EDITOR /usr/ucb/vi
+	if (! \$?PAGER) setenv PAGER /usr/ucb/more
+
+	set this_host=\`hostname\`
+	set grabchars=/usr/local/bin/grabchars
+	set grab_opts=""
+
+	push_point $real_proj_name
+
++++
+	$proj_name
+	pop_point
+
+#	end of run_routines
+
+
+#	start of help_menu_routines
+
+help_menu_routines:
+
+cat << the_end_of_help | $PAGER
+`clear`
+
+	Hello $USER,
+
+	This is only scanty documentation for what should be
+considered as a "work in progress", ok?
+
+	The main menu looks like this:
+
+---
+		Mkscript Main Menu
+
+	!	shell
+	?	help
+	a	add a menu
+	e	edit a routine
+	l	list menus and routines
+	r	run it!
+
+	q	quit
+
+---
+	'!' will push a shell...
+	'?' got you to here
+	'a' means that you are going to define a menu, this is
+		accomplished by calling the script "gensource".
+		What happens in that script is that you lay out
+		a menu in an editor (currently $EDITOR),
+		and then a csh "routine" is generated based
+		on the menu.  This gives you a working menu
+		to play with...afterwards you go into the
+		resulting file and add whatever functionality
+		you need in the routine.
+	'e' is unimplemented, what it should do is allow you
+		to edit an existing routine.
+	'l' displays known routines and what routines are called
+		from them...you would use this so that you
+		could keep track of what needed to be defined in 
+		an application with many menus.
+	'r' ties things together and lets you do a test run on
+		what you have defined.  You should hit ^C
+		(or whatever you normally use as a Break character)
+		to get out of your test run.  Further:  what
+		'r' does is figure out what your "project" is
+		by using the name of the first "routine" you've
+		defined, and builds a wrapper around that routine.
+		Look in the "menus" directory and you'll see that
+		your main routine has a "_run" copy.  There's
+		a good reason why it's a copy, you may call your
+		main menu as a "submenu" in some other "application".
+		Aha!  The whole idea is that you write routines,
+		and can link them together by defining other
+		routines, and so on... a "change directory" routine
+		might be called from many different "applications".
+		It's all accomplished by using the csh source
+		builtin...don't go more than 20 routines deep.
+		
+the_end_of_help
+	ckpager
+	pop_point
+
+#	end of help_menu_routines
+
+
+basic_setup:
+	set base_dir=$cwd
+
+	#	these three aliases allow me to make a very flexible menu
+	#	structure...you "push" every menu you go to, and pop out
+	#	to get back to where you came from..
+
+	alias push_point 'set return_point=($return_point[1-$ret_pos] \!*); @ ret_pos++; goto \!*; if ($?pverbose) echo push_point produces $return_point'
+
+	alias pop_point 'set back_pos=$return_point[$ret_pos]; @ ret_pos--; goto $return_point[$ret_pos]; if ($?pverbose) echo push_point produces $return_point'
+
+	alias local_point '@ ret_pos--; set return_point=($return_point[1-$ret_pos] \!*); @ ret_pos++; if ($?pverbose) echo local point produces $return_point'
+
+	#	initialize this, just in case it gets hit...
+	set back_pos="mkscript_main_menu_routines"
+	set return_point="mkscript_main_menu_routines"
+	@ ret_pos=0
+
+
+	if (! $?EDITOR) setenv EDITOR /usr/ucb/vi
+	if (! $?PAGER) setenv PAGER /usr/ucb/more
+	alias	 ckpager 'if ($PAGER =~ *more*) $grabchars -f -p "...press any key..."'
+
+	set this_host=`hostname`
+	set grabchars=grabchars # this should be /usr/local/bin/grabchars
+	set grab_opts=""
+
+	setenv RUNNING_MKSCRIPT
+	set known_routines=""
+
+	if ( ! -d menus) then
+		echo creating menu dir...
+		mkdir menus
+	endif
+	cd menus
+
+	push_point mkscript_main_menu_routines

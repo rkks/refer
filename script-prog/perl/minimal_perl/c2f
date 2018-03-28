@@ -1,0 +1,4 @@
+#! /usr/bin/perl -wnla
+# Converts Celsius to Fahrenheit 
+BEGIN { $,=' '; }   # separate each of print's arguments by a space
+print map { $_ * ( 9 / 5 ) + 32 } @F;  # transform each field

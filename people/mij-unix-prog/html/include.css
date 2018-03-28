@@ -1,0 +1,25 @@
+/* include this CSS code for displaaying *_small.html files correctly */
+div.csource {
+    text-align: left;
+    color: #000000;
+    background-color: #ffffff;
+    border: solid black 1px;
+    padding: 0.5em 1em 0.5em 1em;
+    overflow: auto;
+    font-size: small;
+    font-family: monospace;
+}
+
+/* c comment */
+.ccom { color: #236e25; }
+/* precompiler directives */
+.cpdr { color: #683821; }
+/* data types */
+.ctyp { color: #881350; }
+/* function names */
+.cfun { color: #003369; }
+/* values/numbers */
+.cval { color: #0000ff; }
+/* strings */
+.cstr { color: #760f15; }
+

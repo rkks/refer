@@ -1,0 +1,97 @@
+##############################################################################
+##   Example 18.1 (Recommended) from Chapter 18 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 18-1. A module for tracking subroutine calls
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+BEGIN {
+
+package Sub::Tracking;
+ 
+use version; our $VERSION = qv(0.0.1);
+ 
+use strict;
+use warnings;
+use Carp;
+use Perl6::Export::Attrs;
+use Log::Stdlog {level => 'trace', handle => \*STDERR };
+ 
+# Utility to create a tracked version of an existing subroutine...
+sub _make_tracker_for {
+    my ($sub_name, $orig_sub_ref) = @_;
+ 
+    # Return a new subroutine...
+    return sub {
+ 
+        # ...which first determines and logs its call context
+        my ($package, $file, $line) = caller;
+        print {*STDLOG} trace => 
+            "Called $sub_name(@_) from package $package at '$file' line $line";
+ 
+        # ...and then transforms into a call to the original subroutine
+        goto &{$orig_sub_ref};
+    }
+}
+ 
+# Replace an existing subroutine with a tracked version...
+sub track_sub : Export {
+    my ($sub_name) = @_;
+    
+    # Locate the (currently untracked) subroutine in the caller's symbol table...
+    my $caller = caller;
+    my $full_sub_name = $caller.'::'.$sub_name;
+    my $sub_ref = do { no strict 'refs'; *{$full_sub_name}{CODE} };
+ 
+    # Or die trying...
+    croak "Can't track nonexistent subroutine '$full_sub_name'"
+        if !defined $sub_ref;
+ 
+    # Then build a tracked version of it...
+    my $tracker_ref = _make_tracker_for($sub_name, $sub_ref);
+ 
+    # And install that version back in the caller's symbol table...
+    {
+        no strict 'refs';
+        *{$full_sub_name} = $tracker_ref;
+    }
+ 
+    return;
+}
+ 
+1; # Magic true value required at end of module
+
+}
+
+
+package main;
+use Digest::SHA qw( sha512_base64 );
+
+# use Sub::Tracking ;
+BEGIN { Sub::Tracking->import(qw( track_sub )) }
+ 
+track_sub('sha512_base64');
+ 
+# and later...
+ 
+my $original_text = 'Now is the winter of our discontent...';
+
+my $text_key 
+    = sha512_base64($original_text);  # Use of subroutine automatically logged
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $text_key ];
+
+

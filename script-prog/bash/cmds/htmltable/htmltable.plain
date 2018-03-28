@@ -1,0 +1,121 @@
+:
+##########################################################################
+# Title      :	htmltable - format input in HTML table form
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1998-02-09
+# Requires   :	
+# Category   :	HTML, Text Utilities
+# SCCS-Id.   :	@(#) htmltable	1.7 05/03/02
+##########################################################################
+# Description
+#   Converts tablular text input to an HTML table. The program can
+#   create HTML output for displaying rows in alternating colours.
+#
+#    o	More than two colours can be specified for subsequent rows
+#    	(options -c and -C)
+#    o	The "-C" option generates code using cascacing style sheet (CSS)
+#    	class names for alternating rows, default names are "even" and
+#    	"odd". The following style definition in a page's <head> section
+#    	will assign different background colours to be used:
+#	    <style type="text/css">
+#	    .even { background-color: #FFFFFF; }
+#	    .odd  { background-color: #F0F0F0; }
+#	    </style>
+##########################################################################
+: ${AWK:=nawk}
+PN=`basename "$0"`			# Program name
+VER='1.7'
+TableTags='BORDER="1"'
+: ${DEFAULT_COLORS:="#FFFFFF #F0F0F0"}
+: ${DEFAULT_CLASSES:="even odd"}
+usage () {
+    echo >&2 "$PN - format input in HTML table form, $VER (hs '98)
+usage: $PN [-c colors] [-C classnames] [-d delim] [-h header] \\
+	[-r rows ] [-t tags] [file ...]
+    -c: use colors for different rows (empty argument: $DEFAULT_COLORS)
+    -C: use CSS class names for different rows (empty argument: $DEFAULT_CLASSES)
+    -d: input column delimiter (default: whitespace)
+    -h: print table heading
+    -r: the given first rows are header lines
+    -t: specify own HTML table tags instead of the default: $TableTags"
+    exit 1
+}
+msg () { echo >&2 "$PN:" "$@"; }
+Fatal () { msg "$@"; exit 1; }
+Caption=
+HeaderRows=0
+UseClassName=false
+while getopts c:C:d:h:r:t: opt
+do
+    case "$opt" in
+	c)	Colors=$OPTARG;;
+    	C)	Colors=$OPTARG; UseClassName=true;;
+    	d)	Delim=$OPTARG;;
+	h)	Caption=$OPTARG;;
+	t)	TableTags=$OPTARG;;
+	r)	HeaderRows=$OPTARG;;
+	\? | h)	usage;;
+    esac
+done
+shift `expr $OPTIND - 1`
+if [ -n "$Colors" ]
+then altmarkup=$Colors			# "Alternate Markup"
+elif $UseClassName
+then altmarkup=${Colors+$DEFAULT_CLASSES}
+else altmarkup=${Colors+$DEFAULT_COLORS}
+fi
+# Set the AWK Variable "TableTags" using "-v", because otherwise
+# the shell would interpret strings containing quotation marks ""
+$AWK ${Delim:+-F"$Delim"} -v TableTags="$TableTags" '
+    BEGIN {
+        Caption = "'"$Caption"'"
+	HeaderRows = '"$HeaderRows"' + 0
+	useclassname = ("'"$UseClassName"'" == "true")
+	if ( TableTags != "" ) TableTags = " " TableTags
+	print "<table" TableTags ">"
+	if ( Caption != "" ) {
+	    print "  <caption><em>" Caption "</em></caption>"
+	}
+	if ( "'"$altmarkup"'" != "" ) {
+	    nmarkup = split ("'"$altmarkup"'", markup, "[ 	]")
+	} else {
+	    nmarkup = 0
+	}
+    }
+    {
+    	if ( nmarkup > 0 ) {
+	    idx = NR % nmarkup + 1
+	    if (useclassname) {
+	    	tdmarkup = " class=\"" markup[idx] "\""
+	    } else {
+		tdmarkup = " bgcolor=\"" markup[idx] "\""
+	    }
+	}
+	print "  <tr>"
+	if ( HeaderRows > 0 ) {
+	    StartData = "<th" tdmarkup ">"
+	    EndData   = "</th>"
+	    --HeaderRows
+	} else {
+	    StartData = "<td" tdmarkup ">"
+	    EndData   = "</td>"
+	}
+	for ( i=1; i<=NF; ++i ) {
+	    if ( $i ~ /^[ 	]*$/ ) {	# empty field
+	    	Data = "&nbsp;"
+	    } else {
+	    	Data = $i
+	    }
+	    if ( i < NF ) {
+		print "    " StartData Data EndData
+	    } else {
+	    	# Make table readable for non-graphic browsers like "Lynx"
+		print "    " StartData Data "<br>" EndData
+	    }
+	}
+	print "  </tr>"
+    }
+    END {
+        print "</table>"
+    }
+' "$@"

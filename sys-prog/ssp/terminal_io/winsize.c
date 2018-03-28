@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <termios.h>
+#include <signal.h>
+#include "ssp.h"
+
+static volatile sig_atomic_t got_sigwinch;
+
+static void print_winsize (int fd);
+static void sigwinch (int sig);
+
+int main (void)
+{
+	if (sigset (SIGWINCH, sigwinch) == SIG_ERR)
+		err_msg ("sigset");
+
+	got_sigwinch = 0;
+	print_winsize (STDIN_FILENO);
+
+	for (;;) {
+		pause ();
+		if (got_sigwinch) {
+			printf ("SIGWINCH received\n");
+			print_winsize (STDIN_FILENO);
+			got_sigwinch = 0;
+		}
+	}
+}
+
+static void print_winsize (int fd)
+{
+	struct winsize size;
+
+	if (ioctl (fd, TIOCGWINSZ, &size) == -1)
+		err_msg ("ioctl failed");
+
+	printf ("%d columns by %d rows (%d pixels by %d pixels)\n",
+		size.ws_col, size.ws_row, size.ws_xpixel, size.ws_ypixel);
+}
+
+static void sigwinch (int sig)
+{
+	got_sigwinch = 1;
+}

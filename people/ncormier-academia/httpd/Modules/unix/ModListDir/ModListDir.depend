@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1145132666 /home/dak/zia/Modules/unix/ModListDir/DirCache.cpp
+	"FileInfo.h"
+	"DirCache.h"
+	"LeakWatcher.h"
+
+1145132930 /home/dak/zia/Modules/unix/ModListDir/FileInfo.h
+	<stdio.h>
+	<string>
+	<sys/stat.h>
+	<time.h>
+
+1145132666 /home/dak/zia/Modules/unix/ModListDir/DirCache.h
+	<list>
+	"FileInfo.h"
+
+1145125448 /home/dak/zia/src/includes/LeakWatcher.h
+	<crtdbg.h>
+

@@ -1,0 +1,73 @@
+##############################################################################
+## Example 13.2 (NOT RECOMMENDED) from Chapter 13 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 13-2. Minimal X::EOF exception class
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Define the class representing end-of-file exceptions...
+package X::EOF;
+use English qw( -no_match_vars );
+use Carp;
+ 
+# Make X::EOF objects stringify to the same message used previously...
+use overload (
+    q{""} => sub {
+        my ($self) = @_;
+        return "Filehandle $self->{handle} at EOF $self->{caller_location}";
+    },
+    fallback => 1,
+);
+ 
+# Create a X::EOF exception...
+sub new {
+    my ($class, $args_ref) = @_;
+ 
+    # Allocate memory for the object and initialize it...
+    my %self = %{$args_ref};
+ 
+    # If no filehandle is passed, indicate that it's unknown...
+    if (! exists $self{handle}) {
+        $self{handle} = '(unknown)';
+    }
+ 
+    # Ask Carp::shortmess()where croak() would report the error occurring...
+    if (!exists $self{caller_location}) {
+        $self{caller_location} = Carp::shortmess();
+    }
+ 
+    # Add it to the class and send it on its way...
+    return bless \%self, $class;
+}
+ 
+# Give access to the handle that was passed into the constructor...
+sub get_handle {
+    my ($self) = @_;
+    return $self->{handle};
+}
+ 
+# Test whether the currently propagating exception is of this type...
+sub caught {
+    my ($this_class) = @_;
+ 
+    use Scalar::Util qw( blessed );
+    return if !blessed $EVAL_ERROR;
+    return $EVAL_ERROR->isa($this_class);
+}
+
+
+use Carp;
+croak( X::EOF->new({}) );

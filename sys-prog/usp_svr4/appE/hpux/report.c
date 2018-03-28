@@ -1,0 +1,2 @@
+#define THIS_FILE_INTENTIONALLY_LEFT_EMPTY
+int dummy;

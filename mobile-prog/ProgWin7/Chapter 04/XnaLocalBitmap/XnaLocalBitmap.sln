@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XnaLocalBitmap", "XnaLocalBitmap\XnaLocalBitmap\XnaLocalBitmap.csproj", "{3CCA37FB-8D17-4722-B54F-AB401E632D56}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "XnaLocalBitmapContent", "XnaLocalBitmap\XnaLocalBitmapContent\XnaLocalBitmapContent.contentproj", "{C42A97C5-21C2-46FA-9B5C-D1DBDA128FAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{3CCA37FB-8D17-4722-B54F-AB401E632D56}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{C42A97C5-21C2-46FA-9B5C-D1DBDA128FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C42A97C5-21C2-46FA-9B5C-D1DBDA128FAF}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{C42A97C5-21C2-46FA-9B5C-D1DBDA128FAF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{C42A97C5-21C2-46FA-9B5C-D1DBDA128FAF}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

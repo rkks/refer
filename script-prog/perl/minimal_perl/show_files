@@ -1,0 +1,7 @@
+#! /usr/bin/perl -s -wnl
+# Usage: show_files filename
+#        show_files -line_numbers filename   (for line numbers)
+our ($line_numbers);              # makes -line_numbers optional
+$line_numbers and printf "$.: ";  # if switch provided, print line
+                                  #    number, without newline
+print;                            # print current line with newline

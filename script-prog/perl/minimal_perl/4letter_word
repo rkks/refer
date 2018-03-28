@@ -1,0 +1,14 @@
+#! /usr/bin/perl -s -wnl
+# Report first 4-letter word found in input,
+#  along with the line in which it occurred
+
+use strict;
+our $verbose;
+
+defined $verbose  and  warn "Examining '$_'";   # $_ holds line
+
+foreach (split) {     # split line into words, and load each into $_
+    /\b\w\w\w\w\b/  and
+        print "Found '$_' in: '$_'\n"  and      # DOESN'T WORK!
+            last;
+}

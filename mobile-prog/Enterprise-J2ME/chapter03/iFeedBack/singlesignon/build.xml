@@ -1,0 +1,59 @@
+<project name="iFeedBackSSO" default="all">
+
+  <path id="project.classpath">
+    <pathelement location="${J2SE_HOME}/jre/lib/rt.jar"/>
+    <fileset dir="/usr/local/jwsdp-1.0/common/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="./work/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <property name="outdir" value="./deploy" />
+    <property name="JWSDP_HOME" value="/usr/local/jwsdp-1.0" />
+    <property name="J2SE_HOME" value="/usr/local/j2sdk1.4.0" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${outdir}" />
+    <delete file="./portable.war" />
+    <delete file="./deployable.war" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${outdir}" />
+    <mkdir dir="${outdir}/WEB-INF" />
+    <mkdir dir="${outdir}/WEB-INF/classes" />
+    <mkdir dir="${outdir}/WEB-INF/lib" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="./work/src" destdir="${outdir}/WEB-INF/classes">
+      <classpath refid="project.classpath"/>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <copy file="./work/meta/jaxrpc-ri.xml" 
+          tofile="${outdir}/WEB-INF/jaxrpc-ri.xml"
+    />
+    <copy file="./work/meta/web.xml" 
+          tofile="${outdir}/WEB-INF/web.xml"
+    />
+    <jar jarfile="./portable.war"
+         basedir="${outdir}"
+    />
+  </target>
+
+  <target name="deployready" depends="package">
+    <exec executable="${JWSDP_HOME}/bin/wsdeploy.sh">
+      <arg line="-tmpdir tmp/ -o deployable.war portable.war" />
+    </exec>
+  </target>
+
+  <target name="all" depends="deployready" />
+
+</project>

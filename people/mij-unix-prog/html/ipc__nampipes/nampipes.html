@@ -1,0 +1,58 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;nampipes.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;simply opens a pre-created named pipe (a "fifo") and reads<br />
+&nbsp;* &nbsp;stuff from it as soon as there's something available.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 02/02/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+#include &lt;stdlib.h&gt;<br />
+#include &lt;fcntl.h&gt;<br />
+#include &lt;sys/types.h&gt;<br />
+#include &lt;sys/uio.h&gt;<br />
+#include &lt;unistd.h&gt;<br />
+</span><br />
+<span style="color:#683821;">#define MAX_LINE_LENGTH<br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> pipe;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> ch;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* we expect a named pipe has been created<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* in /tmp/named_pipe . The command<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;$ mkfifo /tmp/named_pipe<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* is a friend to get to this point<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;pipe = <span style="color:#003369;">open</span>(<span style="color:#760f15;">"/tmp/named_pipe"</span>, O_RDONLY);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(pipe &lt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Opening pipe"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* preparing to read from the pipe... */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Waiting data from the pipe... \n"</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* reading one char a time from the pipe */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>(<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(<span style="color:#003369;">read</span>(pipe, &amp;ch, <span style="color:#0000ff;">1</span>) &lt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Read the pipe"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">2</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"%c"</span>, ch);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* leaving the pipe */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(pipe);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

@@ -1,0 +1,30 @@
+md5watch
+---------
+Troy D. Hanson <tdh@tkhanson.net>
+
+Back to http://tkhanson.net/misc[Scripts and Snippets].
+
+This runs on an MD5 checksum on files in a directory hierarchy. It keeps a
+record of all their MD5 values (by default in a file called `~/.md5hist`) so
+that next time it is run, it can print out which files have changed.
+
+Generally use this with `-u` (update) so it records the new MD5 hash (of changed
+or new files), in addition to printing them. Without `-u`, it only prints them.
+
+  % cd /tmp
+  % echo hello > hello.txt
+  % md5watch -u
+  ./hello.txt new ...updated.
+  % echo 'hello, world!' > hello.txt
+  % md5watch -u
+  ./hello.txt changed since Mon Dec 21 14:48:00 2009 ...updated.
+
+You can place `md5watch -u` into cron like this to get a daily email of files
+whose content has changed.  This example excludes the top-level logs directory
+from being scanned.
+
+  5 0 * * *       $HOME/bin/md5watch -e ./logs -u
+
+While you could use `find` to list files modified in the last day (by
+modification timestamp), `md5watch` actually tests whether the content has changed.
+

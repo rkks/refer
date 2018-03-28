@@ -1,0 +1,35 @@
+#! /usr/bin/perl -s -wnl
+#  Usage: center2 [ -width=columns ] [ file1 file2 ... ]
+
+our ($width);          # makes this switch optional
+
+BEGIN {
+   $cl_width=$width;   # center_line() validates $cl_width
+}
+
+print center_line($_); # $cl_width needn't be passed; is global
+
+sub center_line {
+   # returns argument centered within field of size $cl_width
+
+   use Text::Tabs;  # imports expand(); converts tabs to spaces
+
+   if ( @_ != 1  or  $_[0] eq "" ) {   # needs one argument
+       warn "$0: Usage: center_line(string)\n";
+       $newstring=undef;      # to return "undefined" value
+   }
+   else {
+      defined $cl_width  and  $cl_width > 2  or  $cl_width=80;
+
+      $string=shift;          # get sub's argument
+      $string=expand $string; # convert tabs to spaces
+      $string =~ s/^\s+//;    # remove leading whitespace
+      $string =~ s/\s+$//;    # remove trailing whitespace
+
+      # calculate indentation
+      $indent=($cl_width - length $string )/2;
+      $padding=' ' x $indent;
+      $newstring="$padding$string";
+   }
+   return $newstring;        # return centered string, or undef
+}

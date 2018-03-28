@@ -1,0 +1,42 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use List::MoreUtils qw( uniq );
+
+# This is a *really* bad factoring algorithm...
+sub factors_of {
+    my ($n) = @_;
+    my @factors;
+    for my $possible_factor (2..int sqrt($n)) {
+        next if $n % $possible_factor;
+        push @factors, $possible_factor;
+        push @factors, $n / $possible_factor;
+    }
+    return sort {$a <=> $b} uniq @factors;
+}
+
+
+for my $n (2..1_000_000_000) {
+    my @factors = factors_of($n);
+ 
+    if (@factors == 2) {
+        print "$n is prime\n";
+    }
+    else {
+        print "$n is composite with factors: @factors\n";
+    }
+}
+

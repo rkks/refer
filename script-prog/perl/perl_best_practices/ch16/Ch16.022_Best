@@ -1,0 +1,96 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my $new_client = Client::Corporate->new( );
+ 
+$new_client->set_client_name('Humperdinck');
+$new_client->set_corp_name ('Florin'); 
+$new_client->set_position('CEO');
+ 
+$new_client->Client::set_client_num ('124C1');
+$new_client->Client::Corporate::set_client_num('F_1692');
+
+
+
+package Client;
+use Class::Std::Utils;
+use Carp;
+{
+    my %client_num_of;
+    my %name_of;
+
+ 
+    sub new {
+        my ($class) = @_;
+        croak q{Can't initialize in constructor (use accessors)} if @_ > 1;
+ 
+        # [Set up purely internal state here]
+ 
+        return bless anon_scalar(), $class;   
+    }
+
+    sub set_client_name {
+        my ($self, $name) = @_;
+        $name_of{ident $self} = $name;
+        return;
+    }
+
+    sub set_client_num {
+        my ($self, $num) = @_;
+        $client_num_of{ident $self} = $num;
+        return;
+    }
+
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of, \%name_of ];
+    }
+}
+ 
+package Client::Corporate;
+use base qw( Client );
+use Class::Std::Utils;
+{
+    my %client_num_of;
+    my %corporation_of;
+    my %position_of; 
+ 
+    sub set_client_num {
+        my ($self, $num) = @_;
+        $client_num_of{ident $self} = $num;
+        return;
+    }
+
+    sub set_corp_name {
+        my ($self, $corp) = @_;
+        $corporation_of{ident $self} = $corp;
+        return;
+    }
+
+    sub set_position {
+        my ($self, $pos) = @_;
+        $position_of{ident $self} = $pos;
+        return;
+    }
+
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of, \%corporation_of, \%position_of ];
+    }
+}

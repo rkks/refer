@@ -1,0 +1,41 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+use List::Util qw( first );
+
+$/ = "\n\n";
+my @file_chunks = <DATA>;
+chomp @file_chunks;
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @file_chunks ];
+
+# Find the first "chunk" that spans more than one line 
+my $next_multi_line_chunk
+    = first { chomp; m/\n/xms; } @file_chunks;
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $next_multi_line_chunk ];
+
+
+__DATA__
+A single line
+
+Another single line;
+
+A multi-line
+chunk
+
+Yet another single line

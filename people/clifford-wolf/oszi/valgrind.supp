@@ -1,0 +1,27 @@
+
+{
+   <insert a suppression name here>
+   Memcheck:Cond
+   obj:/lib/ld-2.6.so
+   obj:/lib/ld-2.6.so
+   obj:/lib/ld-2.6.so
+}
+
+{
+   <insert a suppression name here>
+   Memcheck:Param
+   writev(vector[...])
+   obj:/lib/libc-2.6.so
+   obj:/usr/lib/libxcb.so.1.0.0
+   obj:/usr/lib/libxcb.so.1.0.0
+   obj:/usr/lib/libxcb.so.1.0.0
+   fun:xcb_wait_for_reply
+   fun:_XReply
+   fun:XInternAtom
+   obj:/usr/lib/libSDL-1.2.so.0.11.0
+   obj:/usr/lib/libSDL-1.2.so.0.11.0
+   obj:/usr/lib/libSDL-1.2.so.0.11.0
+   obj:/usr/lib/libSDL-1.2.so.0.11.0
+   fun:SDL_VideoInit
+}
+

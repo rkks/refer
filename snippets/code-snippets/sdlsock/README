@@ -1,0 +1,12 @@
+sdlsock is a simple program to open a one-way TCP/IP connection for 
+things like, for example, sending a standard 80-column text file to a 
+postscript printer.
+
+sdlsock address port < txtfile.txt
+
+It uses SDL and SDL_net, but the static version has all that built in.  
+The static version is x86 only.
+
+The sdlsock code is freeware, and the SDL/SDL_net code is LGPL.
+
+--Tyler Montbriand, 2006

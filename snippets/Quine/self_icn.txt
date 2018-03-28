@@ -1,0 +1,14 @@
+Language: Icon
+
+
+Author:   Kenneth Walker
+Note:  in order to meet the criterion, x cannot be declared.
+
+
+procedure main();x:="procedure main();x:= \nx[21]:=image(x);write(x);end"
+x[21]:=image(x);write(x);end
+
+
+Author:  Steve Wampler
+
+procedure main();x:="write(\"procedure main();x:=\",image(x));write(x);end" write("procedure main();x:=",image(x));write(x);end

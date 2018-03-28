@@ -1,0 +1,45 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 15 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Process::Queue;
+use Carp;
+{
+    use overload (
+        # Type coercions don't make sense for process queues...
+        q{0+}   => sub { 
+            croak( q{Can't numerify a Process::Queue } );
+        },
+ 
+        q{bool} => sub { 
+            croak( q{Can't get the boolean value of a Process::Queue } );
+        },
+ 
+        q{""} => sub { 
+            croak( q{Can't get the string value of a Process::Queue } );
+        },
+ 
+        # Use Perl standard behaviours for other operations...
+        fallback => 1,
+    );
+ 
+    # etc.
+}
+
+
+my $proc_queue = bless {}, 'Process::Queue';
+
+print $proc_queue;

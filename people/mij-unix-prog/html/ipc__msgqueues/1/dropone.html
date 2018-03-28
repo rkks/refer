@@ -1,0 +1,92 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;dropone.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;drops a message into a #defined queue, creating it if user<br />
+&nbsp;* &nbsp;requested. The message is associated a priority still user<br />
+&nbsp;* &nbsp;defined<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 07/08/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* mq_* functions */</span><br />
+<span style="color:#683821;">#include &lt;mqueue.h&gt;<br />
+#include &lt;sys/stat.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><span style="color:#236e25;">/* getopt() */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* ctime() and time() */</span><br />
+<span style="color:#683821;">#include &lt;time.h&gt;<br />
+</span><span style="color:#236e25;">/* strlen() */</span><br />
+<span style="color:#683821;">#include &lt;string.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#236e25;">/* name of the POSIX object referencing the queue */</span><br />
+<span style="color:#683821;">#define MSGQOBJ_NAME &nbsp;&nbsp;&nbsp;"/myqueue123"<br />
+</span><span style="color:#236e25;">/* max length of a message (just for this process) */</span><br />
+<span style="color:#683821;">#define MAX_MSG_LEN &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">70</span><span style="color:#683821;"><br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;mqd_t msgq_id;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span> msgprio = <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;pid_t my_pid = <span style="color:#003369;">getpid</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> msgcontent[MAX_MSG_LEN];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> create_queue = <span style="color:#0000ff;">0</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> ch; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* for getopt() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;time_t currtime;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* accepting "-q" for "create queue", requesting "-p prio" for message priority */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>((ch = <span style="color:#003369;">getopt</span>(argc, argv, <span style="color:#760f15;">"qi:"</span>)) != -<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">switch</span><span style="color:#003369;"> </span>(ch) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'q'</span>: &nbsp;&nbsp;<span style="color:#236e25;">/* create the queue */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create_queue = <span style="color:#0000ff;">1</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">case</span> <span style="color:#0000ff;">'p'</span>: &nbsp;&nbsp;<span style="color:#236e25;">/* specify client id */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msgprio = (<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)<span style="color:#003369;">strtol</span>(optarg, (<span style="color:#881350;">char</span> **)<span style="color:#881350;">NULL</span>, <span style="color:#0000ff;">10</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"I (%d) will use priority %d\n"</span>, my_pid, msgprio);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">break</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">default</span>:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Usage: %s [-q] -p msg_prio\n"</span>, argv[<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* forcing specification of "-i" argument */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(msgprio == <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Usage: %s [-q] -p msg_prio\n"</span>, argv[<span style="color:#0000ff;">0</span>]);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* opening the queue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_open() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(create_queue) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* mq_open() for creating a new queue (using default attributes) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msgq_id = <span style="color:#003369;">mq_open</span>(MSGQOBJ_NAME, O_RDWR | O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, <span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">else</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* mq_open() for opening an existing queue */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msgq_id = <span style="color:#003369;">mq_open</span>(MSGQOBJ_NAME, O_RDWR);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(msgq_id == (mqd_t)-<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In mq_open()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* producing the message */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;currtime = <span style="color:#003369;">time</span>(<span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">snprintf</span>(msgcontent, MAX_MSG_LEN, <span style="color:#760f15;">"Hello from process %u (at %s)."</span>, my_pid, <span style="color:#003369;">ctime</span>(&amp;currtime));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* sending the message &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_send() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_send</span>(msgq_id, msgcontent, <span style="color:#003369;">strlen</span>(msgcontent)+<span style="color:#0000ff;">1</span>, msgprio);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* closing the queue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- mq_close() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_close</span>(msgq_id);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

@@ -1,0 +1,51 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 18 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+
+
+
+use Lingua::EN::Inflect qw( inflect );
+use Test::More qw( no_plan );     # Now using more advanced testing tools
+
+my %plural_of = (
+    'mouse'         => 'mice',
+    'house'         => 'houses',
+    'ox'            => 'oxen',
+    'box'           => 'boxes',
+    'goose'         => 'geese',
+    'mongoose'      => 'mongooses',
+    'law'           => 'laws',
+    'mother-in-law' => 'mothers-in-law',
+ 
+    # Sascha's bug, reported 27 August 2004...
+    'man'           => 'men',
+    'woman'         => 'women',
+    'human'         => 'humans',
+    'man-at-arms'   => 'men-at-arms',
+    'lan'           => 'lans',
+    'mane'          => 'manes',
+    'moan'          => 'moans', 
+);
+ 
+for my $word ( keys %plural_of ) {
+    my $expected = $plural_of{$word};
+    my $computed = inflect( "PL_N($word)" );
+ 
+    # Test expected and computed inflections for string equality...
+    is( $computed, $expected, "$word -> $expected" );
+}
+

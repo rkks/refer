@@ -1,0 +1,170 @@
+#!/usr/bin/expect -f
+#
+# Filename: /usr/local/etc/backup-symbolswitches.exp
+#
+# Purpose:  Expect script designed to telnet into Symbol Wireless LAN switch
+#           and execute the CLI commands to backup the switch configuration
+#           to the TFTP server.
+#
+# Languate: Expect
+#
+# Author:   Michael McNamara
+#
+# Date:     June 1, 2005
+#
+# Version:  1.0
+#
+# Changes:
+#           June 8, 2005 (M.McNamara)
+#           o add documentation and ARGV command line checks
+#
+# Notes:    supported Motorola(formerly Symbol) software versions and hardware
+#           -  Symbol 5000 Wireless LAN Switch (v1.4.3-x)
+#           -  Symbol 5100 Wireless LAN Switch (v1.4.3-x)
+#
+#           Motorola has recently release v3.x software for the WS5100. This
+#           new version of software is completely different than the v2.x 
+#           software from previous releases. I'm using a different set of
+#           routines to backup those (v3.x) switches via SNMP commands (still
+#           utilizing a TFTP server as the destination).
+#
+##############################################################################
+#
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+#
+# Declare Global Variables
+#
+set DEBUG 0				# Debugging
+set LPATH "/root/"			# Local Path
+set TELNET "/usr/bin/telnet"		# telnet binary
+set TFTPSERVER "10.101.20.1"		# TFTP server
+
+#
+# Load the next variables from the command line arguements
+#
+set SWITCH [lindex $argv 0]
+set FILENAME [lindex $argv 1]
+set PASSWRD [lindex $argv 2]
+
+#
+# Time Date Stamp
+#
+set TODAY [timestamp -format %y%m%d ]
+set WEEKDAY [timestamp -format %a ]
+set DATE [timestamp -format %c ]
+
+# Logging will be output to this file
+log_file $LPATH/$SWITCH.backup.log
+
+#log_user 1	 	# Enable logging to STDOUT
+#log_user 0		# Disable logging to STDOUT
+log_user $DEBUG
+
+#######################################################################
+# M A I N    P R O G R A M
+#######################################################################
+
+# If we don't have the proper number of arguements let's quit
+if {[llength $argv] != 3} usage
+
+# Useful information out to logfile
+if ($DEBUG) {
+   send_log "*********************************************************************\r\n" 
+   send_log "Starting logfile for $SWITCH on $DATE\r\n"
+   send_log "*********************************************************************\r\n"
+}
+
+# Set timeout to 60 seconds
+set timeout 60
+
+# Launch telnet
+spawn $TELNET $SWITCH
+match_max 100000
+
+# Wait until we're connected
+expect "Connected to"
+
+# Wait until we have a login prompt
+expect "user name:"
+
+# Send "cli" as the login username
+send -- "cli\r"
+
+# Wait until we get a secondary login prompt
+expect "userid: "
+
+# Send the userID of "admin" for the secondary login
+send -- "admin\r"
+
+# Wait for the password prompt
+expect "password: "
+
+# Send the password from the command line arguements
+send "$PASSWRD\r"
+
+# Wait for the system prompt
+expect "> "
+
+# Delete the file from the last backup on the switch filesystem
+send -- "del $FILENAME\r"
+expect "> "
+
+# Backup the configuration to the filename specified
+send -- "save configuration $FILENAME\r"
+expect "Configuration saved successfully.\r"
+expect "> "
+
+# Copy the file from the switch to the TFTP server
+send -- "copy $FILENAME tftp://$TFTPSERVER/$FILENAME\r"
+
+# Check to see if the file copied successfully
+expect {
+   "copied successfully" {
+      puts "$SWITCH successful<br>";
+      }
+   "Copy failed" {
+      puts "ERROR: copy to TTP server failed for $SWITCH<br>";
+      }
+    }
+expect "> "
+
+# Logout of the switch
+send -- "logout\r"
+expect eof
+
+# Useful information out to logfile
+if ($DEBUG) {
+   send_log "*********************************************************************\r\n"
+   send_log "End of logfile for $SWITCH on $DATE \r\n"
+   send_log "*********************************************************************\r\n"
+}
+
+exit 0
+
+######################################################################
+# proc usage
+#
+# Purpose: display the usage information to the enduser.
+######################################################################
+proc usage {} {
+	send_user "\n"
+	send_user "ERROR: command line paramaters incorrect\n"
+	send_user "\n"
+	send_user "usage: backup-symbolswitches.exp <switch> <filename> <password>\n"
+	send_user "\n"
+	send_user "    switch		the DNS or IP address of switch	\n"
+	send_user "    filename		the filename to be used for the backup	\n"
+	send_user "    password		the password for username\n"
+	send_user "\n"
+	send_user "\n"
+	exit
+}
+#######################################################################

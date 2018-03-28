@@ -1,0 +1,4 @@
+cc -c test.c
+cc -c heap.c
+cc -c rand.c
+cc test.o heap.o rand.o

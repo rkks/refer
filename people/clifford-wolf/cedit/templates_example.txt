@@ -1,0 +1,134 @@
+
+** C Language | Data types | int
+int $VariableName;
+--
+Declares $VariableName as integer variable.
+
+
+** C Language | Data types | unsigned int
+unsigned int $VariableName;
+--
+Declares $VariableName as unsigned integer variable.
+
+
+** C Language | Control Flow | if
+if ($Condition) {
+	/* $Action */
+}
+--
+Executes $Action only if $Condition is true.
+
+
+** C Language | Control Flow | if else
+if ($Condition) {
+	/* $IfAction */
+} else {
+	/* $ElseAction */
+}
+--
+Executes $IfAction only if $Condition is true and executes $ElseAction otherwise.
+
+
+** C Language | Control Flow | while
+while ($Condition) {
+        /* $LoopAction */
+}
+--
+Executes $LoopAction until $Condition becomes true. $LoopAction is never executed if $Condition is true from the beginning.
+
+
+** C Language | Control Flow | do while
+do {
+	/* $LoopAction */
+} while ($Condition);
+--
+Executes $LoopAction until $Condition becomes true. The first time $LoopAction is executed unconditionally.
+
+
+** C Language | Control Flow | for (counting loop)
+for (int i=0; i < $NumberOfIterations; i++) {
+	/* $LoopAction */
+}
+--
+Executes $LoopAction $NumberOfIterations times.
+
+
+** C Language | Control Flow | for (generic)
+for ($InitAction; $Condition; $NextAction) {
+	/* $LoopAction */
+}
+--
+Loops over $LoopAction unitl $Condition becomes true.
+
+$InitAction is executed unconditionally before the first loop iteration.
+
+$NextAction is executed at the end of each loop iteration, also when the
+iteration is aborted using the "continue" statement.
+
+
+** C Language | Control Flow | continue
+continue;
+--
+Jumps straight to the end of the current $LoopAction in "while", "do while" and "for" loops.
+
+
+** C Language | Control Flow | break
+break;
+--
+Aborts the current "while", "do while" or "for" loop.
+
+Marks the end of a "case" whichis a switch statement.
+
+
+** C Language | Control Flow | switch
+switch ($Expression) {
+case $Case1:
+	/* $Action1 */
+	break;
+case $Case2:
+	/* $Action2 */
+	break;
+default:
+	/* $DefaultAction */
+}
+--
+Evaluates $Expression and compares its value with the "case" values.
+
+$Action1 is executed if $Expression equals $Case1.
+
+Otherwise $Action2 is executed if $Expression equals $Case2.
+
+$DefaultAction is executed if no case matches.
+
+There is no limit for the number of cases handled in a "switch" statement.
+
+
+** Input/Output | Immediate Pin | Output | high
+pin$Number_h();
+--
+Sets pin $Number to the high state.
+
+
+** Input/Output | Immediate Pin | Output | low
+pin$Number_l();
+--
+Sets pin $Number to the low state.
+
+
+** Input/Output | Immediate Pin | Output | high impedance
+pin$Number_z();
+--
+Sets pin $Number to the high impedance state.
+
+
+** Input/Output | Immediate Pin | Output | pull up
+pin$Number_u();
+--
+Sets pin $Number to the pull up state.
+
+
+** Input/Output | Immediate Pin | Output | variable
+pin$Number_set($State);
+--
+Sets pin $Number to the high or low state depending on the value of $State.
+

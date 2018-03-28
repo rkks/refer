@@ -1,0 +1,52 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @candidates = (
+    'Obama',
+    'Gore [NO]',
+    'Nixon [NO]',
+);
+
+my %have_reconsidered;
+
+for (@candidates) {
+    if (m/\[ NO \] \z/xms) {
+        $_ = reconsider($_);
+ 
+        $have_reconsidered{lc()}++;
+    }
+    else {
+        print "New candidate: $_\n";
+ 
+        $_ .= accept_or_reject($_);
+ 
+        $have_reconsidered{lc()} = 0;
+    } 
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @candidates ];
+warn Dumper [ \%have_reconsidered ];
+
+
+sub reconsider {
+    my ($candidate) = @_;
+    return $candidate;
+}
+
+sub accept_or_reject {
+    return ' [YES]';
+}

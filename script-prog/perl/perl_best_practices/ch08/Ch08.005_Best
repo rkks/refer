@@ -1,0 +1,38 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+sub rand_text {
+    return join $EMPTY_STR, map { int rand 100 } 1..10_000;
+}
+
+print "Building scripts (this may take a while)...\n";
+my @scripts = map { rand_text() } 1..300;
+
+my $start = time;
+
+use Digest::SHA qw( sha512 );
+
+# Sort by SHA-512 digest of scripts
+# (optimized with a precomputed key cache)
+my %sha512_of;
+@sha512_of{@scripts}  = map { sha512($_) } @scripts;
+ 
+my @sorted_scripts = sort { $sha512_of{$a} cmp $sha512_of{$b} } @scripts;
+
+
+print "Took: ", time-$start, " sec\n";

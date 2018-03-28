@@ -1,0 +1,43 @@
+<!--
+##############################################################################
+## Example 19.4 (NOT RECOMMENDED) from Chapter 19 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+-->
+
+<!-- Example 19-4. An XML-based configuration language -->
+
+<section name="Interface">
+    <!-- Configurable bits that others will see... -->
+    <var> <name>author</name> <value>Jan-Yu Eyrie</value> </var>
+    <var> <name>e-mail</name> <value>eju@calnet</value> </var>
+    <var>
+        <name>disclaimer</name>
+        <value>
+             This code is provided AS IS, and comes with 
+             ABSOLUTELY NO WARRANTY OF ANY KIND WHATSOEVER!
+             It's buggy, slow, and will almost certainly
+             break your computer. Use at your own risk!
+        </value>
+    </var>
+</section>
+<section name="Internals"> 
+    <!-- Stuff no-one else sees... -->
+    <!-- Look-up path for plug-ins... -->
+    <var>
+        <name>lib</name>
+        <value>
+            <list>
+                <item>~/lib/perl5</item>
+                <item>~/lib/perl</item>
+                <item>~/lib/perl5</item>
+                <item>/usr/share/lib/perl</item>
+            </list>
+        </value>
+    </var>
+</section>
+<section name="strict">    <!-- Don't allow malformed inputs --> </section>
+<section name="verbose">   <!-- Report</comment -->              </section>
+<section name="log">       <!-- Report every step -->            </section>
+

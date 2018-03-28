@@ -1,0 +1,22 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 2 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my $velocity 
+    = $initial_velocity + ($acceleration * ($time + $delta_time));
+ 
+my $future_price 
+    = $current_price * exp ($rate - $dividend_rate_on_index) * ($delivery - $now);
+

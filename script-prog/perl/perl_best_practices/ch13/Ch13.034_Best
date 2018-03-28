@@ -1,0 +1,37 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# use Random::Utils qw( pick_from );
+sub pick_from {
+    croak q{Can't pick a random element from an empty list} if !@_;
+    return @_[rand @_];
+}
+
+my @items = (1..10);
+ 
+my $random_item = pick_from(@items);
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $random_item ];
+
+@items = ();
+ 
+$random_item = pick_from(@items);
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $random_item ];
+

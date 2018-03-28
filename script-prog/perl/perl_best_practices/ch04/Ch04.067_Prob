@@ -1,0 +1,32 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 4 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+use charnames qw( :full );
+
+sub format_text {}
+my $raw_text;
+
+my %default_service_record  = (
+    'name',   '<unknown>',
+    'rank',   'Recruit',
+    'serial', undef,
+    'unit',   ['Training platoon'],
+    'duty',   ['Basic training'],
+);
+ 
+my $text = format_text('src', $raw_text,  'margins',[1,62], 'justify','left');
+ 
+Readonly my $ESCAPE_SEQ, "\N{DELETE}\N{ACKNOWLEDGE}\N{CANCEL}Z";
+

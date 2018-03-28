@@ -1,0 +1,11 @@
+#! /usr/bin/perl -wnlaF'\t'
+
+BEGIN {
+    $list_start=join "\n", '<P>','<UL>', '<LI>';
+    $list_end="</UL>";
+}
+# Convert the fields of each input line into the elements of a list
+$list_elements=join "\n<LI>\n", @F;
+
+# Now send the list to the output
+print "$list_start\n$list_elements\n$list_end\n";

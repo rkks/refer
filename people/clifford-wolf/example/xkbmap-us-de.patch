@@ -1,0 +1,28 @@
+--- /usr/X11R7/share/X11/xkb/symbols/us	2010-03-04 09:22:52.000000000 +0100
++++ /usr/X11R7/share/X11/xkb/symbols/us	2010-03-04 09:25:50.000000000 +0100
+@@ -24,3 +24,3 @@
+     key <AE10> {	[	  0,	parenright	]	};
+-    key <AE11> {	[     minus,	underscore	]	};
++    key <AE11> {	[     minus,	underscore,	ssharp]	};
+     key <AE12> {	[     equal,	plus		]	};
+@@ -29,3 +29,3 @@
+     key <AD02> {	[	  w,	W		]	};
+-    key <AD03> {	[	  e,	E		]	};
++    key <AD03> {	[	  e,	E,		EuroSign,	cent]	};
+     key <AD04> {	[	  r,	R		]	};
+@@ -37,3 +37,3 @@
+     key <AD10> {	[	  p,	P		]	};
+-    key <AD11> {	[ bracketleft,	braceleft	]	};
++    key <AD11> {	[ bracketleft,	braceleft,	udiaeresis,	Udiaeresis]	};
+     key <AD12> {	[ bracketright,	braceright	]	};
+@@ -49,4 +49,4 @@
+     key <AC09> {	[	  l,	L		]	};
+-    key <AC10> {	[ semicolon,	colon		]	};
+-    key <AC11> {	[ apostrophe,	quotedbl	]	};
++    key <AC10> {	[ semicolon,	colon,		odiaeresis,	Odiaeresis]	};
++    key <AC11> {	[ apostrophe,	quotedbl,	adiaeresis,	Adiaeresis]	};
+ 
+@@ -65,2 +65,3 @@
+     key <CAPS> {	[ Caps_Lock	]	};
++    include "level3(ralt_switch)"
+     // End alphanumeric section

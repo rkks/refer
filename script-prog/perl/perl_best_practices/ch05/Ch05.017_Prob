@@ -1,0 +1,45 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 5 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Data::Dumper 'Dumper';
+use Readonly;
+
+my $text;
+
+Readonly my $SPACE => q{ };
+ 
+if (@ARGV) {
+    my $prev_irs = $INPUT_RECORD_SEPARATOR;
+    my $prev_ors = $OUTPUT_RECORD_SEPARATOR;
+    my $prev_af  = $OUTPUT_AUTOFLUSH;
+ 
+    $INPUT_RECORD_SEPARATOR  = undef;
+    $OUTPUT_RECORD_SEPARATOR = $SPACE;
+    $OUTPUT_AUTOFLUSH        = 1;
+ 
+    $text = <>;
+    $text =~ s/\n/[EOL]/gxms;
+    print $text;
+ 
+    $INPUT_RECORD_SEPARATOR  = $prev_irs;
+    $OUTPUT_RECORD_SEPARATOR = $prev_ors;
+    $OUTPUT_AUTOFLUSH        = $prev_af;
+ 
+}
+
+warn Dumper [
+    $INPUT_RECORD_SEPARATOR,
+    $OUTPUT_RECORD_SEPARATOR,
+    $OUTPUT_AUTOFLUSH,
+];

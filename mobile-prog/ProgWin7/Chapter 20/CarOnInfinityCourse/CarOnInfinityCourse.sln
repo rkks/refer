@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarOnInfinityCourse", "CarOnInfinityCourse\CarOnInfinityCourse\CarOnInfinityCourse.csproj", "{F95BFDBD-409E-449F-9233-95969BA85FF1}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "CarOnInfinityCourseContent", "CarOnInfinityCourse\CarOnInfinityCourseContent\CarOnInfinityCourseContent.contentproj", "{1C9399A2-C23D-4576-9209-71FC9AD3BF13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{F95BFDBD-409E-449F-9233-95969BA85FF1}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{1C9399A2-C23D-4576-9209-71FC9AD3BF13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C9399A2-C23D-4576-9209-71FC9AD3BF13}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{1C9399A2-C23D-4576-9209-71FC9AD3BF13}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C9399A2-C23D-4576-9209-71FC9AD3BF13}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

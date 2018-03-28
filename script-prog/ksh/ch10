@@ -1,0 +1,12 @@
+
+IFS=:
+for d in $PATH; do
+    print checking $d:
+    cd $d
+    scripts=$(file * | grep 'shell script' | cut -d: -f1)
+    for f in $scripts; do
+        grep '\\^' $f /dev/null
+    done
+done
+
+

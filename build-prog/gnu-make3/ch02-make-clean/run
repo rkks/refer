@@ -1,0 +1,2 @@
+touch clean
+make --no-print-directory clean

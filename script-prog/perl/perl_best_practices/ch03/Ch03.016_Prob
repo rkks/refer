@@ -1,0 +1,44 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 3 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @metadata;
+my $next_record;
+
+sub ok;
+sub metadata;
+sub end_tag;
+ 
+my $done;
+my $bad;
+ 
+# and later...
+ 
+if (ok($next_record) && !$done) {               # Ok in what sense? What is done?
+    METADATA:
+    while (metadata($next_record)) {            # Metadata exists? Defined? True?
+        push @metadata, get_metadata_for($next_record);
+        last METADATA if end_tag($next_record);  # Does this set an end tag?
+    }
+}
+else {
+    $bad = 1;                                   # What's bad? In what way?
+}
+
+
+sub ok {}
+sub metadata {}
+sub end_tag {}
+ 

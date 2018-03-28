@@ -1,0 +1,65 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;takeone.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;simply request a message from a queue, and displays queue<br />
+&nbsp;* &nbsp;attributes.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 07/08/05.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* mq_* functions */</span><br />
+<span style="color:#683821;">#include &lt;mqueue.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><span style="color:#236e25;">/* getopt() */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* ctime() and time() */</span><br />
+<span style="color:#683821;">#include &lt;time.h&gt;<br />
+</span><span style="color:#236e25;">/* strlen() */</span><br />
+<span style="color:#683821;">#include &lt;string.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#236e25;">/* name of the POSIX object referencing the queue */</span><br />
+<span style="color:#683821;">#define MSGQOBJ_NAME &nbsp;&nbsp;&nbsp;"/myqueue123"<br />
+</span><span style="color:#236e25;">/* max length of a message (just for this process) */</span><br />
+<span style="color:#683821;">#define MAX_MSG_LEN &nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">10000</span><span style="color:#683821;"><br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;mqd_t msgq_id;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> msgcontent[MAX_MSG_LEN];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> msgsz;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span> sender;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> mq_attr msgq_attr;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* opening the queue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_open() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;msgq_id = <span style="color:#003369;">mq_open</span>(MSGQOBJ_NAME, O_RDWR);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(msgq_id == (mqd_t)-<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In mq_open()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting the attributes from the queue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;mq_getattr() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_getattr</span>(msgq_id, &amp;msgq_attr);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Queue \"%s\":\n\t- stores at most %ld messages\n\t- large at most %ld bytes each\n\t- currently holds %ld messages\n"</span>, MSGQOBJ_NAME, msgq_attr.mq_maxmsg, msgq_attr.mq_msgsize, msgq_attr.mq_curmsgs);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting a message */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;msgsz = <span style="color:#003369;">mq_receive</span>(msgq_id, msgcontent, MAX_MSG_LEN, &amp;sender);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(msgsz == -<span style="color:#0000ff;">1</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In mq_receive()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Received message (%d bytes) from %d: %s\n"</span>, msgsz, sender, msgcontent);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* closing the queue &nbsp;&nbsp;&nbsp;-- &nbsp;mq_close() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">mq_close</span>(msgq_id);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+</div>

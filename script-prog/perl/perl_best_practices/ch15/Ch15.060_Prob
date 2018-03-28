@@ -1,0 +1,40 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Dogtag;
+use Class::Std::Utils;
+{
+    # Attributes...
+    my %name_of;
+    my %rank_of;
+    my %serial_num_of;
+ 
+    # The usual inside-out constructor...
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;
+ 
+        # Now using special objects to ensure serial numbers are unique...
+        $serial_num_of{ident $new_object} = new Unique::ID;
+ 
+        return $new_object;
+    }
+
+}
+
+Dogtag->new();

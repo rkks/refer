@@ -1,0 +1,27 @@
+/* 
+
+Theme Name: Lines and Boxes (Dark)
+Theme URI: http://digwp.com/
+Description: Child Theme for Lines and Boxes
+Author: Chris Coyier 
+Author URI: http://chriscoyier.net/ 
+Template: Lines-and-Boxes
+
+*/ 
+
+@import url("../Lines-and-Boxes/style.css");
+
+body { background-color: #333; color: #eee; }
+
+h1 a, a { color: #eee; }
+
+#page-wrap, #main-nav, .meta, .widget_categories ul li a, .article-content pre,
+#footer, .widget_tag_cloud a, .widget_links ul li a, #sidebar h3,
+.widget_categories ul li:nth-child(2n+1) a, #main-nav li a, 
+.widget_tag_cloud a:nth-child(2n), #main-nav li:first-child a, ol.commentlist li.comment, 
+ol.commentlist li.comment div.vcard img.avatar, h2 { border-color: #eee; }
+
+.home #main-nav li.home a, #main-nav li a:hover, 
+#main-nav li.current_page_item a, .widget a:link:hover, .widget a:visited:hover { background: #111; }
+
+#column-wrap { background-image: url(images/grayline.png); }

@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhingerPaint", "PhingerPaint\PhingerPaint\PhingerPaint.csproj", "{42DE7D40-C40E-42C2-8171-ED014A06FF6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhingerPaintContent", "PhingerPaint\PhingerPaintContent\PhingerPaintContent.contentproj", "{74F1BA39-E393-473E-874F-7ABE0DF84B80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{42DE7D40-C40E-42C2-8171-ED014A06FF6A}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{74F1BA39-E393-473E-874F-7ABE0DF84B80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F1BA39-E393-473E-874F-7ABE0DF84B80}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{74F1BA39-E393-473E-874F-7ABE0DF84B80}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F1BA39-E393-473E-874F-7ABE0DF84B80}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

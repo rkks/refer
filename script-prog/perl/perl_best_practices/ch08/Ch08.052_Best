@@ -1,0 +1,33 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %candidate_for = (
+    Left   => 'Jones',
+    Right  => 'Smith',
+    Looney => 'Myxstha',
+);
+
+Readonly my $MATCH_ANY_NAME => qr/[A-Z]\S*/xms;
+
+
+for my $candidate (values %candidate_for) {
+    $candidate =~ s{($MATCH_ANY_NAME)}
+                   {\U$1}gxms;
+} 
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%candidate_for ];

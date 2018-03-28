@@ -1,0 +1,89 @@
+Signal based I/O notification
+-----------------------------
+With I/O one of the central choices is how the program should be notified when
+a file descriptor is "ready" (for reading or writing). In APUE, Stephens
+describes select and poll as synchronous forms of notification because we have
+to call these functions to be notified. In contrast signals provide true
+asynchronous notification.
+
+[NOTE]
+.Asynchronous notification vs asynchronous I/O
+While the notification is asynchronous when using signals, the I/O itself is
+not asynchronous even when performed using non-blocking descriptors.  Stephens
+describes in Network Programming that a non-blocking write will return if it
+cannot be immediately queued for sending. However with asynchronous I/O the
+write proceeds in the background, then the kernel notifies the program when the
+write completes.  This asynchronous I/O uses the POSIX aio_ functions. The rest
+of this document is concerned only with asynchronous notification and not I/O.
+
+* sigio1 - using SIGIO to be notified when one descriptor is ready
+* sigio2 - using RT signals to be notified when any of "n" descriptors are ready
+* sigio3 - a rewrite of sigio2 using sigwaitinfo instead of a signal handler
+
+[NOTE]
+.Broken in Linux kernel 2.6.32
+Note that per inotify(7) "kernels since 2.6.25 support signal-driven I/O
+notification when using inotify file descriptors". Nevertheless sigio4 though
+sigio6 do not work when tested on Linux 2.6.32.  Their failure is apparently
+due to a kernel bug. (References found online suggest patch was in Dec 2010).
+
+* sigio4 - using inotify with SIGIO notification (does not work)
+* sigio5 - using inotify with SIGRT notification (does not work)
+* sigio6 - using inotify with SIGIO and sigwaitinfo (does not work)
+
+SIGIO with one file descriptor (sigio1.c)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When only one file descriptor needs to be monitored the simplest choice is to
+use conventional, blocking I/O. However, for the sake of illustration, it can
+also be done using the SIGIO signal. This usage is shown in sigio1.c and can
+be summarized as using fcntl to set the descriptor into O_ASYNC mode (thereby
+generating SIGIO when its ready) and fcntl to set F_SETOWN. The latter tells 
+the kernel which process id or thread should receive the signal.
+
+Multiple descriptors and real time (RT) signals (sigio2.c)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To receive signals when multiple descriptors are involved, we take extra steps
+to get notified about 'which' descriptor is ready. (Otherwise SIGIO just tells
+us that I/O is ready, but not on which descriptor). The key points are that we
+tell sigaction that we are using a handler that takes extra arguments (by
+setting sa_sigaction instead of sa_handler, and specifying sa_flags as
+SA_SIGINFO).  The result is that the signal handling function receives a
+siginfo_t structure which includes an si_fd field. It is this field that tells
+us which descriptor is ready.
+
+However there is a subtle point to be made here. In a multi-tasking server
+there may be several descriptors becoming ready for I/O, but signals such as
+SIGIO do not "queue" (they are coalesced, losing their individual information
+about which descriptor is ready). The solution is twofold: we use fcntl with
+F_SETSIG to tell the kernel "send us a different signal when I/O is ready", and
+by the way, the signal we choose is from the "real time" range of signals (>=
+SIGRTMIN). These RT signals have the important distinction of being queued
+rather than coalesced. The end result is that several of the same signal (e.g.
+SIGRTMIN) may be queued up to our signal handling function, each notifying us
+that a different descriptor is ready.
+
+Some secondary notes about sigio2:
+
+* SIGCHLD can occur before the final I/O. Data or EOF from the child 
+  may still be in the pipe waiting for the parent to read. We can't assume
+  that SIGCHLD means the descriptor to that child has been read completely.
+* When we read, we do a "draining" read. In a non-blocking program such
+  as sigio2, this reads buffers in a loop, until EOF or EAGAIN occurs.
+  If we did only a single read (and our read buffer was too short) we would
+  not be notified that more input was available. This is because signal-driven
+  I/O is 'edge-triggered'; it only notifies upon initial availability of I/O.
+* When we do a draining read, it is possible that new input arrives during the 
+  loop, resulting in another "I/O available" signal for this fd to be queued.
+  If we read through it and get EOF and close the descriptor, we need to 
+  recognize that the secondary signal is still pending, and refrain from reading
+  on the closed descriptor when that secondary signal arrives. In sigio2 this
+  is done by remembering that we closed the fd already.
+
+sigwaitinfo (sigio3.c)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a direct conversion of sigio2.c into a simpler version that uses
+sigwaitinfo. This eliminates the signal handler entirely.  The signal is
+converted by the kernel into a direct function return from sigwaitinfo.
+The siginfo_t structure is an output parameter.
+
+NOTE: there is also a sigtimedwait which can be used to time out without SIGALRM.

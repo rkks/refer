@@ -1,0 +1,159 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="killppp"
+       HTML_="stop ppp modem connection"
+    PURPOSE_="kill ppp pid after n time of no traffic"
+   SYNOPSIS_="$NAME_ [-hl] <pid> <n>s|m|h|d"
+   REQUIRES_="standard GNU commands, /proc fs"
+    VERSION_="1.0"
+       DATE_="2004-07-20; last update: 2005-02-28"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="net"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     <pid>, process ID 
+     <n>s|m|h|d, n seconds|minutes|hours|days of no traffic
+     -h, usage and options (this help)
+     -m, manual
+     -l, see this script"
+exit 1
+}
+
+manual() { echo >&2 "
+
+NAME
+
+    $NAME_ $VERSION_ - $PURPOSE_
+
+SYNOPSIS
+
+    $SYNOPSIS_
+
+DESCRIPTION
+
+    $NAME_ is a shell script that kills the ppp process after
+    specified time of no traffic. This is especially useful
+    for dial-up users who pay per time-unit of being connected.
+    The typical use for it, is to start a large download along
+    with $NAME_ and go away. The script will shut down ppp
+    after the downloading is done. Thus saving unnecessary
+    cost of unused network connectivity.
+
+    Depending on how your linux is configured you may need to
+    be root to have the right to kill a ppp process and it may
+    have to be the ppp daemon (pppd).
+
+    To find the pid of your ppp process type: ps aux | grep ppp
+
+    How this script works? Once activated, $NAME_ checks every
+    minute for network traffic on the ppp0 device. As long as
+    data is passing through, $NAME_ does nothing. Upon no 
+    traffic $NAME_ starts counting time until it reaches the
+    specified time and kills the ppp process.
+
+EXAMPLES
+
+    $NAME_ 8249 5m
+
+    This will kill the process 8249 after 5 minutes of no
+    traffic.
+
+AUTHOR
+
+    $AUTHOR_ Suggestions and bug reports are welcome.
+    For updates and more scripts visit $URL_
+
+"; }
+
+
+# enabling extended globbing
+shopt -s extglob
+
+# ppp interface
+ppp_link=ppp0
+
+# local funcs
+bytes_count() {
+
+    while read line;do
+
+        if [[ $line == ${ppp_link}:* ]];then
+             [[ $1 == r ]] && { set -- ${line#*:}; echo $1; }
+             [[ $1 == t ]] && { set -- ${line#*:}; echo $9; }
+        fi
+
+    done < /proc/net/dev
+}
+
+check_pid() {
+
+    kill -0 $1 &>/dev/null # using bash kill built in
+    [ $? = 0 ] && return 0 || return 1
+
+}
+
+time_validateSleepArg() {
+
+    case $1 in
+        +([0-9])[smhd] ) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# option handling and execution
+case $1 in
+    -h) usage ;;
+    -l) more $0; exit 1 ;;
+    -m) manual | more; exit 1 ;;
+    +([0-9])) # arg1 can only be an integer
+
+        # sleep arg check
+        time_validateSleepArg $2
+        [ $? = 0 ] || { echo >&2 second argument invalid, type $NAME_ -h for help; exit 1; }
+
+        check_pid $1 ; [ $? != 0 ] && { echo >&2 pid $1 does not exits; exit 1; }
+
+        received=$(bytes_count r)
+        transmit=$(bytes_count t)
+
+        while kill -0 $1 &>/dev/null ;do
+
+            sleep 60s # time interval for how often to check the /proc/net/dev
+            nreceived=$(bytes_count r)
+            ntransmit=$(bytes_count t)
+
+            if [[ $nreceived == $received ]] && (( $ntransmit == $transmit));then
+
+                sleep $2 # time to sleep before checking again
+                nreceived=$(bytes_count r)
+                ntransmit=$(bytes_count t)
+
+                if [[ $nreceived == $received ]] && (( $ntransmit == $transmit));then
+                    kill -15 $1; check_pid; [ $? == 1 ] && exit 0
+                    kill  -3 $1; check_pid; [ $? == 1 ] && exit 0
+                    kill  -9 $1; check_pid; [ $? == 1 ] && exit 0
+                    echo process can not be killed, possibly due to lack of ownership rights
+                    exit 1
+                fi
+
+            fi
+
+        done ;;
+
+    *) echo invalid or missing argument, type $NAME_ -h for help ; exit 1 ;;
+
+esac
+

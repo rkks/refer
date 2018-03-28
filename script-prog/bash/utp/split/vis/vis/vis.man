@@ -1,0 +1,118 @@
+.TH VIS l "24 October 1988"
+.SH NAME
+vis \- repeatedly run command, refreshing screen
+.SH SYNTAX
+.B vis "[-d delay] [-f] [-h] [-s] command [args]"
+.SH DESCRIPTION
+.I Vis
+repeatedly executes a specified
+.B command
+and refreshes the display of its output on the screen.  This has the
+effect of making any normally non-screen oriented command into a screen
+oriented one.
+.PP
+.B Command
+may represent multiple commands by enclosing them in quotes and
+separating them by ``;''.  Similarly, commands may be piped together by
+enclosing them in quotes and separating them by ``|''.  The single or
+double quotes around such a compound command are necessary to escape
+processing from the shell.
+.PP
+The first line on the output screen is reserved for
+.I vis
+status and will contain the
+.B command
+on the left side with the current execution count on the right side.  If
+.B command
+is too long to fit,
+.I vis
+will truncate it in the status line and append an ellipsis ("...").
+.PP
+The output of the command normally begins on the third line and
+continues to the end of the screen.  Lines which can not fit will be
+discarded.  When this occurs,
+.I vis
+will automatically place the output of following passes starting on line
+two in order to maximize the amount of displayed information.
+.PP
+The following switches may be specified if desired:
+.TP 10
+.B "-d delay"
+specifies a non-default delay of
+.B delay
+seconds.  Normally
+.I vis
+will delay for 15 seconds between command re-executions.  If a
+non-default delay is specified, the
+.I vis
+status line will also include the delay interval centered within it
+(unless that would cause it to overwrite a long command, in which case
+it will be centered between the end of the command and the execution
+count).
+.TP
+.B -f
+.I Vis
+will automatically terminate if
+.B command
+returns a non-zero status.  The
+.B -f
+flag forces
+.I vis
+to continue.  When
+.B -f
+is specified,
+.I vis
+will not terminate and will instead precede the execution count in the
+.I vis
+status line by a ``!'' flag whenever a non-zero status has been returned
+by
+.B command .
+.TP
+.B -h
+causes the entire status line and the following blank line to be
+suppressed, which leaves the full screen available for the output of
+.B command .
+.TP
+.B -s
+causes
+.I vis
+to use standout mode for any bytes that have changed between the
+previous execution of
+.B command
+and the current one.
+.SH EXAMPLES
+vis ps
+.IP "" 5
+Continually display the status of processes on the system (up to 23
+lines).
+.PP
+vis -d 60 'who ; echo ""; df'
+.IP "" 5
+Display the system users and disk usage statistics every 60 seconds.
+Separate the two with a blank line.
+.PP
+vis -s ls -l
+.IP "" 5
+Continually display a long directory listing, highlighting via standout
+mode the parts that change each time.
+.SH "SEE ALSO"
+User Commands (1):  sh, csh
+.SH DIAGNOSTICS
+If
+.B command
+returns a non-zero status and
+.B -f
+has not been specified to
+.I vis ,
+.I vis
+will terminate and return that status.
+.SH AUTHOR
+Originally written by Dan Heller (argv@sri-spam.arpa).
+.PP
+It has been substantially enhanced and generalized by George M. Sipe
+(currently - 7/88, at rebel!george) to the point where Dan would no
+longer recognize it.
+.PP
+Steve Alter (alter@ttidca.tti.com) added the -h option.
+.PP
+Anton Chernoff (abc@lpi.uucp) added the -s option.

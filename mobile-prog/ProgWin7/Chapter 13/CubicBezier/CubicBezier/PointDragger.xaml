@@ -1,0 +1,16 @@
+﻿<UserControl 
+    x:Class="CubicBezier.PointDragger"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Grid x:Name="LayoutRoot">
+        <Path Fill="{StaticResource PhoneAccentBrush}"
+              Opacity="0.5">
+            <Path.Data>
+                <EllipseGeometry x:Name="ellipseGeometry"
+                                 RadiusX="48"
+                                 RadiusY="48" />
+            </Path.Data>
+        </Path>
+    </Grid>
+</UserControl>

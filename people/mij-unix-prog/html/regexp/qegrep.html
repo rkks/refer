@@ -1,0 +1,65 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;qegrep.c<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;compares its standard input against the regular<br />
+&nbsp;* &nbsp;expression given (on command line), and prints<br />
+&nbsp;* &nbsp;out those lines matching that RE.<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on Mon Dec 29 2003.<br />
+&nbsp;* &nbsp;Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*/</span><br />
+<br />
+&nbsp;<span style="color:#236e25;">/* max error message length */</span><br />
+<span style="color:#683821;">#define MAX_ERR_LENGTH </span><span style="color:#0000ff;">80</span><span style="color:#683821;"><br />
+</span>&nbsp;<span style="color:#236e25;">/* max length of a line of text from stdin */</span><br />
+<span style="color:#683821;">#define MAX_TXT_LENGTH </span><span style="color:#0000ff;">600</span><span style="color:#683821;"><br />
+</span><br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span>&nbsp;<span style="color:#236e25;">/* for --ansi (see off_t in regex.h) */</span><br />
+<span style="color:#683821;">#include &lt;sys/types.h&gt;<br />
+</span>&nbsp;<span style="color:#236e25;">/* for index(): */</span><br />
+<span style="color:#683821;">#include &lt;string.h&gt;<br />
+#include &lt;regex.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* will contain the regular expression */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;regex_t myre;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> err;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> err_msg[MAX_ERR_LENGTH];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> text[MAX_TXT_LENGTH];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* safe check on cmd line args */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>( argc &lt; <span style="color:#0000ff;">2</span> || argc &gt; <span style="color:#0000ff;">2</span> ) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Usage:\n\tqegrep 'RE' &lt; file\n\tOR\n\techo \"string\" | qegrep 'RE'\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">1</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* compiles the RE. If this step fails, reveals what's wrong with the RE */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>( (err = <span style="color:#003369;">regcomp</span>(&amp;myre, argv[<span style="color:#0000ff;">1</span>], REG_EXTENDED)) != <span style="color:#0000ff;">0</span> ) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">regerror</span>(err, &amp;myre, err_msg, MAX_ERR_LENGTH);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Error analyzing regular expression '%s': %s.\n"</span>, argv[<span style="color:#0000ff;">1</span>], err_msg);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">1</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* "executes" the RE against the text taken from stdin */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">while</span><span style="color:#003369;"> </span>( <span style="color:#003369;">fgets</span>(text, MAX_TXT_LENGTH, stdin) != <span style="color:#881350;">NULL</span> ) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* we rely on the fact that text contains newline chars */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(<span style="color:#003369;">index</span>(text, '\n')) = '\<span style="color:#0000ff;">0</span>';<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>( (err = <span style="color:#003369;">regexec</span>(&amp;myre, text, <span style="color:#0000ff;">0</span>, <span style="color:#881350;">NULL</span>, <span style="color:#0000ff;">0</span>)) == <span style="color:#0000ff;">0</span> ) <span style="color:#003369;">puts</span>(text);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">else</span> <span style="color:#881350;">if</span><span style="color:#003369;"> </span>( err != REG_NOMATCH ) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this is when errors have been encountered */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">regerror</span>(err, &amp;myre, err_msg, MAX_ERR_LENGTH);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">2</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;} <br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* meaningless here. Useful in many other situations. */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">regfree</span>(&amp;myre);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+</div>

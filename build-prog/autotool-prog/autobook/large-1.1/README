@@ -1,0 +1,20 @@
+-*- indented-text -*-
+
+This is `sic', a minimal shell to illustrate the use of autoconf,
+automake and autoconf.
+
+Sic itself consists of the library, libsic.la, and the headers installed
+in `/usr/local/include/sic', and is little more than a a syntax table
+mechanism for associating parts of an input stream with consumer
+functions.
+
+This distribution also includes a sample shell, which reads input from
+the command line and feeds it to this syntax mechanism, and a bunch of
+standard builtin functions to provide basic shell functionality.  You
+could easily make it work entirely differently by changing the way the
+input stream is collected, and/or the set of builtins it has.
+
+
+Local Variables:
+fill-column: 72
+End:

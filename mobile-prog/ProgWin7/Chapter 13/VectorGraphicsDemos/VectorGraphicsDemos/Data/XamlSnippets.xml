@@ -1,0 +1,1141 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XamlSnippets>
+    
+    <!-- 1 -->
+    <Snippet>
+        <Canvas Background="LightCyan">
+            <Line X1="50" Y1="100"
+                  X2="200" Y2="150"
+                  Stroke="Blue" />
+        </Canvas>
+    </Snippet>
+
+    <!-- 2 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Line X1="50" Y1="100"
+                  X2="200" Y2="150"
+                  Stroke="Blue" />
+        </Grid>
+    </Snippet>
+    
+    <!-- 3 -->
+    <Snippet> 
+        <Canvas Background="LightCyan">
+            <Line X1="50" Y1="100"
+                  X2="200" Y2="150"
+                  Canvas.Left="150"
+                  Canvas.Top="100"
+                  Stroke="Blue" />
+        </Canvas>
+    </Snippet>
+
+    <!-- 4 -->
+    <Snippet>  
+        <Grid Background="LightCyan">
+            <Line X1="100" Y1="300"
+                  X2="200" Y2="50"
+                  Stroke="Blue" />
+
+            <Line X1="50"  Y1="100"
+                  X2="300" Y2="200"
+                  Stroke="Red" />
+        </Grid>
+    </Snippet>
+
+    <!-- 5 -->
+    <Snippet>  
+        <Grid Background="LightCyan">
+            <Line X1="100" Y1="300"
+                  X2="200" Y2="50"
+                  Stroke="Blue"
+                  StrokeThickness="5" />
+
+            <Line X1="50" Y1="100"
+                  X2="300" Y2="200"
+                  Stroke="Red"
+                  StrokeThickness="30" />
+        </Grid>
+    </Snippet>
+
+    <!-- 6 -->
+    <Snippet>  
+        <Grid Background="LightCyan">
+            <Line X1="50" Y1="100"
+                  X2="300" Y2="200"
+                  Stroke="Red"
+                  StrokeThickness="30" />
+
+            <Line X1="100" Y1="300"
+                  X2="200" Y2="50"
+                  Stroke="Blue"
+                  StrokeThickness="5" />
+        </Grid>
+    </Snippet>
+
+    <!-- 7 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Line Canvas.ZIndex="1"
+                  X1="100" Y1="300"
+                  X2="200" Y2="50"
+                  Stroke="Blue"
+                  StrokeThickness="5" />
+
+            <Line Canvas.ZIndex="0"
+                  X1="50" Y1="100"
+                  X2="300" Y2="200"
+                  Stroke="Red"
+                  StrokeThickness="30" />
+        </Grid>
+    </Snippet>
+    
+    <!-- 8 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 300 200 50"
+                      Stroke="Blue" StrokeThickness="5" />
+            <Polyline Points="50 100 300 200"
+                      Stroke="Red" StrokeThickness="30" />
+        </Grid>
+    </Snippet>
+
+    <!-- 9 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 300, 200 50, 350 100, 200 250"
+                      Stroke="Blue" StrokeThickness="5" />
+
+            <Polyline Points="50 100, 300 200, 300 400"
+                      Stroke="Red" StrokeThickness="30" />
+        </Grid>
+    </Snippet>
+
+
+    <!-- 2 Spiral shots -->
+
+    <!-- 12 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 100, 300 200 300 400"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Triangle" />
+        </Grid>
+    </Snippet>
+    
+    <!-- 13 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 100, 300 200, 300 400"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Flat"
+                      StrokeEndLineCap="Square" />
+
+            <Polyline Points="50 100, 300 200, 300 400"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 14 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 100, 300 200, 300 400"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"   />
+
+            <Polyline Points="50 100, 300 200, 300 400"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 15 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 100, 300 200, 100 300"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" />
+
+            <Polyline Points="50 100, 300 200, 100 300"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 16 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 100, 300 200, 100 300"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Bevel" />
+
+            <Polyline Points="50 100, 300 200, 100 300"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 17 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 100, 300 200, 100 300"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Miter" />
+
+            <Polyline Points="50 100, 300 200, 100 300"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 18 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 230, 240 240, 50 250"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Miter" />
+
+            <Polyline Points="50 230, 240 240, 50 250"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 19 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="50 230, 240 240, 50 250"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Miter"
+                      StrokeMiterLimit="50" />
+
+            <Polyline Points="50 230, 240 240, 50 250"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 20 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 21 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="1 1" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 22 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="2 1" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 23 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="2 1"
+                      StrokeDashCap="Round" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 24 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="2 2"
+                      StrokeDashCap="Round" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 25 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="0 2"
+                      StrokeDashCap="Round" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+    
+    <!-- 26 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="20"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="0 2 2 2"
+                      StrokeDashCap="Round" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 27 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+                <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                          Stroke="HotPink" 
+                          StrokeThickness="30"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          StrokeLineJoin="Round"
+                          StrokeDashArray="1 2 3"
+                          StrokeDashCap="Round" />
+
+                <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                          Stroke="Black" />
+            </Grid>
+    </Snippet>
+
+    <!-- 28 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+                <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                          Stroke="HotPink" 
+                          StrokeThickness="30"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          StrokeLineJoin="Round"
+                          StrokeDashArray="2 2"
+                          StrokeDashCap="Round"
+                          StrokeDashOffset="1" />
+
+                <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                          Stroke="Black" />
+            </Grid>
+    </Snippet>
+
+    <!-- 29 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="HotPink" 
+                      StrokeThickness="30"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="2 2"
+                      StrokeDashCap="Round"
+                      StrokeDashOffset="3" />
+
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Black" />
+        </Grid>
+    </Snippet>
+
+    <!-- 30 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Ellipse Width="400" Height="400"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Stroke="Red" 
+                     StrokeThickness="23.22"
+                     StrokeDashArray="0 1.5"
+                     StrokeDashCap="Round" />
+        </Grid>
+    </Snippet>
+
+    <!-- 31 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Red" StrokeThickness="20"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="0 2"
+                      StrokeDashCap="Round" />
+        </Grid>
+    </Snippet>
+
+    <!-- 32 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="100 100, 380 100, 380 380, 100 380"
+                      Stroke="Red" StrokeThickness="20"
+                      Fill="Blue"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      StrokeDashArray="0 2"
+                      StrokeDashCap="Round" />
+        </Grid>
+    </Snippet>
+
+    <!-- 33 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polygon Points="100 100, 380 100, 380 380, 100 380"
+                     Stroke="Red" StrokeThickness="20"
+                     Fill="Blue"
+                     StrokeStartLineCap="Round"
+                     StrokeEndLineCap="Round"
+                     StrokeLineJoin="Round"
+                     StrokeDashArray="0 2"
+                     StrokeDashCap="Round" />
+        </Grid>
+    </Snippet>
+
+    <!-- 34 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polygon Points="240 48, 352 396, 58 180, 422 180, 128 396"
+                     Stroke="Red" StrokeThickness="10"
+                     Fill="Blue"
+                     FillRule="EvenOdd" />
+        </Grid>
+    </Snippet>
+
+    <!-- 35 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polygon Points="240 48, 352 396, 58 180, 422 180, 128 396"
+                     Stroke="Red" StrokeThickness="10"
+                     Fill="Blue"
+                     FillRule="NonZero" />
+        </Grid>
+    </Snippet>
+
+    <!-- 36 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polygon Points="80 160, 80 320, 240 320, 240 80, 400 80, 400 240, 160 240, 160 400, 320 400, 320 160"
+                     Stroke="Red" StrokeThickness="10"
+                     Fill="Blue"
+                     FillRule="NonZero" />
+        </Grid>
+    </Snippet>
+
+    <!-- 37 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polygon Points="250 200, 250 210, 
+                             230 270, 230 260"
+                     Stroke="Red"
+                     StrokeThickness="4" />
+        </Grid>
+    </Snippet>
+    
+    <!-- 38 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polygon Points="250 200, 250 210, 
+                             230 270, 230 260"
+                     Stroke="Red"
+                     StrokeThickness="4"
+                     Stretch="Fill" />
+        </Grid>
+    </Snippet>
+
+    <!-- Skip one for GrowingPolygons -->
+
+    <!-- 40 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="4"
+                  StrokeDashArray="3 1">
+                <Path.Data>
+                    <LineGeometry StartPoint="100 50"
+                                  EndPoint="300 150" />
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 41 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="8"
+                  Fill="Green">
+                <Path.Data>
+                    <RectangleGeometry Rect="100 50 300 200" />
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 42 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="8"
+                  Fill="Green">
+                <Path.Data>
+                    <RectangleGeometry Rect="100 50 300 200"
+                                       RadiusX="100"
+                                       RadiusY="50" />
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 43 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="8"
+                  Fill="Green">
+                <Path.Data>
+                    <EllipseGeometry Center="250 150"
+                                     RadiusX="150"
+                                     RadiusY="100" />
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+    
+    <!-- skip one for TouchAndDrawCircles -->
+
+    <!-- 45 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="8"
+                  Fill="Green">
+                <Path.Data>
+                    <EllipseGeometry Center="250 150"
+                                     RadiusX="150"
+                                     RadiusY="100" />
+                </Path.Data>
+                <Path.RenderTransform>
+                    <RotateTransform Angle="45"
+                                     CenterX="250"
+                                     CenterY="150" />
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 46 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="8"
+                  Fill="Green"
+                  RenderTransformOrigin="0.5 0.5">
+                <Path.Data>
+                    <EllipseGeometry Center="250 150"
+                                     RadiusX="150"
+                                     RadiusY="100" />
+                </Path.Data>
+
+                <Path.RenderTransform>
+                    <RotateTransform Angle="45" />
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 47 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="8"
+                  Fill="Green">
+                <Path.Data>
+                    <EllipseGeometry Center="250 150"
+                                     RadiusX="150"
+                                     RadiusY="100">
+                        <EllipseGeometry.Transform>
+                            <RotateTransform Angle="45"
+                                             CenterX="250"
+                                             CenterY="150" />
+                        </EllipseGeometry.Transform>
+                    </EllipseGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 48 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Border BorderBrush="Red"
+                    BorderThickness="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Path Stroke="Maroon"
+                      StrokeThickness="8"
+                      Fill="Green">
+                    <Path.Data>
+                        <EllipseGeometry Center="150 50"
+                                         RadiusX="150"
+                                         RadiusY="50">
+                        </EllipseGeometry>
+                    </Path.Data>
+                </Path>
+            </Border>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 49 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Border BorderBrush="Red"
+                    BorderThickness="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Path Stroke="Maroon"
+                      StrokeThickness="8"
+                      Fill="Green">
+                    <Path.Data>
+                        <EllipseGeometry Center="150 50"
+                                         RadiusX="150"
+                                         RadiusY="50" />
+                    </Path.Data>
+                    <Path.RenderTransform>
+                        <RotateTransform Angle="90"
+                                         CenterX="150"
+                                         CenterY="50" />
+                    </Path.RenderTransform>
+                </Path>
+            </Border>
+        </Grid>
+    </Snippet>
+
+    <!-- 50 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Border BorderBrush="Red"
+                    BorderThickness="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Path Stroke="Maroon"
+                      StrokeThickness="8"
+                      Fill="Green">
+                    <Path.Data>
+                        <EllipseGeometry Center="150 50"
+                                         RadiusX="150"
+                                         RadiusY="50">
+                            <EllipseGeometry.Transform>
+                                <RotateTransform Angle="90"
+                                                 CenterX="150"
+                                                 CenterY="50" />
+                            </EllipseGeometry.Transform>
+                        </EllipseGeometry>
+                    </Path.Data>
+                </Path>
+            </Border>
+        </Grid>
+    </Snippet>
+
+    <!-- 51 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Border BorderBrush="Red"
+                    BorderThickness="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Path Stroke="Maroon"
+                      StrokeThickness="8"
+                      Fill="Green">
+                    <Path.Data>
+                        <EllipseGeometry Center="150 50"
+                                         RadiusX="150"
+                                         RadiusY="50">
+                            <EllipseGeometry.Transform>
+                                <RotateTransform Angle="90"
+                                                 CenterX="50"
+                                                 CenterY="50" />
+                            </EllipseGeometry.Transform>
+                        </EllipseGeometry>
+                    </Path.Data>
+                </Path>
+            </Border>
+        </Grid>
+    </Snippet>
+
+    <!-- 52 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="4"
+                  Fill="Green">
+                <Path.Data>
+                    <RectangleGeometry Rect="2 220 40 40" />
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 53 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="4"
+                  Fill="Green">
+                <Path.Data>
+                    <RectangleGeometry Rect="2 220 40 40">
+                        <RectangleGeometry.Transform>
+                            <ScaleTransform ScaleX="10" />
+                        </RectangleGeometry.Transform>
+                    </RectangleGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 54 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="4"
+                  Fill="Green">
+                <Path.Data>
+                    <RectangleGeometry Rect="2 220 40 40" />
+                </Path.Data>
+                <Path.RenderTransform>
+                    <ScaleTransform ScaleX="10" />
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 55 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="4"
+                  Fill="Green">
+                <Path.Data>
+                    <GeometryGroup>
+                        <EllipseGeometry Center="200 150"
+                                         RadiusX="100"
+                                         RadiusY="50" />
+                        <RectangleGeometry Rect="200 150 100 100" />
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 56 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon"
+                  StrokeThickness="4"
+                  Fill="Green">
+                <Path.Data>
+                    <GeometryGroup>
+                        <RectangleGeometry Rect=" 40  40 200 200" />
+                        <RectangleGeometry Rect=" 90  90 200 200" />
+                        <RectangleGeometry Rect="140 140 200 200" />
+                        <RectangleGeometry Rect="190 190 200 200" />
+                        <RectangleGeometry Rect="240 240 200 200" />
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 57 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Blue"
+                  StrokeThickness="4"
+                  Fill="Green">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="240 60">
+                            <LineSegment Point="380 240" />
+                            <LineSegment Point="100 240" />
+                            <LineSegment Point="240 60" />
+                        </PathFigure>
+
+                        <PathFigure StartPoint="240 150"
+                                    IsClosed="True">
+                            <LineSegment Point="380 330" />
+                            <LineSegment Point="100 330" />
+                        </PathFigure>
+
+                        <PathFigure StartPoint="240 240"
+                                    IsClosed="True">
+                            <PolyLineSegment Points="380 420, 100 420" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 58 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+        </Grid>
+    </Snippet>
+
+    <!-- 59 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+
+            <Path Stroke="Blue"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 60 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+
+            <Path Stroke="Red"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144"
+                                        SweepDirection="Clockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 61 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+
+            <Path Stroke="Green"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144"
+                                        IsLargeArc="True" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 62 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+
+            <Path Stroke="Brown"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144"
+                                        IsLargeArc="True"
+                                        SweepDirection="Clockwise"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- 63 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+            <Path Stroke="Blue"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Red"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144"
+                                        SweepDirection="Clockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Green"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144"
+                                        IsLargeArc="True" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Brown"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="144 144"
+                                        IsLargeArc="True"
+                                        SweepDirection="Clockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+
+    <!-- 64 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+            <Path Stroke="Blue"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Red"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        SweepDirection="Clockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Green"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        IsLargeArc="True" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Brown"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        IsLargeArc="True"
+                                        SweepDirection="Clockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+
+        </Grid>
+    </Snippet>
+
+    <!-- 65 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Polyline Points="120 240, 360 240"
+                      Stroke="Black"
+                      StrokeThickness="6" />
+            <Path Stroke="Blue"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        RotationAngle="36" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Red"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        SweepDirection="Clockwise"
+                                        RotationAngle="36" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Green"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        IsLargeArc="True"
+                                        RotationAngle="36" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path Stroke="Brown"
+                  StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="120 240">
+                            <ArcSegment Point="360 240"
+                                        Size="200 100"
+                                        IsLargeArc="True"
+                                        SweepDirection="Clockwise"
+                                        RotationAngle="36" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+    </Snippet>
+
+    <!-- Skip a bunch -->
+
+    <!-- 71 -->
+    <Snippet>
+        <Grid Background="LightCyan">
+            <Path Stroke="Maroon" StrokeThickness="4"
+                  Data="M 160 140 L 150 50 220 103
+                        M 320 140 L 330 50 260 103
+                        M 215 230 L 40 200
+                        M 215 240 L 40 240
+                        M 215 250 L 40 280
+                        M 265 230 L 440 200
+                        M 265 240 L 440 240
+                        M 265 250 L 440 280 
+                        M 240 100 A 100 100 0 0 1 240 300
+                                  A 100 100 0 0 1 240 100
+                        M 180 170 A 40 40 0 0 1 220 170
+                                  A 40 40 0 0 1 180 170
+                        M 300 170 A 40 40 0 0 1 260 170
+                                  A 40 40 0 0 1 300 170" />
+        </Grid>
+    </Snippet>
+</XamlSnippets>

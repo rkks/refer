@@ -1,0 +1,26 @@
+Initial setup
+-------------
+Requires lighttpd with PHP. On Ubuntu 10.04, install using:
+
+% sudo aptitude install lighttpd
+% sudo aptitude install php5-cgi php5-cli
+% sudo lighttpd-enable-mod fastcgi
+
+Edit /etc/php5/cgi/php.ini and uncomment the line,
+  cgi.fix_pathinfo=1
+
+% /etc/init.d/lighttpd force-reload
+
+Document root: /var/wwww
+Config file: /etc/lighttpd/lighttpd.conf
+Addl config files: /etc/lighttpd/conf-available 
+ (these configs are enabled by lighttpd-enable-mod <mod>)
+
+Test out the server:
+% sudo vi /var/www/info.php
+<?
+phpinfo()
+?>
+
+Now browse to http://localhost/info.php
+

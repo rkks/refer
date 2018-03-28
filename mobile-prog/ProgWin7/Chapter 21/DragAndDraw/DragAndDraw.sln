@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDraw", "DragAndDraw\DragAndDraw\DragAndDraw.csproj", "{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "DragAndDrawContent", "DragAndDraw\DragAndDrawContent\DragAndDrawContent.contentproj", "{88B8B163-B1EA-42B4-A24E-2D3E2B7F5FD7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{A0203A9C-86AC-4076-A6C4-5E1C589DEB72}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{88B8B163-B1EA-42B4-A24E-2D3E2B7F5FD7}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{88B8B163-B1EA-42B4-A24E-2D3E2B7F5FD7}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

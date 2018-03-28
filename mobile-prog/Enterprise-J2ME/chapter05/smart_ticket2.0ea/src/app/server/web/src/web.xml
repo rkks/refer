@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: web.xml,v 1.6 2003/03/20 01:46:53 zull Exp $ -->
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  <display-name>SmartTicketWAR</display-name>
+  <context-param>
+    <param-name>locales</param-name>
+    <param-value>en_US,ja_JP,fr_FR</param-value>
+  </context-param>
+  <listener>
+    <listener-class>com.sun.j2me.blueprints.smartticket.server.web.midp.SmartTicketSessionListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>SmartTicketServlet</servlet-name>
+    <servlet-class>com.sun.j2me.blueprints.smartticket.server.web.midp.SmartTicketServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>PopulateServlet</servlet-name>
+    <servlet-class>com.sun.j2me.blueprints.smartticket.server.web.admin.populate.PopulateServlet</servlet-class>
+    <init-param>
+      <param-name>PopulateData</param-name>
+      <param-value>/WEB-INF/Populate-UTF8.xml</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SmartTicketServlet</servlet-name>
+    <url-pattern>/midp/service</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PopulateServlet</servlet-name>
+    <url-pattern>/admin/populate</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>3600</session-timeout>
+  </session-config>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/smartticket</location>
+  </error-page>
+  <error-page>
+    <exception-type>com.sun.j2me.blueprints.smartticket.server.ejb.SmartTicketFacadeException</exception-type>
+    <location>/smartticket/portal/error.jsp</location>
+  </error-page>
+  <ejb-local-ref>
+    <ejb-ref-name>ejb/SmartTicketFacade</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.SmartTicketFacadeLocalHome</local-home>
+    <local>com.sun.j2me.blueprints.smartticket.server.ejb.SmartTicketFacadeLocal</local>
+    <ejb-link>SmartTicketFacadeBean</ejb-link>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ejb/Account</ejb-ref-name>
+    <ejb-ref-type>Entity</ejb-ref-type>
+    <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocalHome</local-home>
+    <local>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocal</local>
+    <ejb-link>AccountBean</ejb-link>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ejb/Theater</ejb-ref-name>
+    <ejb-ref-type>Entity</ejb-ref-type>
+    <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterLocalHome</local-home>
+    <local>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterLocal</local>
+    <ejb-link>TheaterBean</ejb-link>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ejb/TheaterSchedule</ejb-ref-name>
+    <ejb-ref-type>Entity</ejb-ref-type>
+    <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.TheaterScheduleLocalHome</local-home>
+    <local>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.TheaterScheduleLocal</local>
+    <ejb-link>TheaterScheduleBean</ejb-link>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ejb/MovieSchedule</ejb-ref-name>
+    <ejb-ref-type>Entity</ejb-ref-type>
+    <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocalHome</local-home>
+    <local>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocal</local>
+    <ejb-link>MovieScheduleBean</ejb-link>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ejb/Movie</ejb-ref-name>
+    <ejb-ref-type>Entity</ejb-ref-type>
+    <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocalHome</local-home>
+    <local>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocal</local>
+    <ejb-link>MovieBean</ejb-link>
+  </ejb-local-ref>
+</web-app>

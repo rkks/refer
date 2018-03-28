@@ -1,0 +1,55 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @staff_member_details;
+
+my %personnel_record = (
+    age        => 33,
+    comments   => 'Experienced',
+    fraction   => 0.8,
+    hair       => 'brown',
+    height     => 185,
+    name       => 'Sam',
+    occupation => 'Hacker',
+    office     => 11,
+    shoe_size  => 9.5,
+    started    => '2003-12-01',
+    title      => 'Chief Hacker',
+    weight     => 195,
+);
+
+
+Readonly my %CORRESPONDING => (
+    age        => 1,
+    comments   => 6,
+    fraction   => 8,
+    hair       => 9,
+    height     => 2,
+    name       => 0,
+    occupation => 5,
+    office     => 11,
+    shoe_size  => 4,
+    started    => 7,
+    title      => 10,
+    weight     => 3,
+);
+ 
+@staff_member_details[ values %CORRESPONDING ] 
+    = @personnel_record{ keys %CORRESPONDING }; 
+
+ 
+use Data::Dumper 'Dumper';
+warn Dumper [ @staff_member_details ];

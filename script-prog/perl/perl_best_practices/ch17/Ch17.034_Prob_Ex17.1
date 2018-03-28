@@ -1,0 +1,79 @@
+##############################################################################
+## Example 17.1 (NOT RECOMMENDED) from Chapter 17 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 17-1. Variables as a module’s interface
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Serialize;
+use Carp;
+use Readonly;
+use Perl6::Export::Attrs;
+use List::Util qw( max );
+ 
+Readonly my $MAX_DEPTH => 100;
+
+ 
+# Package variables that specify shared features of the module...
+our $compaction = 'none';
+our $depth      = $MAX_DEPTH;
+ 
+# Table of compaction tools...
+my %compactor = (
+  # Value of      Subroutine returning
+  # $compaction   compacted form of arg
+      none     =>   sub { return shift },
+      zip      =>   \&compact_with_zip,
+      gzip     =>   \&compact_with_gzip,
+      bz       =>   \&compact_with_bz,
+      # etc.
+);
+
+sub _serialize {
+    return 'corn flakes';
+}
+ 
+# Subroutine to serialize a data structure, passed by reference...
+sub freeze : Export {
+    my ($data_structure) = @_;
+    
+    # Check that the $depth variable has a sensible value...
+    $depth = max(0, $depth);
+ 
+    # Perform actual serialization...
+    my $frozen = _serialize($data_structure);
+ 
+    # Check that the $compact variable has a sensible value...
+    croak "Unknown compaction type: $compaction"
+        if ! exists $compactor{$compaction};
+ 
+    # return the compacted form...
+    return $compactor{$compaction}->($frozen);
+}
+
+ 
+# and elsewhere...
+ 
+# use Serialize;
+ 
+$Serialize::depth      = -20;        # oops!
+$Serialize::compaction = 1;          # OOPS!!!
+ 
+# and later...
+my $data_ref;
+ 
+my $frozen_data = freeze($data_ref);      # BOOM!!!
+

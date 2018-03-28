@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# sets my preferences in some standard init files
+
+cat >>$HOME/.bash_profile <<"EOF"
+export PS1="\[\e[93;1m\][\u@\h \W]\[\e[0m\] "
+export LS_COLORS='no=00:di=01;34;04:ln=01;36;40:ex=01;31;40:'
+export EDITOR=vim
+alias ls="ls --color=auto"
+function d2b {
+  echo "obase=2; $1" | bc
+}
+function b2d {
+  echo "ibase=2; $1" | bc
+}
+function h2d {
+  H=$(echo $1 | tr a-z A-Z)
+  echo "ibase=16; $H" | bc
+}
+function d2h {
+  echo "obase=16; $1" | bc
+}
+function b2h {
+  echo "obase=16; ibase=2; $1" | bc
+}
+function h2b {
+  H=$(echo $1 | tr a-z A-Z)
+  echo "ibase=16; obase=2; $H"  | bc
+}
+EOF
+if [ -f ./remember ]
+then
+  cat ./remember >> $HOME/.bash_profile
+else
+  echo "skipping the 'remember' script, not found in the current directory"
+fi
+echo $HOME/.bash_profile
+
+cat >>$HOME/.gdbinit <<"EOF"
+set history filename $HOME/.gdb_history
+set history save on
+set history expansion on
+EOF
+echo $HOME/.gdbinit
+ 
+cat >>$HOME/.inputrc <<"EOF"
+set editing-mode vi
+set keymap vi-insert
+EOF
+echo $HOME/.inputrc
+
+cat >>$HOME/.screenrc <<"EOF"
+shell -bash
+startup_message off # Turn off the splash screen
+caption always '%{= kK}%{w}%H %{K}%= %{= kw}%?%-Lw%?%{B}(%{W}%n*%f %t%?(%u)%?%{B})%{w}%?%+Lw%?%?%= %{K}%{B} %{w}%c%{K}'
+EOF
+echo $HOME/.screenrc
+
+cat >>$HOME/.vimrc <<"EOF"
+set si ts=2 sw=2 et hlsearch ic 
+set modeline modelines=5
+map <F5> I<!-- <Esc>A --><Esc>
+map <F6> 0:s/<!-- //<CR>:s/ -->//<CR>
+map <F7> I/* <Esc>A */<Esc>
+map <F8> 0:s/\/\* //<CR>:s/ \*\///<CR>
+map <F9> :!echo >/tmp/fifo<CR> :redraw!<CR>
+map <Bslash> :!echo >/tmp/fifo<CR> :redraw!<CR>
+EOF
+echo $HOME/.vimrc
+
+echo "You may also need to run:"
+echo 'git config --global user.name "Your Name"'
+echo 'git config --global user.email "your@email.address"'

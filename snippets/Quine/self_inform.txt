@@ -1,0 +1,9 @@
+Language: Inform (an int-fiction definition language)
+
+Author:  Jose Luis Diaz de Arriba
+
+Constant p=";[Main; print_ret (string)p0, (char)61,(char)34, (string)p, 
+(char)34, (char) 59, (string)p0, (char)48, (char)61, (char)34, (string)p0,
+(char)34, (string)p;];";Constant p0="Constant p";[Main; print_ret (string)p0,
+(char)61,(char)34, (string)p, (char)34, (char) 59, (string)p0, (char)48,
+(char)61, (char)34, (string)p0, (char)34, (string)p;];

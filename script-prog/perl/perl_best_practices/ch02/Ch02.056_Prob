@@ -1,0 +1,34 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 2 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $DRAG_COEFF => 0.000_001;
+
+my @steps            = (0);
+my $radial_velocity  = 10;
+my $orbital_velocity = 100;
+my $phase            = 0.1;
+my $phase_shift      = 45;
+my $altitude         = 100_000;
+
+for my $elapsed_time (1..10) {
+    push @steps, $steps[-1] + 
+        $radial_velocity * $elapsed_time +
+        $orbital_velocity * ($phase + $phase_shift) - 
+        $DRAG_COEFF * $altitude;
+}
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @steps ];

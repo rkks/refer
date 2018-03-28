@@ -1,0 +1,76 @@
+<span class="ccom">/*
+ * udpserv.c
+ *
+ * listens on an UDP port, accept one message and displays its content and
+ * who's the sender
+ *
+ *
+ * Created by Mij &lt;mij@bitchx.it&gt; on 18/12/05.
+ * Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ */</span>
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* socket(), bind(), recvfrom() */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+</span><span class="ccom">/* sockaddr_in */</span>
+<span class="cpdr">#include &lt;netinet/in.h&gt;
+</span><span class="ccom">/* inet_addr() */</span>
+<span class="cpdr">#include &lt;arpa/inet.h&gt;
+</span><span class="ccom">/* memset() */</span>
+<span class="cpdr">#include &lt;string.h&gt;
+</span><span class="ccom">/* close() */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+</span><span class="ccom">/* exit() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span>
+<span class="ccom">/* maximum size available for an incoming message payload */</span>
+<span class="cpdr">#define MAX_MSGLEN      </span><span class="cval">100</span><span class="cpdr">
+</span>
+<span class="ctyp">int</span> <span class="cfun">main</span>() {
+    <span class="ctyp">int</span> sock, err;
+    <span class="ctyp">char</span> messagebuf[MAX_MSGLEN+<span class="cval">1</span>];
+    <span class="ctyp">struct</span> sockaddr_in saddr, fromaddr;
+    <span class="ctyp">int</span> fromaddr_len = <span class="ctyp">sizeof</span>(fromaddr);
+
+
+    <span class="ccom">/* create a INET-domain, disconnected (datagram) socket */</span>
+    sock = <span class="cfun">socket</span>(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    <span class="ctyp">if</span><span class="cfun"> </span>(sock &lt; <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In socket()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="ccom">/* bind the following attributes to the socket: */</span>
+    saddr.sin_family = AF_INET;
+    saddr.sin_addr.s_addr = <span class="cfun">inet_addr</span>(<span class="cstr">"127.0.0.1"</span>);     <span class="ccom">/* localhost address */</span>
+    saddr.sin_port = <span class="cfun">htons</span>(<span class="cval">61321</span>);          <span class="ccom">/* use port 61321 (with correct network byte-order */</span>
+    <span class="cfun">memset</span>(&amp;saddr.sin_zero, <span class="cval">0</span>, <span class="ctyp">sizeof</span>(saddr.sin_zero)); <span class="ccom">/* always zero-fill this field! */</span>
+    
+    err = <span class="cfun">bind</span>(sock, (<span class="ctyp">struct</span> sockaddr *)&amp;saddr, <span class="ctyp">sizeof</span>(saddr));
+    <span class="ctyp">if</span><span class="cfun"> </span>(err) {
+        <span class="cfun">perror</span>(<span class="cstr">"In bind()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+   
+    <span class="ccom">/* receive a message in "messagebuf" at most MAX_MSGLEN bytes long (1 is
+     * spared for the trailing '\0'; store sender info in "fromaddr" */</span>
+    err = <span class="cfun">recvfrom</span>(sock, messagebuf, MAX_MSGLEN-<span class="cval">1</span>, <span class="cval">0</span>, (<span class="ctyp">struct</span> sockaddr *)&amp;fromaddr, &amp;fromaddr_len);
+    <span class="ctyp">if</span><span class="cfun"> </span>(err &lt;= <span class="cval">0</span>) {     <span class="ccom">/* otherwise, "err" tells how many bytes have been written in "messagebuf" */</span>
+        <span class="cfun">perror</span>(<span class="cstr">"in recvfrom()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    messagebuf[err] = '\<span class="cval">0</span>';        <span class="ccom">/* NULL-terminator */</span>
+
+    <span class="ccom">/* close the socket */</span>
+    <span class="cfun">close</span>(sock);
+    
+    <span class="ccom">/* displaying message length and content */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"Message:\n\t@bytes: %d\n\t@payload: %s\n"</span>, err, messagebuf);
+    <span class="ccom">/* displaying sender info: */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"Sender:\n\t@address: %s\n\t@port: %d\n"</span>, <span class="cfun">inet_ntoa</span>(fromaddr.sin_addr), <span class="cfun">ntohs</span>(fromaddr.sin_port));
+
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+

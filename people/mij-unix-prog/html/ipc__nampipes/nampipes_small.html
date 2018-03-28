@@ -1,0 +1,58 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  nampipes.c
+ *  
+ *  simply opens a pre-created named pipe (a "fifo") and reads
+ *  stuff from it as soon as there's something available.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 02/02/05.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/uio.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="cpdr">#define MAX_LINE_LENGTH
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    <span class="ctyp">int</span> pipe;
+    <span class="ctyp">char</span> ch;
+    
+
+    <span class="ccom">/* we expect a named pipe has been created
+     * in /tmp/named_pipe . The command
+     *   $ mkfifo /tmp/named_pipe
+     * is a friend to get to this point
+     */</span>
+    pipe = <span class="cfun">open</span>(<span class="cstr">"/tmp/named_pipe"</span>, O_RDONLY);
+    <span class="ctyp">if</span><span class="cfun"> </span>(pipe &lt; <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"Opening pipe"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+        
+    <span class="ccom">/* preparing to read from the pipe... */</span>
+    <span class="cfun">printf</span>(<span class="cstr">"Waiting data from the pipe... \n"</span>);
+
+    <span class="ccom">/* reading one char a time from the pipe */</span>
+    <span class="ctyp">while</span><span class="cfun"> </span>(<span class="cval">1</span>) {
+        <span class="ctyp">if</span><span class="cfun"> </span>(<span class="cfun">read</span>(pipe, &amp;ch, <span class="cval">1</span>) &lt; <span class="cval">0</span>) {
+            <span class="cfun">perror</span>(<span class="cstr">"Read the pipe"</span>);
+            <span class="cfun">exit</span>(<span class="cval">2</span>);
+        }
+        
+        <span class="cfun">printf</span>(<span class="cstr">"%c"</span>, ch);
+    }
+    
+    <span class="ccom">/* leaving the pipe */</span>
+    <span class="cfun">close</span>(pipe);
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

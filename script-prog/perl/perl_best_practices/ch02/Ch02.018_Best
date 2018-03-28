@@ -1,0 +1,20 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 2 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my $spring_force = !$hyperextended ? -$spring_constant * $extension : 0;
+ 
+my $payoff = max(0, -$asset_price_at_maturity + $strike_price);
+

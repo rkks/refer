@@ -1,0 +1,44 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+package Wax::Floor;
+use Class::Std;
+{
+    sub feature_list :CUMULATIVE {
+        return ('Long-lasting', 'Non-toxic', 'Polymer-based');
+    }
+}
+
+package Topping::Dessert;
+use Class::Std;
+{
+    sub feature_list :CUMULATIVE {
+        return ('Low-carb', 'Non-dairy', 'Sugar-free');
+    }
+}
+
+package Shimmer;
+use Class::Std;
+use base qw( Wax::Floor  Topping::Dessert );
+{
+    sub feature_list :CUMULATIVE {
+        return ('Multi-purpose', 'Time-saving', 'Easy-to-use');
+    }
+}
+
+
+my @features = Shimmer->feature_list();
+print "Shimmer is the @features alternative!\n";

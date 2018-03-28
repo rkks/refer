@@ -1,0 +1,110 @@
+                            Grabchars 1.9
+
+		Copyright (c) 1988, 1989, 1990, Dan Smith
+
+		daniel@island.uu.net dansmith@well.sf.ca.us
+			unicom!daniel@pacbell.com
+
+What this is:
+
+	"grabchars" gets one or more keystrokes from the user, without
+requiring them to hit return.  It was written to make all types of shell
+scripts more interactive.
+
+	I know that it works fine on Suns running SUN OS 3.2-4.0.3,
+an Apollo 4500 running 10.2, and a Vax 11/750 running Mt. Xinu 4.3
+BSD.  System V support is there, except for the erase routine.
+I'd like to see support for this on VMS, MS-DOS, OS/2, and
+whatever else you find yourself using :-)  Tell a friend, send
+me patches.
+
+	You'll find uses for this in all sorts of places.  A prime
+candidate is in your .login file, it's easy to use this to select different
+options.  I've provided a "demo" csh script which runs through many of the
+options.  For the most part, grabchars can replace the use of "$<" in
+csh scripts and "read" in sh scripts, and offer filtering, timeouts, and
+default answers.  I've also provided a directory that will show
+you an simple way to generate interactive scripts: you lay out
+the menu, and it writes a script based on the menu - after that
+you just fill in the details.
+
+Putting this together:
+
+	Run Config; it will figure out where you might want to
+put the executable and the man page.  It will also put you into an
+editor with the Makefile, and then it will run a "make clean",
+"make depend", and a "make release".  You will need getopt (3)
+to compile this program.  If you're not sure if you have this, try
+"nm /lib/libc.a | grep getopt".  Get a Public Domain version if you
+don't (write me if you get really stuck, I have it).
+
+Usage: (see the man page for more...)
+
+	grabchars			gets one keystroke
+	grabchars -b			output to stdout and stderr
+	grabchars -c<valid characters>  only <valid chars> are returned
+	grabchars -d<char(s)>		default char or string to return
+	grabchars -e			output to stderr instead of stdout
+	grabchars -f			flush any previous input
+	grabchars -h			help screen
+	grabchars -n<number>		number of characters to read
+	grabchars -p<prompt>		prompt to help user
+	grabchars -q<prompt>		prompt to help user (through stderr)
+	grabchars -r			RETURN exits (use with -n)
+	grabchars -s			silent, just return status
+	grabchars -t<seconds>		timeout after <seconds>
+	grabchars -E			erase/kill character processing
+
+	examples: (values to arguments can be in the same word or the next one)
+
+	grabchars -caeiou	 or
+	grabchars -c aeiou		get one of the vowels
+	grabchars -c i			get the letter 'i'
+	grabchars '-penter a letter '	print the prompt "enter a letter "
+	grabchars '-qenter a letter '	print the prompt ('q' for question)
+					"enter a letter " through stderr...
+	grabchars -n4			get four characters
+	grabchars -t2			timeout after two seconds
+
+	print a prompt and grab three characters...
+	grabchars -p 'enter three characters >> ' -n 3
+
+	get two numbers with a ten second timeout...
+	grabchars -c 0123456789 -n2 -t10
+
+	note that arguments like "-n4" or "-n 4" are handled the same way
+
+	grabchars -h			will give a usage screen...
+
+Legal paragraph:
+
+	Use and copy Grabchars.  Please send me any modifications
+that you make so that I may post official patches.  Don't remove my
+headers.  Don't say you wrote it.  I am not responsible for mishaps
+arising out of the use of this program, on the other hand, I haven't
+run into any problems with this.  Lastly, do not use any part of
+grabchars in any product for profit (electronic, paper, or any other
+media) without obtaining my written permission.
+
+Patches and things like that:
+
+	"Help! Save The World!" (LW)...if you make any modifications
+to grabchars, please send me a diff suitable for use with the patch program.
+I don't want ten different versions of this running around.  The
+TODO file outlines some ideas I have for grabchars.
+
+Where to reach me:
+
+	Dan Smith
+	Island Graphics
+	4000 Civic Center Drive
+	San Rafael, Ca 94903
+	+1 (415) 491 1000 (w), 491 0402 (fax)
+
+	daniel@island.uu.net or	
+	{pixar,grenada,ucbvax!ucbcad,unicom,well,sun,uunet}!island!daniel
+
+	unicom!daniel@pacbell.com
+
+	{apple,lll-crg}!well!dansmith
+

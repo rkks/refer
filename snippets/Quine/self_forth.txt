@@ -1,0 +1,14 @@
+Language: Forth
+
+
+Author: Unknown
+Note: Cheating?
+SOURCE TYPE
+
+
+Author: Elko Tchernev (etchernev@acm.org)
+Note: On some ANS Forths the following self-displaying word will work; I'm not
+sure if this is cheating or not. (Probably is).
+
+: ME S" SEE ME" EVALUATE ;
+

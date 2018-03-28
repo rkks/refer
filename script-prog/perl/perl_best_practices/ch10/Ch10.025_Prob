@@ -1,0 +1,27 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 10 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Regexp::Common;
+Readonly my $EXPLETIVE => $RE{profanity};
+
+# Slurp the entire file (see the next guideline)...
+my $text = do { local $/; <> };
+ 
+# Wash its mouth out...
+$text =~ s/$EXPLETIVE/[DELETED]/gxms;
+ 
+# Print it all back out...
+print $text;

@@ -1,0 +1,237 @@
+<?php
+
+/**
+ * Code lists from wikipedia.org
+ * W = wide black stripe
+ * N = narrow black stripe
+ * w = wide white stripe
+ * n = narrow white stripe
+ * [] are ignored
+ */
+
+$c39=array(
+	"0" => "NnNwWnWnN",	"1" => "WnNwNnNnW",	"2" => "NnWwNnNnW",
+	"3" => "WnWwNnNnN",	"4" => "NnNwWnNnW",	"5" => "WnNwWnNnN",
+	"6" => "NnWwWnNnN",	"7" => "NnNwNnWnW",	"8" => "WnNwNnWnN",
+	"9" => "NnWwNnWnN",	"A" => "WnNnNwNnW",	"B" => "NnWnNwNnW",
+	"C" => "WnWnNwNnN",	"D" => "NnNnWwNnW",	"E" => "WnNnWwNnN",
+	"F" => "NnWnWwNnN",	"G" => "NnNnNwWnW",	"H" => "WnNnNwWnN",
+	"I" => "NnWnNwWnN",	"J" => "NnNnWwWnN",	"K" => "WnNnNnNwW",
+	"L" => "NnWnNnNwW",	"M" => "WnWnNnNwN",	"N" => "NnNnWnNwW",
+	"O" => "WnNnWnNwN",	"P" => "NnWnWnNwN",	"Q" => "NnNnNnWwW",
+	"R" => "WnNnNnWwN",	"S" => "NnWnNnWwN",	"T" => "NnNnWnWwN",
+	"U" => "WwNnNnNnW",	"V" => "NwWnNnNnW",	"W" => "WwWnNnNnN",
+	"X" => "NwNnWnNnW",	"Y" => "WwNnWnNnN",	"Z" => "NwWnWnNnN",
+	"-" => "NwNnNnWnW",	"." => "WwNnNnWnN",	" " => "NwWnNnWnN",
+	"$" => "NwNwNwNnN",	"/" => "NwNwNnNwN",	"+" => "NwNnNwNwN",
+	"%" => "NnNwNwNwN",	"*" => "NwNnWnWnN",	);
+
+	/* Extended code39 codes for all ASCII 0-127 */
+	$c39_codes2=array(
+	"START"=> "NwNnWnWnN",
+	"\x00" => "NnNwNwNwN[n]WwNnNnNnW",
+	"\x01" => "NwNwNwNnN[n]WnNnNwNnW",
+	"\x02" => "NwNwNwNnN[n]NnWnNwNnW",
+	"\x03" => "NwNwNwNnN[n]WnWnNwNnN",
+	"\x04" => "NwNwNwNnN[n]NnNnWwNnW",
+	"\x05" => "NwNwNwNnN[n]WnNnWwNnN",
+	"\x06" => "NwNwNwNnN[n]NnWnWwNnN",
+	"\x07" => "NwNwNwNnN[n]NnNnNwWnW",
+	"\x08" => "NwNwNwNnN[n]WnNnNwWnN",
+	"\x09" => "NwNwNwNnN[n]NnWnNwWnN",
+	"\x0a" => "NwNwNwNnN[n]NnNnWwWnN",
+	"\x0b" => "NwNwNwNnN[n]WnNnNnNwW",
+	"\x0c" => "NwNwNwNnN[n]NnWnNnNwW",
+	"\x0d" => "NwNwNwNnN[n]WnWnNnNwN",
+	"\x0e" => "NwNwNwNnN[n]NnNnWnNwW",
+	"\x0f" => "NwNwNwNnN[n]WnNnWnNwN",
+	"\x10" => "NwNwNwNnN[n]NnWnWnNwN",
+	"\x11" => "NwNwNwNnN[n]NnNnNnWwW",
+	"\x12" => "NwNwNwNnN[n]WnNnNnWwN",
+	"\x13" => "NwNwNwNnN[n]NnWnNnWwN",
+	"\x14" => "NwNwNwNnN[n]NnNnWnWwN",
+	"\x15" => "NwNwNwNnN[n]WwNnNnNnW",
+	"\x16" => "NwNwNwNnN[n]NwWnNnNnW",
+	"\x17" => "NwNwNwNnN[n]WwWnNnNnN",
+	"\x18" => "NwNwNwNnN[n]NwNnWnNnW",
+	"\x19" => "NwNwNwNnN[n]WwNnWnNnN",
+	"\x1a" => "NwNwNwNnN[n]NwWnWnNnN",
+	"\x1b" => "NnNwNwNwN[n]WnNnNwNnW",
+	"\x1c" => "NnNwNwNwN[n]NnWnNwNnW",
+	"\x1d" => "NnNwNwNwN[n]WnWnNwNnN",
+	"\x1e" => "NnNwNwNwN[n]NnNnWwNnW",
+	"\x1f" => "NnNwNwNwN[n]WnNnWwNnN",
+	"\x20" => "NwWnNnWnN",
+	"\x21" => "NwNwNnNwN[n]WnNnNwNnW",
+	"\x22" => "NwNwNnNwN[n]NnWnNwNnW",
+	"\x23" => "NwNwNnNwN[n]WnWnNwNnN",
+	"\x24" => "NwNwNnNwN[n]NnNnWwNnW",
+	"\x25" => "NwNwNnNwN[n]WnNnWwNnN",
+	"\x26" => "NwNwNnNwN[n]NnWnWwNnN",
+	"\x27" => "NwNwNnNwN[n]NnNnNwWnW",
+	"\x28" => "NwNwNnNwN[n]WnNnNwWnN",
+	"\x29" => "NwNwNnNwN[n]NnWnNwWnN",
+	"\x2a" => "NwNwNnNwN[n]NnNnWwWnN",
+	"\x2b" => "NwNwNnNwN[n]WnNnNnNwW",
+	"\x2c" => "NwNwNnNwN[n]NnWnNnNwW",
+	"\x2d" => "NwNnNnWnW",
+	"\x2e" => "WwNnNnWnN",
+	"\x2f" => "NwNwNnNwN[n]WnNnWnNwN",
+	"\x30" => "NnNwWnWnN",
+	"\x31" => "WnNwNnNnW",
+	"\x32" => "NnWwNnNnW",
+	"\x33" => "WnWwNnNnN",
+	"\x34" => "NnNwWnNnW",
+	"\x35" => "WnNwWnNnN",
+	"\x36" => "NnWwWnNnN",
+	"\x37" => "NnNwNnWnW",
+	"\x38" => "WnNwNnWnN",
+	"\x39" => "NnWwNnWnN",
+	"\x3a" => "NwNwNnNwN[n]NwWnWnNnN",
+	"\x3b" => "NnNwNwNwN[n]NnWnWwNnN",
+	"\x3c" => "NnNwNwNwN[n]NnNnNwWnW",
+	"\x3d" => "NnNwNwNwN[n]WnNnNwWnN",
+	"\x3e" => "NnNwNwNwN[n]NnWnNwWnN",
+	"\x3f" => "NnNwNwNwN[n]NnNnWwWnN",
+	"\x40" => "NnNwNwNwN[n]NwWnNnNnW",
+	"\x41" => "WnNnNwNnW",
+	"\x42" => "NnWnNwNnW",
+	"\x43" => "WnWnNwNnN",
+	"\x44" => "NnNnWwNnW",
+	"\x45" => "WnNnWwNnN",
+	"\x46" => "NnWnWwNnN",
+	"\x47" => "NnNnNwWnW",
+	"\x48" => "WnNnNwWnN",
+	"\x49" => "NnWnNwWnN",
+	"\x4a" => "NnNnWwWnN",
+	"\x4b" => "WnNnNnNwW",
+	"\x4c" => "NnWnNnNwW",
+	"\x4d" => "WnWnNnNwN",
+	"\x4e" => "NnNnWnNwW",
+	"\x4f" => "WnNnWnNwN",
+	"\x50" => "NnWnWnNwN",
+	"\x51" => "NnNnNnWwW",
+	"\x52" => "WnNnNnWwN",
+	"\x53" => "NnWnNnWwN",
+	"\x54" => "NnNnWnWwN",
+	"\x55" => "WwNnNnNnW",
+	"\x56" => "NwWnNnNnW",
+	"\x57" => "WwWnNnNnN",
+	"\x58" => "NwNnWnNnW",
+	"\x59" => "WwNnWnNnN",
+	"\x5a" => "NwWnWnNnN",
+	"\x5b" => "NnNwNwNwN[n]WnNnNnNwW",
+	"\x5c" => "NnNwNwNwN[n]NnWnNnNwW",
+	"\x5d" => "NnNwNwNwN[n]WnWnNnNwN",
+	"\x5e" => "NnNwNwNwN[n]NnNnWnNwW",
+	"\x5f" => "NnNwNwNwN[n]WnNnWnNwN",
+	"\x60" => "NnNwNwNwN[n]WwWnNnNnN",
+	"\x61" => "NwNnNwNwN[n]WnNnNwNnW",
+	"\x62" => "NwNnNwNwN[n]NnWnNwNnW",
+	"\x63" => "NwNnNwNwN[n]WnWnNwNnN",
+	"\x64" => "NwNnNwNwN[n]NnNnWwNnW",
+	"\x65" => "NwNnNwNwN[n]WnNnWwNnN",
+	"\x66" => "NwNnNwNwN[n]NnWnWwNnN",
+	"\x67" => "NwNnNwNwN[n]NnNnNwWnW",
+	"\x68" => "NwNnNwNwN[n]WnNnNwWnN",
+	"\x69" => "NwNnNwNwN[n]NnWnNwWnN",
+	"\x6a" => "NwNnNwNwN[n]NnNnWwWnN",
+	"\x6b" => "NwNnNwNwN[n]WnNnNnNwW",
+	"\x6c" => "NwNnNwNwN[n]NnWnNnNwW",
+	"\x6d" => "NwNnNwNwN[n]WnWnNnNwN",
+	"\x6e" => "NwNnNwNwN[n]NnNnWnNwW",
+	"\x6f" => "NwNnNwNwN[n]WnNnWnNwN",
+	"\x70" => "NwNnNwNwN[n]NnWnWnNwN",
+	"\x71" => "NwNnNwNwN[n]NnNnNnWwW",
+	"\x72" => "NwNnNwNwN[n]WnNnNnWwN",
+	"\x73" => "NwNnNwNwN[n]NnWnNnWwN",
+	"\x74" => "NwNnNwNwN[n]NnNnWnWwN",
+	"\x75" => "NwNnNwNwN[n]WwNnNnNnW",
+	"\x76" => "NwNnNwNwN[n]NwWnNnNnW",
+	"\x77" => "NwNnNwNwN[n]WwWnNnNnN",
+	"\x78" => "NwNnNwNwN[n]NwNnWnNnW",
+	"\x79" => "NwNnNwNwN[n]WwNnWnNnN",
+	"\x7a" => "NwNnNwNwN[n]NwWnWnNnN",
+	"\x7b" => "NnNwNwNwN[n]NnWnWnNwN",
+	"\x7c" => "NnNwNwNwN[n]NnNnNnWwW",
+	"\x7d" => "NnNwNwNwN[n]WnNnNnWwN",
+	"\x7e" => "NnNwNwNwN[n]NnWnNnWwN",
+	"\x7f" => "NnNwNwNwN[n]NnNnWnWwN",	);
+
+$c39_narrow=1;           /* Width of narrow elements             */
+$c39_wide=$c39_narrow*3;/* Width of thick elements.  2*N or 3*N */
+
+$c39_size=array(    "W"     =>      $c39_wide,
+                "N"     =>      $c39_narrow,
+                "w"     =>      $c39_wide,
+                "n"     =>      $c39_narrow      );
+
+$c39_draw=array(    "W"     =>      1,
+                "N"     =>      1,
+                "w"     =>      0,
+                "n"     =>      0       );
+
+function code39($image_w, $image_h, $message, $border=10)
+{
+	global $c39, $c39_draw, $c39_size;
+
+	$message="*".preg_replace("/[^0-9A-Z. \/\$+%-]+/", "-",
+		strtoupper($message))."*";
+
+	$im = @imagecreate($image_w, $image_h)
+	    or die("Cannot Initialize new GD image stream");
+	$background_color = imagecolorallocate($im, 255, 255, 255);
+	$black = imagecolorallocate($im, 0, 0, 0);
+
+	$y=$border;
+	$x=0;
+	$h=$image_h-(16+($border*2));
+
+	for($n=0; $n<strlen($message); $n++)
+	{
+		$code=$c39[$message[$n]];
+
+		imagestring($im, 5, $x+4, $y+$h+2, $message[$n], $black);
+
+		for($m=0; $m<strlen($code); $m++)
+		{
+			if($c39_draw[$code[$m]])
+				imagefilledrectangle(
+					$im,
+					$x,			$y,
+					($x+$c39_size[$code[$m]])-1,	$y+$h,
+					$black					);
+
+			/* debug:  print wWnN above code */
+			/*imagestring($im, 1, $x, 5+(($m&1)*5), $code[$m], $black);*/
+
+			$x += $c39_size[$code[$m]];
+		}
+
+		$x+=$c39_size["n"];	/* Narrow space between codes */
+	}
+
+	if($x < $image_w)
+	{
+		$off=($image_w - $x) / 2;
+		$im2 = @imagecreate($image_w, $image_h);
+		imagecopy($im2, $im, 
+			$off, 0,
+			0, 0,
+			$x, $image_h);
+		imagedestroy($im);
+		$im=$im2;
+	}
+
+	return($im);
+}
+
+/*
+
+  // Example usage
+  require_once("code39.php");
+  header("Content-Type: image/png");
+  imagepng(code39(320, 128, "burningsmell"));
+  exit(0);
+
+ **/	?>

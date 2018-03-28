@@ -1,0 +1,1694 @@
+# To unbundle, sh this file
+echo README 1>&2
+sed 's/.//' >README <<'//GO.SYSIN DD README'
+-/****************************************************************
+-Copyright (C) AT&T 1995
+-All Rights Reserved
+-
+-Permission to use, copy, modify, and distribute this software and
+-its documentation for any purpose and without fee is hereby
+-granted, provided that the above copyright notice appear in all
+-copies and that both that the copyright notice and this
+-permission notice and warranty disclaimer appear in supporting
+-documentation, and that the name of AT&T or any of its entities
+-not be used in advertising or publicity pertaining to
+-distribution of the software without specific, written prior
+-permission.
+-
+-AT&T DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+-INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.
+-IN NO EVENT SHALL AT&T OR ANY OF ITS ENTITIES BE LIABLE FOR ANY
+-SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
+-IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+-ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+-THIS SOFTWARE.
+-****************************************************************/
+-
+-This version of hoc is slightly modified from the one
+-found in The Unix Programming Environment, by Brian Kernighan
+-and Rob Pike (Addison-Wesley, 1984).
+-
+-Changes since the book version:
+-
+-1.  The variable "_" contains the result of the last
+-top-level expression evaluation, so you can re-use
+-intermediate values without re-typing them.
+-
+-2.  for statement added, like the one in C,
+-except that components may not be empty.
+-
+-3.  ++ and -- added, but don't work with $i.
+-
+-4.  Interrupts are caught; use cntrl-D to quit.
+-
+-5.  % operator added.
+-
+-6.  +=, -=, etc., added.
+-
+-7.  \ at end of line eats newline.
+-
+-8.  results are 15 digits but variable PREC can be
+-used to override this.
+-
+-9.  tabs on output are no longer.
+-
+-10. asin, acos, sinh, cosh, tanh, erf, erfc
+//GO.SYSIN DD README
+echo code.c 1>&2
+sed 's/.//' >code.c <<'//GO.SYSIN DD code.c'
+-#include "hoc.h"
+-#include "y.tab.h"
+-#include <stdio.h>
+-
+-#define	NSTACK	256
+-
+-static Datum stack[NSTACK];	/* the stack */
+-static Datum *stackp;		/* next free spot on stack */
+-
+-#define	NPROG	2000
+-Inst	prog[NPROG];	/* the machine */
+-Inst	*progp;		/* next free spot for code generation */
+-Inst	*pc;		/* program counter during execution */
+-Inst	*progbase = prog; /* start of current subprogram */
+-int	returning;	/* 1 if return stmt seen */
+-extern int	indef;	/* 1 if parsing a func or proc */
+-
+-typedef struct Frame {	/* proc/func call stack frame */
+-	Symbol	*sp;	/* symbol table entry */
+-	Inst	*retpc;	/* where to resume after return */
+-	Datum	*argn;	/* n-th argument on stack */
+-	int	nargs;	/* number of arguments */
+-} Frame;
+-#define	NFRAME	100
+-Frame	frame[NFRAME];
+-Frame	*fp;		/* frame pointer */
+-
+-void
+-initcode(void)
+-{
+-	progp = progbase;
+-	stackp = stack;
+-	fp = frame;
+-	returning = 0;
+-	indef = 0;
+-}
+-
+-void
+-push(Datum d)
+-{
+-	if (stackp >= &stack[NSTACK])
+-		execerror("stack too deep", 0);
+-	*stackp++ = d;
+-}
+-
+-Datum
+-pop(void)
+-{
+-	if (stackp == stack)
+-		execerror("stack underflow", 0);
+-	return *--stackp;
+-}
+-
+-void
+-xpop(void)	/* for when no value is wanted */
+-{
+-	if (stackp == stack)
+-		execerror("stack underflow", (char *)0);
+-	--stackp;
+-}
+-
+-void
+-constpush(void)
+-{
+-	Datum d;
+-	d.val = ((Symbol *)*pc++)->u.val;
+-	push(d);
+-}
+-
+-void
+-varpush(void)
+-{
+-	Datum d;
+-	d.sym = (Symbol *)(*pc++);
+-	push(d);
+-}
+-
+-void
+-whilecode(void)
+-{
+-	Datum d;
+-	Inst *savepc = pc;
+-
+-	execute(savepc+2);	/* condition */
+-	d = pop();
+-	while (d.val) {
+-		execute(*((Inst **)(savepc)));	/* body */
+-		if (returning)
+-			break;
+-		execute(savepc+2);	/* condition */
+-		d = pop();
+-	}
+-	if (!returning)
+-		pc = *((Inst **)(savepc+1)); /* next stmt */
+-}
+-
+-void
+-forcode(void)
+-{
+-	Datum d;
+-	Inst *savepc = pc;
+-
+-	execute(savepc+4);		/* precharge */
+-	pop();
+-	execute(*((Inst **)(savepc)));	/* condition */
+-	d = pop();
+-	while (d.val) {
+-		execute(*((Inst **)(savepc+2)));	/* body */
+-		if (returning)
+-			break;
+-		execute(*((Inst **)(savepc+1)));	/* post loop */
+-		pop();
+-		execute(*((Inst **)(savepc)));	/* condition */
+-		d = pop();
+-	}
+-	if (!returning)
+-		pc = *((Inst **)(savepc+3)); /* next stmt */
+-}
+-
+-void
+-ifcode(void) 
+-{
+-	Datum d;
+-	Inst *savepc = pc;	/* then part */
+-
+-	execute(savepc+3);	/* condition */
+-	d = pop();
+-	if (d.val)
+-		execute(*((Inst **)(savepc)));	
+-	else if (*((Inst **)(savepc+1))) /* else part? */
+-		execute(*((Inst **)(savepc+1)));
+-	if (!returning)
+-		pc = *((Inst **)(savepc+2)); /* next stmt */
+-}
+-
+-void
+-define(Symbol* sp)	/* put func/proc in symbol table */
+-{
+-	sp->u.defn = progbase;	/* start of code */
+-	progbase = progp;	/* next code starts here */
+-}
+-
+-void
+-call(void) 		/* call a function */
+-{
+-	Symbol *sp = (Symbol *)pc[0]; /* symbol table entry */
+-				      /* for function */
+-	if (fp++ >= &frame[NFRAME-1])
+-		execerror(sp->name, "call nested too deeply");
+-	fp->sp = sp;
+-	fp->nargs = (int)pc[1];
+-	fp->retpc = pc + 2;
+-	fp->argn = stackp - 1;	/* last argument */
+-	execute(sp->u.defn);
+-	returning = 0;
+-}
+-
+-static void
+-ret(void) 		/* common return from func or proc */
+-{
+-	int i;
+-	for (i = 0; i < fp->nargs; i++)
+-		pop();	/* pop arguments */
+-	pc = (Inst *)fp->retpc;
+-	--fp;
+-	returning = 1;
+-}
+-
+-void
+-funcret(void) 	/* return from a function */
+-{
+-	Datum d;
+-	if (fp->sp->type == PROCEDURE)
+-		execerror(fp->sp->name, "(proc) returns value");
+-	d = pop();	/* preserve function return value */
+-	ret();
+-	push(d);
+-}
+-
+-void
+-procret(void) 	/* return from a procedure */
+-{
+-	if (fp->sp->type == FUNCTION)
+-		execerror(fp->sp->name,
+-			"(func) returns no value");
+-	ret();
+-}
+-
+-double*
+-getarg(void) 	/* return pointer to argument */
+-{
+-	int nargs = (int) *pc++;
+-	if (nargs > fp->nargs)
+-	    execerror(fp->sp->name, "not enough arguments");
+-	return &fp->argn[nargs - fp->nargs].val;
+-}
+-
+-void
+-arg(void) 	/* push argument onto stack */
+-{
+-	Datum d;
+-	d.val = *getarg();
+-	push(d);
+-}
+-
+-void
+-argassign(void) 	/* store top of stack in argument */
+-{
+-	Datum d;
+-	d = pop();
+-	push(d);	/* leave value on stack */
+-	*getarg() = d.val;
+-}
+-
+-void
+-argaddeq(void) 	/* store top of stack in argument */
+-{
+-	Datum d;
+-	d = pop();
+-	d.val = *getarg() += d.val;
+-	push(d);	/* leave value on stack */
+-}
+-
+-void
+-argsubeq(void) 	/* store top of stack in argument */
+-{
+-	Datum d;
+-	d = pop();
+-	d.val = *getarg() -= d.val;
+-	push(d);	/* leave value on stack */
+-}
+-
+-void
+-argmuleq(void) 	/* store top of stack in argument */
+-{
+-	Datum d;
+-	d = pop();
+-	d.val = *getarg() *= d.val;
+-	push(d);	/* leave value on stack */
+-}
+-
+-void
+-argdiveq(void) 	/* store top of stack in argument */
+-{
+-	Datum d;
+-	d = pop();
+-	d.val = *getarg() /= d.val;
+-	push(d);	/* leave value on stack */
+-}
+-
+-void
+-argmodeq(void) 	/* store top of stack in argument */
+-{
+-	Datum d;
+-	double *x;
+-	long y;
+-	d = pop();
+-	/* d.val = *getarg() %= d.val; */
+-	x = getarg();
+-	y = *x;
+-	d.val = *x = y % (long) d.val;
+-	push(d);	/* leave value on stack */
+-}
+-
+-void
+-bltin(void) 
+-{
+-
+-	Datum d;
+-	d = pop();
+-	d.val = (*(double (*)(double))*pc++)(d.val);
+-	push(d);
+-}
+-
+-void
+-add(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val += d2.val;
+-	push(d1);
+-}
+-
+-void
+-sub(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val -= d2.val;
+-	push(d1);
+-}
+-
+-void
+-mul(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val *= d2.val;
+-	push(d1);
+-}
+-
+-void
+-divop(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	if (d2.val == 0.0)
+-		execerror("division by zero", (char *)0);
+-	d1 = pop();
+-	d1.val /= d2.val;
+-	push(d1);
+-}
+-
+-void
+-mod(void)
+-{
+-	Datum d1, d2;
+-	long x;
+-	d2 = pop();
+-	if (d2.val == 0.0)
+-		execerror("division by zero", (char *)0);
+-	d1 = pop();
+-	/* d1.val %= d2.val; */
+-	x = d1.val;
+-	x %= (long) d2.val;
+-	d1.val = d2.val = x;
+-	push(d1);
+-}
+-
+-void
+-negate(void)
+-{
+-	Datum d;
+-	d = pop();
+-	d.val = -d.val;
+-	push(d);
+-}
+-
+-void
+-verify(Symbol* s)
+-{
+-	if (s->type != VAR && s->type != UNDEF)
+-		execerror("attempt to evaluate non-variable", s->name);
+-	if (s->type == UNDEF)
+-		execerror("undefined variable", s->name);
+-}
+-
+-void
+-eval(void)		/* evaluate variable on stack */
+-{
+-	Datum d;
+-	d = pop();
+-	verify(d.sym);
+-	d.val = d.sym->u.val;
+-	push(d);
+-}
+-
+-void
+-preinc(void)
+-{
+-	Datum d;
+-	d.sym = (Symbol *)(*pc++);
+-	verify(d.sym);
+-	d.val = d.sym->u.val += 1.0;
+-	push(d);
+-}
+-
+-void
+-predec(void)
+-{
+-	Datum d;
+-	d.sym = (Symbol *)(*pc++);
+-	verify(d.sym);
+-	d.val = d.sym->u.val -= 1.0;
+-	push(d);
+-}
+-
+-void
+-postinc(void)
+-{
+-	Datum d;
+-	double v;
+-	d.sym = (Symbol *)(*pc++);
+-	verify(d.sym);
+-	v = d.sym->u.val;
+-	d.sym->u.val += 1.0;
+-	d.val = v;
+-	push(d);
+-}
+-
+-void
+-postdec(void)
+-{
+-	Datum d;
+-	double v;
+-	d.sym = (Symbol *)(*pc++);
+-	verify(d.sym);
+-	v = d.sym->u.val;
+-	d.sym->u.val -= 1.0;
+-	d.val = v;
+-	push(d);
+-}
+-
+-void
+-gt(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val > d2.val);
+-	push(d1);
+-}
+-
+-void
+-lt(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val < d2.val);
+-	push(d1);
+-}
+-
+-void
+-ge(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val >= d2.val);
+-	push(d1);
+-}
+-
+-void
+-le(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val <= d2.val);
+-	push(d1);
+-}
+-
+-void
+-eq(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val == d2.val);
+-	push(d1);
+-}
+-
+-void
+-ne(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val != d2.val);
+-	push(d1);
+-}
+-
+-void
+-and(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val != 0.0 && d2.val != 0.0);
+-	push(d1);
+-}
+-
+-void
+-or(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = (double)(d1.val != 0.0 || d2.val != 0.0);
+-	push(d1);
+-}
+-
+-void
+-not(void)
+-{
+-	Datum d;
+-	d = pop();
+-	d.val = (double)(d.val == 0.0);
+-	push(d);
+-}
+-
+-void
+-power(void)
+-{
+-	Datum d1, d2;
+-	d2 = pop();
+-	d1 = pop();
+-	d1.val = Pow(d1.val, d2.val);
+-	push(d1);
+-}
+-
+-void
+-assign(void)
+-{
+-	Datum d1, d2;
+-	d1 = pop();
+-	d2 = pop();
+-	if (d1.sym->type != VAR && d1.sym->type != UNDEF)
+-		execerror("assignment to non-variable",
+-			d1.sym->name);
+-	d1.sym->u.val = d2.val;
+-	d1.sym->type = VAR;
+-	push(d2);
+-}
+-
+-void
+-addeq(void)
+-{
+-	Datum d1, d2;
+-	d1 = pop();
+-	d2 = pop();
+-	if (d1.sym->type != VAR && d1.sym->type != UNDEF)
+-		execerror("assignment to non-variable",
+-			d1.sym->name);
+-	d2.val = d1.sym->u.val += d2.val;
+-	d1.sym->type = VAR;
+-	push(d2);
+-}
+-
+-void
+-subeq(void)
+-{
+-	Datum d1, d2;
+-	d1 = pop();
+-	d2 = pop();
+-	if (d1.sym->type != VAR && d1.sym->type != UNDEF)
+-		execerror("assignment to non-variable",
+-			d1.sym->name);
+-	d2.val = d1.sym->u.val -= d2.val;
+-	d1.sym->type = VAR;
+-	push(d2);
+-}
+-
+-void
+-muleq(void)
+-{
+-	Datum d1, d2;
+-	d1 = pop();
+-	d2 = pop();
+-	if (d1.sym->type != VAR && d1.sym->type != UNDEF)
+-		execerror("assignment to non-variable",
+-			d1.sym->name);
+-	d2.val = d1.sym->u.val *= d2.val;
+-	d1.sym->type = VAR;
+-	push(d2);
+-}
+-
+-void
+-diveq(void)
+-{
+-	Datum d1, d2;
+-	d1 = pop();
+-	d2 = pop();
+-	if (d1.sym->type != VAR && d1.sym->type != UNDEF)
+-		execerror("assignment to non-variable",
+-			d1.sym->name);
+-	d2.val = d1.sym->u.val /= d2.val;
+-	d1.sym->type = VAR;
+-	push(d2);
+-}
+-
+-void
+-modeq(void)
+-{
+-	Datum d1, d2;
+-	long x;
+-	d1 = pop();
+-	d2 = pop();
+-	if (d1.sym->type != VAR && d1.sym->type != UNDEF)
+-		execerror("assignment to non-variable",
+-			d1.sym->name);
+-	/* d2.val = d1.sym->u.val %= d2.val; */
+-	x = d1.sym->u.val;
+-	x %= (long) d2.val;
+-	d2.val = d1.sym->u.val = x;
+-	d1.sym->type = VAR;
+-	push(d2);
+-}
+-
+-void
+-printtop(void)	/* pop top value from stack, print it */
+-{
+-	Datum d;
+-	static Symbol *s;	/* last value computed */
+-	if (s == 0)
+-		s = install("_", VAR, 0.0);
+-	d = pop();
+-	printf("%.*g\n", (int)lookup("PREC")->u.val, d.val);
+-	s->u.val = d.val;
+-}
+-
+-void
+-prexpr(void)	/* print numeric value */
+-{
+-	Datum d;
+-	d = pop();
+-	printf("%.*g ", (int)lookup("PREC")->u.val, d.val);
+-}
+-
+-void
+-prstr(void)		/* print string value */ 
+-{
+-	printf("%s", (char *) *pc++);
+-}
+-
+-void
+-varread(void)	/* read into variable */
+-{
+-	Datum d;
+-	extern FILE *fin;
+-	Symbol *var = (Symbol *) *pc++;
+-  Again:
+-	switch (fscanf(fin, "%lf", &var->u.val)) {
+-	case EOF:
+-		if (moreinput())
+-			goto Again;
+-		d.val = var->u.val = 0.0;
+-		break;
+-	case 0:
+-		execerror("non-number read into", var->name);
+-		break;
+-	default:
+-		d.val = 1.0;
+-		break;
+-	}
+-	var->type = VAR;
+-	push(d);
+-}
+-
+-Inst*
+-code(Inst f)	/* install one instruction or operand */
+-{
+-	Inst *oprogp = progp;
+-	if (progp >= &prog[NPROG])
+-		execerror("program too big", (char *)0);
+-	*progp++ = f;
+-	return oprogp;
+-}
+-
+-void
+-execute(Inst* p)
+-{
+-	for (pc = p; *pc != STOP && !returning; )
+-		(*((++pc)[-1]))();
+-}
+//GO.SYSIN DD code.c
+echo hoc.1 1>&2
+sed 's/.//' >hoc.1 <<'//GO.SYSIN DD hoc.1'
+-.TH HOC 1
+-.CT 1 numbers
+-.SH NAME
+-hoc \(mi interactive floating point language
+-.SH SYNOPSIS
+-.B hoc
+-[
+-.I file ...
+-]
+-.SH DESCRIPTION
+-.I Hoc
+-interprets a simple language for floating point arithmetic,
+-at about the level of Basic, with C-like syntax and
+-functions.
+-.PP
+-The named
+-.IR file s
+-are read and interpreted in order.
+-If no
+-.I file
+-is given or if
+-.I file
+-is
+-.L -
+-.I hoc
+-interprets the standard input.
+-.PP
+-.I Hoc
+-input consists of
+-.I expressions
+-and
+-.IR statements .
+-Expressions are evaluated and their results printed.
+-Statements, typically assignments and function or procedure
+-definitions, produce no output unless they explicitly call
+-.IR print .
+-.PP
+-Variable names have the usual syntax, including 
+-.LR _ ;
+-the name 
+-.L _
+-by itself contains the value of the last expression evaluated.
+-Certain variables are already initialized:
+-.TP
+-.B E
+-base of natural logs
+-.PD0
+-.TP
+-.B PI
+-.TP
+-.B PHI
+-golden ratio
+-.TP
+-.B GAMMA 
+-Euler's constant
+-.TP
+-.B DEG 
+-180/PI, degrees per radian
+-.TP
+-.B PREC
+-maximum number of significant digits in output, initially 15;
+-.B PREC=0
+-gives shortest `exact' values.
+-.PD
+-.PP
+-Expressions are formed with these C-like operators, listed by
+-decreasing precedence.
+-.TP
+-.B ^
+-exponentiation
+-.TP
+-.B ! - ++ --
+-.TP
+-.B * / %
+-.TP
+-.B + -
+-.TP
+-.B > >= < <= == !=
+-.TP
+-.B &&
+-.TP
+-.B ||
+-.TP
+-.B = += -= *= /= %=
+-.PP
+-Built in functions include
+-.BR abs ,
+-.BR acos ,
+-.B atan
+-(one argument),
+-.BR cos ,
+-.BR cosh ,
+-.BR erf ,
+-.BR erfc ,
+-.BR exp ,
+-.BR gamma ,
+-.BR int ,
+-.BR log ,
+-.BR log10 ,
+-.BR sin ,
+-.BR sinh ,
+-.BR sqrt ,
+-.BR tan ,
+-and
+-.BR tanh .
+-The function
+-.B read(x)
+-reads a value into the variable
+-.BR x ;
+-the statement
+-.B print
+-prints a list of expressions that may include
+-string constants such as
+-.B \&\&\&"hello\en".
+-.PP
+-Control flow statements are
+-.BR if - else ,
+-.BR while ,
+-and
+-.BR for ,
+-with braces for grouping.
+-Newline ends a statement.
+-Backslash-newline is equivalent to a space.
+-.PP
+-Functions and procedures are introduced by the words
+-.B func
+-and
+-.BR proc ;
+-.B return
+-is used to return with a value from a function.
+-Within a function or procedure,
+-arguments are referred to as
+-.BR $1 ,
+-.BR $2 ,
+-etc.; all other variables are global.
+-.SH EXAMPLES
+-.EX
+-func gcd() {
+-	temp = abs($1) % abs($2)
+-	if(temp == 0) return abs($2)
+-	return gcd($2, temp)
+-}
+-for(i=1; i<12; i++) print gcd(i,12)
+-.EE
+-.SH "SEE ALSO"
+-.IR bc (1),
+-.IR dc (1)
+-.br
+-B. W. Kernighan and R. Pike,
+-.I
+-The Unix Programming Environment,
+-Prentice-Hall, 1984
+-.SH BUGS
+-.br
+-All components of a 
+-.B for
+-statement must be non-empty.
+-.br
+-Error recovery is imperfect within function and procedure definitions.
+-.br
+-The treatment of newlines is not exactly user-friendly.
+-.br
+-Functions and procedures typically have to be declared
+-before use, which makes mutual recursion a bit impossible.
+-.br
+-Arguments $1, etc., are not really variables and thus won't work
+-in constructs like, for instance, $1++.
+//GO.SYSIN DD hoc.1
+echo hoc.h 1>&2
+sed 's/.//' >hoc.h <<'//GO.SYSIN DD hoc.h'
+-typedef void (*Inst)(void);
+-#define	STOP	(Inst) 0
+-
+-typedef struct Symbol {	/* symbol table entry */
+-	char	*name;
+-	long	type;
+-	union {
+-		double	val;		/* VAR */
+-		double	(*ptr)(double);	/* BLTIN */
+-		Inst	*defn;		/* FUNCTION, PROCEDURE */
+-		char	*str;		/* STRING */
+-	} u;
+-	struct Symbol	*next;	/* to link to another */
+-} Symbol;
+-Symbol	*install(char*, int, double), *lookup(char*);
+-
+-typedef union Datum {	/* interpreter stack type */
+-	double	val;
+-	Symbol	*sym;
+-} Datum;
+-extern	double Fgetd(int);
+-extern	int moreinput(void);
+-extern	void execerror(char*, char*);
+-extern	void define(Symbol*), verify(Symbol*);
+-extern	Datum pop(void);
+-extern	void initcode(void), push(Datum), xpop(void), constpush(void);
+-extern	void varpush(void);
+-extern	void eval(void), add(void), sub(void), mul(void), divop(void), mod(void);
+-extern	void negate(void), power(void);
+-extern	void addeq(void), subeq(void), muleq(void), diveq(void), modeq(void);
+-
+-extern	Inst *progp, *progbase, prog[], *code(Inst);
+-extern	void assign(void), bltin(void), varread(void);
+-extern	void prexpr(void), prstr(void);
+-extern	void gt(void), lt(void), eq(void), ge(void), le(void), ne(void);
+-extern	void and(void), or(void), not(void);
+-extern	void ifcode(void), whilecode(void), forcode(void);
+-extern	void call(void), arg(void), argassign(void);
+-extern	void funcret(void), procret(void);
+-extern	void preinc(void), predec(void), postinc(void), postdec(void);
+-extern	void argaddeq(void), argsubeq(void), argmuleq(void);
+-extern	void argdiveq(void), argmodeq(void);
+-extern	void execute(Inst*);
+-extern	void printtop(void);
+-
+-extern double	Log(double), Log10(double), Gamma(double), Sqrt(double), Exp(double);
+-extern double	Asin(double), Acos(double), Sinh(double), Cosh(double), integer(double);
+-extern double	Pow(double, double);
+-
+-extern	void init(void);
+-extern	int yyparse(void);
+-extern	void execerror(char*, char*);
+-extern	void *emalloc(unsigned);
+-
+-extern	void defnonly(char *);
+-extern	void warning(char *s, char *t);
+//GO.SYSIN DD hoc.h
+echo hoc.y 1>&2
+sed 's/.//' >hoc.y <<'//GO.SYSIN DD hoc.y'
+-%{
+-#include <string.h>
+-#include "hoc.h"
+-#define	code2(c1,c2)	code(c1); code(c2)
+-#define	code3(c1,c2,c3)	code(c1); code(c2); code(c3)
+-%}
+-%union {
+-	Symbol	*sym;	/* symbol table pointer */
+-	Inst	*inst;	/* machine instruction */
+-	int	narg;	/* number of arguments */
+-}
+-%token	<sym>	NUMBER STRING PRINT VAR BLTIN UNDEF WHILE FOR IF ELSE
+-%token	<sym>	FUNCTION PROCEDURE RETURN FUNC PROC READ
+-%token	<narg>	ARG
+-%type	<inst>	expr stmt asgn prlist stmtlist
+-%type	<inst>	cond while for if begin end 
+-%type	<sym>	procname
+-%type	<narg>	arglist
+-%right	'=' ADDEQ SUBEQ MULEQ DIVEQ MODEQ
+-%left	OR
+-%left	AND
+-%left	GT GE LT LE EQ NE
+-%left	'+' '-'
+-%left	'*' '/' '%'
+-%left	UNARYMINUS NOT INC DEC
+-%right	'^'
+-%%
+-list:	  /* nothing */
+-	| list '\n'
+-	| list defn '\n'
+-	| list asgn '\n'  { code2(xpop, STOP); return 1; }
+-	| list stmt '\n'  { code(STOP); return 1; } 
+-	| list expr '\n'  { code2(printtop, STOP); return 1; }
+-	| list error '\n' { yyerrok; }
+-	;
+-asgn:	  VAR '=' expr { code3(varpush,(Inst)$1,assign); $$=$3; }
+-	| VAR ADDEQ expr	{ code3(varpush,(Inst)$1,addeq); $$=$3; }
+-	| VAR SUBEQ expr	{ code3(varpush,(Inst)$1,subeq); $$=$3; }
+-	| VAR MULEQ expr	{ code3(varpush,(Inst)$1,muleq); $$=$3; }
+-	| VAR DIVEQ expr	{ code3(varpush,(Inst)$1,diveq); $$=$3; }
+-	| VAR MODEQ expr	{ code3(varpush,(Inst)$1,modeq); $$=$3; }
+-	| ARG '=' expr   { defnonly("$"); code2(argassign,(Inst)$1); $$=$3;}
+-	| ARG ADDEQ expr { defnonly("$"); code2(argaddeq,(Inst)$1); $$=$3;}
+-	| ARG SUBEQ expr { defnonly("$"); code2(argsubeq,(Inst)$1); $$=$3;}
+-	| ARG MULEQ expr { defnonly("$"); code2(argmuleq,(Inst)$1); $$=$3;}
+-	| ARG DIVEQ expr { defnonly("$"); code2(argdiveq,(Inst)$1); $$=$3;}
+-	| ARG MODEQ expr { defnonly("$"); code2(argmodeq,(Inst)$1); $$=$3;}
+-	;
+-stmt:	  expr	{ code(xpop); }
+-	| RETURN { defnonly("return"); code(procret); }
+-	| RETURN expr
+-	        { defnonly("return"); $$=$2; code(funcret); }
+-	| PROCEDURE begin '(' arglist ')'
+-		{ $$ = $2; code3(call, (Inst)$1, (Inst)$4); }
+-	| PRINT prlist	{ $$ = $2; }
+-	| while '(' cond ')' stmt end {
+-		($1)[1] = (Inst)$5;	/* body of loop */
+-		($1)[2] = (Inst)$6; }	/* end, if cond fails */
+-	| for '(' cond ';' cond ';' cond ')' stmt end {
+-		($1)[1] = (Inst)$5;	/* condition */
+-		($1)[2] = (Inst)$7;	/* post loop */
+-		($1)[3] = (Inst)$9;	/* body of loop */
+-		($1)[4] = (Inst)$10; }	/* end, if cond fails */
+-	| if '(' cond ')' stmt end {	/* else-less if */
+-		($1)[1] = (Inst)$5;	/* thenpart */
+-		($1)[3] = (Inst)$6; }	/* end, if cond fails */
+-	| if '(' cond ')' stmt end ELSE stmt end {	/* if with else */
+-		($1)[1] = (Inst)$5;	/* thenpart */
+-		($1)[2] = (Inst)$8;	/* elsepart */
+-		($1)[3] = (Inst)$9; }	/* end, if cond fails */
+-	| '{' stmtlist '}'	{ $$ = $2; }
+-	;
+-cond:	   expr 	{ code(STOP); }
+-	;
+-while:	  WHILE	{ $$ = code3(whilecode,STOP,STOP); }
+-	;
+-for:	  FOR	{ $$ = code(forcode); code3(STOP,STOP,STOP); code(STOP); }
+-	;
+-if:	  IF	{ $$ = code(ifcode); code3(STOP,STOP,STOP); }
+-	;
+-begin:	  /* nothing */		{ $$ = progp; }
+-	;
+-end:	  /* nothing */		{ code(STOP); $$ = progp; }
+-	;
+-stmtlist: /* nothing */		{ $$ = progp; }
+-	| stmtlist '\n'
+-	| stmtlist stmt
+-	;
+-expr:	  NUMBER { $$ = code2(constpush, (Inst)$1); }
+-	| VAR	 { $$ = code3(varpush, (Inst)$1, eval); }
+-	| ARG	 { defnonly("$"); $$ = code2(arg, (Inst)$1); }
+-	| asgn
+-	| FUNCTION begin '(' arglist ')'
+-		{ $$ = $2; code3(call,(Inst)$1,(Inst)$4); }
+-	| READ '(' VAR ')' { $$ = code2(varread, (Inst)$3); }
+-	| BLTIN '(' expr ')' { $$=$3; code2(bltin, (Inst)$1->u.ptr); }
+-	| '(' expr ')'	{ $$ = $2; }
+-	| expr '+' expr	{ code(add); }
+-	| expr '-' expr	{ code(sub); }
+-	| expr '*' expr	{ code(mul); }
+-	| expr '/' expr	{ code(divop); }	/* ansi has a div fcn! */
+-	| expr '%' expr	{ code(mod); }
+-	| expr '^' expr	{ code (power); }
+-	| '-' expr   %prec UNARYMINUS   { $$=$2; code(negate); }
+-	| expr GT expr	{ code(gt); }
+-	| expr GE expr	{ code(ge); }
+-	| expr LT expr	{ code(lt); }
+-	| expr LE expr	{ code(le); }
+-	| expr EQ expr	{ code(eq); }
+-	| expr NE expr	{ code(ne); }
+-	| expr AND expr	{ code(and); }
+-	| expr OR expr	{ code(or); }
+-	| NOT expr	{ $$ = $2; code(not); }
+-	| INC VAR	{ $$ = code2(preinc,(Inst)$2); }
+-	| DEC VAR	{ $$ = code2(predec,(Inst)$2); }
+-	| VAR INC	{ $$ = code2(postinc,(Inst)$1); }
+-	| VAR DEC	{ $$ = code2(postdec,(Inst)$1); }
+-	;
+-prlist:	  expr			{ code(prexpr); }
+-	| STRING		{ $$ = code2(prstr, (Inst)$1); }
+-	| prlist ',' expr	{ code(prexpr); }
+-	| prlist ',' STRING	{ code2(prstr, (Inst)$3); }
+-	;
+-defn:	  FUNC procname { $2->type=FUNCTION; indef=1; }
+-	    '(' ')' stmt { code(procret); define($2); indef=0; }
+-	| PROC procname { $2->type=PROCEDURE; indef=1; }
+-	    '(' ')' stmt { code(procret); define($2); indef=0; }
+-	;
+-procname: VAR
+-	| FUNCTION
+-	| PROCEDURE
+-	;
+-arglist:  /* nothing */ 	{ $$ = 0; }
+-	| expr			{ $$ = 1; }
+-	| arglist ',' expr	{ $$ = $1 + 1; }
+-	;
+-%%
+-	/* end of grammar */
+-#include <stdio.h>
+-#include <ctype.h>
+-char	*progname;
+-int	lineno = 1;
+-#include <signal.h>
+-#include <setjmp.h>
+-#include <errno.h>
+-jmp_buf	begin;
+-int	indef;
+-char	*infile;	/* input file name */
+-FILE	*fin;		/* input file pointer */
+-char	**gargv;	/* global argument list */
+-extern	errno;
+-int	gargc;
+-
+-int c = '\n';	/* global for use by warning() */
+-
+-int	backslash(int), follow(int, int, int);
+-void	defnonly(char*), run(void);
+-void	warning(char*, char*);
+-
+-yylex(void)		/* hoc6 */
+-{
+-	while ((c=getc(fin)) == ' ' || c == '\t')
+-		;
+-	if (c == EOF)
+-		return 0;
+-	if (c == '\\') {
+-		c = getc(fin);
+-		if (c == '\n') {
+-			lineno++;
+-			return yylex();
+-		}
+-	}
+-	if (c == '#') {		/* comment */
+-		while ((c=getc(fin)) != '\n' && c != EOF)
+-			;
+-		if (c == '\n')
+-			lineno++;
+-		return c;
+-	}
+-	if (c == '.' || isdigit(c)) {	/* number */
+-		double d;
+-		ungetc(c, fin);
+-		fscanf(fin, "%lf", &d);
+-		yylval.sym = install("", NUMBER, d);
+-		return NUMBER;
+-	}
+-	if (isalpha(c) || c == '_') {
+-		Symbol *s;
+-		char sbuf[100], *p = sbuf;
+-		do {
+-			if (p >= sbuf + sizeof(sbuf) - 1) {
+-				*p = '\0';
+-				execerror("name too long", sbuf);
+-			}
+-			*p++ = c;
+-		} while ((c=getc(fin)) != EOF && (isalnum(c) || c == '_'));
+-		ungetc(c, fin);
+-		*p = '\0';
+-		if ((s=lookup(sbuf)) == 0)
+-			s = install(sbuf, UNDEF, 0.0);
+-		yylval.sym = s;
+-		return s->type == UNDEF ? VAR : s->type;
+-	}
+-	if (c == '$') {	/* argument? */
+-		int n = 0;
+-		while (isdigit(c=getc(fin)))
+-			n = 10 * n + c - '0';
+-		ungetc(c, fin);
+-		if (n == 0)
+-			execerror("strange $...", (char *)0);
+-		yylval.narg = n;
+-		return ARG;
+-	}
+-	if (c == '"') {	/* quoted string */
+-		char sbuf[100], *p;
+-		for (p = sbuf; (c=getc(fin)) != '"'; p++) {
+-			if (c == '\n' || c == EOF)
+-				execerror("missing quote", "");
+-			if (p >= sbuf + sizeof(sbuf) - 1) {
+-				*p = '\0';
+-				execerror("string too long", sbuf);
+-			}
+-			*p = backslash(c);
+-		}
+-		*p = 0;
+-		yylval.sym = (Symbol *)emalloc(strlen(sbuf)+1);
+-		strcpy((char*)yylval.sym, sbuf);
+-		return STRING;
+-	}
+-	switch (c) {
+-	case '+':	return follow('+', INC, follow('=', ADDEQ, '+'));
+-	case '-':	return follow('-', DEC, follow('=', SUBEQ, '-'));
+-	case '*':	return follow('=', MULEQ, '*');
+-	case '/':	return follow('=', DIVEQ, '/');
+-	case '%':	return follow('=', MODEQ, '%');
+-	case '>':	return follow('=', GE, GT);
+-	case '<':	return follow('=', LE, LT);
+-	case '=':	return follow('=', EQ, '=');
+-	case '!':	return follow('=', NE, NOT);
+-	case '|':	return follow('|', OR, '|');
+-	case '&':	return follow('&', AND, '&');
+-	case '\n':	lineno++; return '\n';
+-	default:	return c;
+-	}
+-}
+-
+-backslash(int c)	/* get next char with \'s interpreted */
+-{
+-	static char transtab[] = "b\bf\fn\nr\rt\t";
+-	if (c != '\\')
+-		return c;
+-	c = getc(fin);
+-	if (islower(c) && strchr(transtab, c))
+-		return strchr(transtab, c)[1];
+-	return c;
+-}
+-
+-follow(int expect, int ifyes, int ifno)	/* look ahead for >=, etc. */
+-{
+-	int c = getc(fin);
+-
+-	if (c == expect)
+-		return ifyes;
+-	ungetc(c, fin);
+-	return ifno;
+-}
+-
+-void
+-yyerror(char* s)	/* report compile-time error */
+-{
+-/*rob
+-	warning(s, (char *)0);
+-	longjmp(begin, 0);
+-rob*/
+-	execerror(s, (char *)0);
+-}
+-
+-void
+-execerror(char* s, char* t)	/* recover from run-time error */
+-{
+-	warning(s, t);
+-	fseek(fin, 0L, 2);		/* flush rest of file */
+-	longjmp(begin, 0);
+-}
+-
+-void
+-fpecatch(void)	/* catch floating point exceptions */
+-{
+-	execerror("floating point exception", (char *) 0);
+-}
+-
+-void
+-intcatch(void)	/* catch interrupts */
+-{
+-	execerror("interrupt", (char *) 0);
+-}
+-
+-void
+-run(void)	/* execute until EOF */
+-{
+-	setjmp(begin);
+-	signal(SIGINT, intcatch);
+-	signal(SIGFPE, fpecatch);
+-	for (initcode(); yyparse(); initcode())
+-		execute(progbase);
+-}
+-
+-int
+-main(int argc, char* argv[])	/* hoc6 */
+-{
+-	static int first = 1;
+-#ifdef YYDEBUG
+-	extern int yydebug;
+-	yydebug=3;
+-#endif
+-	progname = argv[0];
+-	init();
+-	if (argc == 1) {	/* fake an argument list */
+-		static char *stdinonly[] = { "-" };
+-
+-		gargv = stdinonly;
+-		gargc = 1;
+-	} else if (first) {	/* for interrupts */
+-		first = 0;
+-		gargv = argv+1;
+-		gargc = argc-1;
+-	}
+-	while (moreinput())
+-		run();
+-	signal(SIGINT, SIG_IGN);
+-	return 0;
+-}
+-
+-moreinput(void)
+-{
+-	if (gargc-- <= 0)
+-		return 0;
+-	if (fin && fin != stdin)
+-		fclose(fin);
+-	infile = *gargv++;
+-	lineno = 1;
+-	if (strcmp(infile, "-") == 0) {
+-		fin = stdin;
+-		infile = 0;
+-	} else if ((fin=fopen(infile, "r")) == NULL) {
+-		fprintf(stderr, "%s: can't open %s\n", progname, infile);
+-		return moreinput();
+-	}
+-	return 1;
+-}
+-
+-void
+-warning(char *s, char *t)	/* print warning message */
+-{
+-	fprintf(stderr, "%s: %s", progname, s);
+-	if (t)
+-		fprintf(stderr, " %s", t);
+-	if (infile)
+-		fprintf(stderr, " in %s", infile);
+-	fprintf(stderr, " near line %d\n", lineno);
+-	while (c != '\n' && c != EOF)
+-		if((c = getc(fin)) == '\n')	/* flush rest of input line */
+-			lineno++;
+-		else if (c == EOF && errno == EINTR) {
+-			clearerr(stdin);	/* ick! */
+-			errno = 0;
+-		}
+-}
+-
+-void
+-defnonly(char *s)	/* warn if illegal definition */
+-{
+-	if (!indef)
+-		execerror(s, "used outside definition");
+-}
+//GO.SYSIN DD hoc.y
+echo init.c 1>&2
+sed 's/.//' >init.c <<'//GO.SYSIN DD init.c'
+-#include "hoc.h"
+-#include "y.tab.h"
+-#include <math.h>
+-
+-static struct {		/* Keywords */
+-	char	*name;
+-	int	kval;
+-} keywords[] = {
+-	"proc",		PROC,
+-	"func",		FUNC,
+-	"return",	RETURN,
+-	"if",		IF,
+-	"else",		ELSE,
+-	"while",	WHILE,
+-	"for",		FOR,
+-	"print",	PRINT,
+-	"read",		READ,
+-	0,		0,
+-};
+-
+-static struct {		/* Constants */
+-	char *name;
+-	double cval;
+-} consts[] = {
+-	"PI",	 3.14159265358979323846,
+-	"E",	 2.71828182845904523536,
+-	"GAMMA", 0.57721566490153286060,  /* Euler */
+-	"DEG",	57.29577951308232087680,  /* deg/radian */
+-	"PHI",   1.61803398874989484820,  /* golden ratio */
+-	"PREC",	15,	/* output precision */
+-	0,	 0
+-};
+-
+-static struct {		/* Built-ins */
+-	char *name;
+-	double	(*func)(double);
+-} builtins[] = {
+-	"sin",	sin,
+-	"cos",	cos,
+-	"tan",	tan,
+-	"atan",	atan,
+-	"asin",	Asin,	/* checks range */
+-	"acos", Acos,	/* checks range */
+-	"sinh",	Sinh,	/* checks range */
+-	"cosh",	Cosh,	/* checks range */
+-	"tanh",	tanh,
+-	"log",	Log,	/* checks range */
+-	"log10", Log10,	/* checks range */
+-	"exp",	Exp,	/* checks range */
+-	"sqrt",	Sqrt,	/* checks range */
+-	"gamma", Gamma,	/* checks range */
+-	"int",	integer,
+-	"abs",	fabs,
+-	"erf",	erf,
+-	"erfc",	erfc,
+-	0,	0
+-};
+-
+-void
+-init(void)	/* install constants and built-ins in table */
+-{
+-	int i;
+-	Symbol *s;
+-	for (i = 0; keywords[i].name; i++)
+-		install(keywords[i].name, keywords[i].kval, 0.0);
+-	for (i = 0; consts[i].name; i++)
+-		install(consts[i].name, VAR, consts[i].cval);
+-	for (i = 0; builtins[i].name; i++) {
+-		s = install(builtins[i].name, BLTIN, 0.0);
+-		s->u.ptr = builtins[i].func;
+-	}
+-}
+//GO.SYSIN DD init.c
+echo makefile 1>&2
+sed 's/.//' >makefile <<'//GO.SYSIN DD makefile'
+-YFLAGS = -d
+-CFLAGS = -g
+-
+-SRC = hoc.y hoc.h code.c init.c math.c symbol.c
+-OBJS = hoc.o code.o init.o math.o symbol.o
+-
+-hoc:	$(OBJS)
+-	$(CC) $(CFLAGS) $(OBJS) -lstdio -lm -o hoc
+-
+-hoc.o code.o init.o symbol.o:	hoc.h
+-
+-code.o init.o symbol.o:	x.tab.h
+-
+-x.tab.h:	y.tab.h
+-	-cmp -s x.tab.h y.tab.h || cp y.tab.h x.tab.h
+-
+-pr:	$(SRC)
+-	@prcan $?
+-	@touch pr
+-
+-install:	hoc
+-	cp hoc /usr/bin
+-	strip /usr/bin/hoc
+-
+-clean:
+-	rm -f $(OBJS) [xy].tab.[ch]  hoc
+-
+-bundle:
+-	@bundle $(SRC) makefile README
+//GO.SYSIN DD makefile
+echo math.c 1>&2
+sed 's/.//' >math.c <<'//GO.SYSIN DD math.c'
+-#include <math.h>
+-#include <errno.h>
+-extern	int	errno;
+-double	errcheck();
+-
+-#include "hoc.h"
+-
+-double	errcheck(double, char*);
+-
+-double
+-Log(double x)
+-{
+-	return errcheck(log(x), "log");
+-}
+-double
+-Log10(double x)
+-{
+-	return errcheck(log10(x), "log10");
+-}
+-
+-double
+-Sqrt(double x)
+-{
+-	return errcheck(sqrt(x), "sqrt");
+-}
+-
+-double
+-Gamma(double x)
+-{
+-	double y;
+-	extern int signgam;
+-	y=errcheck(gamma(x), "gamma");
+-	if(y>88.0)
+-		execerror("gamma result out of range", (char *)0);
+-	return signgam*exp(y);
+-}
+-
+-double
+-Exp(double x)
+-{
+-	return errcheck(exp(x), "exp");
+-}
+-
+-double
+-Asin(double x)
+-{
+-	return errcheck(asin(x), "asin");
+-}
+-
+-double
+-Acos(double x)
+-{
+-	return errcheck(acos(x), "acos");
+-}
+-
+-double
+-Sinh(double x)
+-{
+-	return errcheck(sinh(x), "sinh");
+-}
+-double
+-Cosh(double x)
+-{
+-	return errcheck(cosh(x), "cosh");
+-}
+-double
+-Pow(double x, double y)
+-{
+-	return errcheck(pow(x,y), "exponentiation");
+-}
+-
+-double
+-integer(double x)
+-{
+-	return (double)(long)x;
+-}
+-
+-double
+-errcheck(double d, char* s)	/* check result of library call */
+-{
+-	if (errno == EDOM) {
+-		errno = 0;
+-		execerror(s, "argument out of domain");
+-	} else if (errno == ERANGE) {
+-		errno = 0;
+-		execerror(s, "result out of range");
+-	}
+-	return d;
+-}
+//GO.SYSIN DD math.c
+echo symbol.c 1>&2
+sed 's/.//' >symbol.c <<'//GO.SYSIN DD symbol.c'
+-#include <stdlib.h>
+-#include "hoc.h"
+-#include "y.tab.h"
+-
+-static Symbol *symlist = 0;  /* symbol table: linked list */
+-
+-Symbol*
+-lookup(char* s)	/* find s in symbol table */
+-{
+-	Symbol *sp;
+-
+-	for (sp = symlist; sp != (Symbol *) 0; sp = sp->next)
+-		if (strcmp(sp->name, s) == 0)
+-			return sp;
+-	return 0;	/* 0 ==> not found */	
+-}
+-
+-Symbol*
+-install(char* s, int t, double d)  /* install s in symbol table */
+-{
+-	Symbol *sp;
+-
+-	sp = emalloc(sizeof(Symbol));
+-	sp->name = emalloc(strlen(s)+1); /* +1 for '\0' */
+-	strcpy(sp->name, s);
+-	sp->type = t;
+-	sp->u.val = d;
+-	sp->next = symlist; /* put at front of list */
+-	symlist = sp;
+-	return sp;
+-}
+-
+-void*
+-emalloc(unsigned n)	/* check return from malloc */
+-{
+-	char *p;
+-
+-	p = malloc(n);
+-	if (p == 0)
+-		execerror("out of memory", (char *) 0);
+-	return p;
+-}
+//GO.SYSIN DD symbol.c
+echo tests.a 1>&2
+sed 's/.//' >tests.a <<'//GO.SYSIN DD tests.a'
+-!<arch>
+-ack             437774800   9     1     100666  161       `
+-func ack() {
+-	n = n+1
+-	if($1 == 0) return ($2+1)
+-	if($2 == 0) 	 return (ack($1 - 1, 1))
+-	return (ack($1 - 1, ack($1, $2 - 1)))
+-}
+-n=0
+-ack(3,3)
+-print n, "calls\n"
+-
+-ack1            437774800   9     1     100666  197       `
+-func ack() {
+-	n = n+1
+-	if($1 == 0) return ($2+1)
+-	if($2 == 0) 	 return (ack($1 - 1, 1))
+-	return (ack($1 - 1, ack($1, $2 - 1)))
+-}
+-n=0
+-while (read(x)) {
+-	read(y)
+-	print ack(x,y), "\n"
+-}
+-print n,"\n"
+-
+-double          437774801   9     1     100666  89        `
+-proc double(){
+-}
+-proc double(){
+-	if($1 > 1){
+-		double($1/2)
+-	}
+-	print($1)
+-}
+-double(1024)
+-
+-fac             437774801   9     1     100666  65        `
+-func fac() {
+-	if ($1 <= 0) return 1 else return $1 * fac($1-1)
+-}
+-
+-fac1            437774801   9     1     100666  82        `
+-func fac() if ($1 <= 0) return 1 else return $1 * fac($1-1)
+-fac(0)
+-fac(7)
+-fac(10)
+-fac2            437774802   9     1     100666  142       `
+-func fac() {
+-	if ($1 <= 0) {
+-		return 1
+-	}
+-	return $1 * fac($1-1)
+-}
+-i=0
+-while(i<=20){
+-	print "factorial of ", i, "is ", fac(i), "\n"
+-	i=i+1
+-}
+-fib             437774802   9     1     100666  98        `
+-proc fib() {
+-	a = 0
+-	b = 1
+-	while (b < $1) {
+-		print b
+-		c = b
+-		b = a+b
+-		a = c
+-	}
+-	print "\n"
+-}
+-fib2            437774802   9     1     100666  80        `
+-{
+-n=0
+-a=0
+-b=1
+-while(b<10000000){
+-	n=n+1
+-	c=b
+-	b=a+b
+-	a=c
+-	print(b)
+-}
+-print(n)
+-}
+-fibsum          437774802   9     1     100666  144       `
+-proc fib(){
+-	a=1
+-	b=1
+-	c=2
+-	d=3
+-	sum = a+b+c+d
+-	while(d<$1){
+-		e=d+c
+-		print(e)
+-		a=b
+-		b=c
+-		c=d
+-		d=e
+-		sum=sum+e
+-	}
+-	print(sum)
+-}
+-
+-fib(1000)
+-fibtest         437774802   9     1     100666  126       `
+-proc fib() {
+-	a = 0
+-	b = 1
+-	while (b < $1) {
+-		c = b
+-		b = a+b
+-		a = c
+-	}
+-}
+-
+-i = 1
+-while (i < 1000) {
+-	fib(1000)
+-	i = i + 1
+-}
+//GO.SYSIN DD tests.a

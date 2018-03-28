@@ -1,0 +1,21 @@
+Art-Net is a DMX-over-Ethernet (UDP) protocol. While its general
+history involves class A 2.x.x.x IP addresses and the use of 
+broadcast on a dedicated Ethernet switch to discover devices, it
+is in more modern versions able to use DHCP to assign IP addresses
+and subnet masks to the devices. The upshot of this is that a DMX
+lighting fixture (etc) whose IP address is known can be controlled
+simply by sending UDP packets to it, whose payload encode the Art-
+Net header followed by the DMX channels.
+
+The use of DMX start-addresses (and universes) can be avoided in
+this setup because each light has its own IP address, (so the
+devices do not "share" the 512 DMX addresses- which is why the
+offset set by the start-address was historically used). 
+
+In summary the lights in Art-Net mode need only be plugged in,
+set to DHCP, their IP addresses determined, and then UDP packets
+sent (usually to the default Art-Net protocol) with the DMX settings
+specific to that device. The example script sets 16 elements on one
+fixture to individual RGB colors. Since there are 3 RGB bytes and
+16 elements, there are 48 total "data" bytes. The selection of the
+48-byte mode is hardcoded using the control interface on the lights.

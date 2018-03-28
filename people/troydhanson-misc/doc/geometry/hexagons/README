@@ -1,0 +1,13 @@
+This is a description of the geometry of hexagons, with sample
+code for drawing hexagons.`
+
+There is also a layout example that uses an input text file as
+meaningless source data. Its lines are packed into tpl buffer and
+ingested by the layout example. It generates a hashcode for
+each line, then uses the hashcodes to render a hexagon chain.
+
+usage: 
+
+hextile-layout/layout-text-file -i /input/file > /tmp/some.tpl
+draw-cairo/render-png -i /tmp/some.tpl -o /tmp/some.png
+eog /tmp/some.png

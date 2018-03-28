@@ -1,0 +1,70 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  msgqattrs.c
+ *  
+ *  creates a posix message queue requesting custom attributes,
+ *  and displays what attributes are taken into account and what
+ *  are not, while both creating and while setting at a later time.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 31/08/05.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+#include &lt;mqueue.h&gt;
+#include &lt;sys/stat.h&gt;
+</span><span class="ccom">/* exit() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span>
+
+<span class="cpdr">#define MSGQOBJ_NAME        "/fooasd1431"
+#define MAX_QMSG_SIZE       </span><span class="cval">30</span><span class="cpdr">
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    mqd_t myqueue;
+    <span class="ctyp">struct</span> mq_attr wanted_attrs, actual_attrs;
+    
+        
+    <span class="ccom">/* filling the attribute structure */</span>
+    wanted_attrs.mq_flags = <span class="cval">0</span>;                    <span class="ccom">/* no exceptional behavior (just O_NONBLOCK currently available)  */</span>
+    wanted_attrs.mq_maxmsg = <span class="cval">100</span>;                 <span class="ccom">/* room for at most 100 messages in the queue */</span>
+    wanted_attrs.mq_msgsize = MAX_QMSG_SIZE;      <span class="ccom">/* maximum size of a message */</span>
+    wanted_attrs.mq_curmsgs = <span class="cval">123</span>;                <span class="ccom">/* this (current number of messages) will be ignored */</span>
+    
+    <span class="ccom">/* mq_open() for creating a new queue (using default attributes) */</span>
+    myqueue = <span class="cfun">mq_open</span>(MSGQOBJ_NAME, O_RDWR | O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, &amp;wanted_attrs);
+    <span class="ctyp">if</span><span class="cfun"> </span>(myqueue == (mqd_t)-<span class="cval">1</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In mq_open()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="cfun">printf</span>(<span class="cstr">"Message queue created.\n"</span>);
+    
+    <span class="ccom">/* getting queue attributes after creation          --  mq_getattr()    */</span>
+    <span class="cfun">mq_getattr</span>(myqueue, &amp;actual_attrs);
+    <span class="cfun">printf</span>(<span class="cstr">"Attributes right after queue creation:\n\t- non blocking flag: %d\n\t- maximum number of messages: %ld\n\t- maximum size of a message: %ld\n\t- current number of messages: %ld\n"</span>, (actual_attrs.mq_flags == <span class="cval">0</span> ? <span class="cval">0</span> : <span class="cval">1</span>), actual_attrs.mq_maxmsg, actual_attrs.mq_msgsize, actual_attrs.mq_curmsgs);
+    
+    <span class="ccom">/* building the structure again for modifying the existent queue */</span>
+    wanted_attrs.mq_flags = O_NONBLOCK;
+    wanted_attrs.mq_maxmsg = <span class="cval">350</span>;               <span class="ccom">/* this will be ignored by mq_setattr() */</span>
+    wanted_attrs.mq_msgsize = MAX_QMSG_SIZE;    <span class="ccom">/* this will be ignored by mq_setattr() */</span>
+    wanted_attrs.mq_curmsgs = <span class="cval">123</span>;              <span class="ccom">/* this will be ignored by mq_setattr() */</span>
+    
+    <span class="ccom">/* trying to later set different attributes on the queue        --  mq_setattr()    */</span>
+    <span class="cfun">mq_setattr</span>(myqueue, &amp;wanted_attrs, <span class="ctyp">NULL</span>);
+    
+    <span class="ccom">/* getting queue attributes after creation */</span>
+    <span class="cfun">mq_getattr</span>(myqueue, &amp;actual_attrs);
+    <span class="cfun">printf</span>(<span class="cstr">"Attributes after setattr():\n\t- non blocking flag: %d\n\t- maximum number of messages: %ld\n\t- maximum size of a message: %ld\n\t- current number of messages: %ld\n"</span>, (actual_attrs.mq_flags == <span class="cval">0</span> ? <span class="cval">0</span> : <span class="cval">1</span>), actual_attrs.mq_maxmsg, actual_attrs.mq_msgsize, actual_attrs.mq_curmsgs);
+    
+    <span class="ccom">/* removing the queue from the system       --  mq_unlink() */</span>
+    <span class="cfun">mq_unlink</span>(MSGQOBJ_NAME);
+    
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+</div>

@@ -1,0 +1,12 @@
+#! /usr/bin/perl -wnl
+BEGIN {
+    $count=0;      # to suppress warnings
+}
+
+/^@/  and          # this symbol identifies incomplete lines
+    print "Line #$. is incomplete"  and
+        $count=$count + 1;
+
+END {
+    print "\n$count lines out of $. are incomplete";
+}

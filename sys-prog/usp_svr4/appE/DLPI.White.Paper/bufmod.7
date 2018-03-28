@@ -1,0 +1,236 @@
+.\" @(#)bufmod.7 1.8 92/04/03 SMI; new for 5.0
+'\"macro stdmacro
+.\" Copyright 1991 Sun Microsystems
+.TH bufmod 7 "9 Oct 1991"
+.SH NAME
+bufmod \- STREAMS Buffer Module
+.SH SYNOPSIS
+.LP
+.B ioctl(fd, I_PUSH, "bufmod");
+.SH DESCRIPTION
+.IX "bufmod" "" "\fLbufmod\fP \(em STREAMS Buffer module"
+.IX "STREAMS Buffer module" "" "STREAMS Buffer module \(em \fLbufmod\fP"
+.LP
+.B bufmod
+is a
+.SM STREAMS
+module that buffers incoming messages,
+reducing the number of system calls and associated
+overhead required to read and process them.
+Although designed to be used in conjunction with 
+.SM STREAMS\s0\(hybased
+networking device drivers,
+.B bufmod
+is a general\(hypurpose module and can be used anywhere
+.SM STREAMS
+input buffering is required.
+.SS "Read-side Behavior"
+.B bufmod
+collects incoming
+.SB M_DATA
+and
+.SB M_PROTO
+messages into
+.IR chunks ,
+passing each chunk upstream when either the chunk becomes full
+or the current read timeout expires.
+Additionally,
+.B bufmod
+is capable of
+truncating upstream messages to a fixed,
+programmable length,
+marking each received message with a timestamp,
+and reporting the number of messages dropped
+on the stream read\(hyside due to flow-control or lack of resources.
+When a messages arrives,
+it is processed in several steps.
+The following paragraphs discuss each step in turn.
+.LP
+Upon receiving a message from below,
+.B bufmod
+immediately timestamps it and saves the current time value
+for later insertion in the header described below.
+.LP
+Next,
+.B bufmod
+converts all leading
+.SB M_PROTO
+blocks in the message to
+.SB M_DATA
+blocks, altering only the message type field
+and leaving the contents alone.
+It then truncates the message to the current
+.IR "snapshot length" ,
+which is set with the 
+.SB SBIOCSSNAP
+ioctl described below.
+.LP
+Afterwards 
+.B bufmod
+prepends a header to the converted message.
+This fixed header is always prepended regardless
+of the current setting of the
+.BR snaplen ,
+.BR timeout ,
+or 
+.BR "chunk size" .
+This header is defined as follows.
+.RS
+.ft 3
+.nf
+struct sb_hdr {
+	u_int	sbh_origlen;
+	u_int	sbh_msglen;
+	u_int	sbh_totlen;
+	u_int	sbh_drops;
+	struct	timeval	sbh_timestamp;
+};
+.fi
+.ft 1
+.RE
+The first field of this header gives the original length in bytes
+of the message before truncation.
+The second field gives the length in bytes of the message after
+the truncation has been done.
+The third field gives the distance in bytes
+from the start of the truncated message in the current chunk
+(described below)
+to the start of the next message in the chunk;
+the value reflects any padding necessary to insure
+correct data alignment for the host machine
+and includes the length of the header itself.
+The fourth field reports the cumulative number of input messages
+that this instance of
+.B bufmod
+has dropped due to flow control
+or resource exhaustion.
+Note:  this accounts only for events occurring within
+.BR bufmod ,
+and does not count messages dropped at the network interface level
+or by upstream modules.
+The last field within the header contains
+the message arrival time expressed as a
+.BR "struct timeval" .
+.LP
+After preparing a message,
+.B bufmod
+attempts to add it to the end of the current chunk,
+using the chunk size and timeout values to govern the addition.
+The chunk size and timeout values are set and inspected
+using the
+.B ioctl(\|)
+calls described below.
+If adding the new message would make the current chunk grow
+larger than the chunk size,
+.B bufmod
+closes off the current chunk,
+passing it up to the next module in line,
+and starts a new chunk,
+seeding it with a zero-length message.
+If adding the message would still make
+the current chunk overflow,
+the module passes it upward in an over-size chunk of its own.
+Otherwise,
+the module concatenates the message to the end of the current chunk.
+.LP
+To ensure that messages do not languish forever
+in an accumulating chunk,
+.B bufmod
+maintains a read timeout.
+Whenever this timeout expires,
+the module closes off the current chunk
+and passes it upward if it contains
+at least one byte of data.
+Whenever the module passes a chunk upward,
+it restarts the timeout period.
+These two rules insure that
+.B bufmod
+minimizes the number of chunks it produces
+during periods of intense message activity
+and that it periodically disposes of all messages
+during slack intervals.
+.LP
+.B bufmod
+handles other message types as follows.
+Upon receiving an
+.SB M_FLUSH
+message specifying that the read queue be flushed,
+the module clears the currently accumulating chunk
+and passes the message on to the module or driver above.
+It passes all other messages through unaltered to its upper neighbor.
+.SS "Write-side Behavior"
+.B bufmod
+intercepts
+.SB M_IOCTL
+messages for the
+.IR ioctl s
+described below.
+The module passes all other messages through unaltered
+to its lower neighbor.
+.SH IOCTLS
+.B bufmod
+responds to the following
+.IR ioctl s.
+.TP 18
+.SB SBIOCSTIME
+Set the read timeout value to the value referred to by the
+.B "struct timeval"
+pointer given as argument.
+Setting the timeout value to zero
+has the side-effect of forcing the chunk size to zero as well,
+so that the module will pass all incoming messages upward
+immediately upon arrival.
+.TP
+.SB SBIOCGTIME
+Return the read timeout in the
+.B "struct timeval"
+pointed to by the argument.
+If the timeout has been cleared with the
+.SB SBIOCCTIME
+.IR ioctl ,
+return with an
+.SM ERANGE
+error.
+.TP
+.SB SBIOCCTIME
+Clear the read timeout,
+effectively setting its value to infinity.
+.TP
+.SB SBIOCSCHUNK
+Set the chunk size to the value referred to by the
+.I u_int
+pointer given as argument.
+.TP
+.SB SBIOCGCHUNK
+Return the chunk size in the
+.I u_int
+pointed to by the argument.
+.TP
+.SB SBIOCSSNAP
+Set the current snapshot length to the value
+given in the
+.I u_long
+pointed to by the
+.IR ioctl 's
+final argument.
+.B bufmod
+interprets a snapshot length value of zero as meaning infinity,
+so it will not alter the message.
+.br
+.ne 4
+.TP
+.SB SBIOCGSNAP
+Returns the current snapshot length
+for this device instance in the
+.I u_long
+pointed to by the
+.IR ioctl 's
+final argument.
+.LP
+.BR bufmod
+always sets the timestamp and drop count fields.
+.SH SEE ALSO
+.BR dlpi (7),
+.BR ie (7),
+.BR le (7),
+.BR pfmod (7)

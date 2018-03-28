@@ -1,0 +1,104 @@
+dm-scripts FAQ
+
+
+Q: I cannot get a script to work.
+----------------------------------
+
+A: This may be due to any of the following:
+
+1) The script lacks the executable bit. Make the script executable by typing: 
+
+   chmod +x <script>
+
+2) The script has been installed in a directory that is not included in your 
+   $PATH, or equivalent, variable. Add the location of the script to your 
+   $PATH variable by editing the personal or system wide initialization file 
+   executed at shell login. 
+
+   If you use Bash shell under Linux, the system wide file is normally located 
+   in /etc/profile and the personal file at root of your home directory and is
+   called .bash_profile
+
+3) The script has been installed in an environment that does not permit execution
+   of executable files. For example: the partition from which you are trying to
+   run the script has been mounted with "noexec" option. Check /etc/fstab to see
+   if this is the case. Type:
+   
+   man mount
+   
+   to learn about the mounting options.
+   
+4) The Unix/Linux standard notation for end-of-line uses the "LF" character.
+   Some other operating systems, including Windows, use "CR" and "LF". What 
+   frequently happens is that if the script has been viewed and saved under
+   Windows, the "LF" gets replaced with "CR LF" characters, which breaks the 
+   proper shell interpretation of the script.
+
+   The easiest solution is to simply download the compressed archive of all scripts
+   from http://www.comp.eonworks.com/scripts/scripts.html or:
+
+   tr -d '\015' < input_file > output_file 
+
+   which removes the "CR" from the file. 
+
+5) The location of the Bash executable is different from the shebang line in the
+   script. The shebang - the first line of the script - tells the kernel which 
+   program should interprate the script. If the Bash shell is not located at the
+   shebang, the script cannot be executed. To find out where your Bash shell
+   is located type:
+   
+   which bash
+   
+   If the output of this command is different from the shebang path, replace it
+   with the correct path to bash.
+
+6) The script may not work if the commands used in the script are not GNU. Command
+   behavior across Unixes can differ enough to break a script that was designed
+   to use a command of a particular Unix flavor. Installing GNU commands will fix 
+   the problem. If you use Linux, you have GNU commands.
+
+7) The script may not work due to improper usage. Invoke the script with the -h
+   flag to see the expected usage options and arguments.
+   
+8) The script may not work due to a bug - in the script or anything else that 
+   interacts with the script.
+
+
+
+
+Q: How do I make the <script> work recursively?
+-----------------------------------------------
+
+A: Use find with xargs. For example:
+
+   To convert all bmp files to jpg recursively, starting in current dir and using 
+   the "2jpg" script, type:
+
+   find . -type f -name \*.bmp | xargs 2jpg
+
+   To recursively unpack each zip archive in /home/user/zip to a directory of 
+   the same name as the zip archives prefix, using the "unpack2dir" script:
+   
+   
+   find /home/user/zip -type f -name \*.zip | xargs unapck2dir
+
+        
+
+
+Q: I have spaces in file names. What to do?
+-------------------------------------------
+
+1) Generally, if you are to use scripts that work on files, your life will be a lot 
+   easier if you avoid using spaces and wild card characters in your file names
+   (and any other odd character for that matter). Letters, numbers, and "_" are
+   100% safe to use for file names. In most cases the "subspace" script will work 
+   by replacing spaces with an "_" character.
+
+2) Use GNU find's -print0 and xargs -0 options. For example:
+
+    find . -type f -name \*.txt -print0 | xargs -0 <command>
+
+3) For more indepth information on how to remove spaces in filenames see this 
+   comp.unix.shell thread:
+   
+   http://groups.google.com/group/comp.unix.shell/browse_thread/thread/fe2e9f76127125c8/59ff60f5eee9b520

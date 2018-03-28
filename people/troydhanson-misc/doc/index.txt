@@ -1,0 +1,149 @@
+C Miscellany
+------------
+Troy D. Hanson <tdh@tkhanson.net>
+
+include::twitter.txt[]
+
+About
+~~~~~
+These are miscellaneous examples and basic techniques for C programmers on Linux.
+These are all placed in the public domain.  
+
+.How to use
+
+* you can browse the links below, or
+* download the repo: https://github.com/troydhanson/misc/archive/master.zip[misc-master.zip]
+* clone it with git: `git clone https://github.com/troydhanson/misc.git`
+
+Here's a link to https://github.com/troydhanson/misc[this repo's Github page]
+and to my http://troydhanson.github.io/[main page].
+
+// this defines an attribute called {t} used below
+:t: https://github.com/troydhanson/misc/tree/master/network/
+:f: http://troydhanson.github.com/misc/Unix_domain_sockets.html
+
+Networking and communications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}tcp/basic[tcp]    | TCP client and server in C 
+| {t}udp/basic[udp]    | UDP client and server in C
+| {t}dns[dns]          | how to do a DNS lookup in C 
+| {t}pcap/basic[pcap]  | using libpcap to capture packets in C 
+| {t}ifinfo[ifinfo]    | how to list network interfaces, IP addresses and MACs in C
+| {t}unixdomain[unixdomain]   | how to use UNIX domain sockets in C {f}[notes] 
+| {t}qcp[qcp]          | a utility to copy files across a network with no authentication 
+| {t}serial[serial]    | how to read the serial port in C and node.js
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/libc_kernel_etc/
+:s: https://github.com/troydhanson/uthash/blob/master/tests/hashscan.c
+
+C library, linker and kernel features
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}sigio[sigio]      | signal driven I/O in C
+| {t}asm[asm]          | how to call into x86 assembly in C
+| {t}inotify[inotify]  | how to get file events from the kernel in C
+| {s}[peek]            | peek into virtual memory of another process in C 
+| {t}pexit[pexit]      | how to get a signal when parent process exits in C
+| {t}dlsym[dlsym]      | how to read symbol tables of shared libraries in C
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/text_handling/
+:f: http://troydhanson.github.com/misc/lemon_notes.html
+
+Reading lines, reading files, parsing, and regular expression matching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}slurp[slurp]      | how to read a whole file in C 
+| {t}looper[looper]    | how to read a file line-by-line in C 
+| {t}pcre[pcre]        | how to use regular expressions in C
+| {t}lemon[lemon]      | how to use the Lemon parser generator in C, {f}[notes]
+| {t}unicode[unicode]  | Unicode handling in C, UTF conversion, etc
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/compression/
+:e: http://troydhanson.github.com/misc/Entropy.html
+:f: http://troydhanson.github.com/misc/bloom.html
+
+Compression and compressability
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}zlib[zlib]        | how to use zlib in C to gzip or gunzip 
+| {t}entropy[entropy]  | how to measure entropy in C, {e}[notes] 
+| {t}bloom[bloom]      | how to build a Bloom filter in C, {f}[notes]
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/server_tools/
+:i: http://troydhanson.github.io/misc/initscripts.html
+
+Server libs and utils
+~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}sized[sized]      | a utility to keep a directory under a certain size in C
+| {t}watch_copy[watch_copy]  | a utility to watch a directory and copy files from it
+| {t}init[init]        | initscripts samples for Linux and OS X. {i}[notes] 
+| {t}ts[timeseries]    | a library to keep a rolling time series in C 
+| {t}uuid[uuid]        | how to use libuuid to get universally unique identifiers
+| {t}tracker[tracker]  | a library to track top strings (URL's, etc) in a stream 
+| {t}tconf[tconf]      | library to read a key-value configuration file in C 
+| {t}controlport[controlport] | library to embed a control port into a C program
+| {t}mworkers[mworkers]| multi-process and multi-thread examples of managing workers in C
+| {t}rw_wrap[rw_wrap]  | macros to deal with partial writes and reads in C
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/terminal_io/
+
+Terminal I/O
+~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}ncurses[ncurses]  | how to use ncurses in C 
+| {t}readline[readline]| how to use readline in C 
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/av/
+
+DMX Lighting, Sound, etc
+~~~~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}dmx_lighting/ftdi[ftdi]        | how to use libftdi to drive a DMX controller 
+| {t}dmx_lighting/artnet[artnet]    | how to talk to an ArtNet DMX device using UDP
+| {t}sound[sound]                   | synthesizing sound (PCM) from sines, playing
+| {t}joystick[joystick]             | use SDL to read joystick axes and buttons in C 
+| {t}canvas/hexagons[hexagons]      | geometry of drawing hexagons (on HTML canvas)
+| {t}cairo[cairo]                   | a few basic examples of 2D drawing with Cairo
+|=================================================================================================================
+
+:t: https://github.com/troydhanson/misc/tree/master/scripts/
+:b: https://github.com/troydhanson/misc/blob/master/scripts/
+
+These aren't in C, but they qualify as miscellany:
+
+Shell functions & scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~
+[width="50%",cols="10^m,50",grid="none"]
+|=================================================================================================================
+| {t}fifor[fifor]       | trigger make from a vim keypress, among other uses. 
+| {b}anb[anb]           | list lines in file A missing in file B (anb is short for "a not b")
+| {b}bin2hex[bin2hex]   | read stdin, print as hex 
+| {b}hex2bin[hex2bin]   | take hex, emit as binary 
+| {b}fcut[fcut]         | print region of a file (given a byte position and length) 
+| {b}downsample[downsample] |  reduce a text file to x% of its lines (default 10%) 
+| {t}md5watch[md5watch] | list files changed since last run 
+| {b}mailpl[mailpl]     | send email with attachments in Perl
+| {t}remember[remember] | logs commands you want to remember
+| {b}setup[setup]       | configure my preferences for bash, etc
+|=================================================================================================================
+
+Other resources
+~~~~~~~~~~~~~~~
+My other tools and notes are listed on http://troydhanson.github.io/[my main GitHub page].
+
+// vim: set tw=80 wm=2 nowrap syntax=asciidoc: 

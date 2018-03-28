@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+Getopt::Long::Configure ("require_order");
+
+sub usage {
+  print STDERR "usage: $0 [-v] [-f <fifo>] <command> [<args>] [ \\; <command> ... ]\n";
+  exit -1;
+}
+
+our $fifo = "/tmp/fifo";
+our $verbose = 0;
+our $help = 0;
+usage unless GetOptions( "verbose+" => \$verbose,
+                         "fifo=s"   => \$fifo,
+                         "help"     => \$help);
+usage if $help;
+usage unless @ARGV;
+
+sub v {
+  return unless $verbose;
+  print for @_;
+}
+
+# split the argument list into one or more sublists split on ;
+my %cmds;
+my $i=0;
+for my $word (@ARGV) {
+  if ($word eq ';') { $i++; } 
+  else { push @{ $cmds{$i} }, $word; }
+}
+
+`mkfifo $fifo` unless -p $fifo;
+die unless -p $fifo;
+
+while (1) {
+  open FIFO, "<$fifo";
+  local $/;
+  v("$fifo: $_") for <FIFO>;
+  for my $i (sort {$a <=> $b} keys %cmds) {
+    v "running ", join(" ", @{ $cmds{$i} }), "\n";
+    system @{ $cmds{$i} };
+  }
+  print "-" x 80, "\n";
+}

@@ -1,0 +1,189 @@
+##############################################################################
+##   Example 16.9 (Recommended) from Chapter 16 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-9. Implementing a universal constructor and destructor
+#  Example 16-10. Using the universal constructor and destructor
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $product = Shimmer->new({ name=>'Shimmer', patent=>987654321 });
+
+package UNIVERSAL;
+use List::MoreUtils qw( uniq );
+ 
+# Return a list of the base classes of the class passed as an argument...
+sub _hierarchy_of {
+    my ($class, $reversed) = @_;
+ 
+    no strict 'refs';   # ...needed to make the '::ISA' look-ups run silent
+ 
+    # Start with the class, and its parents...
+    my @hierarchy = ( $class );
+    my @parents   = $reversed ? reverse @{$class . '::ISA'} 
+                  :                     @{$class . '::ISA'}
+                  ;
+ 
+    # For each parent, add it to the hierarchy and remember the grandparents...
+    while (defined (my $parent = shift @parents)) {
+        push @hierarchy, $parent;
+        push @parents, $reversed ? reverse @{$parent . '::ISA'} 
+                      :                    @{$parent . '::ISA'}
+                      ;
+    }
+ 
+    # Sort the (unique) classes most-basic first...
+    my @traversal_order = sort { $a->isa($b) ? -1
+                               : $b->isa($a) ? +1
+                               :                0
+                               } uniq @hierarchy;
+ 
+    # Return in appropriate traversal order...
+    return reverse @traversal_order if $reversed;
+    return @traversal_order;
+}
+ 
+use Memoize;
+memoize '_hierarchy_of';
+ 
+use Class::Std::Utils;
+ 
+# Universal constructor is shared by every class. It allocates their objects 
+# and coordinates their initializations...
+sub new {
+    my ($class, $arg_ref) = @_;
+ 
+    # Create an inside-out object of the desired class...
+    my $new_obj = bless anon_scalar(), $class;
+    my $new_obj_ident = ident($new_obj);
+ 
+    # Iterate all base classes, visiting the most basic classes first...
+    for my $base_class (_hierarchy_of($class, 'reversed')) {
+        no strict 'refs';   # ...needed for the '::BUILD' look-up
+ 
+        # If this particular base class defines a BUILD() method...
+        if (my $build_ref = *{$base_class.'::BUILD'}{CODE}) {
+            # Extract the correct set of initializers...
+            my %arg_set 
+                = extract_initializers_from($arg_ref, {class => $base_class} );
+ 
+            # Then call the class's BUILD() method...
+            $build_ref->($new_obj, $new_obj_ident, \%arg_set);
+        }
+    }
+ 
+    return $new_obj;
+}
+ 
+sub DESTROY {
+    my ($self) = @_;
+    my $ident = ident($self);
+ 
+    # Iterate all base classes, visiting the most derived classes first...
+    for my $base_class (_hierarchy_of(ref $self)) {
+        no strict 'refs';   # ...needed for the '::DEMOLISH' look-up
+ 
+        # If this particular base class defines a DEMOLISH() method...
+        if (my $demolish_ref = *{$base_class.'::DEMOLISH'}{CODE}) {
+            # Then call the class's DEMOLISH() method...
+            $demolish_ref->($self, $ident);
+        }
+    }
+ 
+    return;
+}
+
+
+
+package Wax::Floor;
+{
+    # Attributes...
+    my %name_of;
+    my %patent_of;
+ 
+    sub BUILD {
+        my ($self, $ident, $arg_ref) = @_;
+ 
+        $name_of{$ident}   = $arg_ref->{name};
+        $patent_of{$ident} = $arg_ref->{patent};
+ 
+        return;
+    }
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        warn __PACKAGE__, " cleaning up $name_of{ident $self}";
+        delete $name_of{$ident};
+        delete $patent_of{$ident};
+ 
+        return;
+    }
+}
+ 
+package Topping::Dessert;
+{
+    # Attributes...
+    my %name_of;
+    my %flavour_of;
+ 
+    sub BUILD {
+        my ($self, $ident, $arg_ref) = @_;
+        
+        $name_of{$ident}    = $arg_ref->{name};
+        $flavour_of{$ident} = $arg_ref->{flavour};
+ 
+        return;
+    }
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        warn __PACKAGE__, " cleaning up $name_of{ident $self}";
+        delete $name_of{$ident};
+        delete $flavour_of{$ident};
+ 
+        return;
+    }
+}
+
+
+
+package Shimmer;
+use base qw( Wax::Floor  Topping::Dessert );
+{
+    # Attributes...
+    my %name_of;
+    my %patent_of;
+ 
+    sub BUILD {
+        my ($class, $ident, $arg_ref) = @_;
+        
+        $name_of{$ident}    = $arg_ref->{name};
+        $patent_of{$ident} = $arg_ref->{patent};
+ 
+        return;
+    }
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        warn __PACKAGE__, " cleaning up $name_of{ident $self}";
+        delete $name_of{$ident};
+        delete $patent_of{$ident};
+ 
+        return;
+    }
+}
+

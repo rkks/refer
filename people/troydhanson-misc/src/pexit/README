@@ -1,0 +1,32 @@
+The purpose of this sample is all to show an application of
+
+  prctl(PR_SET_PDEATHSIG, <signum>);
+
+which signals the calling process when its parent process exits.
+
+Why is this useful? In some cases the parent can't reliably signal
+its children upon its own exit. This lets the child implement its 
+own monitoring of the parent's exit to reliably clean up or terminate
+if that's the desired behavior when the parent exits.
+
+To look at the usage of this, first run 
+
+  % ./parent1.sh &
+
+and then do "ps". Note the parent1.sh process and dwait and xargs
+are running. Now kill the parent1.sh process, run "ps" again and 
+notice that dwait and xargs are still running. In a non-interactive
+shell (the script) a termination of the parent is not passed down 
+to the child processes. (Manually kill dwait at this point).
+
+Now run
+
+  % ./parent2.sh &
+
+This time after you do "ps" and kill parent2.sh you will observe
+that dwait and xargs exited. The difference here in parent2.sh is
+that is runs "dwait" with the "-p" option. This makes dwait monitor
+its parent (using the prctl shown above), to get SIGHUP when the 
+parent exits. (Since dwait does not catch SIGHUP, it just terminates.
+This of course causes EOF on the pipe to xargs, so it terminates too).
+

@@ -1,0 +1,60 @@
+# Makefile
+
+
+main:
+	@echo "ModAnswering ..."
+	@( cd Modules/unix/ModAnswering && gmake -f Makefile.sun)
+	@echo ""
+	@echo "ModListDir ..."
+	@( cd Modules/unix/ModListDir  && gmake -f Makefile.sun)
+	@echo ""
+	@echo "ModFileReg ..."
+	@( cd Modules/unix/ModFileReg  && gmake -f Makefile.sun)
+	@echo ""
+	@echo "ModListener ..."
+	@( cd Modules/unix/ModListener  && gmake -f Makefile.sun)
+	@echo ""
+	@echo "ModNetwork ..."
+	@( cd Modules/unix/ModNetwork  && gmake -f Makefile.sun)
+	@echo ""
+	@echo "ModProtocol ..."
+	@( cd Modules/unix/ModProtocol  && gmake -f Makefile.sun)
+	@echo ""
+	@echo "tinyxml ..."
+	@( cd lib/tinyxml/ && gmake -f Makefile.sun)
+	@echo ""
+	@echo "Zia ..."
+	@gmake -f Makefile.sun
+	@rm -f config/config.xml
+	@cp config/config.xml.unix config/config.xml
+
+clean:
+	@echo "Cleaning ModAnswering ..."
+	@( cd Modules/unix/ModAnswering && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModListDir ..."
+	@( cd Modules/unix/ModListDir  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModListenerSSL ..."
+	@( cd Modules/unix/ModListenerSSL  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModNetworkSSL ..."
+	@( cd Modules/unix/ModNetworkSSL  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModFileReg ..."
+	@( cd Modules/unix/ModFileReg  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModListener ..."
+	@( cd Modules/unix/ModListener  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModNetwork ..."
+	@( cd Modules/unix/ModNetwork  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning ModProtocol ..."
+	@( cd Modules/unix/ModProtocol  && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning tinyxml ..."
+	@( cd lib/tinyxml/ && gmake -f Makefile.sun clean)
+	@echo ""
+	@echo "Cleaning Zia ..."
+	@gmake -f Makefile.sun clean

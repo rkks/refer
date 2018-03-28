@@ -1,0 +1,74 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="ps2txt"
+       HTML_="ps to text"
+    PURPOSE_="convert ps file to ascii text; write the converted file to disk"
+   SYNOPSIS_="$NAME_ [-vhlr] <file> [file...]"
+   REQUIRES_="standard GNU commands, ps2ascii"
+    VERSION_="1.0"
+       DATE_="2004-04-18; last update: 2005-03-03"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="text"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -r, remove input file after conversion
+     -v, verbose
+     -h, usage and options (help)
+     -l, see this script"
+exit 1
+}
+
+# arg check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# var initializing
+rmf=
+verbose=
+
+# option and argument handling
+while getopts vhlr options; do
+
+    case $options in
+        r) rmf=on ;;
+        v) verbose=on ;;
+        h) usage ;;
+        l) more $0 ;;
+       \?) echo invalid or missing argument, type $NAME_ -h for help; exit 1 ;;
+    esac
+
+done
+
+shift $(( $OPTIND - 1 ))
+
+# check if required command is in $PATH variable
+which ps2ascii &> /dev/null
+[[ $? != 0 ]] && { echo >&2 the required \"ps2ascii\" command is not in your PATH; exit 1; }
+
+# main
+for a in *.[pP][sS]; do
+
+        if [ -f ${a%.*}.txt ]; then
+            echo ${NAME_}: skipping: ${a%.*}.txt file already exist
+            continue
+        else
+            [[ $verbose ]] && echo "${NAME_}: converting: $a -> ${a%.*}.txt"
+            ps2ascii $a > ${a%.*}.txt
+            [[ $? == 0 ]] && stat=0 || stat=1
+            [[ $stat == 0 ]] && [[ $verbose ]] && [[ $rmf ]] && echo ${NAME_}: removing: $a
+            [[ $stat == 0 ]] && [[ $rmf ]] && rm -f -- $a
+        fi
+
+done

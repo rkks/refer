@@ -1,0 +1,37 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 19 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use List::Util qw( sum );
+
+# Create a subroutine whose value cycles from zero to five...
+{
+    my $next   = -1;
+    my @values = (0..5);
+ 
+    sub next_index { return $next = ($next+1) % @values }
+}
+ 
+# Read in monthly results...
+my @cyclic_buffer;
+while (my $next_val = prompt 'Next: ') {
+    # Saving them in a six-month cyclic buffer...
+    $cyclic_buffer[next_index()] = $next_val;
+ 
+    # And printing the moving average each month...
+    print 'Half-yearly moving average: ', 
+        sum(@cyclic_buffer)/@cyclic_buffer, "\n";
+}
+

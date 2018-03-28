@@ -1,0 +1,11 @@
+#! /usr/bin/perl -s -wnl
+# Usage: double_space [ -verbose ] [ file1 ... ]
+our ($verbose);  # makes switch optional
+BEGIN {
+    $verbose  and  print "Running in verbose mode\n";
+}
+print;           # print the current input record
+print "";        # print a blank line
+END {
+    $verbose  and  print "Processed $. lines\n";
+}

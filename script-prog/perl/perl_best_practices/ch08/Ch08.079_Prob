@@ -1,0 +1,23 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 8 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $last_seen      = 'cat';
+my $last_predicted = 'dog';
+
+my $upper_limit = $last_seen gt $last_predicted ? $last_seen : $last_predicted;
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $upper_limit ];

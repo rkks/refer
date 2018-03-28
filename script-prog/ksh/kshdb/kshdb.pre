@@ -1,0 +1,27 @@
+# kshdb preamble
+# prepended to shell script being debugged
+# arguments: 
+# $1 = name of original guinea-pig script
+# $2 = directory where temp files are stored
+# $3 = directory where kshdb.pre and kshdb.fns are stored
+
+_dbgfile=$0
+_guineapig=$1
+_tmpdir=$2
+_libdir=$3
+shift 3				# move user's args into place
+
+. $_libdir/kshdb.fns		# read in the debugging functions
+_linebp=
+_stringbp=
+let _trace=0			# initialize execution trace to off
+let _i=1			# read guinea-pig file into lines array
+while read -r _lines[$_i]; do
+    let _i=$_i+1
+done < $_guineapig
+
+trap _cleanup EXIT		# erase files before exiting
+let _steps=1			# no. of stmts to run after trap is set
+LINENO=-1
+trap '_steptrap $LINENO' DEBUG
+:

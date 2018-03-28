@@ -1,0 +1,37 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $MAX_ALLOWED_VALUE => 5;
+my $num = 7;
+
+croak( X::TooBig->new( {value=>$num, range=>[0,$MAX_ALLOWED_VALUE]} ) )
+    if $num > $MAX_ALLOWED_VALUE;
+
+
+package X::TooBig;
+
+sub new {
+    my ($class, $data) = @_;
+    bless $data, $class;
+}
+
+use overload (
+    q{""} => sub {
+        my ($self) = @_;
+        return "$self->{value} not in ($self->{range}[0]..$self->{range}[-1])";
+    },
+);
+

@@ -1,0 +1,107 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  shm_anon_bsd.c
+ *  
+ *  Anonymous shared memory via BSD's MAP_ANON.
+ *  Create a semaphore, create an anonymous memory segment with the MAP_ANON
+ *  BSD flag and loop updating the segment content (increment casually) with
+ *  short intervals.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 29/08/05.
+ *  Original source file available at http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* for shm_* and mmap() */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+#include &lt;sys/mman.h&gt;
+#include &lt;fcntl.h&gt;
+</span><span class="ccom">/* for getpid() */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+</span><span class="ccom">/* exit() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span><span class="ccom">/* for sem_* functions */</span>
+<span class="cpdr">#include &lt;sys/stat.h&gt;
+#include &lt;semaphore.h&gt;
+</span><span class="ccom">/* for seeding time() */</span>
+<span class="cpdr">#include &lt;time.h&gt;
+</span>
+<span class="ccom">/* name of the semaphore */</span>
+<span class="cpdr">#define     SEMOBJ_NAME         "/semshm"
+</span><span class="ccom">/* maximum number of seconds to sleep between each loop operation */</span>
+<span class="cpdr">#define     MAX_SLEEP_SECS      </span><span class="cval">3</span><span class="cpdr">
+</span><span class="ccom">/* maximum value to increment the counter by */</span>
+<span class="cpdr">#define     MAX_INC_VALUE       </span><span class="cval">10</span><span class="cpdr"> 
+</span>
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    <span class="ctyp">int</span> shmfd;
+    <span class="ctyp">int</span> shared_seg_size = <span class="cval">2</span> * <span class="ctyp">sizeof</span>(<span class="ctyp">int</span>);
+    <span class="ctyp">int</span> *shared_values;     <span class="ccom">/* this will be a (shared) array of 2 elements */</span>
+    sem_t *sem_shmsegment;  <span class="ccom">/* semaphore controlling access to the shared segment */</span>
+    pid_t mypid;
+    
+    
+    <span class="ccom">/* getting a new semaphore for the shared segment       -- sem_open()   */</span>
+    sem_shmsegment = <span class="cfun">sem_open</span>(SEMOBJ_NAME, O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, <span class="cval">1</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>((<span class="ctyp">int</span>)sem_shmsegment == SEM_FAILED) {
+        <span class="cfun">perror</span>(<span class="cstr">"In sem_open()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    <span class="ccom">/* requesting the semaphore not to be held when completely unreferenced */</span>
+    <span class="cfun">sem_unlink</span>(SEMOBJ_NAME);
+    
+    <span class="ccom">/* requesting the shared segment    --  mmap() */</span>    
+    shared_values = (<span class="ctyp">int</span> *)<span class="cfun">mmap</span>(<span class="ctyp">NULL</span>, shared_seg_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -<span class="cval">1</span>, <span class="cval">0</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>((<span class="ctyp">int</span>)shared_values == -<span class="cval">1</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In mmap()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    <span class="cfun">fprintf</span>(stderr, <span class="cstr">"Shared memory segment allocated correctly (%d bytes) at %u.\n"</span>, shared_seg_size, (<span class="ctyp">unsigned</span> <span class="ctyp">int</span>)shared_values);
+    <span class="cfun">close</span>(shmfd);
+
+
+    <span class="ccom">/* dupping the process */</span>
+    <span class="ctyp">if</span><span class="cfun"> </span>(! <span class="cfun">fork</span>() )
+        <span class="ccom">/* the child waits 2 seconds for better seeding srandom() */</span>
+        <span class="cfun">sleep</span>(<span class="cval">2</span>);
+    
+    <span class="ccom">/* seeding the random number generator (% x for better seeding when child executes close) */</span>
+    <span class="cfun">srandom</span>(<span class="cfun">time</span>(<span class="ctyp">NULL</span>));
+
+    <span class="ccom">/* getting my pid, and introducing myself */</span>
+    mypid = <span class="cfun">getpid</span>();
+    <span class="cfun">printf</span>(<span class="cstr">"My pid is %d\n"</span>, mypid);    
+
+    <span class="ccom">/*
+       main loop:
+        - pause
+        - print the old value
+        - choose (and store) a random quantity
+        - increment the segment by that
+    */</span>
+    <span class="ctyp">do</span> {
+        <span class="cfun">sleep</span>(<span class="cfun">random</span>() % (MAX_SLEEP_SECS+<span class="cval">1</span>));       <span class="ccom">/* pausing for at most MAX_SLEEP_SECS seconds */</span>
+        
+        <span class="cfun">sem_wait</span>(sem_shmsegment);
+        <span class="ccom">/* entered the critical region */</span>
+        
+        <span class="cfun">printf</span>(<span class="cstr">"process %d. Former value %d."</span>, mypid, shared_values[<span class="cval">0</span>]);
+        
+        shared_values[<span class="cval">1</span>] = <span class="cfun">random</span>() % (MAX_INC_VALUE+<span class="cval">1</span>);            <span class="ccom">/* choose a random value up to MAX_INC_VALUE */</span>
+        shared_values[<span class="cval">0</span>] += shared_values[<span class="cval">1</span>];   <span class="ccom">/* and increment the first cell by this value */</span>
+        
+        <span class="cfun">printf</span>(<span class="cstr">" Incrementing by %d.\n"</span>, shared_values[<span class="cval">1</span>]);
+
+        <span class="ccom">/* leaving the critical region */</span>
+        <span class="cfun">sem_post</span>(sem_shmsegment);
+    } <span class="ctyp">while</span><span class="cfun"> </span>(<span class="cval">1</span>);
+    
+    <span class="ccom">/* freeing the reference to the semaphore */</span>
+    <span class="cfun">sem_close</span>(sem_shmsegment);
+
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

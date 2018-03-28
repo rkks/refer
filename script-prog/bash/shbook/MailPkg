@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# SYNOPSIS
+#   MailPkg address package file ...
+#
+ADDRESS=$1
+PACKAGE=$2
+shift 2
+
+tar -cf /tmp/package.$$ $*
+
+mkdir /tmp/split.$$
+cd /tmp/split.$$
+compress /tmp/package.$$      |
+     uuencode $PACKAGE.tar.Z  |
+     split -1000
+
+PARTNUM=1
+MESSAGE=/tmp/message.$$
+set x*
+TOTAL=$#
+while [ $# -gt 0 ]
+do
+    cat <<_EOF >$MESSAGE
+    This is part $PARTNUM of $TOTAL of a compressed and
+    uuencoded tar file.
+    -   File: $PACKAGE.tar.Z
+    -   Part: $PARTNUM
+    ----- Cut Here -----
+    EOF
+
+    cat $1                      >>$MESSAGE
+    echo "----- Cut Here -----" >>$MESSAGE
+
+    mail $ADDRESS <$MESSAGE
+
+    shift
+    PARTNUM=`expr $PARTNUM + 1`
+done
+
+rm /tmp/package.$$
+rm /tmp/message.$$
+rm -rf /tmp/split.$$

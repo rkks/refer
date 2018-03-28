@@ -1,0 +1,56 @@
+:
+##########################################################################
+# Title      :	expumlaut - expand German Umlaute using ASCII characters
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	2004-06-23
+# Requires   :	
+# Category   :	File Conversion
+# SCCS-Id.   :	@(#) expumlaut	1.1 04/06/23
+##########################################################################
+# Description
+#    o	Converts German ISO 8859.1 Umlaute to their ASCII equivalents
+#	"ae", "oe", etc.
+#    o	Special handling: tries to handle upper-case Umlaut characters
+#	in all upper-case words. Example: "ÄNDERUNG" -> "AENDERUNG" (not
+#	"AeNDERUNG")
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.1'
+usage () {
+    echo >&2 "$PN - expand German ISO 8859 Umlaute using ASCII characters, $VER
+usage: $PN [file ...]"
+    exit 1
+}
+msg () {
+    echo >&2 "$PN:" "$@"
+}
+fatal () { msg "$@"; exit 1; }
+#set -- `getopt :h "$@"` || usage
+#[ $# -lt 1 ] && usage			# "getopt" detected an error
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+sed -e 's/ä/ae/g'	\
+	-e 's/Ä\([A-ZÄÖÜ]\)/AE\1/g'	\
+	-e 's/\([A-ZÄÖÜ]\)Ä/\1AE/g'	\
+	-e 's/Ä/Ae/g'	\
+	-e 's/ö/oe/g'	\
+	-e 's/Ö\([A-ZÄÖÜ]\)/OE\1/g'	\
+	-e 's/\([A-ZÄÖÜ]\)Ö/\1OE/g'	\
+	-e 's/Ö/Oe/g'	\
+	-e 's/ü/ue/g'	\
+	-e 's/Ü\([A-ZÄÖÜ]\)/UE\1/g'	\
+	-e 's/\([A-ZÄÖÜ]\)Ü/\1UE/g'	\
+	-e 's/Ü/Ue/g'	\
+	-e 's/ß\([A-ZÄÖÜ]\)/SS\1/g'	\
+	-e 's/\([A-ZÄÖÜ]\)ß/\1SS/g'	\
+	-e 's/ß/ss/g'	\
+	--	\
+	"$@"

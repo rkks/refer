@@ -1,0 +1,62 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Digest::SHA qw( sha512 );
+
+my @names = (
+    'ID:002 oof',
+    'ID:001 barbar',
+    'ID:999 baz^3',
+);
+
+
+# Generate a new sorting routine whose name is the string in $sub_name
+# and which sorts on keys extracted by the subroutine referred to by $key_sub_ref
+sub make_sorter {
+    my ($sub_name, $key_sub_ref) = @_;
+ 
+    # Create a new anonymous subroutine that implements the sort...
+    my $sort_sub_ref = sub {
+        # Sort using the Schwartzian transform...
+        return map  { $_->[0] }                 # 3. Return original value
+               sort { $a->[1] cmp $b->[1] }     # 2. Compare keys
+               map  { [$_, $key_sub_ref->()] }  # 1. Extract key, cache with value
+                    @_;                         # 0. Perform sort on full arg list
+    };
+ 
+    # Install the new anonymous sub into the caller's namespace
+    use Sub::Installer;
+    caller->install_sub( $sub_name, $sort_sub_ref);
+ 
+    return;
+}
+ 
+# and then...
+make_sorter(sort_sha => sub{ sha512($_   } );
+
+make_sorter(sort_ids => sub{ /^ID:(\d+)/ } );
+make_sorter(sort_len => sub{ length      } );
+ 
+# and later...
+ 
+my @names_shortest_first = sort_len(@names);
+my @names_digested_first = sort_sha(@names);
+my @names_identity_first = sort_ids(@names);
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ 'SHORTEST', @names_shortest_first ];
+warn Dumper [ 'DIGESTED', @names_digested_first ];
+warn Dumper [ 'IDENTITY', @names_identity_first ];

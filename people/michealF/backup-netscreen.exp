@@ -1,0 +1,116 @@
+#!/usr/bin/expect
+#Expect script to backup config of netscreen firewalls
+#Joe McManus josephmc@andrew.cmu.edu
+
+#Set some vars
+set timeout 60
+set user "admin"
+set password "password"
+set port "2022"
+set netscreen "firewall.example.com"
+set basedir "/data/network-backups/"
+set log "$netscreen-config.txt"
+set mailto "joe@example.com"
+set mailsubject "Error: netscreen backup failed [timestamp -format %Y-%m-%d] "
+set mailfail ""
+set prompt "firewall-> "
+
+
+send_user "NetScren SSG-5 Backup Script\n"
+
+send_user "Connecting to $netscreen\n"
+
+spawn ssh $user@$netscreen -p$port
+expect {
+    "password:" {
+        send "$password\r"
+            expect {
+                "$prompt" {
+                    send_user "Connected"
+                } "Permission denied" {
+                    send_user "Invalid password, exiting"
+                        set mailfail "Invalid password,
+                            exiting"
+                                close
+                } timeout {
+                    send_user "No prompt returned"
+                        set mailfail "No prompt returned"
+                        close
+                }
+            }
+    } "No route to host" {
+        send_user "Unable to connect to $netscreen\n"
+            set mailfail "Unable to connect to $netscreen\n"
+    } "Name or service not known" {
+        send_user "Unable to connect to $netscreen\n"
+            set mailfail "Unable to connect to $netscreen\n"
+    } timeout{
+        send_user "Timeout conncting to $netscreen"
+            set mailfail "Timeout conncting to $netscreen"
+            close
+    }
+}
+
+if { $mailfail != "" } {
+    exec /bin/mail -s$mailsubject $mailto << "$mailfail"
+    exit
+}
+
+#Now that that is over, continue
+
+#Disable the "more" prompt
+
+send "set console page 0\r"
+expect {
+         "$prompt" {
+                send_user "\nPaging Disabled\n"
+        } default {
+                send "ScreenOS did not except paging option.\n"
+                set mailfail "ScreenOS did not except paging option."
+                close
+        }
+        timeout {
+                send_user "ScreenOS did not except paging option\n"
+                set mailfail "ScreenOS did not except paging option."
+                close
+        }
+}
+if { $mailfail != "" } {
+        exec /bin/mail -s$mailsubject $mailto << "
+$mailfail"
+        exit
+}
+
+send_user "Downloading Configuration\n"
+log_file  $basedir/$log
+send "get config\r"
+expect {
+         "$prompt" {
+                log_file
+                send_user "\nConfiguration Downloaded\n"
+        }
+        timeout {
+                send_user "\nError during configuration download."
+                set mailfail "Error during configuration download."
+        }
+}
+close
+if { $mailfail != "" } {
+        exec /bin/mail -s$mailsubject $mailto << "
+$mailfail"
+        exit
+}
+
+set filesize [file size $basedir/$log]
+if { $filesize <= 1024 } {
+        send_user "Netscreen config is too small, please investigate\n"
+        set mailfail "Netscreen config is too small, please investigate\n"
+        exec /bin/mail -s$mailsubject $mailto << "
+$mailfail"
+        exit
+
+}
+
+#Remove config older than 2 weeks
+exec  find $basedir -name '*config.txt*' -mtime +14
+

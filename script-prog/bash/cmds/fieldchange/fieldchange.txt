@@ -1,0 +1,65 @@
+:
+##########################################################################
+# Title      :	fieldchange - print only lines where field changed
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1996-01-23
+# Requires   :	
+# Category   :	Text Utilities
+# SCCS-Id.   :	@(#) fieldchange	1.2 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.2'
+: ${AWK:=nawk}
+usage () {
+    echo >&2 "$PN - print only lines where field changed, $VER (stv '96)
+usage: $PN [-f field] [-f field ...] file [...]
+If no field is given, the first field is watched for changes."
+    exit 1
+}
+msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+#set -- `getopt hf: "$@"`
+Fields=
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-f)	
+	    for i in $2
+	    do
+	        expr "$i" + 0 > /dev/null 2>&1 ||
+		    fatal "No field number: $i"
+	    done
+	    Fields="${Fields:+$Fields }$2"
+	    shift;;
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+: ${Fields:=1}
+$AWK '
+    BEGIN {
+	k = split ("'"$Fields"'", C)
+	for ( i=1; i<=k; i++ ) Cols [C [i]] = "yes"
+    }
+    {
+	if ( NF != OldNF ) PrintLine = 1; else PrintLine = 0
+	for ( i in Cols ) {
+	    if ( Old [i] != $i ) {
+		PrintLine = 1
+		Old [i] = $i
+	    }
+	}
+	if ( PrintLine ) print
+	OldNF = NF
+    }
+' "$@"

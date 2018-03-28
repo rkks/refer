@@ -1,0 +1,20 @@
+#! /usr/bin/perl -wnlaF'\W+'
+
+foreach $word ( @F ) {
+    # Use word as hash index, and increment its count
+    #  but coerce to lowercase, to ignore case-differences
+    $lc_word="\L$word";
+    $count{$lc_word}++; # count another occurrence of this word
+
+    $total++;           # keep running count of word total
+}
+
+END {   # Show frequency for each word, in word-sorted order
+    printf "%20s%14s\n", 'WORD', 'FREQUENCY';
+    foreach $word (sort keys %count) {
+        $frequency=$count{$word} / $total;
+        # Print $word as string in 20-char field,
+        #  $frequency as floating-point number in 14-char field
+        printf "%20s%14f\n", $word, $frequency;
+    }
+}

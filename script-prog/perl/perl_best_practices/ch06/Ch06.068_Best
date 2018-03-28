@@ -1,0 +1,75 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @points = (
+    { x=>0, y=>1 },
+    { x=>1, y=>1 },
+    { x=>1, y=>0 },
+);
+use List::Util qw( max );
+
+Readonly my $JITTER_FACTOR => 0.01;   # Jitter by a maximum of 1%
+
+
+my @jittered_points = map { jitter($_) } @points;
+ 
+# and elsewhere...
+
+
+# Add a random Gaussian perturbation to a point...
+sub jitter {
+    my ($point) = @_;
+    my $x = $point->{x};
+    my $y = $point->{y};
+ 
+    my $max_jitter = max($x, $y) / $JITTER_FACTOR;
+ 
+    return {
+        x => $x + gaussian_rand({ mean=>0, dev=>0.25, scale=>$max_jitter }),
+        y => $y + gaussian_rand({ mean=>0, dev=>0.25, scale=>$max_jitter }),
+    };
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @jittered_points ];
+
+
+BEGIN {
+    use List::Util qw( sum );
+    Readonly my $SAMPLES              => 12;
+    Readonly my $DEVIATIONS_PER_CURVE => 5;
+
+    sub gaussian_rand {
+        my ($arg_ref) = @_;
+
+        my $grand = 2 * sum(map {rand 1} 1..$SAMPLES) / $SAMPLES - 1;
+
+        if (defined $arg_ref->{dev}) {
+            $grand *= $arg_ref->{dev} / $DEVIATIONS_PER_CURVE;
+        }
+
+        if (defined $arg_ref->{scale}) {
+            $grand *= $arg_ref->{scale};
+        }
+
+        if (defined $arg_ref->{mean}) {
+            $grand += $arg_ref->{mean};
+        }
+
+        return $grand;
+    }
+}

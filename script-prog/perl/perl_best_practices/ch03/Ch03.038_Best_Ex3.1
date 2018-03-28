@@ -1,0 +1,55 @@
+##############################################################################
+##  Example 3.1 (Recommended) from Chapter 3 of "Perl Best Practices"       ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 3-1. Iterative on-demand Fibonacci computations
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Cache of previous results, minimally initialized...
+my @fib_for = (1,1);
+ 
+# Extend cache when needed...
+sub _find_fib {
+    my ($n) = @_;
+ 
+    # Walk up cache from last known value, applying Fn = Fn-1 + Fn-2...
+    for my $i (@fib_for..$n) {
+        $fib_for[$i] = $fib_for[$i-1] + $fib_for[$i-2];
+    }
+ 
+    return;
+}
+ 
+# Return Fibonacci number N
+sub fib {
+    my ($n) = @_;
+ 
+    # Verify argument in computable range...
+    croak "Can't compute fib($n)" if $n < 0;
+ 
+    # Extend cache if necessary...
+    if ( !defined $fib_for[$n] ) {
+        _find_fib($n);
+    }
+ 
+    # Look up value in cache...
+    return $fib_for[$n];
+}
+
+
+for my $n (1..100) {
+    print "fib($n) = ", fib($n), "\n";
+}

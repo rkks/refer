@@ -1,0 +1,23 @@
+#! /usr/bin/perl -wnla
+
+BEGIN {
+    $Usage="Usage: $0 '2,1,4..7, etc.' [ file1 ... ]";
+    # Order of field numbers dictates print order;
+    #  the first field is specified as 1
+    $fields=shift;
+
+    # Proofread field specifications
+    defined $fields  and  $fields =~ /^[\d,.]+$/g  or
+        warn "$Usage\n"  and  exit 1;
+          
+    # Convert 5,2..4 => 5,2,3,4
+    #  and load those index numbers into @fields
+    @fields=eval " ( $fields ) ";
+}
+
+if (@F > 0) {   # only process lines that have fields
+    # Load warning message into 0th slot, to flag errors
+    unshift @F, 
+        "$Usage\n\tThere's no field #0! The first is #1.\n";
+    print "@F[ @fields ]";  # DQs yield space-separated values
+}

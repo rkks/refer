@@ -1,0 +1,15 @@
+#! /usr/bin/perl -s -00 -wnla
+# Prints field indicated by the $recnum/$fnum combination,
+#   preceded by filename
+
+BEGIN {
+    $fnum  and  $recnum or
+        warn "Usage: $0 -recnum=M -fnum=N\n"  and
+            exit 255;
+    # Decrement field number, so user can say 1, and get index of 0
+    $index=$fnum - 1;
+}
+$. == $recnum  and  print "\u$ARGV: $F[$index]";
+
+# Reset record counter $. after end of each file
+eof  and  close ARGV;

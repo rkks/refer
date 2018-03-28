@@ -1,0 +1,76 @@
+##############################################################################
+##   Example 14.3 (Recommended) from Chapter 14 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 14-3. Command-line parsing via Getopt::Long
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+@ARGV = qw(-in=input -len=10 --verbose);
+@ARGV = qw(--man);
+
+# Handle command-lines of the form:
+#
+#    > orchestrate --i source.txt --o=dest.orc -v
+ 
+# Use the standard Perl module...
+use Getopt::Long;
+ 
+# Variables that will be set in response to command-line arguments
+# (with defaults values, in case those arguments are not provided)...
+my $infile   = '-';
+my $outfile  = '-';
+my $length   = 24;
+my $width    = 78;
+my $verbose  = 0;
+    
+# Specify cmdline options and process command-line...
+my $options_okay = GetOptions (
+    # Application-specific options...
+    'in=s'     => \$infile,     # --in option expects a string
+    'out=s'    => \$outfile,    # --out option expects a string
+    'length=i' => \$length,     # --length option expects an integer
+    'width=i'  => \$width,      # --width option expects an integer
+    'verbose'  => \$verbose,    # --verbose flag is boolean
+ 
+    # Standard meta-options
+    # (the subroutines are executed immediately the flag is encountered
+    #  and are used here to throw suitable exceptions - see XREF)...
+    'version' => sub { X::Version->throw(); },
+    'usage'   => sub { X::Usage->throw();   },
+    'help'    => sub { X::Help->throw();    },
+    'man'     => sub { X::Man->throw();     },
+);
+ 
+# Fail if unknown arguments encountered...
+X::Usage->throw() if !$options_okay;
+ 
+
+# Report intended behaviour...
+if ($verbose) {
+    print "Loading first $length chunks of file: $infile\n"
+}
+ 
+# etc.
+
+
+
+package UNIVERSAL;
+use Carp;
+
+sub throw {
+    my ($class) = @_;
+
+    croak "Show $class here\n";
+}

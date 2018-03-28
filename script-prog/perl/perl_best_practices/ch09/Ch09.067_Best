@@ -1,0 +1,37 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @sheep = (2,4,6,8,10);
+my @goats = (1,3,5,7,9);
+
+sub swap_arrays {
+    my ($array1_ref, $array2_ref) = @_;
+ 
+    my @temp_array = @{$array1_ref};
+    @{$array1_ref} = @{$array2_ref};
+    @{$array2_ref} = @temp_array;
+ 
+    return;
+
+}
+ 
+# and later...
+ 
+swap_arrays(\@sheep, \@goats);      # Explicitly pass references
+
+use Data::Dumper 'Dumper';
+warn Dumper [ 'SHEEP', @sheep ];
+warn Dumper [ 'GOATS', @goats ];

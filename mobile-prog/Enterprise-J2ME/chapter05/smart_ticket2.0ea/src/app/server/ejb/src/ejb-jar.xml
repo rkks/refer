@@ -1,0 +1,984 @@
+<?xml version="1.0"?>
+
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: ejb-jar.xml,v 1.8 2003/03/24 22:43:10 zull Exp $ -->
+
+<!DOCTYPE ejb-jar PUBLIC '-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN' 'http://java.sun.com/dtd/ejb-jar_2_0.dtd'>
+<ejb-jar>
+    <description>Smart Ticket EJB components</description>
+    <display-name>SmartTicketJAR</display-name>
+    <enterprise-beans>
+        <session>
+            <display-name>TicketingSB</display-name>
+            <ejb-name>TicketingBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.ticketing.TicketingLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.ticketing.TicketingLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.ticketing.TicketingBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Reservation</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.reservation.ReservationLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.reservation.ReservationLocal</local>
+                <ejb-link>ReservationBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/MovieSchedule</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocal</local>
+                <ejb-link>MovieScheduleBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Account</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocal</local>
+                <ejb-link>AccountBean</ejb-link>
+            </ejb-local-ref>
+        </session>
+        <session>
+            <display-name>SynchronizingSB</display-name>
+            <ejb-name>SynchronizingBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SynchronizingLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SynchronizingLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SynchronizingBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Movie</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocal</local>
+                <ejb-link>MovieBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/MovieRating</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.rating.MovieRatingLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.rating.MovieRatingLocal</local>
+                <ejb-link>MovieRatingBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Account</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocal</local>
+                <ejb-link>AccountBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/SyncClient</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncClientLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncClientLocal</local>
+                <ejb-link>SyncClientBean</ejb-link>
+            </ejb-local-ref>
+        </session>
+        <entity>
+            <display-name>SyncMetaDataEB</display-name>
+            <ejb-name>SyncMetaDataBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncMetaDataLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncMetaDataLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncMetaDataBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.Object</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>SyncMetaData</abstract-schema-name>
+            <cmp-field>
+                <field-name>id</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>creationTime</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>lastModificationTime</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>deleted</field-name>
+            </cmp-field>
+        </entity>
+        <entity>
+            <display-name>SyncConduitEB</display-name>
+            <ejb-name>SyncConduitBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncConduitLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncConduitLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncConduitBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.Object</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>SyncConduit</abstract-schema-name>
+            <cmp-field>
+                <field-name>nextClientId</field-name>
+            </cmp-field>
+            <query>
+                <query-method>
+                    <method-name>ejbSelectSyncMetaDataChangedSince</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                        <method-param>long</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT OBJECT(o) FROM SyncMetaData o  WHERE o.syncConduit.account.userName = ?1 and o.lastModificationTime &gt; ?2</ejb-ql>
+            </query>
+            <query>
+                <query-method>
+                    <method-name>ejbSelectSyncMetaDataDeletedSince</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                        <method-param>long</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT OBJECT(o) FROM SyncMetaData o  WHERE o.syncConduit.account.userName = ?1 and  o.deleted = TRUE and o.lastModificationTime &gt; ?2</ejb-ql>
+            </query>
+            <query>
+                <query-method>
+                    <method-name>ejbSelectSyncMetaDataModifiedSince</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                        <method-param>long</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT OBJECT(o) FROM SyncMetaData o  WHERE o.syncConduit.account.userName = ?1 and  o.deleted = FALSE and o.lastModificationTime &gt; ?2</ejb-ql>
+            </query>
+            <query>
+                <query-method>
+                    <method-name>ejbSelectSyncMetaData</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                        <method-param>java.lang.String</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT DISTINCT OBJECT(o) FROM SyncMetaData o  WHERE o.syncConduit.account.userName = ?1 and o.id = ?2</ejb-ql>
+            </query>
+            <query>
+                <query-method>
+                    <method-name>ejbSelectSyncClient</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                        <method-param>int</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT DISTINCT OBJECT(o) FROM SyncClient o  WHERE o.syncConduit.account.userName = ?1 and o.id = ?2</ejb-ql>
+            </query>
+        </entity>
+        <entity>
+            <display-name>SyncClientEB</display-name>
+            <ejb-name>SyncClientBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncClientLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncClientLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncClientBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.Object</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>SyncClient</abstract-schema-name>
+            <cmp-field>
+                <field-name>id</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>lastSynchronizationTime</field-name>
+            </cmp-field>
+        </entity>
+        <entity>
+            <display-name>AccountEB</display-name>
+            <ejb-name>AccountBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.String</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>Account</abstract-schema-name>
+            <cmp-field>
+                <field-name>userName</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>password</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>lastName</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>firstName</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>eMail</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>zipCode</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>creditCardNumber</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>creditCardHolderName</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>creditCardExpirationDate</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>creditCardType</field-name>
+            </cmp-field>
+            <query>
+                <query-method>
+                    <method-name>ejbSelectMovieRating</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                        <method-param>java.lang.String</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT DISTINCT OBJECT(o) FROM MovieRating o WHERE o.account.userName = ?1 and o.id = ?2</ejb-ql>
+            </query>
+            <query>
+                <query-method>
+                    <method-name>findAllAccounts</method-name>
+                </query-method>
+                <ejb-ql>SELECT OBJECT(o) FROM Account o</ejb-ql>
+            </query>
+            <primkey-field>userName</primkey-field>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/SyncConduit</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncConduitLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncConduitLocal</local>
+                <ejb-link>SyncConduitBean</ejb-link>
+            </ejb-local-ref>
+        </entity>
+        <entity>
+            <display-name>TheaterEB</display-name>
+            <ejb-name>TheaterBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.String</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>Theater</abstract-schema-name>
+            <cmp-field>
+                <field-name>id</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>name</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>address</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>zipCode</field-name>
+            </cmp-field>
+            <primkey-field>id</primkey-field>
+            <query>
+                <query-method>
+                    <method-name>findByZipCode</method-name>
+                    <method-params>
+                        <method-param>java.lang.String</method-param>
+                    </method-params>
+                </query-method>
+                <ejb-ql>SELECT DISTINCT OBJECT(o) FROM Theater o WHERE o.zipCode = ?1</ejb-ql>
+            </query>
+            <query>
+                <query-method>
+                    <method-name>findAllTheaters</method-name>
+                </query-method>
+                <ejb-ql>SELECT OBJECT(o) FROM Theater o</ejb-ql>
+            </query>
+        </entity>
+        <entity>
+            <display-name>TheaterScheduleEB</display-name>
+            <ejb-name>TheaterScheduleBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.TheaterScheduleLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.TheaterScheduleLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.TheaterScheduleBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.Object</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>TheaterSchedule</abstract-schema-name>
+            <cmp-field>
+                <field-name>expirationDate</field-name>
+            </cmp-field>
+        </entity>
+        <entity>
+            <display-name>MovieScheduleEB</display-name>
+            <ejb-name>MovieScheduleBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieSchedulePK</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>MovieSchedule</abstract-schema-name>
+            <cmp-field>
+                <field-name>theaterId</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>movieId</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>showTimePatterns</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>seating</field-name>
+            </cmp-field>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/MovieShow</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowLocal</local>
+                <ejb-link>MovieShowBean</ejb-link>
+            </ejb-local-ref>
+        </entity>
+        <entity>
+            <display-name>MovieShowEB</display-name>
+            <ejb-name>MovieShowBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowPK</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>MovieShow</abstract-schema-name>
+            <cmp-field>
+                <field-name>theaterId</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>movieId</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>time</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>seating</field-name>
+            </cmp-field>
+        </entity>
+        <entity>
+            <display-name>MovieEB</display-name>
+            <ejb-name>MovieBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.String</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>Movie</abstract-schema-name>
+            <cmp-field>
+                <field-name>id</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>title</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>summary</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>rating</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>posterURL</field-name>
+            </cmp-field>
+            <query>
+                <query-method>
+                    <method-name>findAllMovies</method-name>
+                </query-method>
+                <ejb-ql>SELECT OBJECT(o) FROM Movie o</ejb-ql>
+            </query>
+            <primkey-field>id</primkey-field>
+        </entity>
+        <entity>
+            <display-name>MovieRatingEB</display-name>
+            <ejb-name>MovieRatingBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.rating.MovieRatingLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.rating.MovieRatingLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.rating.MovieRatingBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.Object</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>MovieRating</abstract-schema-name>
+            <cmp-field>
+                <field-name>id</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>starNumber</field-name>
+            </cmp-field>
+            <cmp-field>
+                <field-name>lastViewingDate</field-name>
+            </cmp-field>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/SyncMetaData</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncMetaDataLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SyncMetaDataLocal</local>
+                <ejb-link>SyncMetaDataBean</ejb-link>
+            </ejb-local-ref>
+        </entity>
+        <entity>
+            <display-name>ReservationEB</display-name>
+            <ejb-name>ReservationBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.reservation.ReservationLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.reservation.ReservationLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.reservation.ReservationBean</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>java.lang.Object</prim-key-class>
+            <reentrant>False</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>Reservation</abstract-schema-name>
+            <cmp-field>
+                <field-name>seats</field-name>
+            </cmp-field>
+        </entity>
+        <session>
+            <display-name>SmartTicketFacadeSB</display-name>
+            <ejb-name>SmartTicketFacadeBean</ejb-name>
+            <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.SmartTicketFacadeLocalHome</local-home>
+            <local>com.sun.j2me.blueprints.smartticket.server.ejb.SmartTicketFacadeLocal</local>
+            <ejb-class>com.sun.j2me.blueprints.smartticket.server.ejb.SmartTicketFacadeBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Account</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.account.AccountLocal</local>
+                <ejb-link>AccountBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Theater</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.theater.TheaterLocal</local>
+                <ejb-link>TheaterBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/MovieSchedule</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.schedule.MovieScheduleLocal</local>
+                <ejb-link>MovieScheduleBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/MovieShow</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.show.MovieShowLocal</local>
+                <ejb-link>MovieShowBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Movie</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.movie.MovieLocal</local>
+                <ejb-link>MovieBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Ticketing</ejb-ref-name>
+                <ejb-ref-type>Session</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.ticketing.TicketingLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.ticketing.TicketingLocal</local>
+                <ejb-link>TicketingBean</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/Synchronizing</ejb-ref-name>
+                <ejb-ref-type>Session</ejb-ref-type>
+                <local-home>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SynchronizingLocalHome</local-home>
+                <local>com.sun.j2me.blueprints.smartticket.server.ejb.synchronizing.SynchronizingLocal</local>
+                <ejb-link>SynchronizingBean</ejb-link>
+            </ejb-local-ref>
+        </session>
+    </enterprise-beans>
+    <relationships>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>SyncConduit-SyncMetaData</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>SyncMetaData to SyncConduit</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>SyncMetaDataBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>syncConduit</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>SyncConduit to SyncMetaData</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>SyncConduitBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>syncMetaDataSet</cmr-field-name>
+                    <cmr-field-type>java.util.Collection</cmr-field-type>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>SyncConduit-SyncClient</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>SyncClient to SyncConduit</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>SyncClientBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>syncConduit</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>SyncConduit to SyncClient</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>SyncConduitBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>syncClients</cmr-field-name>
+                    <cmr-field-type>java.util.Collection</cmr-field-type>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>Account-SyncConduit</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>SyncConduit to Account</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>SyncConduitBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>account</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>Account to SyncConduit</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>AccountBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>movieRatingSyncConduit</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>Account-Reservation</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>Account to Reservation</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>AccountBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>reservations</cmr-field-name>
+                    <cmr-field-type>java.util.Collection</cmr-field-type>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>UNIDIRECTIONAL AccountBean</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>ReservationBean</ejb-name>
+                </relationship-role-source>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>Account-MovieRating</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>Account to MovieRating</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>AccountBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>movieRatings</cmr-field-name>
+                    <cmr-field-type>java.util.Collection</cmr-field-type>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieRating to Account</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieRatingBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>account</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>Theater-TheaterSchedule</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>Theater to TheaterSchedule</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>TheaterBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>schedule</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>TheaterSchedule to Theater</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>TheaterScheduleBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>theater</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>TheaterSchedule-MovieSchedule</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>TheaterSchedule to MovieSchedule</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>TheaterScheduleBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>movieSchedules</cmr-field-name>
+                    <cmr-field-type>java.util.Collection</cmr-field-type>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieSchedule to TheaterSchedule</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieScheduleBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>theaterSchedule</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>MovieSchedule-MovieShow</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieSchedule to MovieShow</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>MovieScheduleBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>shows</cmr-field-name>
+                    <cmr-field-type>java.util.Collection</cmr-field-type>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieShow  to MovieSchedule</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieShowBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>schedule</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>MovieSchedule-Movie</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieSchedule to Movie</ejb-relationship-role-name>
+                <multiplicity>Many</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieScheduleBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>movie</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>UNIDIRECTIONAL MovieScheduleBean</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>MovieBean</ejb-name>
+                </relationship-role-source>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>MovieShow-Movie</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieShow  to Movie</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieShowBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>playedMovie</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>UNIDIRECTIONAL MovieShowBean</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>MovieBean</ejb-name>
+                </relationship-role-source>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>MovieRating-Movie</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieRating to Movie</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieRatingBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>ratedMovie</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>UNIDIRECTIONAL MovieRatingBean</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>MovieBean</ejb-name>
+                </relationship-role-source>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>MovieRating-SyncMetaData</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>MovieRating to SyncMetaData</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>MovieRatingBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>syncMetaData</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>UNIDIRECTIONAL MovieRatingBean</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>SyncMetaDataBean</ejb-name>
+                </relationship-role-source>
+            </ejb-relationship-role>
+        </ejb-relation>
+        <ejb-relation>
+            <description></description>
+            <ejb-relation-name>Reservation-MovieShow</ejb-relation-name>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>Reservation to MovieShow</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <cascade-delete />
+                <relationship-role-source>
+                    <ejb-name>ReservationBean</ejb-name>
+                </relationship-role-source>
+                <cmr-field>
+                    <cmr-field-name>show</cmr-field-name>
+                </cmr-field>
+            </ejb-relationship-role>
+            <ejb-relationship-role>
+                <ejb-relationship-role-name>UNIDIRECTIONAL ReservationBean</ejb-relationship-role-name>
+                <multiplicity>One</multiplicity>
+                <relationship-role-source>
+                    <ejb-name>MovieShowBean</ejb-name>
+                </relationship-role-source>
+            </ejb-relationship-role>
+        </ejb-relation>
+    </relationships>
+    <assembly-descriptor>
+        <method-permission>
+            <unchecked />
+            <method>
+                <ejb-name>AccountBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>TheaterBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>TheaterScheduleBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieScheduleBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieShowBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieRatingBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>TicketingBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>ReservationBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SyncConduitBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SyncClientBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SyncMetaDataBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SynchronizingBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+           <method>
+                <ejb-name>SmartTicketFacadeBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+           <method>
+                <ejb-name>SmartTicketFacadeBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+        </method-permission>
+        <container-transaction>
+            <method>
+                <ejb-name>TicketingBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SynchronizingBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SyncMetaDataBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SyncConduitBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SyncClientBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>AccountBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>TheaterBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>TheaterScheduleBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieScheduleBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieShowBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>MovieRatingBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>ReservationBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <method>
+                <ejb-name>SmartTicketFacadeBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+    </assembly-descriptor>
+</ejb-jar>

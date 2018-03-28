@@ -1,0 +1,62 @@
+##############################################################################
+## Example 13.1 (NOT RECOMMENDED) from Chapter 13 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 13-1. Returning special error values
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my @DATA_DIRS => ( '.' );
+
+# Find and open a file by name, returning the filehandle
+# or undef on failure...
+sub locate_and_open {
+    my ($filename) = @_;
+ 
+    # Check acceptable directories in order...
+    for my $dir (@DATA_DIRS) {
+        my $path = "$dir/$filename";
+ 
+        # If file exists in an acceptable directory, open and return it...
+        if (-r $path) {
+            open my $fh, '<', $path; 
+            return $fh;
+        }
+    }
+ 
+    # Fail if all possible locations tried without success...
+    return;
+}
+ 
+# Load file contents up to the first <DATA/> marker...
+sub load_header_from {
+    my ($fh) = @_;
+ 
+    # Use DATA tag as end-of-"line"...
+    local $/ = '<DATA/>';
+ 
+    # Read to end-of-"line"...
+    return <$fh>;
+}
+ 
+# and later...
+ 
+my @source_files = ( 'ZZ2ZA' );
+
+for my $filename (@source_files) {
+    my $fh = locate_and_open($filename);
+    my $head = load_header_from($fh);
+    print $head;
+}
+

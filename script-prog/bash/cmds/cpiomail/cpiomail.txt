@@ -1,0 +1,60 @@
+:
+##########################################################################
+# Shellscript:	cpiomail - send directories per e-mail
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-11-14
+# Category   :	Mail
+# SCCS-Id.   :	@(#) cpiomail	1.3 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.3'
+: ${COMPRESS:=gzip}
+: ${COMPRESS_SUFFIX:=.gz}
+# Determine mail program knowing "-s" argument
+Mail=mail
+[ -x /bin/mailx ] && Mail=mailx
+CpioOpt=B				# cpio-options
+Silent=no				# "yes" or "no"
+Usage () {
+    echo >&2 "$PN - send directories with e-mail, $VER (stv '94)
+Usage: $PN user {file|directory} [file|directory...]
+The program searches all given files and directories (including
+subdirectories), creates a 'uuencode'ed cpio archive, and sends it to
+the specified user per e-mail."
+    exit 1
+}
+Err () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+Fatal () { Err "$@"; exit 1; }
+Msg () { [ "$Silent" != yes ] && Err "$@"; }
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-v)	CpioOpt=${CpioOpt}v;;
+	-s)	Silent=yes;;
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+[ $# -lt 2 ] && Usage
+User="$1"; shift
+for Dir
+do
+    Archive="${Dir}.cpio${COMPRESS_SUFFIX}"
+    [ -r "$Dir" ] || { Err "cannot read $Dir - ignored"; continue; }
+    [ "$Silent" = no ] && echo "$Archive -	\c"
+    find "$Dir" -type f -print |
+	cpio -o$CpioOpt | 
+	$COMPRESS |
+	uuencode "$Archive" | 
+	$Mail -s "$Archive" "$User" || exit 1
+done

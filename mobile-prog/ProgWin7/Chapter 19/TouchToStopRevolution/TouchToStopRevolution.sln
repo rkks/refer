@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TouchToStopRevolution", "TouchToStopRevolution\TouchToStopRevolution\TouchToStopRevolution.csproj", "{97273ED1-29B9-46DF-AFA2-EFA6FC967382}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TouchToStopRevolutionContent", "TouchToStopRevolution\TouchToStopRevolutionContent\TouchToStopRevolutionContent.contentproj", "{30C9B627-57E9-4405-8E3A-3A3404724D93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{97273ED1-29B9-46DF-AFA2-EFA6FC967382}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{30C9B627-57E9-4405-8E3A-3A3404724D93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C9B627-57E9-4405-8E3A-3A3404724D93}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{30C9B627-57E9-4405-8E3A-3A3404724D93}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C9B627-57E9-4405-8E3A-3A3404724D93}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

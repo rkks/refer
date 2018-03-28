@@ -1,0 +1,45 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @clients = qw( Ackroyd Belushi );
+
+my $client;
+ 
+SEARCH:
+for my $some_other_variable_also_named_client (@clients) {
+    last SEARCH if $some_other_variable_also_named_client->holding();
+}
+ 
+if ($client) {
+    $client->resume_conversation();
+}
+
+
+
+package Ackroyd;
+sub holding { return 0 }
+
+sub resume_conversation {
+    print "Hi, John...\n";
+}
+
+package Belushi;
+
+sub holding { return 1 }
+
+sub resume_conversation {
+    print "Hi, John...\n";
+}

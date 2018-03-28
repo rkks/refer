@@ -1,0 +1,133 @@
+##########################################################################
+# Shellscript:	homework - execute command in all HOME directories
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1993-02-23
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) homework	1.3 04/02/18
+##########################################################################
+# Description:
+#    -	Reads user names from standard input, changes into their HOME
+#	directory, and executes the given command
+#    -	The command can use the environment variables
+#	    H_USER	current user name
+#	    H_HOME	current home directory
+##########################################################################
+PN=`basename "$0"`		# Program name
+VER='1.3'			# Version number
+: ${GREP:=grep}
+: ${TMPDIR:=/tmp}		# Directory with temporary files
+UserFile=$TMPDIR/ho$$.1		# Names of the users
+EtcFile=$TMPDIR/ho$$.2		# Names and home directories of users
+All=false			# Process all, or specified users
+Usage () {
+    echo >&2 "$PN - execute command in all HOME directories, $VER
+usage: $PN [-a] command [arg ...]
+    -a:  process HOME directories of all users
+The given command will be executed with the arguments specified in the
+home directory of users.
+The called program can use the environment variables H_USER and H_HOME
+containing the current user name and the current home directory name.
+    
+The user names are read from standard input. Only the first word of each
+line will be used, the rest of the line will be ignored.
+Examples:
+    who | $PN pwd
+    $PN cleanup < userlist"
+    exit 1
+}
+#
+# MAIN PROGRAM
+#
+if [ $# -lt 1 ]
+then
+    Usage
+else
+    case "$1" in
+	-a)	All=true			# alle User bearbeiten?
+		shift ;;
+	-*)	Usage ;;		# unbekanntes Flag
+    esac
+fi
+# Is standard input redirected?
+if [ -t 0 ]
+then isatty=true
+else isatty=false
+fi
+# Remove temporary files after receiving an interrupt
+trap "rm -f $EtcFile $UserFile" 0
+trap "echo \"$PN: Interrupt; Abbruch!\"; exit 1" 1 2 3 15
+# Write user name and home directory separated by a TAB character into
+# temporary file
+#(cat /etc/passwd; ypcat passwd 2>/dev/null) |
+getent passwd |
+    cut -d':' -f1,6 |			# user name and home directory
+    sed -e 's/:/	/g' > "$EtcFile" || {
+	echo "$PN: could not create user/directory list: $EtcFile"
+	exit 1
+    }
+# Save user list
+> "$UserFile" || {
+    echo >&2 "$PN: cannot create user list file: $UserFile"
+    exit 1
+}
+if [ "$All" = true ]
+then
+    # Read all users
+    cut -d':' -f1 < "$EtcFile" >> "$UserFile" || {
+	echo "$PN: could not create user list from passwd file"
+	exit 1
+    }
+else
+    # Print short message if we read from keyboard
+    [ "$isatty" = true ] && \
+    	echo >&2 "[$PN: enter user names: one name per line, ^D to terminates]"
+    while read UserName Rest
+    do
+	test -z "$UserName" && continue	# Ignore empty lines
+	# Is this a valid user name?
+	"$GREP" "^$UserName	" "$EtcFile" > /dev/null || {
+	    echo >&2 "$PN: cannot find user '$UserName'; ignored."
+	    continue
+	}
+	echo "$UserName" >> "$UserFile"
+    done
+fi
+# Ensure that interactive programs always read from the current
+# standard input, even if stdin is a file/pipe. In these cases,
+# standard input will be redirected to /dev/tty for the time
+# the command is executed.
+#
+# File descriptors:
+#   3 - keyboard
+#   4 - $EtcFile
+# Note: descriptor 0 gets lost reading from /dev/tty
+if [ "$isatty" = true ]
+then exec 3<&0 4<"$EtcFile" 0<&4
+else exec 3</dev/tty 4<"$EtcFile" 0<&4
+fi
+echo >&2 "$PN: start `date`"
+# Main loop: execute command in home directory
+Oldwd=`pwd`
+while read Name HomeDir Rest
+do
+    "$GREP" "$Name" "$UserFile" > /dev/null || continue	# ignore
+    [ -n "$HomeDir" -a -d "$HomeDir" ] || {
+	echo >&2 "$PN: user '$Name' has no valid home directory: $HomeDir"
+	continue
+    }
+    [ -r "$HomeDir" -a -x "$HomeDir" ] || {
+	echo >&2 "$PN: need read and execute permissions: $HomeDir"
+	continue
+    }
+    cd "$HomeDir"			# cannot fail...
+    echo >&2 "$PN: processing: $Name ($HomeDir)"
+    H_USER="$Name"	export H_USER
+    H_HOME="$HomeDir"	export H_HOME
+    # Interactive programs: always read from keyboard
+    exec 0<&3
+    ${SHELL:-/bin/sh} -c "$@"
+    exec 0<&4
+    cd "$Oldwd"
+done
+exec 0<&3 3<&- 4<&-
+echo >&2 "$PN: end `date`"

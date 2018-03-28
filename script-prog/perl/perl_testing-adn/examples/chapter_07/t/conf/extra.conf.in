@@ -1,0 +1,6 @@
+Alias /pictures /home/anu/pictures
+
+<Location /pictures>
+    Options +Indexes
+    Allow from all
+</Location>

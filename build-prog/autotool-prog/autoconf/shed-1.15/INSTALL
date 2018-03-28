@@ -1,0 +1,26 @@
+#!/bin/sh
+rm -f $0
+
+Hello agent $USER, your mission should you choose to accept it:
+$ ./configure
+$ make
+$ make install (as root)
+
+Configure has the following options:
+
+--enable-lfs
+  enable experimental large file support. please test this if you can.
+  THIS IS NOW THE DEFAULT! You can disable it it with --disable-lfs
+
+--enable-cygfix
+  enable a fix when building on cygwin where it wasn't redrawing properly somehow on a computer I was using at the time,
+  an I've forgotten exactly what it was. But it works on my current cygwin without the fix, so it's an option.
+
+--enable-debug
+  enable -g for gcc
+
+
+
+Good luck.
+
+This file will self-destruct if executed

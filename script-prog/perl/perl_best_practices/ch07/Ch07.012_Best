@@ -1,0 +1,18 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 7 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+############################################
+# Usage      : Config::Auto->get_defaults ()
+# Purpose    : Defaults for 'new'
+# Returns    : A hash of defaults
+# Parameters : none
+# Throws     : no exceptions
+# Comments   : No corresponding attribute,
+#            : gathers data from each
+#            : attr_def attribute
+# See Also   : $self->set_default()
+

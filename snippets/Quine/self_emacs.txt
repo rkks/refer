@@ -1,0 +1,10 @@
+Language: Emacs LISP
+
+Author: Douglass Auclair
+
+(let ((quine "(let ((quine %c%s%c)) (insert (format quine 34 quine 34)))"))
+(insert (format quine 34 quine 34)))
+
+Author: Sam Steingold
+
+(let ((a "(let ((a %c%s%c)) (format a 34 a 34))")) (format a 34 a 34))

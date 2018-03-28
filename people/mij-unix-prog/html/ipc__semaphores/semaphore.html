@@ -1,0 +1,198 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;semaphore.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 12/03/05.<br />
+&nbsp;* &nbsp;Original source file available at http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<br />
+<span style="color:#683821;">#define _POSIX_SOURCE<br />
+#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* sleep() */</span><br />
+<span style="color:#683821;">#include &lt;errno.h&gt;<br />
+#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* abort() and random stuff */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><span style="color:#236e25;">/* time() */</span><br />
+<span style="color:#683821;">#include &lt;time.h&gt;<br />
+#include &lt;signal.h&gt;<br />
+#include &lt;pthread.h&gt;<br />
+#include &lt;semaphore.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#236e25;">/* this skips program termination when receiving signals */</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">signal_handler</span>(<span style="color:#881350;">int</span> type);<br />
+<br />
+<span style="color:#236e25;">/*<br />
+&nbsp;* thread A is synchronous. When it needs to enter its<br />
+&nbsp;* critical section, it can't do anything other than waiting.<br />
+&nbsp;*/</span><br />
+<span style="color:#881350;">void</span> *<span style="color:#003369;">thread_a</span>(<span style="color:#881350;">void</span> *);<br />
+<br />
+<span style="color:#236e25;">/*<br />
+&nbsp;* thread B is asynchronous. When it tries to enter its<br />
+&nbsp;* critical section, it switches back to other tasks if<br />
+&nbsp;* it hasn't this availability.<br />
+&nbsp;*/</span><br />
+<span style="color:#881350;">void</span> *<span style="color:#003369;">thread_b</span>(<span style="color:#881350;">void</span> *);<br />
+<br />
+<br />
+<span style="color:#236e25;">/* the semaphore */</span><br />
+sem_t mysem;<br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[])<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;pthread_t mytr_a, mytr_b;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> ret;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">srand</span>(<span style="color:#003369;">time</span>(<span style="color:#881350;">NULL</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">signal</span>(SIGHUP, signal_handler);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">signal</span>(SIGUSR1, signal_handler);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/*<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* creating the unnamed, local semaphore, and initialize it with<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* value 1 (max concurrency 1)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">sem_init</span>(&amp;mysem, <span style="color:#0000ff;">0</span>, <span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* error. errno has been set */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Unable to initialize the semaphore"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">abort</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* creating the first thread (A) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">pthread_create</span>(&amp;mytr_a, <span style="color:#881350;">NULL</span>, thread_a, <span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Unable to create thread"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">abort</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* creating the second thread (B) */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">pthread_create</span>(&amp;mytr_b, <span style="color:#881350;">NULL</span>, thread_b, <span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Unable to create thread"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">abort</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* waiting for thread_a to finish */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">pthread_join</span>(mytr_a, (<span style="color:#881350;">void</span> *)<span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Error in pthread_join"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">abort</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* waiting for thread_b to finish */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">pthread_join</span>(mytr_b, <span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"Error in pthread_join"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">abort</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+<br />
+<span style="color:#881350;">void</span> *<span style="color:#003369;">thread_a</span>(<span style="color:#881350;">void</span> *x)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span> i, num;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> ret;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread A -- starting\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;num = ((<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)<span style="color:#003369;">rand</span>() % <span style="color:#0000ff;">40</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this does (do_normal_stuff, do_critical_stuff) n times */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; num; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* do normal stuff */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#0000ff;">3</span> + (<span style="color:#003369;">rand</span>() % <span style="color:#0000ff;">5</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* need to enter critical section */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread A -- waiting to enter critical section\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* looping until the lock is acquired */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">do</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">sem_wait</span>(&amp;mysem);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* the lock wasn't acquired */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(errno != EINVAL) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">" -- thread A -- Error in sem_wait. terminating -&gt; "</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">pthread_exit</span>(<span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">else</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* sem_wait() has been interrupted by a signal: looping again */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread A -- sem_wait interrupted. Trying again for the lock...\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">while</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread A -- lock acquired. Enter critical section\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* CRITICAL SECTION */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#003369;">rand</span>() % <span style="color:#0000ff;">2</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* done, now unlocking the semaphore */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread A -- leaving critical section\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">sem_post</span>(&amp;mysem);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">" -- thread A -- Error in sem_post"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">pthread_exit</span>(<span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread A -- closing up\n"</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">pthread_exit</span>(<span style="color:#881350;">NULL</span>);<br />
+}<br />
+<br />
+<br />
+<span style="color:#881350;">void</span> *<span style="color:#003369;">thread_b</span>(<span style="color:#881350;">void</span> *x)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span> i, num;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> ret;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread B -- starting\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;num = ((<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)<span style="color:#003369;">rand</span>() % <span style="color:#0000ff;">100</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this does (do_normal_stuff, do_critical_stuff) n times */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; num; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* do normal stuff */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#0000ff;">3</span> + (<span style="color:#003369;">rand</span>() % <span style="color:#0000ff;">5</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* wants to enter the critical section */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret = <span style="color:#003369;">sem_trywait</span>(&amp;mysem);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(ret != <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* either an error happened, or the semaphore is locked */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(errno != EAGAIN) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* an event different from "the semaphore was locked" happened */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">" -- thread B -- error in sem_trywait. terminating -&gt; "</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">pthread_exit</span>(<span style="color:#881350;">NULL</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread B -- cannot enter critical section: semaphore locked\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span style="color:#881350;">else</span> {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* CRITICAL SECTION */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread B -- enter critical section\n"</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#003369;">rand</span>() % <span style="color:#0000ff;">10</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* done, now unlocking the semaphore */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread B -- leaving critical section\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sem_post</span>(&amp;mysem);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -- thread B -- closing up\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* joining main() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">pthread_exit</span>(<span style="color:#881350;">NULL</span>);<br />
+}<br />
+<br />
+<br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">signal_handler</span>(<span style="color:#881350;">int</span> type)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* do nothing */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"process got signal %d\n"</span>, type);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span>;<br />
+}<br />
+</div>

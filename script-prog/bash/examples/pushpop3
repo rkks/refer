@@ -1,0 +1,68 @@
+function popd {      # pop directory off the stack, cd to new top
+    if [ $(echo $1 | grep '^+[0-9][0-9]*$') ]; then
+
+        # case of popd +n: delete n-th directory from stack
+        let num=${1#+}
+        getNdirs $num
+        DIRSTACK="$stackfront$DIRSTACK"
+        cd ${DIRSTACK%% *}
+        echo "$PWD"
+
+    else
+
+        # normal case of popd without argument
+        if [ -n "$DIRSTACK" ]; then
+            DIRSTACK=${DIRSTACK#* }
+            cd ${DIRSTACK%% *}
+            echo "$PWD"
+        else
+            echo "stack empty, still in $PWD."
+        fi
+    fi
+}
+
+function getNdirs {
+    stackfront=''
+    let count=0
+    while [ $count -le $1 ]; do
+        target=${DIRSTACK%${DIRSTACK#* }}
+        stackfront="$stackfront$target"
+        DIRSTACK=${DIRSTACK#$target}
+        let count=count+1
+    done
+
+    stackfront=${stackfront%$target}
+}
+
+function pud {
+    if [ $(echo $1 | grep '^+[0-9][0-9]*$') ]; then
+        # case of pushd +n: rotate n-th directory to top
+        let num=${1#+}
+        getNdirs $num
+
+        DIRSTACK="$target$stackfront$DIRSTACK"
+        cd $target
+        echo "$DIRSTACK"
+
+    elif [ -z $1 ]; then
+        # case of pushd without args; swap top two directories
+        firstdir=${DIRSTACK%% *}
+        DIRSTACK=${DIRSTACK#* }
+        seconddir=${DIRSTACK%% *}
+        DIRSTACK=${DIRSTACK#* }
+        DIRSTACK="$seconddir $firstdir $DIRSTACK"
+        cd $seconddir
+
+    else
+        # normal case of pushd dirname
+        dirname=$1
+        if [ \( -d $dirname \) -a \( -x $dirname \) ]; then
+            DIRSTACK="$dirname ${DIRSTACK:-$PWD" "}"
+            cd $dirname
+            echo "$DIRSTACK"
+        else
+            echo still in "$PWD."
+        fi
+    fi
+}
+

@@ -1,0 +1,4 @@
+#! /usr/bin/perl -wl
+foreach (@ARGV) {
+    unlink $_  or  warn "$0: Unlink failed on: '$_'; $!\n";
+}

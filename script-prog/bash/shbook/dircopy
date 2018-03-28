@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    dircopy - copy the contents of a directory
+#
+# SYNOPSIS
+#    dircopy directory1 directory2
+#
+# DESCRIPTION
+#    This command will copy the contents of one directory
+#    to another.  The destination directory and any
+#    subdirectories will be created as needed.
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Usage error
+#
+############################################################
+CMDNAME=`basename $0`
+CURDIR=`pwd`                  # Current directory
+TARGET=                       # Destination directory
+
+if [ $# -ne 2 ]; then
+     echo "Usage: $CMDNAME directory1 directory2" 1>&2
+     exit 1
+fi
+
+if [ ! -d "$1" ]; then
+     echo "$1 is not a directory." 1>&2
+     exit 1
+fi
+
+if [ -f "$2" ]; then
+     echo "$2 is not a directory." 1>&2
+     exit 1
+fi
+
+if [ ! -d "$2" ]; then
+     mkdir -p "$2"
+fi
+
+cd "$2"
+TARGET=`pwd`
+cd $CURDIR
+
+cd "$1"
+find . -depth -print          |
+     cpio -pdmu $TARGET 2>&1  |
+     grep -iv "blocks"

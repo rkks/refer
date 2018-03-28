@@ -1,0 +1,91 @@
+Language: Interpol
+
+Author: Brian Raiter(breadbox)
+
+quine( << $ << ; "=;\n" << ; )=;
+quote( "\"" swap . + << << ; "\n" << ; )=;
+"quine quine. quote quine. quote."quine quine. quote quine. quote.
+
+
+Author: Joseph DeVincentis(/dev/joe)
+
+
+
+q "\"" =;
+nl "\n" =;
+sm ";" =;
+e "=" =;
+sl "\\" =;
+sp " " =;
+se " =;\n" =;
+q1"qt(q$ <<; << q$ <<; se$ <<; <<; nl$ <<;)=;" =;
+qt(q$ <<; << q$ <<; se$ <<; <<; nl$ <<;)=;
+r1"s1(q sp$ q$ sl$ q$ q$ se$ + + + + + + <<;)=;" =;
+s1(q sp$ q$ sl$ q$ q$ se$ + + + + + + <<;)=;
+r2"s2(nl sp$ q$ sl$ n q$ se$ + + + + + + <<;)=;" =;
+s2(nl sp$ q$ sl$ n q$ se$ + + + + + + <<;)=;
+r3"s3(sm sp$ q$ sm$ q$ se$ + + + + + <<;)=;" =;
+s3(sm sp$ q$ sm$ q$ se$ + + + + + <<;)=;
+r4"s4(e sp$ q$ e$ q$ se$ + + + + + <<;)=;" =;
+s4(e sp$ q$ e$ q$ se$ + + + + + <<;)=;
+r5"s5(sl sp$ q$ sl$ sl$ q$ se$ + + + + + + <<;)=;" =;
+s5(sl sp$ q$ sl$ sl$ q$ se$ + + + + + + <<;)=;
+r6"s6(sp sp$ q$ sp$ q$ se$ + + + + + <<;)=;" =;
+s6(sp sp$ q$ sp$ q$ se$ + + + + + <<;)=;
+r7"s7(se sp$ q$ sp$ e$ sm$ sl$ n q$ se$ + + + + + + + + + <<;)=;" =;
+s7(se sp$ q$ sp$ e$ sm$ sl$ n q$ se$ + + + + + + + + + <<;)=;
+r8"s1. s2. s3. s4. s5. s6. s7. q1<<; q1$ qt." =;
+s1. s2. s3. s4. s5. s6. s7. q1<<; q1$ qt.
+r9"r1<<; r1$ qt. r2<<; r2$ qt. r3<<; r3$ qt. r4<<; r4$ qt. r5<<; r5$ qt." =;
+r1<<; r1$ qt. r2<<; r2$ qt. r3<<; r3$ qt. r4<<; r4$ qt. r5<<; r5$ qt.
+r0"r6<<; r6$ qt. r7<<; r7$ qt. r8<<; r8$ qt. r9<<; r9$ qt. r0<<; r0$ qt." =;
+r6<<; r6$ qt. r7<<; r7$ qt. r8<<; r8$ qt. r9<<; r9$ qt. r0<<; r0$ qt.
+
+
+Author: Brian Raiter(breadbox)
+
+a"\""=;b"\\"=;c"\"=;"=;
+q( swap. <<a$ <<;<<;a$ <<;a$ <<;<<a$ <<;<<; )=;
+a<< $ <<b$ <<;<<;c$ <<;b<<a$ <<;$ << <<;c$ <<;c<<a$ <<;b$ <<;$ << <<;"
+q( swap. <<a$ <<;<<;a$ <<;a$ <<;<<a$ <<;<<; )=;
+a<< $ <<b$ <<;<<;c$ <<;b<<a$ <<;$ << <<;c$ <<;c<<a$ <<;b$ <<;$ << <<;""q.
+"q.
+
+
+
+Author: Jason Orendorff(Mohammed)
+
+
+barharf
+"n harf=;(n$harfharfharfharfharfharfharfharfharfharf!=)(bar n$"=;
+fooharf"\n"=;
+barharfharf
+"+ <<fooharf$ <<;fooharfharf$ <<;$ <<;fooharfharf$ <<;"=;
+fooharfharf"\""=;
+barharfharfharf
+"=;"=;
+fooharfharfharf"\\"=;
+barharfharfharfharf
+"n"=;
+fooharfharfharfharf"\""=;
+barharfharfharfharfharf
+"<<foo n$ +"=;
+fooharfharfharfharfharf"\n"=;
+barharfharfharfharfharfharf
+"<<fooharfharf$ <<;fooharfharfharf$ <<;$fooharf$ ==(n<<;)if. ~(foo n"=;
+fooharfharfharfharfharfharf"\n"=;
+barharfharfharfharfharfharfharf
+"$ + $ <<;)if.;fooharfharf$ <<;<<;n n$harf+ =;)while.n harf=;(n$"=;
+fooharfharfharfharfharfharfharf"\n"=;
+barharfharfharfharfharfharfharfharf
+"harfharfharfharfharfharfharfharfharfharf"=;
+fooharfharfharfharfharfharfharfharf"\n"=;
+barharfharfharfharfharfharfharfharfharf
+"!=)(bar n$ + $ <<;foo n$ + $ <<;n n$harf+ =;)while."=;
+fooharfharfharfharfharfharfharfharfharf"\n"=;
+n harf=;(n$harfharfharfharfharfharfharfharfharfharf!=)(bar n$
++ <<fooharf$ <<;fooharfharf$ <<;$ <<;fooharfharf$ <<;"=;\n"<<foo n$ +
+<<fooharfharf$ <<;fooharfharfharf$ <<;$fooharf$ ==(n<<;)if. ~(foo n
+$ + $ <<;)if.;fooharfharf$ <<;<<;n n$harf+ =;)while.n harf=;(n$
+harfharfharfharfharfharfharfharfharfharf
+!=)(bar n$ + $ <<;foo n$ + $ <<;n n$harf+ =;)while.

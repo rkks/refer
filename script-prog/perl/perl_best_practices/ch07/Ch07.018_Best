@@ -1,0 +1,30 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 7 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $build_mode;
+my %arg = ( mode => 664 );
+
+my $QFETM_func_ref;  # stores Quantum Field Effect Transfer Mode function
+ 
+# Build futtock representation if remote data is available...
+if ($QFETM_func_ref  = get_GET()) {    # instead of get_POST()
+    make_futtock($QFETM_func_ref);     # futtock: a rib of a ship's frame
+}
+ 
+$build_mode = oct $arg{mode};   # *From* octal, not *to* octal
+
+
+sub get_GET {}

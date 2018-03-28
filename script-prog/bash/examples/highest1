@@ -1,0 +1,5 @@
+:
+filename=${1:?"filename missing."}
+howmany=${2:-10}
+sort -nr $filename | head -$howmany
+

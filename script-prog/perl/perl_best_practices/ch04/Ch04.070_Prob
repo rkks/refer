@@ -1,0 +1,39 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 4 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub send_msg {};
+
+my $target = 'abcdefg';
+my $text   = 'abcdefghijklmnop';
+
+my $signal  = 1;
+my $process = 12345;
+
+my @casino_money;
+my @my_wallet;
+
+
+# This may or may not send the signal to the process
+# (depending on the order in which send_msg() expects its arguments)
+
+send_msg($signal => $process);
+ 
+# This doesn't find the index of the target in the text (it's vice versa)
+my $found_at = index $target => $text;
+ 
+# An excellent money-making plan...for the casino
+push @casino_money => @my_wallet;
+

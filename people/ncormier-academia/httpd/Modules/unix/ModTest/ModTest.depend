@@ -1,0 +1,99 @@
+# depslib dependency file v1.0
+1142877259 /mnt/diablotin_home/nico/lang/c++/zia/src/TicketsHandler.cpp
+	"TicketsHandler.h"
+	<iostream>
+	"utils/Console.h"
+	"LeakWatcher.h"
+
+1142877262 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/TicketsHandler.h
+	<stack>
+	<string>
+	"Ticket.h"
+	"Mutex.h"
+	"Module.h"
+	"Semaphore.h"
+
+1142878019 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Ticket.h
+	<string>
+	<map>
+	<iostream>
+	"IModuleData.h"
+	"ICData.h"
+
+1133388664 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IModuleData.h
+
+1133388664 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ICData.h
+	<string>
+
+1142849118 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Mutex.h
+	<windows.h>
+	<pthread.h>
+	"IMutex.h"
+
+1142806623 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IMutex.h
+
+1142808032 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Module.h
+	"Exceptions.h"
+	"Dll.h"
+	"Thread.h"
+	"Mutex.h"
+	"Semaphore.h"
+	"Ticket.h"
+	"TicketsHandler.h"
+	"XmlContainer.h"
+	"ModuleConf.h"
+	<iostream>
+	<stack>
+
+1134412885 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Exceptions.h
+	<string>
+
+1142850944 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Dll.h
+	<windows.h>
+	<dlfcn.h>
+	"IDll.h"
+	"ModuleConf.h"
+
+1134412886 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IDll.h
+
+1133388624 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ModuleConf.h
+	<string>
+	<vector>
+	"XmlContainer.h"
+
+1142877263 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/XmlContainer.h
+	<map>
+	<string>
+	<vector>
+	"utils/cmpfunc.h"
+
+1133388661 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/utils/cmpfunc.h
+	"ZiaString.h"
+
+1142806670 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ZiaString.h
+	<string.h>
+
+1142850946 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Thread.h
+	<windows.h>
+	<pthread.h>
+	<signal.h>
+	"IThread.h"
+
+1131980577 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/IThread.h
+	"IDll.h"
+
+1142850945 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/Semaphore.h
+	<windows.h>
+	<semaphore.h>
+	"ISemaphore.h"
+
+1133388624 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/ISemaphore.h
+
+1142806683 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/utils/Console.h
+	<iostream>
+	<iomanip>
+	<windows.h>
+
+1142806525 /mnt/diablotin_home/nico/lang/c++/zia/src/includes/LeakWatcher.h
+	<crtdbg.h>
+

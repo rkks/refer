@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFingerPaint", "MultiFingerPaint\MultiFingerPaint\MultiFingerPaint.csproj", "{0A56C80A-1D6F-461E-B49A-E9432F801274}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "MultiFingerPaintContent", "MultiFingerPaint\MultiFingerPaintContent\MultiFingerPaintContent.contentproj", "{D9BF9762-F10F-4CD5-9FD4-F2BAE96F43CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A56C80A-1D6F-461E-B49A-E9432F801274}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{0A56C80A-1D6F-461E-B49A-E9432F801274}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{0A56C80A-1D6F-461E-B49A-E9432F801274}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{0A56C80A-1D6F-461E-B49A-E9432F801274}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{0A56C80A-1D6F-461E-B49A-E9432F801274}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{0A56C80A-1D6F-461E-B49A-E9432F801274}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{D9BF9762-F10F-4CD5-9FD4-F2BAE96F43CC}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{D9BF9762-F10F-4CD5-9FD4-F2BAE96F43CC}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

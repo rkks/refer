@@ -1,0 +1,24 @@
+
+	This directory contains:
+
+gensource		called by mkmenu
+mkmenu			use to generate scripts that source each other
+script.template		example of a menuing script (self contained)
+
+	The idea here is to show two ways of writing scripts
+that use menus.  They call grabchars.
+
+	"script.template" is pretty straightforward.  It can be used
+as the basis of csh program contained within one file.  I show
+the use of three aliases:  push_point, pop_point, and local_point,
+which allow you to break csh scripts into "functions".
+
+	"mkmenu" and "gensource" go further.  They allow you to have
+a directory, "menus", which contains csh files that can source each
+other.  You can set up some program with, say, 2 or 3 files, and then
+go ahead and start using it...but, you can also write a new routine
+or two that call routines from the first program, and so on.  Eventually
+you'll have a directory full of routines, and putting together a new
+"program" would be a matter of defining a menu that ties the right
+routines together.
+

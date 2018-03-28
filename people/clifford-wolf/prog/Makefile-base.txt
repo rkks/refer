@@ -1,0 +1,9 @@
+
+CFLAGS = -Wall
+
+demo: main.o a.o ax.o b.o bx.o
+	perl treelink.pl demo.tl
+
+clean:
+	rm -vf *.o *.so *.syms demo
+

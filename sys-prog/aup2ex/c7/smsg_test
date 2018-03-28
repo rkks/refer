@@ -1,0 +1,24 @@
+echo "socket..."
+smsg_server_smi_skt&
+smsg_client_smi_skt&smsg_client_smi_skt&smsg_client_smi_skt&smsg_client_smi_skt&
+echo "Ctrl-D to continue..."; cat >/dev/null
+echo "POSIX shm..."
+smsg_server_smi_pshm&
+smsg_client_smi_pshm&smsg_client_smi_pshm&smsg_client_smi_pshm&smsg_client_smi_pshm&
+echo "Ctrl-D to continue..."; cat >/dev/null
+echo "FIFO..."
+smsg_server_smi_fifo&
+smsg_client_smi_fifo&smsg_client_smi_fifo&smsg_client_smi_fifo&smsg_client_smi_fifo&
+echo "Ctrl-D to continue..."; cat >/dev/null
+echo "SysV msg..."
+smsg_server_smi_msg&
+smsg_client_smi_msg&smsg_client_smi_msg&smsg_client_smi_msg&smsg_client_smi_msg&
+echo "Ctrl-D to continue..."; cat >/dev/null
+echo "POSIX msg..."
+smsg_server_smi_mq&
+smsg_client_smi_mq&smsg_client_smi_mq&smsg_client_smi_mq&smsg_client_smi_mq&
+echo "Ctrl-D to continue..."; cat >/dev/null
+echo "SysV shm..."
+smsg_server_smi_shm&
+smsg_client_smi_shm&smsg_client_smi_shm&smsg_client_smi_shm&smsg_client_smi_shm&
+echo "Ctrl-D to continue..."; cat >/dev/null

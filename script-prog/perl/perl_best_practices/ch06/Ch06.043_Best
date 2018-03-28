@@ -1,0 +1,72 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $ONE_YEAR   => 365;
+Readonly my $SIX_WEEKS  =>  42;
+Readonly my $SIX_MONTHS => 183;
+
+my %client_named = (
+    IBN   => 'IBN_Info',
+    Zerox => 'Zerox_Info',
+);
+
+for my $name (keys %client_named) {                    # Iterate keys
+    alias my $client_info = $client_named{$name};      # Rename value
+    my $inactive = $client_info->inactivity();         # Extract value once
+ 
+    print "Checking client $name\n";                   # Use key
+ 
+    $client_info 
+        # Reuse value many times...   To decide new status of client...
+        = $inactive > $ONE_YEAR   ? Client::Moribund->new({ from => $client_info })
+        : $inactive > $SIX_MONTHS ?   Client::Silver->new({ from => $client_info })
+        : $inactive > $SIX_WEEKS  ?     Client::Gold->new({ from => $client_info })
+        :                           Client::Platinum->new({ from => $client_info })
+        ;
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%client_named ];
+
+
+package IBN_Info;
+
+sub inactivity { return 22 }
+
+package Zerox_Info;
+
+sub inactivity { return 422 }
+
+package Client;
+
+sub new {
+    my ($class, $opt_ref) = @_;
+    return "$class\[$opt_ref->{from}]";
+}
+
+package Client::Moribund;
+use base qw( Client );
+
+package Client::Silver;
+use base qw( Client );
+
+package Client::Gold;
+use base qw( Client );
+
+package Client::Platinum;
+use base qw( Client );

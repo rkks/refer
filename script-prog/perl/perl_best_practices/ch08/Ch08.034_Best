@@ -1,0 +1,58 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+use IO::File;
+
+my $sales_data = $0;
+
+my @sales;
+
+sub translate_ID {
+    my ($id) = @_;
+    return $id;
+}
+
+use Text::CSV::Simple;
+ 
+# Specify format...
+my $csv_format 
+    = Text::CSV::Simple->new({
+          sep_char    => q{,},   # Fields are comma-separated
+          escape_char => q{\\},  # Backslashed chars are always data
+          quote_char  => q{"},   # Fields can be double-quoted
+      });
+ 
+# Specify field names in order (any other fields will be ignored)...
+$csv_format->field_map( qw( ident sales price ) );
+ 
+# Grab each line/record...
+for my $record_ref ($csv_format->read_file($sales_data)) {
+    push @sales, { 
+        ident => translate_ID($record_ref->{ident}),
+        sales => $record_ref->{sales} * 1000,
+        price => $record_ref->{price},
+    };
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @sales ];
+
+
+__DATA__
+X123-S,"0000013247",00000199
+SFG-AT,0000000102,00009099
+"Y811,Q",0000100300,00000033

@@ -1,0 +1,33 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $PROFANITY => qr/\A (?: gosh | darn) \z/xms;
+
+my %translation_for = (
+    'shoot'   => 'gosh',
+    'gosh'    => 'darn',
+    'jeepers' => 'shoot',
+);
+
+
+my @unacceptable_words 
+    = grep {$translation_for{$_} =~ m/ $PROFANITY /xms} 
+           keys %translation_for;
+ 
+delete @translation_for{@unacceptable_words};
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%translation_for ];

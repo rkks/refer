@@ -1,0 +1,38 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $MAX_FACT => 100;
+
+
+# Initialize table of factorials
+my @factorial = (1);
+for my $n (1..$MAX_FACT) {
+    $factorial[$n] = $n * $factorial[$n-1];
+}
+ 
+# Check availability and look up in table 
+sub factorial {
+    my ($n) = @_;
+ 
+    croak "Can't compute factorial($n)" 
+        if $n < 0 || $n > $MAX_FACT;
+ 
+    return $factorial[$n]; 
+}
+
+for my $n (1,2,5,10,100) {
+    print "$n! = ", factorial($n), "\n";
+}

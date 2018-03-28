@@ -1,0 +1,19 @@
+#
+# $Header$
+#
+# HP-UX 10.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -Ae
+EXTRACFLAGS=	-D_SVID2
+
+#
+# Location of the signal library (HP-UX needs -lV3 for signal3.c).
+#
+SIGLIBS=	-lV3

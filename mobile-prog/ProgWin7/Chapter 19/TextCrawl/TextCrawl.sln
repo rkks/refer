@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextCrawl", "TextCrawl\TextCrawl\TextCrawl.csproj", "{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TextCrawlContent", "TextCrawl\TextCrawlContent\TextCrawlContent.contentproj", "{E37CB6D9-0D5B-483B-A70D-2086E2AAFC5E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{2EC4ACA4-E787-43E8-B4BA-76B3D79D0FE1}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{E37CB6D9-0D5B-483B-A70D-2086E2AAFC5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E37CB6D9-0D5B-483B-A70D-2086E2AAFC5E}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{E37CB6D9-0D5B-483B-A70D-2086E2AAFC5E}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E37CB6D9-0D5B-483B-A70D-2086E2AAFC5E}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

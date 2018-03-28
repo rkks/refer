@@ -1,0 +1,55 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $SPACE => q{ };
+
+
+sub get_C_code {
+    my ($file_name) = @_;
+ 
+    # Get a handle on the code...
+    open my $in, '<', $file_name
+        or croak "Can't open C file '$file_name': $OS_ERROR";
+ 
+    # Read it all in...
+    my $code = do { local $/; <$in> };
+
+ 
+    # Convert any C-style comment to a single space
+    use Regexp::Common;
+    $code =~ s{ $RE{comment}{C} }{$SPACE}gxms;
+ 
+    return $code;
+}
+
+
+my $data = do {local $/; <DATA>};
+
+print get_C_code(\$data);
+
+__DATA__
+/* Imagine a language that
+   didn't even have I/O build in...
+*/
+#include stdio.h
+
+/* Or a genuine
+   array type...
+*/
+int
+main(int argc, char *argv[]) {
+    printf "Noooooooooo!!!!!!!\n";
+}

@@ -1,0 +1,16 @@
+dm-scripts README
+
+dm-scripts is an archive of various shell scripts especially useful for 
+system administrators and webmasters. All scripts depend on the Bash shell 
+and other standard GNU commands. Each script has an -h flag for
+usage explanation. The home of the dm-scripts project is:
+http://www.comp.eonworks.com
+
+
+REQUIREMENTS
+
+Bash 2.x or higher; standard GNU commands. Some scripts use commands that
+are less common. In such case the required command name is listed when
+invoking the script with the -h flag.
+
+Problems and feedback are welcome at author's email: dm@eonworks.com

@@ -1,0 +1,81 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 10 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+sub execute {
+    my ($cmd) = @_;
+    print "Executing: $cmd\n";
+    return 1;
+}
+
+my $count = 0;
+sub get_prompt_str {
+    $count++;
+    return "$count> ";
+}
+
+# The quit command is case insensitive and may be abbreviated...
+Readonly my $QUIT => qr/\A q(?:uit)? \z/ixms;
+ 
+# No command entered yet...
+my $cmd = $EMPTY_STR;
+
+
+ 
+# Until the q[uit] command is entered...
+CMD:
+while ($cmd !~ $QUIT) {
+    # Prompt if we're running interactively...
+    if (is_interactive()) {
+        print get_prompt_str();
+    }
+ 
+    # Get the next command...
+    $cmd = <>;
+    last CMD if not defined $cmd;
+ 
+    # Clean it up and run it...
+    chomp $cmd;
+    execute($cmd) 
+        or carp "Unknown command: $cmd";
+}
+
+
+
+use Scalar::Util qw( openhandle );
+ 
+sub is_interactive {
+    # Not interactive if output is not to terminal...
+    return 0 if not -t *STDOUT;
+ 
+    # If *ARGV is opened, we're interactive if...
+    if (openhandle *ARGV) {
+        # ...it's currently opened to the magic '-' file
+        return -t *STDIN if $ARGV eq '-';
+ 
+        # ...it's at end-of-file and the next file is the magic '-' file
+        return @ARGV>0 && $ARGV[0] eq '-' && -t *STDIN if eof *ARGV;
+ 
+        # ...it's directly attached to the terminal 
+        return -t *ARGV;
+    }
+ 
+    # If *ARGV isn't opened, it will be interactive if *STDIN is attached 
+    # to a terminal and either there are no files specified on the command line
+    # or if there are one or more files and the first is the magic '-' file
+    return -t *STDIN && (@ARGV==0 || $ARGV[0] eq '-');
+}
+

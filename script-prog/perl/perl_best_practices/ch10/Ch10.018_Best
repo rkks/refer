@@ -1,0 +1,23 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $out_file = 'dev/llun';
+my @results = (1..10);
+
+open my $out,  '>', $out_file  or croak "Couldn't open '$out_file': $OS_ERROR";
+print {$out} @results          or croak "Couldn't write '$out_file': $OS_ERROR";
+close $out                     or croak "Couldn't close '$out_file': $OS_ERROR";
+

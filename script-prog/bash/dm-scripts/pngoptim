@@ -1,0 +1,78 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="pngoptim"
+       HTML_="optimize png files"
+    PURPOSE_="reduce the size of a PNG file if possible"
+   SYNOPSIS_="$NAME_ [-hl] <file> [file...]"
+   REQUIRES_="standard GNU commands, pngcrush"
+    VERSION_="1.0"
+       DATE_="2004-06-29; last update: 2004-12-30"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="gfx"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage() {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -h, usage and options (this help)
+     -l, see this script"
+exit 1
+}
+
+# tmp file set up
+tmp_1=/tmp/tmp.${RANDOM}$$
+
+# signal trapping and tmp file removal
+trap 'rm -f $tmp_1 >/dev/null 2>&1' 0
+trap "exit 1" 1 2 3 15
+
+# var init
+old_total=0
+new_total=0
+
+# arg handling and main execution
+case "$1" in
+
+    -h) usage ;;
+    -l) more $0; exit 1 ;;
+     *.*) # main execution
+
+        # check if required command is in $PATH variable
+        which pngcrush &> /dev/null
+        [[ $? != 0 ]] && { echo >&2 required \"pngcrush\" command is not in your PATH; exit 1; }
+
+        for a in "$@";do
+            if [ -f $a ] && [[ ${a##*.} == [pP][nN][gG] ]]; then
+                old_size=$(ls -l $a | { read b c d e f g; echo $f ;} )
+                echo -n "${NAME_}: $a $old_size -> "
+                pngcrush -q $a $tmp_1
+                rm -f -- $a
+                mv -- $tmp_1 $a
+                new_size=$(ls -l $a | { read b c d e f g; echo $f ;} )
+                echo $new_size bytes
+                (( old_total += old_size ))
+                (( new_total += new_size ))
+            else
+                echo ${NAME_}: file $a either does not exist or is not a png file
+            fi
+        done ;;
+
+    *) echo ${NAME_}: skipping $1 ; continue ;;
+
+esac
+
+percentage=$(echo "scale = 2; ($new_total*100)/$old_total" | bc)
+reduction=$(echo $(( old_total - new_total )) \
+| sed '{ s/$/@/; : loop; s/\(...\)@/@.\1/; t loop; s/@//; s/^\.//; }')
+echo "${NAME_}: total size reduction: $reduction bytes (total size reduced to ${percentage}%)"
+

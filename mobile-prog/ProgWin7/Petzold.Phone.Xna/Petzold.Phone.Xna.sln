@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Petzold.Phone.Xna", "Petzold.Phone.Xna\Petzold.Phone.Xna.csproj", "{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{9A89C89B-0A9A-4BFA-BFD7-7A0223D6138B}.Release|Windows Phone.Build.0 = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

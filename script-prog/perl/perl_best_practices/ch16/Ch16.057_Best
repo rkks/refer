@@ -1,0 +1,57 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Phonebook;
+use Class::Std;
+{
+    my %entries_of : ATTR;
+ 
+    # Any method call is someone's name: store their phone number or get it...
+    sub AUTOMETHOD {
+        my ($self, $ident, $number) = @_;
+ 
+        my $subname = $_;   # Requested subroutine name is passed via $_
+ 
+        # Return failure if not a get_<name> or set_<name>
+        # (Next AUTOMETHOD() in hierarchy will then be tried instead)...
+        my ($mode, $name) = $subname =~ m/\A ([gs]et)_(.*) \z/xms
+            or return;
+ 
+        # If get_<name>, return a handler that just returns the old number...
+        return sub { return $entries_of{$ident}->{$name}; }
+            if $mode eq 'get';
+ 
+        # Otherwise, set_<name>, so return a handler that updates the entry
+        # and then returns the old number...
+        return sub {
+            $entries_of{$ident}->{$name} = $number;
+            return;
+        };
+    }
+}
+ 
+# and later...
+ 
+my $lbb = Phonebook->new();
+ 
+$lbb->set_Jenny(867_5309);
+$lbb->set_Glenn(736_5000);
+ 
+print $lbb->get_Jenny(), "\n";
+print $lbb->get_Glenn(), "\n";
+
+$lbb->call_Jenny();

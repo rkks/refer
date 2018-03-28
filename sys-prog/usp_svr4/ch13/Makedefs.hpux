@@ -1,0 +1,18 @@
+#
+# $Header$
+#
+# HP-UX 10.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -Ae
+
+#
+# Location of the socket libraries (HP-UX has merged them into libc).
+#
+NETLIBS=

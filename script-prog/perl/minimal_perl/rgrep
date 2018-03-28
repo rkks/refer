@@ -1,0 +1,19 @@
+#! /usr/bin/perl -wnl
+
+BEGIN {
+    $Usage="Usage: $0 'pattern' dir1 [dir2 ...]";
+    @ARGV >= 2  or  warn "$Usage\n"  and  exit 255;
+
+    $pattern=shift;    # preserve pattern argument
+
+    # `@ARGV` treated like "@ARGV"; elements space-separated
+    @files=grep { chomp; -r  and  -T } # <-- find feeds files
+                   `find @ARGV -follow -type f -print`;
+
+    @files  or  warn "$0: No files to search\n" and exit 1;
+    @ARGV=@files;   # search for $pattern within these files
+}
+# Because it's very likely that we'll search more than one file,
+# prepend filename to each matching line with printf
+
+/$pattern/  and  printf "$ARGV: "  and  print;

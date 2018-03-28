@@ -1,0 +1,36 @@
+kvz is a sample or template application which consumes a spool
+but does not have any application specific logic (since it is
+a template, it just counts spool frames and makes a time series).
+
+A real application would fill in logic in the zmq_poll section
+to handle the specific application's spool data and would add new
+application-specific commands to kvz_cmds.c.
+
+kvz has a main loop which polls on ZeroMQ messages from either
+the spool reader thread or the control port thread. 
+
+Build prerequisites include ZeroMQ and three of my own libraries: 
+
+  libzmq
+  libkvspool
+  libts
+  libzcontrol
+
+Usage: start the kvz daemon,
+
+  ./kvz -s <spooldir>
+
+Now write some data into the spool from another terminal,
+
+  kvsp-spw -i 100 <spooldir> &
+
+and connect to kvz to interact with it as it consumes the spool:
+
+  zcon -e tcp://127.0.0.1:3333
+
+
+Issue commands like "stats", "help", and "rates".  The zcon client is from my
+zcontrol library (git://github.com/troydhanson/zcontrol.git), but kvz can be
+connected to using any ZeroMQ "REQ" socket, such as the Perl one in client.pl.
+
+

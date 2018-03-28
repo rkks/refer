@@ -1,0 +1,147 @@
+# depslib dependency file v1.0
+1145112520 /usr/home/nico/zia/Modules/unix/ModNetwork/ClientSocket.cpp
+	"ClientSocket.h"
+	"LeakWatcher.h"
+
+1145112505 /usr/home/nico/zia/Modules/unix/ModNetwork/ClientSocket.h
+	<string>
+	"DBuffer.h"
+	"Ticket.h"
+	"ICData.h"
+	"IModuleData.h"
+
+1144691297 /usr/home/nico/zia/Modules/common/includes/DBuffer.h
+	<string>
+	"ICData.h"
+
+1144691291 /usr/home/nico/zia/src/includes/ICData.h
+	<string>
+
+1145095290 /usr/home/nico/zia/src/includes/Ticket.h
+	<string>
+	<map>
+	<iostream>
+	"IModuleData.h"
+	"ICData.h"
+
+1144691291 /usr/home/nico/zia/src/includes/IModuleData.h
+
+1144691291 /usr/home/nico/zia/src/includes/LeakWatcher.h
+	<crtdbg.h>
+
+1145112651 /usr/home/nico/zia/Modules/unix/ModNetwork/ModNetwork.cpp
+	"Network.h"
+	"ModuleArg.h"
+	<iostream>
+
+1145204915 /usr/home/nico/zia/Modules/unix/ModNetwork/Network.h
+	<sys/select.h>
+	<map>
+	<list>
+	"utils/cmpfunc.h"
+	"ClientSocket.h"
+	"TicketsHandler.h"
+
+1144691289 /usr/home/nico/zia/src/includes/utils/cmpfunc.h
+	"ZiaString.h"
+
+1144691291 /usr/home/nico/zia/src/includes/ZiaString.h
+	<string.h>
+
+1144691291 /usr/home/nico/zia/src/includes/TicketsHandler.h
+	<stack>
+	<string>
+	"Ticket.h"
+	"Mutex.h"
+	"Module.h"
+	"Semaphore.h"
+
+1144691291 /usr/home/nico/zia/src/includes/Mutex.h
+	<windows.h>
+	<pthread.h>
+	"IMutex.h"
+
+1144691291 /usr/home/nico/zia/src/includes/IMutex.h
+
+1144691291 /usr/home/nico/zia/src/includes/Module.h
+	"Exceptions.h"
+	"Dll.h"
+	"Thread.h"
+	"Mutex.h"
+	"Semaphore.h"
+	"Ticket.h"
+	"TicketsHandler.h"
+	"XmlContainer.h"
+	"ModuleConf.h"
+	<iostream>
+	<stack>
+
+1145206611 /usr/home/nico/zia/src/includes/Exceptions.h
+	<string>
+	<sstream>
+
+1144707203 /usr/home/nico/zia/src/includes/Dll.h
+	<windows.h>
+	<dlfcn.h>
+	"IDll.h"
+	"ModuleConf.h"
+
+1144707203 /usr/home/nico/zia/src/includes/IDll.h
+
+1144691291 /usr/home/nico/zia/src/includes/ModuleConf.h
+	<string>
+	<vector>
+	"XmlContainer.h"
+
+1144691291 /usr/home/nico/zia/src/includes/XmlContainer.h
+	<map>
+	<string>
+	<vector>
+	"utils/cmpfunc.h"
+
+1144707203 /usr/home/nico/zia/src/includes/Thread.h
+	<windows.h>
+	<pthread.h>
+	<signal.h>
+	"IThread.h"
+
+1144707203 /usr/home/nico/zia/src/includes/IThread.h
+	"IDll.h"
+
+1144707203 /usr/home/nico/zia/src/includes/Semaphore.h
+	<windows.h>
+	<semaphore.h>
+	"ISemaphore.h"
+
+1144707203 /usr/home/nico/zia/src/includes/ISemaphore.h
+
+1144691291 /usr/home/nico/zia/src/includes/ModuleArg.h
+	"XmlContainer.h"
+	"TicketsHandler.h"
+
+1144691297 /usr/home/nico/zia/Modules/common/DBuffer.cpp
+	<iostream>
+	<windows.h>
+	"DBuffer.h"
+	"LeakWatcher.h"
+
+1145213276 /usr/home/nico/zia/Modules/unix/ModNetwork/Network.cpp
+	<iostream>
+	<errno.h>
+	<sstream>
+	"Network.h"
+	"Actions.h"
+	"DBuffer.h"
+	"Exceptions.h"
+	"TicketsHandler.h"
+
+1144691291 /usr/home/nico/zia/src/includes/Actions.h
+
+1144707115 /usr/home/nico/zia/src/Ticket.cpp
+	"Ticket.h"
+	"Actions.h"
+
+1144706068 /usr/home/nico/zia/src/TicketsHandler.cpp
+	<iostream>
+	"TicketsHandler.h"
+

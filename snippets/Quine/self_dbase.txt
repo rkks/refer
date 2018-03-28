@@ -1,0 +1,27 @@
+Language: dBASE
+
+
+Author: Richard Katz (richkatz@earthlink.net)
+
+* Program:       Quine1.prg - a self-replicating cheat.
+* Compiler:      Visual Foxpro 5.0
+* Author:        Richard Katz (richkatz@earthlink.net)
+* How it works:  The program simply lists itself.
+* Notes:
+* 1.  dBase was invented by Wayne Ratliff at Jet Propulsion Labs
+*     and was orginally known as "Vulcan."  (See:
+*     http://webopedia.internet.com/TERM/d/dBASE.html
+*     http://www.cetus-links.org/oo_visual_foxpro.html)
+* 2.  These lines that begin with "*" are comments.  They
+*     may be included in the source, in which case, the
+*     program will of course list them.
+* 3.  First, save this program as quine1.prg
+*     To run the program enter the command:
+*             DO quine1.prg
+* 4.  An interesting side effect of quine1 is that after you run
+*     it, it creates a new copy of itself called quine2.prg
+*     You can then run quine2.prg over and over, causing
+*     it to rewrite itself from quine1.prg.
+*===============================================
+set heading off
+type quine1.prg to file quine2.prg

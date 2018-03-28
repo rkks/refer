@@ -1,0 +1,71 @@
+
+my_script
+---------
+
+
+--------------------------------------------------------------------------
+
+                         FICHIER + STDOUT
+                                ^
+			        |
+			 ---------------	             --------------
+	USER_INPUT =>	|       |       |  USER_INPUT   =>  |  		   |
+			|  PTY  |  TTY  |                   | FORKED SHELL |
+			|       |       |  SHELL_OUTPUT <=  |		   |
+			 ---------------	             --------------
+
+
+--------------------------------------------------------------------------
+
+
+                        (output_child)
+                       FICHIER + STDOUT
+                              ^
+			      |
+	(father)	--------------			  ---------------
+       USER_INPUT =>   |      |       | USER_INPUT   =>  |               |
+		       | PTY  |  TTY  |			 | (shell_child) |
+		       |      |       |			 | FORKED SHELL  |
+		       |      |       |	SHELL_OUTPUT <=  |		 |
+			--------------			  ---------------
+
+
+---------------------------------------------------------------------------
+
+
+
+main()
+{
+   create_pty;
+   fork(); /* output_child */
+   fork(); /* shell_output */
+   close(fichier);
+   close(slave);
+   while (1)
+   {
+	read(STDIN);
+        write(master);
+   }
+}
+
+output_child()
+{
+   close(STDIN);
+   close(slave);
+   while (1)
+   {
+	read(master);
+   	write(fichier);
+	write(STDOUT);
+   }
+   exit(0);
+}
+
+shell_child()
+{
+   close(master);
+   close(fichier);
+   login_tty(slave);
+   shell;
+   exit(0);
+}

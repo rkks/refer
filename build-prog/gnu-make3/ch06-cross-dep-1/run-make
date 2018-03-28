@@ -1,0 +1,4 @@
+#! /bin/bash
+unset MAKELEVEL MAKEFLAGS MFLAGS
+echo '$ make'
+make

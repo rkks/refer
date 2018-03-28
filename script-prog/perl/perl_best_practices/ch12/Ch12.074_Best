@@ -1,0 +1,71 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $IDENT   => qr/\s* [_A-Za-z]\w+/xms;
+Readonly my $KEYWORD => qr/\s* (?: get | put | set ) /xms;
+Readonly my $BLOCK   => qr/\s* [{] [.]{3} [}] \s* /xms;
+
+my $input = <<'END_INPUT';
+set foo {...}
+get bar {...}
+put baz {...}
+END_INPUT
+
+my @tokens;
+
+# Reset the matching position of $input to the beginning of the string...
+pos $input = 0;
+ 
+# ...and continue until the matching position is past the last character...
+while (pos $input < length $input) {
+    if ($input =~ m{ \G ($KEYWORD) }gcxms) {
+        my $keyword = $1;
+        push @tokens, start_cmd($keyword);
+    } 
+    elsif ($input =~ m{ \G ( $IDENT) }gcxms) {
+        my $ident = $1;
+        push @tokens, make_ident($ident);
+    }
+    elsif ($input =~ m{ \G ($BLOCK) }gcxms) {
+        my $block = $1;
+        push @tokens, make_block($block);
+    }
+    else {
+        $input =~ m/ \G ([^\n]*) /gcxms;
+        my $context = $1;
+        croak "Error near: $context";
+    }
+}
+
+
+
+sub start_cmd { 
+    my ($token) = @_;
+    print "Start cmd: $token\n";
+    return $token;
+}
+
+sub make_ident { 
+    my ($token) = @_;
+    print "Make ident: $token\n";
+    return $token;
+}
+
+sub make_block { 
+    my ($token) = @_;
+    print "Make block: $token\n";
+    return $token;
+}

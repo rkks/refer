@@ -1,0 +1,4 @@
+domain "hello"
+# File:hello.c, line:8, textdomain("hello");
+msgid  "Hello, World!"
+msgstr "Hello, World, eh?!"

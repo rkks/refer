@@ -1,0 +1,6 @@
+load dollar
+load eval
+load cd
+
+echo welcome to sic $SIC_VERSION
+

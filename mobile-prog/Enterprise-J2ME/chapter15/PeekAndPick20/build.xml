@@ -1,0 +1,92 @@
+<project name="PeekAndPick20" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="PeekAndPick20" />
+
+    <property name="SDK" value="/home/juntao/Nokia/Devices/Nokia_Series_40_MIDP_Concept_SDK_Beta_0_3" />
+    <property name="midpclasses" value="${SDK}/lib/classes.zip" />
+    <property name="preverify" value="${SDK}/bin/preverify" />
+    <property name="emulator" value="${SDK}/bin/midp" />
+
+    <property name="tmp" value="anttmp" />
+    <property name="tmpclasses" value="${tmp}/tmpclasses" />
+    <property name="pvclasses" value="${tmp}/pvclasses" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${tmp}" />
+    <delete file="bin/${projname}.jar" />
+    <delete file="bin/*.sh" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${tmp}" />
+    <mkdir dir="${tmpclasses}" />
+    <mkdir dir="${pvclasses}" />
+
+    <unzip dest="${tmpclasses}">
+      <fileset dir="lib">
+        <include name="**/*.zip"/>
+        <include name="**/*.jar"/>
+      </fileset>
+    </unzip>
+    <delete dir="${tmpclasses}/META-INF" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${tmpclasses}"
+           bootclasspath="${midpclasses}" 
+    >
+      <classpath>
+        <pathelement path="${tmpclasses}"/>
+        <pathelement path="${midpclasses}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <!--
+  <target name="preverify" depends="compile">
+    <exec executable="${preverify}">
+      <arg line="-classpath ${midpclasses}"/>
+      <arg line="-d ${pvclasses}" />
+      <arg line="${tmpclasses}" />
+    </exec>
+  </target>
+  -->
+
+  <target name="preverify" depends="compile">
+    <java classname="com.nokia.phone.sdk.Preverifier" fork="true">
+      <sysproperty key="emulator.home" value="${SDK}"/>
+      <arg line="-classpath ${midpclasses}"/>
+      <arg line="-d ${pvclasses}" />
+      <arg line="${tmpclasses}" />
+      <classpath>
+        <pathelement location="${SDK}/tools/emulator.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="package" depends="preverify">
+    <copy todir="${pvclasses}">
+      <fileset dir="res" />
+    </copy>
+    <jar jarfile="bin/${projname}.jar"
+         basedir="${pvclasses}"
+         manifest="bin/MANIFEST.MF"
+    />
+  </target>
+
+  <target name="run" depends="init" >
+    <java classname="com.nokia.phone.sdk.Emulator" fork="true">
+      <sysproperty key="emulator.home" value="${SDK}"/>
+      <arg line="-jad bin/${projname}.jad"/>
+      <classpath>
+        <pathelement location="${SDK}/tools/emulator.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

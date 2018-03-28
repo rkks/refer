@@ -1,0 +1,9 @@
+#! /usr/bin/perl -s -wl
+
+print "'$alaska' awarded Alaska cruise";
+print "'$panama' awarded Panama Canal cruise";
+print "'$perlistan' awarded Perlistan Riviera cruise";
+
+# NOTE: To gracefully handle invocations lacking the three expected
+#       switches, this script could 
+#       avoid printing undefined switch variables, as does award_cruises3.

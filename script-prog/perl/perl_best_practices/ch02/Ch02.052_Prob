@@ -1,0 +1,31 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 2 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my ($name, $age, $status, $birth_date) = ('PAT', 67, 'M.I.A.', 1023534);
+
+$name = standardize_name($name);
+$age = time - $birth_date;
+$status = 'active';
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $name, $age, $status ];
+
+sub standardize_name {
+    my ($name) = @_;
+    return ucfirst lc $name;
+}
+

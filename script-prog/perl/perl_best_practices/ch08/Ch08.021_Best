@@ -1,0 +1,57 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $sales_data = \*DATA;
+my @sales;
+
+sub translate_ID {
+    my ($id) = @_;
+    return $id;
+}
+
+# Specify order and lengths of fields...
+
+Readonly my $RECORD_LAYOUT 
+    => '@0 A6 @8 A10 @20 A8';  # At column zero extract 6 ASCII chars
+                               # then at column 8 extract 10, 
+                               # then at column 20 extract 8.
+
+ 
+# Grab each line/record...
+while (my $record = <$sales_data>) {
+ 
+    # Extract all fields...
+    my ($ident, $sales, $price) 
+        = unpack $RECORD_LAYOUT, $record;
+ 
+    # Append each record, translating ID codes and
+    # normalizing sales (which are stored in 1000s)...
+    push @sales, {
+        ident => translate_ID($ident),
+        sales => $sales * 1000,
+        price => $price,
+    };
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @sales ];
+
+
+__DATA__
+X123-S  0000013247  00000199
+SFG-AT  0000000102  00009099
+Y811-Q  0000100300  00000033

@@ -1,0 +1,28 @@
+#! /usr/bin/perl -wnla
+
+=pod
+
+=head1 Name
+
+show_fields2_1 - Show field #2 followed by field #1
+
+=head1 Synopsis
+
+show_fields2_1 [file1 file2 ...]
+
+=head1 Description
+
+For each input line, prints field #2 followed by field #1.
+
+=cut
+
+($A, $B)=@F;     # Copy first field to $A, second to $B
+print "$B $A";   # Print in reverse order
+
+=pod
+
+=head1 Author
+
+Halchal Punter, IIT Rishikesh 27
+
+=cut

@@ -1,0 +1,38 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 5 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Data::Dumper 'Dumper';
+use Readonly;
+
+my $text;
+
+Readonly my $SPACE => q{ };
+ 
+if (@ARGV) {
+    local $INPUT_RECORD_SEPARATOR  = undef;   # Slurp mode
+
+    local $OUTPUT_RECORD_SEPARATOR = $SPACE;  # Autoappend a space to every print
+    local $OUTPUT_AUTOFLUSH        = 1;       # Flush buffer after every print
+ 
+    # Slurp, mutilate, and spindle...
+    $text = <>;
+    $text =~ s/\n/[EOL]/gxms;
+    print $text;
+}
+
+warn Dumper [
+    $INPUT_RECORD_SEPARATOR,
+    $OUTPUT_RECORD_SEPARATOR,
+    $OUTPUT_AUTOFLUSH,
+];

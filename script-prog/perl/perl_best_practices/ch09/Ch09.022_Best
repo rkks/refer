@@ -1,0 +1,55 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use Readonly;
+
+Readonly my $SPACE => q{ };
+
+use List::Util qw( max );
+
+sub _check_non_empty {
+    my ($str) = @_;
+    croak "Empty string" 
+        if !defined $str || !length $str;
+}
+
+sub _limit_to_positive {
+    my ($len) = @_;
+    return max($len, 0);
+}
+
+sub padded {
+    my $text           = _check_non_empty(shift);
+    my $cols_count     = _limit_to_positive(shift);
+    my $want_centering = shift;
+ 
+    # Compute the left and right indents required...
+    my $gap   = $cols_count - length $text;
+    my $left  = $want_centering ? int($gap/2) : 0;
+    my $right = $gap - $left;
+
+ 
+    # Insert that many spaces fore and aft...
+    return $SPACE x $left 
+         . $text 
+         . $SPACE x $right;
+}
+
+
+package Elsewhere;
+
+print '[', main::padded( 'hi there', -40, 1 ), "]\n";
+print '[', main::padded( '', 40, 0 ), "]\n";

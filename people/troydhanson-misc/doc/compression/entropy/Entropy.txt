@@ -1,0 +1,288 @@
+Measuring Entropy in a Byte Stream
+==================================
+Troy D. Hanson <tdh@tkhanson.net>
+v1.0.1, March 2013
+
+Entropy is a measure of the unpredictability of an information stream. A
+perfectly consistent stream of bits (all zeroes, or all ones) is totally
+predictable (has no entropy). A stream of completely unpredictable bits
+has maximum entropy. The idea of entropy of information is credited to 
+Claude Shannon who gave a formula to express it.
+
+Compression of information without loss (lossless compression) is bounded
+by how entropic the information is. Totally unpredictable streams of bits
+are not compressible. A totally consistent stream of bits is completely
+compressible. We say that such a stream has little information content.
+So information content and entropy are used casually as synonyms. A 
+compression algorithm is bounded mathematically by Shannon's formula which
+tells us, based on probabilities of the symbols being compressed, what is
+the maximum amount of compression that can be acheived. (It does not tell
+us how to actually implement that level of compression however. But using it
+we can gauge how well a particular compression algorithm does versus the most
+optimal possible compression).
+
+While entropy is mathematically described in generic terms, we will describe 
+here how to apply the formula to a stream of bytes to measure its entropy.
+The quantity of entropy we will use is "bits per byte".
+
+Let's explain this unit more carefully. We know that (at least in modern
+computers) all bytes have 8 bits. We're not talking about measuring that. This
+measure tells us how many bits are _necessary to encode_ each byte.
+
+Calculating entropy from a probability distribution
+---------------------------------------------------
+Suppose that we have a stream of bytes where every byte has only of two values
+(so two of the possible 256 values are used). We can tell immediately that
+every byte really only needs one bit to represent it. The entropy measure will
+confirm that this stream has "1 bit per byte" of information content.
+
+Recall
+~~~~~~
+First recall that the base2-logarithm of a number n (we'll call it ln(n)) just
+tells us "how many bits are needed to distinguish n states". A byte has 256
+values, so it requires ln(256)=8 bits to distinguish them. (2^8^ = 256).
+
+Also recall negative exponents are a way of writing an inverse to a power; in
+other words 2^-3^ is the same as 1/(2^3^). So, the base-2 log of a fractional
+value like 1/4 is -2 (because 2^-2^ = 1/(2^2^) = 1/4).
+
+Formula
+~~~~~~~
+The theoretical entropy of a stream of bytes is,
+
+  E = -SUM[v in 0..255]( p(v) * ln(p(v)) )
+
+Where p(v) is the probability of the byte value v. We've used SUM to
+mean the sigma notation.  Notice the entropy does not depend on the length
+of the byte stream (the length is factored in by virtue of the probabilities
+which are individually a count of a certain byte value v over the total count
+of bytes). The entropy can be calculated over any length of byte stream.
+
+Example 1
+~~~~~~~~~
+Let's apply the formula to the example mentioned where a stream of bytes only
+takes on two distinct values with equal probabilities. Since 254 of the 256 
+values of a byte never occur, their probability is zero, so they do not
+contribute to the entropy measure. The two remaining byte values occur with
+p(v)=1/2. The base-2 logarithm of 1/2 is -1 (because 2^-1^ = 1/2). Summing 
+both of those terms (since they're the same, just multiply the term by two),
+
+2 * (1/2 * -1)  == -1
+
+Finally the entropy formula has a leading negation (whose purpose is now
+apparent) so the resulting entropy is 1. That is, 1 bit per byte, q.e.d.
+
+Example 2
+~~~~~~~~~
+As a quick confirmation that we're doing the math right, if we had four
+equally likely bytes, the formula gives us an entropy of,
+
+-1 * 4 * (1/4 * -2) == 2 bits per byte.
+
+Example 3
+~~~~~~~~~
+Suppose we had a stream with only two byte values that ever occur, and they
+occur with probability 2/3 and 1/3. The formula tells us the entropy is,
+
+-1 * ( (2/3 * ln(2/3)) + (1/3 * ln(1/3)) ) == .913 bits per byte
+
+So we see that entropy can be fractional. To put it concrete terms this
+suggests that if we had 1000 of these bytes we could encode them with 913 bits
+(115 bytes).
+
+Example 4
+~~~~~~~~~
+Let's try one last example with an even more predictable probability 
+of 9/10 and 1/10. This should have lower entropy than the last example.
+
+-1 * ( (9/10 * ln(9/10)) + (1/10 * ln(1/10)) ) = .467
+
+This is consistent with our expectation. About 467 bits (58 bytes) would be
+needed to encode a stream of 1000 bytes with this probability distribution.
+
+Reality check
+^^^^^^^^^^^^^
+Let's try making a file with 1000 bytes where every byte is either 'y' or 'n'
+(the ASCII value for those characters) with probability 9/10 and 1/10.
+
+  perl -e 'my $y; $y .= int(rand(100))>90 ? "y" : "n" for (0..999); print $y;'
+
+Run that and put its output into a temporary file /tmp/y.
+
+Let's run the popular compression tool 'bzip2' on it, and see how it does
+compared to the (approximate) 58 byte ideal compressed size:
+
+  % ls -l /tmp/y
+  -rw-r--r-- 1 thanson thanson 1000 2011-06-15 18:56 /tmp/y
+  % bzip2 /tmp/y
+  % ls -l /tmp/y.bz2 
+  -rw-r--r-- 1 thanson thanson 118 2011-06-15 18:56 /tmp/y.bz2
+
+So it reduced the file from 1000 bytes to 118 bytes. That's still twice
+as large we think the best compression can achieve. Let's see if increasing
+the stream size allows bzip2 to more closely approach the entropic limit.
+
+Change the Perl program to generate 1,000,000 y/n bytes, run, and compare:
+
+  % ls -l /tmp/y
+  -rw-r--r-- 1 thanson thanson 1000000 2011-06-15 18:58 /tmp/y
+  % bzip2 /tmp/y 
+  % ls -l /tmp/y.bz2 
+  -rw-r--r-- 1 thanson thanson 62957 2011-06-15 18:58 /tmp/y.bz2
+
+So, the compressed file is about 6% of its original size, which is close
+to the entropic limit of (58/1000) or about 5.8% of original size. Good job,
+bzip2.
+
+Back to theory for a moment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We never justified how our unit is "bits per byte". Actually, bytes in the
+document here are just our specific choice of 'symbols in some alphabet'. The
+formula does not depend on the specific unit being bytes. Then where did the
+bits come from? From the choice of a base-2 logarithm (a base 2 number is a
+bit). So our unit is really "bits per symbol". The symbol could be changed to
+"integers" (a 4 byte quantity typically) or something else, and everything
+would still work, as long as the probabilities are expressed on the symbols.
+
+Range of entropy
+~~~~~~~~~~~~~~~~
+When our symbols are bytes, the entropy will always be in the range 0-8.
+If our symbols were in some other alphabet (not bytes) the range would
+be 0-n where n is the "bits per symbol" needed to distinguish all the
+symbols from each other. (E.g., If there are 16 symbols, n=ln(16)=4.)
+
+Entropic limit as percent
+~~~~~~~~~~~~~~~~~~~~~~~~~
+One last observation. Above, we turned an entropy measure into a ideal
+percentage for a file size reduction. To be explicit about how to calculate
+that, we take minimal bits per symbol (the entropy) and divide by the  
+natural bits per symbol (for bits per byte, that's 8). E.g., 
+
+  .467 / 8  = .058
+
+So a file whose entropy is .467 can be compressed to about 5.8% of its size.  
+
+Empirical measurement of entropy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Here we describe how to take an arbitrary byte stream (data read from a file,
+for example) and calculate its entropy.
+
+With the preceding background, this is a simple. First zero a counter for
+every possible symbol. Since we're dealing with bytes, we need an array of 256
+counters initialized to zero. Now step over every symbol (byte) in the input
+stream and increment its counter. At the end of the stream (or, every so many
+bytes, if you want to calculate entropy for chunks of the stream), calculate
+the probabilities from the counts. This is just dividing each count by the
+total number of symbols encountered. The result is a probability for each
+symbol, in the range 0-1. Now the entropy formula may be applied.
+
+Practical considerations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+No base-2 log function?
++++++++++++++++++++++++
+You might have noticed your programming language does not have a base2-log
+function, but it probably does have a function (called log(n)) which computes
+the natural log (base e). There's nothing to worry about because you can
+multiply a log in one base by a constant to express it in another base.
+
+  ln(n) = log(n) / log(2)
+
+So here the constant is 1/log(2). You could even do all the entropy
+calculations with log(n), and then scale the final entropy afterwards, by
+multiplying it by this constant c. (Because SUM(abc) = c(SUM(ab)).)
+
+Maybe log(n) is slow?
++++++++++++++++++++++
+Here is a final practical consideration. Maybe we don't want to call the log
+function all the time (suppose it's slow).  If we could just pre-calculate all
+the possible values we want from the log (or ln) we could make a nice table.
+But we need the log of all kinds of fractional values (probabilities a/b)!
+
+Here the properties of the logarithm are useful again:
+
+  log(a/b) = log(a) - log(b)
+
+If we can figure out all the possible values of integers a and b we might use,
+maybe that's more amenable to making a table than the fractional range of a/b.
+
+Most likely, in a real program we can figure out the range of a and b. Why?
+First remember that in our probability calculation, a is always less than b
+(a is in the range [0,b]), so we only need to consider the range of b. What 
+is the range of b? It is the maximum size of a stream (in other words, the
+maximum number of symbols) over which we might want to know the entropy.
+
+Suppose this size is, say, 1000 symbols (bytes). Then we only need to compute
+the first thousand log values.  (That is, for integers in the range [1,1000]).
+We left out zero because log(0) is not defined. In our program we'll need to
+notice any symbols whose count is 0, and just ignore that term of the entropy
+(since it contributes nothing) rather than trying to figure out the log of 0. 
+
+When we make our table of these first thousand log values, we can scale them
+too (to convert natural log to base-2 log) so we don't have to do that after
+each entropy calculation. Our table will be constructed like this:
+
+ tbl[i] = log(i) / log(2)
+
+And now tbl has the base-2 logarithm for i, for integer values of i in
+[1,1000]. Now in our program simply do a table lookup for ln(a) and ln(b)
+and subtract, in order to know the ln(a/b).
+
+Other thoughts
+~~~~~~~~~~~~~~
+
+Isn't entropy of a known file an oxymoron?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In college it used to bother me to think of "probabilities" when we're talking
+about a stream of known values. In other words, if I already have a file, then
+I know its contents, and there is no more information needed -- it seemed to
+me that the probability of each byte didn't make sense. I knew with certainty
+what each byte already was. So does entropy of a known file make sense?  Well,
+this was not a mathematical mystery- I just had the wrong perspective on the
+terminology. Entropy is invoked when communicating a stream from a sender to a
+receiver who has no prior knowledge of the stream (or compressing and then
+de-compressing a stream without a priori knowledge of the result). It tells us
+how much information the receiver needs to reconstruct the stream. If every
+symbol were equally likely, we'd need to send enough bits to distinguish each
+symbol (every time we send a symbol); since they're not necessarily equally
+likely, we can use fewer bits for the common ones.
+
+Linux kernel entropy pool
+^^^^^^^^^^^^^^^^^^^^^^^^^
+The Linux kernel maintains an "entropy pool", generated from "random" events
+such as timing of interrupts to the operating system. It exposes the entropy
+pool as the files `/dev/urandom` and `/dev/random` (the latter is a blocking
+version which only produces output when the kernel has sufficient entropy).
+
+  dd if=/dev/urandom of=/tmp/rand bs=1M count=1
+  ./entropy1 /tmp/rand
+  8.00 bits per byte
+
+:t: https://github.com/troydhanson/misc/tree/master/compression/entropy
+:b: https://github.com/troydhanson/misc/blob/master/compression/entropy
+
+Resources
+---------
+Here are {t}[some C programs] that implement entropy measure. These are placed
+in the public domain.
+
+* A {b}/entropy1.c[program] that prints the entropy of stdin or a file, in bits per byte.
+* This {b}/shlimit.c[version] also shows the percentage to which the input file could be compressed.
+* A {b}/mkprob.c[tool] that produces byte streams having a given probability distribution, for testing.
+
+Example 1
+~~~~~~~~~
+Calculate entropy of a stream having (approx.) 1/3 and 2/3 ratio of two symbols:
+
+  ./mkprob -c 10000 33 67 | ./entropy1
+  0.92 bits per byte
+
+Example 2
+~~~~~~~~~
+Calculate the limit to which a particular stream of 10000 bytes could be compressed:
+
+  ./mkprob -c 10000 10 20 30 40 | ./shlimit 
+  1.85 bits per byte
+  This data can be reduced to 23% of its original size,
+  from 10000 bytes to about 2312 bytes.
+

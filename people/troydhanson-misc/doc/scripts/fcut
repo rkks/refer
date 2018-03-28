@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+# prints a region from a binary or text file (from position s of length l)
+use strict;
+use warnings;
+use Getopt::Long;
+
+sub usage {
+  print "usage: $0 [-s <pos>] [-l len] <file>\n";
+  exit(-1);
+}
+
+our $start=0;
+our $len = "";
+our $help;
+
+usage unless GetOptions("start=i"          => \$start,
+                        "len=i"            => \$len,
+                        "help"             => \$help);
+usage if $help;
+local $/;  # slurp mode
+my $data;
+if (@ARGV) { 
+  my $file = shift @ARGV;
+  open FILE, "<$file" or die "can't open $file: $!";
+  $data = <FILE>;
+} else {
+  $data = <STDIN>;
+}
+$len = length($data) unless $len;
+print substr($data,$start,$len);

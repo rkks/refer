@@ -1,0 +1,81 @@
+##############################################################################
+## Example 15.1 (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-1. Typical hash-based Perl classes
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package File::Hierarchy;
+ 
+ 
+# Objects of this class have the following attributes...
+#     'root'   - The root directory of the file hierarchy
+#     'files'  - An array storing an object for each file in the root directory
+ 
+# Constructor takes path of file system root directory...
+sub new {
+    my ($class, $root) = @_;
+ 
+    # Bless a hash to instantiate the new object...
+    my $new_object = bless {}, $class;
+ 
+    # Initialize the object's "root" attribute...
+    $new_object->{root} = $root;
+ 
+    return $new_object;
+}
+ 
+# Retrieve files from root directory...
+sub get_files {
+    my ($self) = @_;
+ 
+    # Load up the "files" attribute, if necessary...
+    if (!exists $self->{files}) {
+        $self->{files} 
+            = File::System->list_files($self->{root});
+    }
+ 
+    # Flatten the "files" attribute's array to produce a file list...
+    return @{$self->{files}};
+}
+ 
+ 
+package File::Hierarchy::File;
+ 
+ 
+# Objects of this class have the following attributes...
+#     'name' - the name of the file
+ 
+# Constructor takes name of file...
+sub new {
+    my ($class, $filename) = @_;
+ 
+    # Bless a hash to instantiate the new object...
+    my $new_object = bless {}, $class;
+ 
+    # Initialize the object's "name" attribute...
+    $new_object->{name} = $filename;
+ 
+    return $new_object;
+}
+ 
+# Retrieve name of file...
+sub get_name {
+    my ($self) = @_;
+ 
+    return $self->{name};
+}
+

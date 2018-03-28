@@ -1,0 +1,78 @@
+##############################################################################
+##   Example 16.5 (Recommended) from Chapter 16 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-5. Avoiding positional arguments to constructors
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Client;
+use Class::Std::Utils;
+{
+    my %client_num_of; 
+    my %name_of;
+ 
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;   
+ 
+        $client_num_of{ident $new_object} = $arg_ref->{client_num};
+        $name_of{ident $new_object}       = $arg_ref->{client_name};
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of, \%name_of ];
+    }
+}
+ 
+package Client::Corporate;
+use base qw( Client );
+use Class::Std::Utils;
+{
+    my %corporation_of;
+    my %position_of; 
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = $class->SUPER::new($arg_ref);
+ 
+        $corporation_of{ident $new_object} = $arg_ref->{corp_name};
+        $position_of{ident $new_object}    = $arg_ref->{position};
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%corporation_of, \%position_of ];
+    }
+}
+ 
+# and later...
+ 
+my $new_client 
+    = Client::Corporate->new( {
+          client_num  => '124C1',
+          client_name => 'Humperdinck',
+          corp_name   => 'Florin',
+          position    => 'CEO',
+      });
+

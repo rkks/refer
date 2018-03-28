@@ -1,0 +1,34 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 4 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $scam_pitch  = 'I am the former aide to General Sir Kame Obakwe...';
+my $fake_name   = 'Winston Ubeki';
+my $target_name = 'John';
+
+use constant {
+    DEAR      => 'Greetings to you,',
+    SINCERELY => 'May Heaven guard you from all misfortune,',
+}; 
+ 
+# and later...
+ 
+my $msg = DEAR . $target_name 
+       . "\n\n$scam_pitch\n\n"
+       . SINCERELY 
+       . "\n\n$fake_name";
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $msg ];

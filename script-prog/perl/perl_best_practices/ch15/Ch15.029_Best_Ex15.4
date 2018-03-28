@@ -1,0 +1,46 @@
+##############################################################################
+##   Example 15.4 (Recommended) from Chapter 15 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-4. An inside-out class with its necessary destructor
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package File::Hierarchy;
+use Class::Std::Utils;
+{
+    # Objects of this class have the following attributes...
+    my %root_of;   # The root directory of the file hierarchy
+    my %files_of;  # An array storing an object for each file in the root directory
+    
+    # Constructor takes path of file system root directory...
+    sub new {
+    }
+    
+    # Retrieve files from root directory...
+    sub get_files {
+    }
+ 
+    # Clean up attributes when object is destroyed...
+    sub DESTROY {
+        my ($self) = @_;
+ 
+        delete $root_of{ident $self};
+        delete $files_of{ident $self};
+ 
+        return;
+    }
+}
+

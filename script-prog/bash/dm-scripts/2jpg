@@ -1,0 +1,75 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="2jpg"
+       HTML_="convert to jpg image format"
+    PURPOSE_="convert image file to jpg format"
+   SYNOPSIS_="$NAME_ [-vhl] [-c compression_quality] <file> [file...]"
+   REQUIRES_="standard GNU commands, ImageMagick"
+    VERSION_="1.4"
+       DATE_="1998-11-07; last update: 2004-06-22"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="gfx"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -r, remove the input file after conversion
+     -c, compression ratio; a number between 0-100; 100 gives best quality; default is 90
+     -v, verbose
+     -h, usage and options (this help)
+     -l, see this script"
+    exit 1
+}
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# var init
+rm_input=
+verbose=
+compress=90 # default compression ratio
+
+# option and arg handling
+while getopts vhlrc: options; do
+
+    case "$options" in
+        r) rm_input=on ;;
+        c) compress=$OPTARG ;;
+        v) verbose=on ;;
+        h) usage ;;
+        l) more $0; exit 1 ;;
+       \?) echo invalid argument, type $NAME_ -h for help; exit 1 ;;
+    esac
+
+done
+shift $(( $OPTIND - 1 ))
+
+# check if required command is in $PATH variable
+which mogrify &> /dev/null
+[[ $? != 0 ]] && { echo >&2 the required ImageMagick \"mogrify\" command \
+is not in your PATH variable; exit 1; }
+
+# main execution
+for a in "$@"; do
+
+    newf=$(echo "${a%.*}".jpg)
+    if [ -f "$newf" ]; then
+        echo "${NAME_}: skipping converting $a - $newf already exist" && continue
+    else
+        [ -f "$a" ] && mogrify -format jpg -quality $compress $a || continue
+        [[ $verbose ]] && echo "${NAME_}: $a -> $newf"
+        [[ $rm_input ]] && rm -f -- "$a"
+    fi
+
+done

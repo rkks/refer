@@ -1,0 +1,26 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 17 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Payload;
+# Only works under 5.6.1 and later
+ 
+use IO::Prompt;                 # must be 0.2.0 or better, but not 0.3.1
+use List::Util qw( max );     # must be 1.13 or better
+use Benchmark qw( cmpthese );   # but no later than version 1.52
+ 
+# etc.
+

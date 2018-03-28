@@ -1,0 +1,55 @@
+server {
+  name host1.abc.com
+  port 5050
+}
+
+server {
+  name host2.abc.com
+  port 8080
+}
+
+server {
+  name host3.abc.com
+  port 5050
+}
+
+server {
+  name host4.abc.com
+  port 8080
+}
+
+server {
+  name host5.abc.com
+  port 5050
+}
+
+server {
+  name host6.abc.com
+  port 8080
+}
+
+server {
+  name host7.abc.com
+  port 8080
+}
+
+server {
+  name host8.abc.com
+  port 5050
+}
+
+server {
+  name host9.abc.com
+  port 8080
+}
+
+server {
+  name host10.abc.com
+  port 8080
+}
+
+server {
+  name host11.abc.com
+  port 8080
+}
+

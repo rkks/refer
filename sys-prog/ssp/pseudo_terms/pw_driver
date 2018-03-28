@@ -1,0 +1,9 @@
+#!/bin/sh
+
+NEW_PW="changeme"
+
+echo $NEW_PW
+read junk
+echo $NEW_PW
+read junk
+read junk

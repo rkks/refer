@@ -1,0 +1,304 @@
+
+if [[ $1 = -+([0-9]) ]]; then
+    howmany=$1
+    shift
+elif [[ $1 = -* ]]; then
+    print 'usage: highest [-N] filename'
+    return 1
+else
+    howmany="-10"
+fi
+
+filename=$1
+sort -nr $filename | head $howmany
+
+
+
+
+objfiles=""
+for filename in "$@"; do
+    case $filename in 
+        *.c ) 
+            objname=${filename%.c}.o
+            compile $filename $objname ;;
+        *.s )
+            objname=${filename%.s}.o
+            assemble $filename $objname ;;
+        *.o ) 
+            objname=$filename ;;
+        *   ) 
+            print "error: $filename is not a source or object file."
+            return 1 ;;
+    esac
+    objfiles="$objfiles $objname"
+done
+ld $objfiles
+
+
+# initialize option-related variables
+do_link=true
+debug=""
+link_libs="-l c"
+exefile=""
+opt=false
+
+# process command-line options
+while getopts "cgl:o:O" opt; do
+    case $opt in 
+        c )    do_link=false ;;
+        g )    debug="-g" ;;
+        l )    link_libs="$link_libs -l $OPTARG" ;;
+        o )    exefile="-o $OPTARG" ;;
+        O )    opt=true ;;
+        \\? )    print 'usage: occ [-cgO] [-l lib] [-o file] files...'
+               return 1 ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+# process the input files
+objfiles=""
+for filename in "$@"; do
+    case $filename in 
+        *.c ) 
+            objname=${filename%.c}.o
+            ccom $debug $filename $objname 
+            if [[ $opt = true ]]; then
+                optimize $objname 
+            fi ;;
+        *.s )
+            objname=${filename%.s}.o
+            as $filename $objname ;;
+        *.o ) 
+            objname=$filename ;;
+        *   ) 
+            print "error: $filename is not a source or object file."
+            return 1 ;;
+    esac
+    objfiles="$objfiles $objname"
+done
+
+if [[ $do_link = true ]]; then
+    ld $exefile $link_libs $objfiles
+fi
+
+
+
+print "Only $(( (365-$(date +%j)) / 7 )) weeks until the New Year!"
+
+
+
+
+if [[ $1 = -+([0-9]) ]]; then
+    let page_lines=${1#-}
+    shift
+else
+    let page_lines=66
+fi
+let file_lines="$(wc -l < $1)"
+
+let pages=file_lines/page_lines
+if (( file_lines % page_lines > 0 )); then
+    let pages=pages+1
+fi
+
+
+
+function pushd {                # push current directory onto stack
+    dirname=$1
+    if [[ -d $dirname && -x $dirname ]]; then
+        DIRSTACK="$dirname ${DIRSTACK:-$PWD}"
+        print "$DIRSTACK"
+    else
+        print "still in $PWD."
+    fi
+}
+
+function popd {                 # pop directory off the stack, cd to new top
+    if [[ -n $DIRSTACK ]]; then
+        DIRSTACK=${DIRSTACK#* }
+        cd ${DIRSTACK%% *}
+        print "$PWD"
+    else
+        print "stack empty, still in $PWD."
+    fi
+}
+
+
+
+
+function getNdirs {
+    stackfront=''
+    let count=0
+    while (( $count < $1 )); do
+        stackfront="$stackfont ${DIRSTACK%% *}"
+        DIRSTACK=${DIRSTACK#* }
+        let count=count+1
+    done
+}
+
+function pushd {
+    if [[ $1 = "++([0-9])" ]]; then
+        # case of pushd +n: rotate n-th directory to top
+        let num=${1#+}
+        getNdirs $num
+
+        newtop=${stackfront##* }
+        stackfront=${stackfront%$newtop}
+
+        DIRSTACK="$newtop $stackfront $DIRSTACK"
+        cd $newtop
+
+    elif [[ -z $1 ]]; then
+        # case of pushd without args; swap top two directories
+        firstdir=${DIRSTACK%% *}
+        DIRSTACK=${DIRSTACK#* }
+        seconddir=${DIRSTACK%% *}
+        DIRSTACK=${DIRSTACK#* } 
+
+        DIRSTACK="$seconddir $firstdir $DIRSTACK"
+        cd $seconddir
+
+    else
+        # normal case of pushd dirname
+        dirname=$1
+        if [[ -d $dirname && -x $dirname ]]; then
+            DIRSTACK="$dirname ${DIRSTACK:-$PWD}"
+            print "$DIRSTACK"
+        else
+            print still in "$PWD."
+        fi
+    fi
+}
+
+function popd {                 # pop directory off the stack, cd to new top
+    if [[ $1 = ++([0-9]) ]]; then
+        # case of popd +n: delete n-th directory from stack
+        let num={$1#+}
+        getNdirs $num
+
+        stackfront=${stackfront% *}
+        DIRSTACK="$stackfront $DIRSTACK"
+
+    else
+        # normal case of popd without argument
+        if [[ -n $DIRSTACK ]]; then
+            DIRSTACK=${DIRSTACK#* }
+            cd ${DIRSTACK%% *}
+            print "$PWD"
+        else
+            print "stack empty, still in $PWD."
+        fi
+    fi
+}
+
+
+
+print 'Select your terminal type:'
+PS3='terminal? '
+select term in
+    'Givalt GL35a' \\
+    'Tsoris T-2000' \\
+    'Shande 531' \\
+    'Vey VT99'
+do
+    case $REPLY in
+        1 ) TERM=gl35a ;;
+        2 ) TERM=t2000 ;;
+        3 ) TERM=s531 ;;
+        4 ) TERM=vt99 ;;
+        * ) print "invalid." ;;
+    esac
+    if [[ -n $term ]]; then
+        print "TERM is $TERM"
+        break
+    fi
+done
+
+
+set -A termnames gl35a t2000 s531 vt99
+print 'Select your terminal type:'
+PS3='terminal? '
+select term in
+    'Givalt GL35a' \\
+    'Tsoris T-2000' \\
+    'Shande 531' \\
+    'Vey VT99'
+do
+    if [[ -n $term ]]; then
+        TERM=${termnames[REPLY-1]}
+        print "TERM is $TERM"
+        break
+    fi
+done
+
+
+
+
+function afunc {
+    typeset diffvar
+    samevar=funcvalue
+    diffvar=funcvalue
+    print "samevar is $samevar"
+    print "diffvar is $diffvar"
+}
+
+samevar=globvalue
+diffvar=globvalue
+print "samevar is $samevar"
+print "diffvar is $diffvar"
+afunc
+print "samevar is $samevar"
+print "diffvar is $diffvar"
+
+
+samevar is globvalue
+diffvar is globvalue
+samevar is funcvalue
+diffvar is funcvalue
+samevar is funcvalue
+diffvar is globvalue
+
+
+
+set -A filenames $(ls $1)
+typeset -L14 fname
+let count=0
+let column=1
+let numcols=5
+
+while (( $count < ${#filenames[*]} )); do
+    fname=${filenames[count]}
+    print -n "$fname  "
+    let count="count + 1"
+    if (( count % numcols == 0 )); then
+        print		# NEWLINE
+    fi
+done
+
+if (( count % numcols != 0 )); then
+    print
+fi
+
+
+dos_regexp='[^a-z]\\{1,8\\}\\.[^a-z]\\{0,3\\}'
+for filename in ${1:+$1/}* ; do
+    if print "$filename" | grep $dos_regexp > /dev/null; then
+        newfilename=$(print $filename | tr [A-Z] [a-z])
+        newfilename=${newfilename%.}
+        print "$filename -> $newfilename"
+        mv $filename $newfilename
+    fi
+done
+
+
+typeset -l newfilename
+dos_regexp='[^a-z]\\{1,8\\}\\.[^a-z]\\{0,3\\}'
+for filename in ${1:+$1/}* ; do
+    if print "$filename" | grep $dos_regexp > /dev/null; then
+        newfilename=${filename%.}
+        print "$filename -> $newfilename"
+        mv $filename $newfilename
+    fi
+done
+

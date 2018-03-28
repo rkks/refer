@@ -1,0 +1,80 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+Readonly my @CONFIG_PATHS
+    => qw( dev/config dev/config/alt ~/config /usr/config );
+
+Readonly my $REMOTE_SERVER => 'foobar@foo.bar';
+Readonly my $MAX_TRIES     => 100;
+
+Readonly my $QUIT => qr/\A q(?:uit)? \z/ixms;
+
+sub init_from  {
+    return sleep 2;
+}
+
+sub connect_to {
+    my ($server, $opt_ref) = @_;
+    sleep $opt_ref->{timeout};
+    return rand 0 > 0.7 ? 'pipe' : undef;
+}
+
+sub fibonacci {
+    my ($n) = @_;
+    return 1 if $n < 2;
+    return fibonacci($n-1) + fibonacci($n-2);
+}
+
+my $prompt_str = '> ';
+
+# Initialize from any config files...
+print {*STDERR} 'Initializing...';
+
+for my $possible_config ( @CONFIG_PATHS ) {
+    print {*STDERR} '.';
+    init_from($possible_config);
+}
+print {*STDERR} "done\n";
+ 
+# Connect to remote server...
+print {*STDERR} 'Connecting to server...';
+
+my $connection;
+TRY:
+for my $try (1..$MAX_TRIES) {
+    print {*STDERR} '.';
+    $connection = connect_to($REMOTE_SERVER, { timeout => fibonacci($try) });
+    last TRY if $connection;
+}
+croak "Can't contact server ($REMOTE_SERVER)"
+    if not $connection;
+print {*STDERR} "done\n";
+ 
+# Interactive portion of the program starts here...
+
+while (my $cmd = prompt($prompt_str, -fail_if=>$QUIT)) {
+    remote_execute($connection, $cmd) 
+        or carp "Unknown command: $cmd";
+}
+
+
+
+sub remote_execute {
+    my ($connection, $cmd) = @_;
+    print "remotely executing via $connection: $cmd\n";
+    return 1;
+}

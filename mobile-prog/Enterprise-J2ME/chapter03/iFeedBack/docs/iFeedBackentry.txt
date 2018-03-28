@@ -1,0 +1,68 @@
+
+University Wireless Developer Contest 
+
+Grand prize winner
+Designed by Michael J. Yuan
+
+1) Name of application:
+
+iFeedBack - A Single Sign-on Mobile Survey Tool for University Students
+
+2) Application description-- including functionality and user interface:
+
+College students in large universities usually have little interaction with professors. The lack of feedback on course advances and teaching techniques is one of the major factors that impede effective learning.  Often times, course evaluation survey at the end of the semester are the only way a student can convey his/her opinion on the teaching to the professor. But there are two problems with such delayed instructor surveys: They are too late for the students to remember earlier incidents; They are too late for the professor to take remedy measures.
+ 
+An open, real-time and convenient communication channel between professors and students will benefit both parties by offering better higher education. iFeedBack is a mobile survey application that allows questionnaires to be presented and answered anytime, anywhere. It is not only suitable for frequent instructor surveys, it can also be used in in-class quiz and homework assignments.
+
+Core features of the MIDP client include:
+ 
+* Loosely coupled with a single sign-on server through XML Web services for maximum compatibility.
+
+* Tightly coupled with survey servers through binary-over-HTTP for better performance.
+
+* On-device endpoints management.
+ 
+* Time-stamped answer submissions.
+
+* Save submissions in an on-device cache to minimize slow and unreliable network operations.
+
+* Extensive use of gauge and worker thread to improve user experience.
+ 
+* Extensive use of modularized MVC pattern to improve code maintainability and extensibility.
+ 
+One major feature of iFeedBack is its single sign-on scheme. Single sign-on is critical for easy-of-use since a student needs to access surveys of many different courses. It also separates authentication information from survey providers. That helps to protect student identity from surveyors when necessary. Single sign-on also provides means of easy centralized billing. The single sign-on token server is implemented as a SOAP Web services for maximum compatibility. Techniques developed in this sample can be easily applied to enterprise applications.
+ 
+Each survey provider is a database powered J2EE application. The application interacts with both single sign-on server and MIDP client. It provides current questions to authorized users, takes in responses and saves them in databases.
+ 
+Source code for MIDP client, J2EE survey server and single sign-on server are all provided in this submission.
+
+3) Overview of sales and marketing plan for your application:
+
+Target customers: universities and other higher education institutions are the customers to buy iFeedBack. Note that our customers are not the end users of the application (i.e. students and faculties). We market iFeedBack to the universities. The universities could then promote iFeedBack among students and faculties through course websites, email lists, etc.
+ 
+Market demands: demand for iFeedBack will be great. More and more universities realize that high quality of education is the most critical factor to gain competitive edge. iFeedBack provides universities a much-needed channel to get students' feedback in real time. It will be very helpful to improve the effectiveness of learning and teaching.
+ 
+Competition: iFeedBack is a completely new application. It will enjoy every great advantage as the "first mover". There are no existing incumbent products, thus we will have no barriers to enter the market. As the market leader, iFeedBack will continuously enjoy strong brand equity and customer loyalty in the long run.
+
+Market penetration: we expect that the market penetration will be relatively easy. Universities are the forerunners in adopting new information technologies. As end users, students and faculty members are also known for their willingness to try new technologies. So initial acceptance of our application is expected to be high. Furthermore, new technologies diffuse across campus rather quickly because of peer influences among students. This could also facilitate quicker market penetration.
+ 
+Customer adaptation: iFeedBack is designed to be integrated into existing information systems in universities. No new infrastructure is needed. The expertise from the university IT departments should be enough to implement the application. For the end users, our application is easy to use and very little expertise is required.
+ 
+Market expansion: iFeedBack is fitful for any kind of higher education institution. Its market can be expanded to the universities in other countries besides the U.S. The potential global market size could be big.
+
+
+4) Pricing model (one-time fee, subscription-based, etc):
+ 
+Both one-time fee and subscription-based pricing models can be applied to iFeedBack. In either case, universities buy iFeedBack application and they might bill students for the cost that incurs.
+
+In the one-time fee model, a one-time licensing fee will be charged when a university buys the application software package. The university will be responsible of running the entire application. Services such as technical support are included in the package. 
+
+In the subscription-based model, a subscription fee will be charged either on a flat-rate basis, or based the application usage. An application service provider will run the service for the university.
+
+All wireless carriers enjoy additional benefits of increased bandwidth and airtime usage.
+ 
+5) End user benefits:
+ 
+iFeedBack provides college students an open, real-time and convenient communication channel with the instructors. Through iFeedBack, students and instructors can share more effective learning and teaching experiences.
+
+The buyers of iFeedBack are universities, whose core business is education. Improved education quality serves a university's ultimate goal, boosts enrollment and makes it more competitive.

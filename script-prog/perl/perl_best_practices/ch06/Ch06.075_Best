@@ -1,0 +1,54 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+my %num_for = (
+#   English       Français        Française
+   'zero' => 0,   'zéro' => 0,
+    'one' => 1,     'un' => 1,    'une' => 1,
+    'two' => 2,   'deux' => 2,
+  'three' => 3,  'trois' => 3,
+   'four' => 4, 'quatre' => 4,	
+   'five' => 5,   'cinq' => 5,
+    'six' => 6,	  'sixe' => 6,
+  'seven' => 7,	  'sept' => 7,
+  'eight' => 8,	  'huit' => 8,
+   'nine' => 9,   'neuf' => 9,
+);
+ 
+sub words_to_num {
+    my ($words) = @_;
+    
+    # Treat each sequence of non-whitespace as a word...
+    my @words = split /\s+/, $words;
+ 
+    # Translate each word to the appropriate number...
+    my $num = $EMPTY_STR;
+    for my $word (@words) {
+        my $digit = $num_for{lc $word};
+        if (defined $digit) {
+             $num .= $digit;
+        }
+    }
+ 
+    return $num;
+}
+ 
+# and later...
+ 
+print words_to_num('one zero eight neuf');    # prints: 1089
+

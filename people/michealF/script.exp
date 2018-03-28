@@ -1,0 +1,36 @@
+#!/usr/bin/expect
+#http://technologyordie.com/cisco-configuration-backup-script
+set timeout 15
+set host [lindex $argv 0]
+set username [lindex $argv 1]
+set password [lindex $argv 2]
+set tftp [lindex $argv 3]
+set file [lindex $argv 4]
+
+#Open the SSH session
+spawn ssh -l $username $host
+sleep 2
+
+#Catch the password prompt and send supplied password
+expect {
+"word:" {send "$password\r"}
+}
+sleep 1
+
+#Catch the enabled prompt and issue the command to backup configuration
+expect {
+"#" {send "copy startup-config tftp:\r"}
+} 
+sleep 1
+
+#Expect the two confirmation questions and answer
+expect {
+"?" {send "$tftp\r"}
+}
+sleep 1
+expect {
+"?" {send "$file\r"}
+}
+
+#Wait long enough for file transfer and exit
+sleep 10

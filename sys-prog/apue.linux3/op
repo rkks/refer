@@ -1,0 +1,1 @@
+gcc -Wall -Wstrict-prototypes -O		   child.c  /home/thanlon/th/th/apue/libmisc.a		 -o child

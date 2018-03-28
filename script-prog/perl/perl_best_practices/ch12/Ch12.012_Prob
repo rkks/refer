@@ -1,0 +1,28 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 12 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+# Print contents of lines starting with --...
+LINE:
+while (my $line = <DATA>) {
+    next LINE if $line !~ m/ \A -- ([^\n]+) \z/xm;
+    print $1;
+}
+
+__DATA__
+line 1
+-- line 2
+line 3
+--line 4

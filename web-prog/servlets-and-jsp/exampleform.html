@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Example HTML Form</title>
+  </head>
+  <body>
+  <p>To debug a HTML form set its 'action' attribute
+    to reference the ShowParameters Servlet.</p>
+  <form action="http://127.0.0.1/jspbook/ShowParameters"
+    method="post">
+    Name: <input type="text" name="name"><br>
+    Password: <input type="password" name="password"><br>
+    Select Box: 
+    <select name="selectbox">
+     <option value="option1">Option 1</option>
+     <option value="option2">Option 2</option>
+     <option value="option3">Option 3</option>
+    </select><br>
+    Importance: 
+    <input type="radio" name="importance" value="very">Very, 
+    <input type="radio" name="importance" value="normal">Normal, 
+    <input type="radio" name="importance" value="not">Not<br>
+    Comment: <br>
+    <textarea name="textarea" cols="40" rows="5"></textarea><br>
+    <input value="Submit" type="submit">
+  </form>
+  </body>
+</html>

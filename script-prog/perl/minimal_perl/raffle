@@ -1,0 +1,27 @@
+#! /usr/bin/perl -s -wl
+# Simulates "hand in fishbowl" method of picking raffle winner
+
+$Usage="Usage: $0 [-debug]  name1  num_tickets1 ...";
+
+# Process args in pairs; requires incrementing by two
+for ($index=0; $index < @ARGV; $index+=2) {
+    $name="\U$ARGV[$index]";    # uppercased contestant name
+    $tickets=$ARGV[$index+1];   # arg after name is count
+
+    # Given "andy 3  dora 2", fishbowl gets 3 ANDYs, 2 DORAs
+    $debug  and
+        warn "Inserting $tickets tickets for $name\n";
+
+    for ( $tcount=1; $tcount <= $tickets; $tcount++ ) {
+        push @fishbowl, $name;  # put in another "$name"
+    }
+}
+@fishbowl  or  die "$Usage\n";  # empty fishbowl, no drawing
+$debug  and  print "\nFishbowl contains: @fishbowl";
+
+print "\nSelecting a ticket ...";
+$rand_num=int rand @fishbowl;   # range is 0,#elements-1
+
+$debug  or  sleep 2;    # Engender suspense (unless debugging)
+print "\nAnd the winning ticket is #$rand_num,",
+    " owned by: \"$fishbowl[$rand_num]\"";

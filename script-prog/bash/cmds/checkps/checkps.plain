@@ -1,0 +1,101 @@
+:
+##########################################################################
+# Shellscript:	checkps - check for old processes, notify user by mail
+# Author     :	Heiner Steven (hs)
+# Date       :	1996-02-07
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) checkps	1.10 04/02/18
+##########################################################################
+# Note
+#	Uses not-standard programm "psold" to list old processes
+#
+# Changes
+# 01.04.1996 	hs	Optionally ignore processes (0.2)
+# 16.07.1999	hs	Ignore frame license manager (1.2)
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.10'
+: ${AWK:=nawk}
+: ${HOST:=`uname -n`}
+# Users and processes to ignore
+IgnUser='bin|daemon|news|root|http|sqld'
+IgnProc='^(<defunct>|restart|frame.*licenses|radiusd|ssh-agent|.*fm_fls.*)$'
+# Determine mail program knowing -s option
+Mail=mail
+[ -x /bin/mailx ] && Mail=mailx
+Usage () {
+    echo >&2 "$PN - check for old processes, $VER (stv '96)
+usage: $PN [-fn]
+   -f:	force non-interactive execution
+   -n:	no sending of mail, just print user names"
+    exit 1
+}
+Msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+ForceRun=no
+Action=yes
+set -- `getopt fhn "$@"` || exit 1
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-f)	ForceRun=yes;;
+	-n)	Action=no;;
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+# This script may be run by cron - set path explicitly
+PATH=$HOME/cmds:$PATH	export PATH
+OldProcs="${TMPDIR:=/tmp}/cp$$"
+trap 'rm -f "$OldProcs" >/dev/null 2>&1' 0
+trap "exit 2" 1 2 3 13 15
+if [ $ForceRun = no -a $Action = yes ]
+then
+    echo >&2 \
+	"Really check for old processes and notify all users per mail (y/n)?"
+    read ok || exit 2
+    case "$ok" in
+	[nN]*)	exit 0;;
+    esac
+fi
+# Get all processes at least one day old
+psold | 
+    $AWK '
+	$1 ~ /^'"$IgnUser"'/ { next }	# Ignore user
+	{
+	    # Determine command column: first column containing
+	    # a time in [H]H:MM format
+	    for ( i=1; i<=NF; i++ )
+		if ( $i ~ /^[0-2]*[0-9]*:[0-6][0-9]/ ) break
+	    if ( i > NF ) next
+	    CmdCol = i + 1
+	    # Build command line
+	    Cmd = ""
+	    for ( i=CmdCol; i<=NF; i++ ) {
+		if ( Cmd != "" ) Cmd = Cmd " " $i
+		else Cmd = $i
+	    }
+	    if ( Cmd ~ /'"${IgnProc:-DONTMATCH}"'/ ) next
+	}
+	{ print }
+    ' > "$OldProcs" || exit 1
+# Write mail to each user
+for User in `$AWK '++U [$1] == 1 {print $1}' "$OldProcs"`
+do
+    if [ $Action = yes ]
+    then
+	{	egrep "^[ 	]*$User[ 	]" < $OldProcs
+	    echo "[This mail was created automatically]"
+	} | $Mail -s "old processes ($HOST) - still needed?" "$User"
+    else
+    	echo "$User"
+    fi
+done
+exit 0

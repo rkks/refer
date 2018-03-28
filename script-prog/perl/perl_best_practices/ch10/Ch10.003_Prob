@@ -1,0 +1,33 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 10 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+no strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $filename = $PROGRAM_NAME;
+
+# Somewhere earlier in the same package (but perhaps in a different file)...
+use POSIX;
+ 
+# and later...
+ 
+# Open filehandle to the external device...
+open EXDEV(), '<', $filename
+    or croak "Can't open '$filename': $OS_ERROR";
+
+ 
+# And process data stream...
+while (my $next_reading = <EXDEV>) {
+    process_reading($next_reading);
+}
+

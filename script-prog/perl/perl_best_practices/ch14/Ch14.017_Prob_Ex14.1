@@ -1,0 +1,51 @@
+#!/usr/bin/perl -s
+
+##############################################################################
+## Example 14.1 (NOT RECOMMENDED) from Chapter 14 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 14-1. Command-line parsing via perl -s
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+# Use the -s shebang line option to handle command-lines of the form:
+#
+#     > orchestrate -in=source.txt -out=dest.orc -v
+ 
+# The -s automatically parses the command line into these package variables...
+use vars qw( $in $out $verbose $len);
+ 
+# Handle meta-options (which will appear in package variables whose names
+# start with a dash. Oh, the humanity!!!)...
+no strict qw( refs );
+X::Version->throw() if ${-version};
+X::Usage->throw()   if ${-usage};
+X::Help->throw()    if ${-help};
+X::Man->throw()     if ${-man};
+ 
+# Report intended behaviour...
+if ($verbose) {
+    print "Loading first $len chunks of file: $in\n"
+}
+# etc.
+
+
+package UNIVERSAL;
+use Carp;
+
+sub throw {
+    my ($class) = @_;
+
+    croak "Show $class here\n";
+}

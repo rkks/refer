@@ -1,0 +1,15 @@
+#! /usr/bin/perl -wpl
+
+BEGIN {
+      %expansion=(
+            FWIW  => "for what it's worth",
+            IMHO  => 'in my humble opinion',
+            AFAIK => 'as far as I know',
+            YMMV  => 'your mileage may vary',
+            JAPH  => 'Just Another Perl Hacker',
+      );
+}
+
+foreach $acronym ( keys %expansion ) {
+      s/\b$acronym\b/$expansion{$acronym}/ig;
+}

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XnaHelloPhone", "XnaHelloPhone\XnaHelloPhone\XnaHelloPhone.csproj", "{F18E99AF-4619-416F-BBE4-00B930DB68B1}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "XnaHelloPhoneContent", "XnaHelloPhone\XnaHelloPhoneContent\XnaHelloPhoneContent.contentproj", "{336D1F27-06D9-4D2D-B226-CC9A8564BAD7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F18E99AF-4619-416F-BBE4-00B930DB68B1}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{F18E99AF-4619-416F-BBE4-00B930DB68B1}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{F18E99AF-4619-416F-BBE4-00B930DB68B1}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{F18E99AF-4619-416F-BBE4-00B930DB68B1}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{F18E99AF-4619-416F-BBE4-00B930DB68B1}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{F18E99AF-4619-416F-BBE4-00B930DB68B1}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{336D1F27-06D9-4D2D-B226-CC9A8564BAD7}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{336D1F27-06D9-4D2D-B226-CC9A8564BAD7}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

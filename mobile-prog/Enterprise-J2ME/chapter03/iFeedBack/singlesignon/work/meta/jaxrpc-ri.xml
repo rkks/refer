@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webServices
+    xmlns="http://java.sun.com/xml/ns/jax-rpc/ri/dd"
+    version="1.0"
+    targetNamespaceBase="urn:enterprisej2me/iFeedBackSSO/"
+    typeNamespaceBase="http://www.w3.org/2001/XMLSchema"
+    urlPatternBase="/webservices">
+
+    <endpoint
+        name="Server"
+        displayName="iFeebBack SSO server"
+        description="An example SSO token service" 
+        interface="com.enterprisej2me.iFeedBack.singlesignon.Server"  
+        implementation="com.enterprisej2me.iFeedBack.singlesignon.ServerImpl"/> 
+ 
+    <endpointMapping
+        endpointName="Server"
+        urlPattern="/server"/>
+
+</webServices>

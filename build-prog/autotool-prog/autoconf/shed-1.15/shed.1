@@ -1,0 +1,114 @@
+.\"shed man page
+.\"(C) Alex Sisson, 2002-2009
+.TH shed 1 "24-MAR-2009" shed-1.15
+.SH NAME
+shed (Simple Hex EDitor)
+.SH SYNOPSIS
+.B shed
+.I [OPTIONS] [FILE]
+.PP
+.SH DESCRIPTION
+.PP
+A simple hex editor with a pico-style interface.
+.PP
+Each line of the shed display represents one byte of the
+file. Each lines consists of the offset of that byte from
+the start of the file, the ascii value of the byte, and
+then the byte's value in various bases. All values are
+unsigned.
+.PP
+When a command asks you for input, entering a
+zero-length string or pressing ^C will cancel the command.
+When searching, entering a zero-length string will use the
+previous search word, if one exists.
+.PP
+Note that there is no save key. This is because the
+file is not loaded into memory, so when you edit it
+the change is made directly to disk.
+
+.SH OPTIONS
+.TP
+.B \-r / \-\-readonly
+open FILE read only
+.TP
+.B \-s / \-\-start=\fIOFFSET\fP
+position cursor to offset
+.TP
+.B \-H / \-\-hex
+start in hex mode (hex offsets etc.)
+.TP
+.B \-L / \-\-length=\fILENGTH\fP
+set length of file to LENGTH. Useful for special files where shed
+cannot obtain the length with stat.
+.TP
+.B \-h / \-\-help
+show help and exit
+.TP
+.B \-v / \-\-version
+show version and exit
+
+.SH KEYS
+.TP
+.B arrow keys
+move cursor around
+.TP
+.B pgup / ^Y
+cursor up 16
+.B pgdown / ^V
+cursor down 16
+.TP
+.B home / ^A
+start of line (ascii column)
+.TP
+.B end / ^E
+end of line (binary column)
+.TP
+.B space / e
+edit value at cursor. You are asked to enter the new value in the format of the current
+column the cursor is in - eg. if you are in the hex column, it will ask for the new value
+in hex.
+.TP
+.B 1 / 2 / 4
+set size of cursor in bytes, in the hex/dec/oct columns (and binary if in
+traditional mode).
+.TP
+.B ` (backtick)
+toggle the endianness of multi-byte values (when cursor size is 2 or 4)
+.TP
+.B s / w / ^w / f / F3
+search. Search string is asked for in the format of the current cursor column.
+In ascii, just enter the string in ascii. In the others, enter the values  seperated by spaces.
+eg to search for ABC from the decimal column you would enter "65 66 67" (without the quotes).
+.TP
+.B ^f / ^b
+search shortcut for forwards/backwards respectivly.
+.TP
+.B r / n / F3
+repeat previous search
+.TP
+.B t
+toggle whether offset numbers and cursor position etc are in dec or hex.
+.TP
+.B b
+toggle binary mode column behaviour (bit edit mode vs traditional)
+.TP
+.B d
+dump to file.
+.TP
+.B j
+jump to byte. enter a byte number, or 'top' or 'end'. Can be suffixed with K, M or G.
+.TP
+.B a
+change the mode of the ascii column (printable only/c-style extended chars/'man ascii' descriptions)
+.TP
+.B p
+toggle 'preview' mode.
+.TP
+.B x / ^x
+exit
+
+.SH AUTHOR
+Alex Sisson (alexsisson@gmail.com)
+
+.SH HOMEPAGE
+Check for updates at http://shed.sourceforge.net

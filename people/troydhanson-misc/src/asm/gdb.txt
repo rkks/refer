@@ -1,0 +1,6 @@
+gdb ./atoi
+break main
+run
+display /i $pc
+display /x $eax
+ni

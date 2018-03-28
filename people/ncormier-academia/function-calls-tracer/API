@@ -1,0 +1,203 @@
+\FTRACE API
+----------
+
+
+On a donc 3 grosses parties:	- gestion du format du binaire: bin
+				- gestion des infos de debug: debug
+				- gestion du processus: process
+
+On divise en deux chacune des ces parties de sorte que les appels systemes
+soit fait uniquement par la couche primaire. La couche secondaire ne peut 
+faire appel qu'a la couche primaire.
+
++---------+
+|   (2)   | <- couche secondaire
++---------+
+|   (1)   | <- couche primaire
++---------+
+|   SYS   |
++---------+
+
+Pour chacune des parties ont aura donc deux couches.
+
+
+____________________________________________________________________________
+
+
+addr_t => adresse
+list_t => liste circulaire doublement chainee
+hash_t => table de hash
+
+ ~> == declaration d'une structure.
+ -> == declaration d'une fonction.
+
+ list_t<toto_t> titi == sizeof de titi->value est toto_t
+
+____________________________________________________________________________
+
+* bin - couche primaire
+| ---------------------
+|
+| ~> bin_obj_t		{char* path, void* map, int fd, uint size};
+|
+| -> bin_obj_t*		new(char* path, addr_t base);
+| -> int		del(bin_obj_t* to_del);
+|
+| -> int		read(bin_obj_t*, addr_t addr, uint len, char* laddr);
+|
+|
+|
++--->	* bin - couche secondaire
+|	  -----------------------
+|
+|	 ~> typedef list_t	depends_t (value -> depend_t)
+|	 ~> depend_t		{char* path, addr_t base_addr};
+|
+|	 -> depends_t*		get_depends_list(bin_obj_t*);
+| 	 -> int			bin_contain(bin_obj_t*, addr_t);
+|
+|	 -> int			get_dependload_addr(bin_obj_t*, addr_t*);
+|
+|
++--->	* symbols - couche secondaire (bin)
+|	  ---------------------------------
+|
+|	 ~> typedef list_t	syms_t (value -> sym_t)
+|	 ~> sym_t		{ char* name, addr_t addr, unsigned int size };
+|
+|	 -> syms_t*		new(bin_obj_t*);
+|	 -> int			del(syms_t*);
+|
+|	 -> char*		get_symlabel(syms_t*, addr_t, int);
+|	 -> int			get_symaddr(syms_t*, char*, addr_t*);
+|
+|
+|
++--->	* debug info - couche secondaire (bin/core)
+|	  ------------------------------------
+|
+|	 ~> typedef list_t	debugs_t (value -> debug_t)
+|	 ~> typedef list_t	args_t (value -> arg_t)
+|	 ~> debug_t		{ addr_t addr, char* file, int line, arg_t ret, args_t* }
+|	 ~> arg_t 		{ unsigned int order, char* name, uint size };
+|
+|	 -> debugs_t*		new(bin_obj_t*);
+|	 -> int			del(debugs_t*);
+|
+|	 -> debug_t*		get_debug_info_addr(debugs_t*, addr_t);
+|	 -> debug_t*		get_debug_info_label(debugs_t*, char*);
+|
+____________________________________________________________________________
+
+
+* core - couche primaire
+  -----------------------
+
+ ~> core_obj_t 		{char* path, void* map, int fd, uint size};
+
+ -> core_obj_t*		new(char* path, void* to_map, uint size);
+ -> int			del(core_obj_t*);
+
+ -> int			read(core_obj_t*, addr_t addr, uint len, char* laddr);
+
+
+
+* core - couche secondaire
+  -----------------------
+
+ ~> regs_t		{
+			        unsigned int    r_fs;
+			        unsigned int    r_es;
+			        unsigned int    r_ds;
+			        unsigned int    r_edi;
+			        unsigned int    r_esi;
+			        unsigned int    r_ebp;
+			        unsigned int    r_isp;
+			        unsigned int    r_ebx;
+			        unsigned int    r_edx;
+			        unsigned int    r_ecx;
+			        unsigned int    r_eax;
+			        unsigned int    r_trapno;
+			        unsigned int    r_err;
+			        unsigned int    r_eip;
+			        unsigned int    r_cs;
+			        unsigned int    r_eflags;
+			        unsigned int    r_esp;
+			        unsigned int    r_ss;
+			        unsigned int    r_gs;
+			};
+ ~> typedef list_t	backtrace_t (value -> backt_t)
+
+
+ -> regs_t*		get_registers(core_obj_t*);
+
+ -> char*		get_bin_path(core_obj_t*);
+
+ -> depends_t*		get_depends_list(core_obj_t*, bin_obj_t*);
+
+ -> backtrace_t*	backtrace(core_obj_t*);
+
+----------------
+
+/!\ ajouter la couche debug /!\
+
+____________________________________________________________________________
+
+
+* process - couche primaire
+  -------------------------
+
+
+ ~> proc_obj_t	{char*, pid_t pid, int attach};
+
+ -> proc_obj_t*	new(void);
+ -> int		del(proc_obj_t*);
+
+ -> regs_t*	get_registers(proc_obj_t*);
+ -> int		set_registers(proc_obj_t*, regs_t*);
+ -> int		read(proc_obj_t*, addr_t addr, uint len, char* laddr);
+ -> int		write(proc_obj_t*, addr_t addr, uint len, char* laddr);
+ -> int		continue(proc_obj_t*, int);
+ -> int		continue_addr(proc_obj_t*, addr_t, int);
+ -> int		step(proc_obj_t*, int);
+ -> int		step_addr(proc_obj_t*, addr_t, int);
+ -> int		create(proc_obj_t*, char*, char**);
+ -> int		attach(proc_obj_t*, pid_t);
+ -> int		detach(proc_obj_t*);
+ -> int		kill(proc_obj_t*);
+ -> int		stop(proc_obj_t*);
+ -> int		wait_debug_event(proc_obj_t*, int*);
+ -> int		wait_debug_event_nohang(proc_obj_t*, int*);
+
+ -> int		set_hardware_breakpoint(proc_obj_t*, brkp_t*, int);
+
+
+* process - couche secondaire
+  ---------------------------
+
+ ~> typedef list_t	backtrace_t (value -> backt_t)
+ ~> backt_t		{addr_t addr, uint count};
+ ~> typedef list_t	brkps_t (value -> brkp_t)
+ ~> brkp_t		{addr_t addr};
+
+ -> char*		get_bin_path(proc_obj_t*);
+
+ -> depend_t*		get_depends_list(proc_obj_t*);
+
+ -> backtrace_t*	backtrace(proc_obj_t*);
+
+ -> int			set_breakpoint(proc_obj_t*, brkp_t*);
+ -> int			unset_breakpoint(proc_obj_t*, brkp_t*);
+
+ -> int			seek_calls(proc_obj_t*, addr_t*);
+
+ -> int			seek_brkps(proc_obj_t*, brkps_t*);
+
+ -> int			seek_args(proc_obj_t*, args_t*);
+
+ -> int			seek_return_value(proc_obj_t*, arg_t*);
+
+ -> void		dump_registers(proc_obj_t*);
+
+ -> int			get_dependload_addr(proc_obj_t*, addr_t*);
+____________________________________________________________________________

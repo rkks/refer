@@ -1,0 +1,88 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  shm_msgserver.c
+ *  
+ *  Illustrates memory mapping and persistency, with POSIX objects.
+ *  This process produces a message leaving it in a shared segment.
+ *  The segment is mapped in a persistent object meant to be subsequently
+ *  open by a shared memory "client".
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on 27/08/05.
+ *  Original source file available at http://mij.oltrelinux.com/devel/unixprg/
+ *
+ */</span>
+
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* shm_* stuff, and mmap() */</span>
+<span class="cpdr">#include &lt;sys/mman.h&gt;
+#include &lt;sys/types.h&gt;
+</span><span class="ccom">/* exit() etc */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;sys/stat.h&gt;
+</span><span class="ccom">/* for random() stuff */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+</span>
+
+<span class="ccom">/* Posix IPC object name [system dependant] - see
+http://mij.oltrelinux.com/devel/unixprg/index2.html#ipc__posix_objects */</span>
+<span class="cpdr">#define SHMOBJ_PATH         "/foo1423"
+</span><span class="ccom">/* maximum length of the content of the message */</span>
+<span class="cpdr">#define MAX_MSG_LENGTH      </span><span class="cval">50</span><span class="cpdr">
+</span><span class="ccom">/* how many types of messages we recognize (fantasy) */</span>
+<span class="cpdr">#define TYPES               </span><span class="cval">8</span><span class="cpdr">
+</span>
+<span class="ccom">/* message structure for messages in the shared segment */</span>
+<span class="ctyp">struct</span> msg_s {
+    <span class="ctyp">int</span> type;
+    <span class="ctyp">char</span> content[MAX_MSG_LENGTH];
+};
+
+
+<span class="ctyp">int</span> <span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> *argv[]) {
+    <span class="ctyp">int</span> shmfd;
+    <span class="ctyp">int</span> shared_seg_size = (<span class="cval">1</span> * <span class="ctyp">sizeof</span>(<span class="ctyp">struct</span> msg_s));   <span class="ccom">/* want shared segment capable of storing 1 message */</span>
+    <span class="ctyp">struct</span> msg_s *shared_msg;      <span class="ccom">/* the shared segment, and head of the messages list */</span>
+    
+
+    <span class="ccom">/* creating the shared memory object    --  shm_open()  */</span>
+    shmfd = <span class="cfun">shm_open</span>(SHMOBJ_PATH, O_CREAT | O_EXCL | O_RDWR, S_IRWXU | S_IRWXG);
+    <span class="ctyp">if</span><span class="cfun"> </span>(shmfd &lt; <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In shm_open()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    <span class="cfun">fprintf</span>(stderr, <span class="cstr">"Created shared memory object %s\n"</span>, SHMOBJ_PATH);
+    
+    <span class="ccom">/* adjusting mapped file size (make room for the whole segment to map)      --  ftruncate() */</span>
+    <span class="cfun">ftruncate</span>(shmfd, shared_seg_size);
+
+    <span class="ccom">/* requesting the shared segment    --  mmap() */</span>    
+    shared_msg = (<span class="ctyp">struct</span> msg_s *)<span class="cfun">mmap</span>(<span class="ctyp">NULL</span>, shared_seg_size, PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, <span class="cval">0</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(shared_msg == <span class="ctyp">NULL</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In mmap()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+    <span class="cfun">fprintf</span>(stderr, <span class="cstr">"Shared memory segment allocated correctly (%d bytes).\n"</span>, shared_seg_size);
+
+    
+    <span class="cfun">srandom</span>(<span class="cfun">time</span>(<span class="ctyp">NULL</span>));
+    <span class="ccom">/* producing a message on the shared segment */</span>
+    shared_msg-&gt;type = <span class="cfun">random</span>() % TYPES;
+    <span class="cfun">snprintf</span>(shared_msg-&gt;content, MAX_MSG_LENGTH, <span class="cstr">"My message, type %d, num %ld"</span>, shared_msg-&gt;type, <span class="cfun">random</span>());
+
+   
+    <span class="ccom">/* [uncomment if you wish] requesting the removal of the shm object     --  shm_unlink() */</span>
+<span class="ccom">/*
+    if (shm_unlink(SHMOBJ_PATH) != 0) {
+        perror("In shm_unlink()");
+        exit(1);
+    }
+*/</span>
+
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+
+</div>

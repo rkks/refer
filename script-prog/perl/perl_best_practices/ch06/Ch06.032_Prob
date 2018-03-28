@@ -1,0 +1,47 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @clients = qw( IBN Zerox );
+
+for my $n (1..@clients) {
+    $clients[$n]->tally_hours();
+    $clients[$n]->bill_hours();
+    $clients[$n]->reset_hours();
+}
+
+
+package Corporation;
+
+sub tally_hours {
+    my ($corp) = @_;
+    print "tallying hours for $corp...\n";
+}
+
+sub bill_hours {
+    my ($corp) = @_;
+    print "billing hours for $corp...\n";
+}
+
+sub reset_hours {
+    my ($corp) = @_;
+    print "resetting hours for $corp...\n";
+}
+
+package IBN;
+use base qw( Corporation );
+
+package Zerox;
+use base qw( Corporation );

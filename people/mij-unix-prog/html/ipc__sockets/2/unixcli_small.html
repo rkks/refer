@@ -1,0 +1,79 @@
+<span class="ccom">/*
+ * unixcli.c
+ *
+ * connects to an UNIX domain socket, sends a message to it, and disconnects.
+ *
+ *
+ * Created by Mij &lt;mij@bitchx.it&gt; on 18/12/05.
+ * Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ */</span>
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span><span class="ccom">/* socket(), bind() */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/un.h&gt;
+</span><span class="ccom">/* write(), close() */</span>
+<span class="cpdr">#include &lt;unistd.h&gt;
+</span><span class="ccom">/* strlen() */</span>
+<span class="cpdr">#include &lt;string.h&gt;
+</span><span class="ccom">/* exit() */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+</span>
+<span class="ccom">/* maximum size available for an incoming message payload */</span>
+<span class="cpdr">#define MAX_MSGLEN      </span><span class="cval">100</span><span class="cpdr">
+</span><span class="ccom">/* path of the UNIX domain socket in filesystem */</span>
+<span class="cpdr">#define SERVERSOCK_PATH     "/tmp/mytmpunixsock"
+</span>
+<span class="ctyp">int</span> <span class="cfun">main</span>() {
+    <span class="ctyp">int</span> sock, err, i = <span class="cval">0</span>;
+    <span class="ctyp">char</span> ch, messagebuf[MAX_MSGLEN];
+    <span class="ctyp">struct</span> sockaddr_un servaddr;
+
+
+    <span class="ccom">/* create a UNIX domain, connectionful socket */</span>
+    sock = <span class="cfun">socket</span>(AF_UNIX, SOCK_STREAM, <span class="cval">0</span>);
+    <span class="ctyp">if</span><span class="cfun"> </span>(sock &lt; <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In socket()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="ccom">/* connect the socket to the server socket described by "servaddr" */</span>
+    servaddr.sun_family = AF_UNIX;
+    <span class="cfun">sprintf</span>(servaddr.sun_path, SERVERSOCK_PATH);
+
+    err = <span class="cfun">connect</span>(sock, (<span class="ctyp">struct</span> sockaddr *)&amp;servaddr, <span class="ctyp">sizeof</span>(servaddr));
+    <span class="ctyp">if</span><span class="cfun"> </span>(err) {
+        <span class="cfun">perror</span>(<span class="cstr">"In connect()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="ccom">/* write a message to the server */</span>
+    err = <span class="cfun">write</span>(sock, <span class="cstr">"Hello server.\n"</span>, <span class="cfun">strlen</span>(<span class="cstr">"Hello server.\n"</span>));
+    <span class="ctyp">if</span><span class="cfun"> </span>(err &lt; <span class="cval">0</span>) {
+        <span class="cfun">perror</span>(<span class="cstr">"In write()"</span>);
+        <span class="cfun">exit</span>(<span class="cval">1</span>);
+    }
+
+    <span class="cfun">printf</span>(<span class="cstr">"Message sent:\n\t@length: %d bytes\n\t@content: %s\n"</span>, err, <span class="cstr">"Hello server.\n"</span>);
+
+    <span class="ccom">/* receive the response from the server */</span>
+    <span class="ctyp">do</span> {
+        err = <span class="cfun">read</span>(sock, &amp;ch, <span class="cval">1</span>);       <span class="ccom">/* read one byte from the socket */</span>
+        <span class="ctyp">if</span><span class="cfun"> </span>(err &lt;= <span class="cval">0</span>) {
+            <span class="cfun">printf</span>(<span class="cstr">"Premature end-of-file (0) or read() error (&lt;0)? %d\n"</span>, err);
+            <span class="ctyp">break</span>;
+        }
+        messagebuf[i++] = ch;
+    } <span class="ctyp">while</span><span class="cfun"> </span>(ch != '\n');
+    messagebuf[i] = '\<span class="cval">0</span>';
+   
+    <span class="ccom">/* close the socket */</span>
+    <span class="cfun">close</span>(sock);
+    
+    <span class="cfun">printf</span>(<span class="cstr">"Response received:\n\t@length: %lu bytes\n\t@content: %s\n"</span>, <span class="cfun">strlen</span>(messagebuf), messagebuf);
+
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+
+

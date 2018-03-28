@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Copyright 2001, 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+
+Except for any files in PNG format (which are marked with the filename
+extension ".png"), GIF format (which are marked with the filename
+extension ".gif"), or JPEG format (which are marked with the filename
+extension ".jpg"), redistribution and use in source and binary forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+- Redistribution of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistribution in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+You may compile, use, perform and display the following files with
+original Java Smart Ticket Sample Application code obtained from Sun
+Microsystems, Inc. only:
+
+- files in PNG format and having the ".png" extension
+- files in GIF format and having the ".gif" extension
+- files in JPEG format and having the ".jpg" extension
+
+You may not modify or redistribute .png, .gif, or .jpg files in any
+form, in whole or in part, by any means without prior written
+authorization from Sun Microsystems, Inc. and its licensors, if any.
+
+Neither the name of Sun Microsystems, Inc., the 'Java Smart Ticket
+Sample Application', 'Java', 'Java'-based names, or the names of
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+This software is provided "AS IS," without a warranty of any kind. ALL
+EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
+INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+MIDROSYSTEMS, INC. ("SUN") AND ITS LICENSORS SHALL NOT BE LIABLE FOR
+ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR
+ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY,
+ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF
+SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+You acknowledge that this software is not designed, licensed or
+intended for use in the design, construction, operation or maintenance
+of any nuclear facility.
+ $Id: build.xml,v 1.4 2003/03/24 22:43:09 zull Exp $ -->
+
+<project name="smart_ticket-server" default="all" basedir=".">
+
+  <target name="init">
+    <property file="${user.home}/smart_ticket.properties" />
+    <property name="ejb.dir" value="ejb/" />
+    <property name="web.dir" value="web/" />
+    <property name="build.dir" value="build" />
+    <property name="src.dir" value="." />
+    <property name="deploytool" value="${J2EE.HOME}/bin/deploytool${J2EE_SCRIPT_SUFFIX}"/>
+    <property name="verifier" value="${J2EE.HOME}/bin/verifier${J2EE_SCRIPT_SUFFIX}"/>
+  </target>
+  
+  <target name="all" depends="init, j2ee-ri" />
+
+  <target name="j2ee-ri" depends="package">
+    <java classname="com.sun.enterprise.tools.packager.Main"
+          fork="yes"
+          classpath="${J2EE.HOME}/lib/j2ee.jar">
+      <arg value="-setRuntime" />
+      <arg value="${build.dir}/smart_ticket.ear" />
+      <arg value="${src.dir}/sun-j2ee-ri.xml" />
+    </java>
+  </target>
+
+  <target name="package" depends="init">
+    <mkdir dir="${build.dir}" />
+    <ant dir="${ejb.dir}/src" target="all" inheritAll="false" />
+    <ant dir="${web.dir}/src" target="all" inheritAll="false" />
+    <ear earfile="${build.dir}/smart_ticket.ear" 
+         appxml="${src.dir}/application.xml">
+      <fileset dir="${ejb.dir}/build">
+        <include name="smart_ticket-ejb.jar" />
+      </fileset>
+      <fileset dir="${web.dir}/build">
+        <include name="smart_ticket.war" />
+      </fileset>
+    </ear>
+  </target>
+
+  <target name="deploy" depends="init">
+    <exec executable="${deploytool}">
+        <arg line="-generateSQL ${build.dir}/smart_ticket.ear localhost" />
+    </exec>
+    <exec executable="${deploytool}">
+        <arg line="-deploy ${build.dir}/smart_ticket.ear localhost" />
+    </exec>
+    <echo message="You need to repopulate the server's database."/>
+    <echo message="if you use the Wireless Toolkit to run the application client, you need to clear the RMS record stores."/>
+    <echo message="Please refer to the HTML user documentation."/>
+  </target>
+
+  <target name="undeploy" depends="init">
+    <exec executable="${deploytool}">
+        <arg line="-uninstall SmartTicket-1_2 localhost" />
+    </exec>
+  </target>
+
+  <target name="clean" depends="init">
+    <ant dir="${ejb.dir}/src" target="clean" inheritAll="false" />
+    <ant dir="${web.dir}/src" target="clean" inheritAll="false" />
+    <delete dir="${build.dir}" />
+  </target>
+
+</project>

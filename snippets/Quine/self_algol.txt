@@ -1,0 +1,17 @@
+Language: Algol
+
+
+Author: Paul Bartley and Jean Millo
+Notes: Algol 60
+
+begin procedure p(a); string a;
+      begin outstring(1,a):
+      outsymbol(1,``'',1); outstring(1,a);
+      outsymbol(1,``'',2); outstring(1,`) end')
+      end;
+p (`begin procedure p(a); string a;
+          begin outstring(1,a):
+          outsymbol(1,``'',1); outstring(1,a);
+          outsymbol(1,``'',2); outstring(1,`) end')
+          end;
+p(') end

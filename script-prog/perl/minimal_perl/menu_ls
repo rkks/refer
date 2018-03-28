@@ -1,0 +1,37 @@
+#! /usr/bin/perl -wl
+use Shell::POSIX::Select qw($Reply $Heading $Prompt $Eof);
+
+# Would be more natural to associate choices with options via a
+#  hash, but this approach better demonstrates $Reply variable
+@formats = ( 'regular', 'long' );
+@fmt_opt = ( '',       '-l'   );
+
+@types   = ( 'only non-hidden', 'all files' );
+@typ_opt = ( '',               '-a'        );
+
+print "\n     COMMAND COMPOSER FOR: ls\n";
+
+$Heading="\n**** Style Menu ****";
+$Prompt= 'Choose listing style:';
+FORMAT: select ( @formats ) {
+    $user_format=$fmt_opt[ $Reply - 1 ];
+
+    $Heading="\n**** File Menu ****";
+    $Prompt="Choose files to list:";
+    TYPE: select ( @types ) {  # <^D> restarts FORMAT loop
+        $user_type=$typ_opt[ $Reply - 1 ];
+        last FORMAT; # leave loops once final choice obtained
+    }
+    $Eof  and  next; # handle <^D> to TYPE loop
+}
+$Eof  and  exit;     # handle <^D> to FORMAT loop 
+
+# Now construct user's command
+$command="ls $user_format $user_type";
+
+# Show command, for educational purposes
+printf "Press <ENTER> to execute \"$command\" ";
+# wait for input, then discard
+defined <STDIN>  or  print "\n"  and  exit;
+
+system $command ;       # run the command

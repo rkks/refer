@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomRectangles", "RandomRectangles\RandomRectangles\RandomRectangles.csproj", "{556EE802-0E9E-4403-AC5C-491FAD82B1BE}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "RandomRectanglesContent", "RandomRectangles\RandomRectanglesContent\RandomRectanglesContent.contentproj", "{4AC99677-238F-48BD-BF80-25A18AF1CC53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{556EE802-0E9E-4403-AC5C-491FAD82B1BE}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{556EE802-0E9E-4403-AC5C-491FAD82B1BE}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{556EE802-0E9E-4403-AC5C-491FAD82B1BE}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{556EE802-0E9E-4403-AC5C-491FAD82B1BE}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{556EE802-0E9E-4403-AC5C-491FAD82B1BE}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{556EE802-0E9E-4403-AC5C-491FAD82B1BE}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{4AC99677-238F-48BD-BF80-25A18AF1CC53}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{4AC99677-238F-48BD-BF80-25A18AF1CC53}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

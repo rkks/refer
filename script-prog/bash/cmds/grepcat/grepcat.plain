@@ -1,0 +1,125 @@
+:
+##########################################################################
+# Title      :	grepcat - "grep" and "cat" file (instead of line)
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	2003-11-19
+# Requires   :	grep
+# Category   :	File Utilities
+# SCCS-Id.   :	@(#) grepcat	1.2 04/02/09
+##########################################################################
+# Description
+#    o	"grepcat" searches like "grep" for patterns in a file. In
+#	contrast to "grep" it will print the contents of the whole file
+#	in case of a match.  "grep" would only print the lines matching
+#	the pattern.
+#    o	"grepcat -v pattern " will return success if the input does not
+#	contain the specified pattern. Note that this is different from
+#	"grep -v pattern", which will return successfully if there is at
+#	least one line not matching the pattern.
+# Examples:
+#	# Print the output of a command only when it contains a certain
+#	# keyword, but print the whole output in that case:
+#	checksomething | grepcat -i 'error'
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+: ${GREP:=egrep}
+usage () {
+    echo >&2 "$PN - \"$GREP\" and \"cat\" file (instead of line), $VER
+usage: $PN [-ilv] regexp [file ...]
+    -i:  ignore case
+    -l:  list file name (instead of the file's contents)
+    -v:  inverse sense of search: find files NOT containing pattern
+Like \"$GREP\" $PN will search the file(s) for the specified regular
+expression. However, if a line matches, it will print the whole file
+instead of just the matching line."
+    exit 1
+}
+msg () {
+    echo >&2 "$PN:" "$@"
+}
+fatal () { msg "$@"; exit 1; }
+##########################################################################
+ListNames=false
+Invert=false
+grepflags=
+while getopts :hilv opt
+do
+    case "$opt" in
+    	i)	grepflags="${grepflags+$grepflags }-i";;
+	v)	Invert=true;;
+	l)	ListNames=true;;
+	*)	usage;;
+    esac
+done
+shift `expr $OPTIND - 1`
+: '
+# Uncomment the following lines if your shell does not have a "getopts"
+# command.
+set -- `getopt :hilv "$@"` || usage
+[ $# -lt 1 ] && usage			# "getopt" detected an error
+ListNames=false
+Invert=false
+grepflags=
+while [ $# -gt 0 ]
+do
+    case "$1" in
+    	-i)	grepflags="${grepflags+$grepflags }-i";;
+	-v)	Invert=true;;
+	-l)	ListNames=true;;
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+'
+[ $# -lt 1 ] && usage
+Search=$1; shift
+# Special handling: if we should only list names, and "-v" was not specified,
+# we'll work like "grep -l":
+if [ $ListNames = true ] && [ $Invert = false ]
+then
+    #echo >&2 "DEBUG: using command: $GREP -l $grepflags $Search [files ...]"
+    exec $GREP -l $grepflags "$Search" "$@"
+fi
+# Define what exit code of "grep" means "success". Usually this is when
+# the pattern was found, but "-v" reverses the meaning.
+if $Invert
+then success=1
+else success=0
+fi
+result=1
+if [ $# -lt 1 ]
+then
+    tmp=${TMPDIR:=/tmp}/mg.$$
+    trap 'rm -f "$tmp"' 0
+    trap "exit 2" 1 2 3 13 15
+    umask 0077
+    (> "$tmp") ||
+	fatal "cannot create temporary file: $tmp"
+    tee "$tmp" | $GREP $grepflags "$Search" >/dev/null
+    if [ $? -eq $success ]
+    then
+    	if $ListNames
+	then echo "STDIN"
+	else cat "$tmp"
+	fi
+	result=0
+    fi
+else
+    for file
+    do
+    	$GREP $grepflags "$Search" "$file" >/dev/null
+	if [ $? -eq $success ]
+	then
+	    if $ListNames
+	    then echo "$file"
+	    else cat "$file"
+	    fi
+	    result=0
+	fi
+    done
+fi
+exit $result

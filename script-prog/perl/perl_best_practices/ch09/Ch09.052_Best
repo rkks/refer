@@ -1,0 +1,29 @@
+
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub defined_samples_in { return [1..10]; }
+my @floor_samples;
+my @restocked_samples;
+sub swap_arrays {}
+
+my $floor_samples_ref     = defined_samples_in(@floor_samples);
+my $restocked_samples_ref = defined_samples_in(@restocked_samples);
+ 
+# and later...
+ 
+swap_arrays($floor_samples_ref, $restocked_samples_ref);
+

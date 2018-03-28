@@ -1,0 +1,13 @@
+#! /usr/bin/perl -wnl
+
+BEGIN {
+    @ARGV=( '/usr/share/fortune/startrek' );
+    $/='%';    # set input record separator for "fortune" files
+}
+
+# $fortunes[$. -1]=$_;  # store fortune in (record-number -1)
+push @fortunes, $_;     # easier way
+
+END {
+    print $fortunes[ rand @fortunes ];   # print random fortune
+}

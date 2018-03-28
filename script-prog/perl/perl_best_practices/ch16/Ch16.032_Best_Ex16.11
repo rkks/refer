@@ -1,0 +1,55 @@
+##############################################################################
+##   Example 16.11 (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-11. Cleaning up object attributes
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Book;
+use Class::Std;
+{
+    # Attributes...
+    my %title_of;
+    my %author_of;
+    my %publisher_of;
+    my %year_of;
+    my %topic_of;
+    my %style_of;
+    my %price_of;
+    my %rating_of;
+ 
+    # and then...
+ 
+    sub DEMOLISH {
+        my ($self, $ident) = @_;
+ 
+        # Update library information...
+        Library->remove($self);
+ 
+        # Clean up attribute hashes...
+        delete $title_of{$ident};
+        delete $author_of{$ident};
+        delete $publisher_of{$ident};
+        delete $year_of{$ident};
+        delete $topic_of{$ident};
+        delete $style_of{$ident};
+        delete $price_of{$ident};
+        delete $rating_of{$ident};
+ 
+        return;
+    }
+}
+

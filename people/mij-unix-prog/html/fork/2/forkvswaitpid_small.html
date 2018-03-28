@@ -1,0 +1,43 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  forkvswaitpid.c
+ *  
+ *  The parent loops forking and waiting.
+ *  Notice the behaviour of both the post-fork()
+ *  and post-waitpid() messages.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on Wed Dec 31 2003.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ */</span>
+
+<span class="cpdr">#include &lt;stdio.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
+</span>
+<span class="ctyp">int</span> <span class="cfun">main</span>() {
+    pid_t pid;
+    <span class="ctyp">int</span> status;
+    
+    <span class="cfun">printf</span>(<span class="cstr">"Hi. Your OS would get a bit busy right now. Please kill pressing ctrl+C\n"</span>);
+    
+    <span class="ctyp">while</span><span class="cfun"> </span>(<span class="cval">1</span>) {
+        pid = <span class="cfun">fork</span>();
+        
+        <span class="ctyp">if</span><span class="cfun"> </span>( pid == -<span class="cval">1</span> ) {
+            <span class="cfun">perror</span>(<span class="cstr">"Error on fork()"</span>);
+            <span class="ctyp">return</span> <span class="cval">1</span>;
+        }
+        
+        <span class="ctyp">if</span><span class="cfun"> </span>(pid == <span class="cval">0</span>) {
+             <span class="ccom">/* we're the child */</span>
+            <span class="cfun">printf</span>(<span class="cstr">"One more child born.\n"</span>);
+            <span class="ctyp">return</span> <span class="cval">0</span>;
+        } <span class="ctyp">else</span>
+             <span class="ccom">/* we're the parent and we want to purge the queue of childs exited */</span>
+            <span class="ctyp">while</span><span class="cfun"> </span>( <span class="cfun">waitpid</span>(-<span class="cval">1</span>, &amp;status, WNOHANG) &gt; <span class="cval">0</span> ) <span class="cfun">printf</span>(<span class="cstr">"One more child dead.\n"</span>);
+    }
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

@@ -1,0 +1,19 @@
+:
+# asc2iso - converts CP 437/850 "Umlaute" to ISO 8859 equivalents
+#
+# Author:	Heiner Steven (heiner.steven@odn.de)
+# Date:		1992-01-17
+# Category:	File Conversion
+#
+# see also: iso2asc
+#
+# Changes:
+# 10.07.92 stv	usage text, argument processing
+if [ $# -eq 1 -a \( "$1" = "-h" -o "$1" = "-?" \) ]
+then
+    echo "$0 - convert CP 437/850 \"Umlaute\" to ISO 8859"
+    echo "usage: $0 [file ...]"
+    exit 1
+fi
+cat "$@" |
+    tr '\204\224\201\216\231\232\341' '\344\366\374\304\326\334\337'

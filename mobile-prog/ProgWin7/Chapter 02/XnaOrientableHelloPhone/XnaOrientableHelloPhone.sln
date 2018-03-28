@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XnaOrientableHelloPhone", "XnaOrientableHelloPhone\XnaOrientableHelloPhone\XnaOrientableHelloPhone.csproj", "{B4D57857-7F22-4E69-B7A2-09E7350588F2}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "XnaOrientableHelloPhoneContent", "XnaOrientableHelloPhone\XnaOrientableHelloPhoneContent\XnaOrientableHelloPhoneContent.contentproj", "{8C59F36D-DFE6-4DB4-BCA5-E4731CAE46F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{B4D57857-7F22-4E69-B7A2-09E7350588F2}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{8C59F36D-DFE6-4DB4-BCA5-E4731CAE46F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C59F36D-DFE6-4DB4-BCA5-E4731CAE46F7}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{8C59F36D-DFE6-4DB4-BCA5-E4731CAE46F7}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C59F36D-DFE6-4DB4-BCA5-E4731CAE46F7}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,4 @@
+Gstreamer API changed from 0.10 to the 1.0 series. Both are able to coexist, but the 
+online tutorials (particularly the "SDK tutorial" at Gstreamer.com are for 0.10).
+The directories in here refer to the two different gstreamer library versions.
+

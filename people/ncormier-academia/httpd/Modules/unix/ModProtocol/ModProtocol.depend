@@ -1,0 +1,33 @@
+# depslib dependency file v1.0
+1145129098 /home/dak/zia/Modules/unix/ModProtocol/ClientRequest.cpp
+	"ClientRequest.h"
+	"ZiaString.h"
+	"LeakWatcher.h"
+
+1145125881 /home/dak/zia/Modules/unix/ModProtocol/ClientRequest.h
+	<iostream>
+	<map>
+	<string>
+	"utils/cmpfunc.h"
+	"IModuleData.h"
+	"DBuffer.h"
+	"ICData.h"
+
+1145125448 /home/dak/zia/src/includes/utils/cmpfunc.h
+	"ZiaString.h"
+
+1145125448 /home/dak/zia/src/includes/ZiaString.h
+	<string.h>
+
+1145125448 /home/dak/zia/src/includes/IModuleData.h
+
+1145125472 /home/dak/zia/Modules/common/includes/DBuffer.h
+	<string>
+	"ICData.h"
+
+1145125448 /home/dak/zia/src/includes/ICData.h
+	<string>
+
+1145125448 /home/dak/zia/src/includes/LeakWatcher.h
+	<crtdbg.h>
+

@@ -1,0 +1,54 @@
+"
+"  Example vimrc file
+"
+"  Copyright (C) 2009  Clifford Wolf <clifford@clifford.at>
+"
+"  This program is free software; you can redistribute it and/or modify
+"  it under the terms of the GNU General Public License as published by
+"  the Free Software Foundation; either version 2 of the License, or
+"  (at your option) any later version.
+"
+"  This program is distributed in the hope that it will be useful,
+"  but WITHOUT ANY WARRANTY; without even the implied warranty of
+"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+"  GNU General Public License for more details.
+"
+"  You should have received a copy of the GNU General Public License
+"  along with this program; if not, write to the Free Software
+"  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+"
+"  Note that this is not my actual vim configuration. It's just a place
+"  to collect usefull vim configuration snippets that I happen to use on
+"  one machine or another.
+"
+
+" activate syntax highlighting
+" .. make sure that your terminal has colors enabled and
+" that TERM environment variable is set to the correct value.
+syntax on
+
+" I hit this quite often e.g. when editing
+" HTML with large JavaScript sections..
+map <F10> :syntax sync fromstart<CR>
+
+" edit mails..
+au BufNewFile,BufRead /tmp/mutt-* setf mail
+au BufNewFile,BufRead /tmp/mutt-* set textwidth=75
+
+" edit python..
+autocmd BufNewFile,BufRead *.py set tabstop=4
+autocmd BufNewFile,BufRead *.py set shiftwidth=4
+autocmd BufNewFile,BufRead *.py set expandtab
+autocmd BufNewFile,BufRead *.py set softtabstop=4
+autocmd BufNewFile,BufRead *.py set autoindent
+" autocmd BufNewFile,BufRead *.py im :<CR> :<CR><TAB>
+
+" always display tabs and invisible whitespaces
+set list
+set listchars=eol:$,tab:>-,trail:%
+highlight NonText ctermfg=7 ctermbg=15
+highlight SpecialKey ctermfg=7 ctermbg=15<CR>
+
+" display tabs and invisible whitespaces on demand (F12)
+map <F12> :set list<CR>:set listchars=eol:$,tab:>-,trail:%<CR>:highlight NonText ctermfg=7 ctermbg=15<CR>:highlight SpecialKey ctermfg=7 ctermbg=15<CR>
+

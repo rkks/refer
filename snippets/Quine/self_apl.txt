@@ -1,0 +1,27 @@
+Language: APL
+
+
+Author: Unknown--from FinnAPL Idiom list
+Note: {rho} means greek rho symbol which means the dyadic (i.e. which has two parametres)
+APL function _shape_ (or collect), and {rotate} means an APL symbol looks like a big circle with an overlapping vertical bar which means the APL function rotate ( :) ).
+
+1{rotate}22{rho}11{rho}'''1{rotate}22{rho}11{rho}'''
+
+
+Author: 
+
+1drop27rho14rho13rho'''1drop27rho14rho13rho'
+
+Author: Sam Sirlin (sam@grover.jpl.nasa.gov)
+Note: aplc (trivial)
+
+1
+
+
+Author: Sam Sirlin (sam@grover.jpl.nasa.gov)
+Note: aplc
+
+a .is '''a .is '',a[1 1],(8 .take a),(7 .drop a),a[1], .bxtclf,a'
+'a .is ',a[1 1],(8 .take a),(7 .drop a),a[1], .bxtclf,a
+
+

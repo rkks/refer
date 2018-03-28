@@ -1,0 +1,49 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 12 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $source = do { local $/; <DATA> };
+
+# Format is: <source> % <data> & <config>...
+ 
+if ($source =~ m/\A  ([^%]*)  %  ([^&]*)  &  (.*) /xms) {
+    my ($source, $data, $config) = ($1, $2, $3);
+ 
+    my $prog = compile($source, {config=>$config});
+    my $res  = execute($prog, {data=>$data, config=>$config});
+}
+else {
+    croak 'Invalid program';
+}
+ 
+
+
+sub compile {
+    my ($src, $opt_ref) = @_;
+    print "compiling '$src' with:\n";
+    use Data::Dumper 'Dumper';
+    print Dumper [ $opt_ref ];
+    return 1;
+}
+sub execute {
+    my ($prog, $opt_ref) = @_;
+    print "executing with:\n";
+    use Data::Dumper 'Dumper';
+    print Dumper [ $opt_ref ];
+    return 1;
+}
+__DATA__
+AHJKSDHYIUAHSAHSAISAHJS%12 16 72 1928 192 & A=1 B=2
+

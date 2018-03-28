@@ -1,0 +1,88 @@
+Scripts and Snippets
+--------------------
+Troy D. Hanson <tdh@tkhanson.net>
+
+include::sslogo.txt[]
+
+Back to http://tkhanson.net[tkhanson.net main page].
+
+About
+~~~~~
+These are miscellaneous small scripts and snippets that I've written on Linux
+and OS X.  These are all placed in the public domain. 
+
+Download options
+~~~~~~~~~~~~~~~~
+* Download http://tkhanson.net/misc/misc.tar.bz2[misc.tar.bz2]
+* Browse http://tkhanson.net/cgit.cgi/misc.git/tree[source tree]
+* Clone `git clone http://tkhanson.net/misc.git`
+
+// this defines an attribute called {t} used below
+//:t: http://tkhanson.net/cgit.cgi/misc.git/plain/
+:t: http://tkhanson.net/cgit.cgi/misc.git/tree/
+:f: http://tkhanson.net/cgit.cgi/misc.git/plain/unixdomain/Unix_domain_sockets.html
+:e: http://tkhanson.net/cgit.cgi/misc.git/plain/entropy/Entropy.html
+
+Snippets 
+~~~~~~~~
+Examples of using common libraries and other reusable bits:
+[width="90%",cols="10^m,70,5",grid="none"]
+|=================================================================================================================
+| {t}dlsym[dlsym]      | example of using dlsym() | C
+| {t}lemon[lemon]      | example of using the Lemon parser generator | C
+| {t}udp[udp]          | example of UDP client and server | C
+| {t}tcp[tcp]          | example of TCP client and server | C
+| {t}ifinfo[ifinfo]    | code to list network interfaces, their IPv4/v6 addresses and MACs | C
+| {t}dns[dns]          | example of doing DNS lookup | C
+| {t}sigio[sigio]      | example of signal driven I/O notification | C
+| {t}asm[asm]          | a few x86 assembly programs that call C library functions or are called from C | asm
+| {t}inotify[inotify]  | example of getting inotify file events (Linux 2.6.13 and higher) | C
+| {t}mworkers[mworkers]| example of a parent process managing multiple worker processes | C
+| {t}pcre[pcre]        | example of using pcre library | C
+| {t}pcap[pcap]        | example of using libpcap to capture packets | C
+| {t}readline[readline]| example of using readline library | C
+| {t}unixdomain[unixdomain]   | example of UNIX domain socket client and server {f}[notes] | C
+| {t}controlport[controlport] | a control port library: an administrative interface to a server | C
+| {t}bloom[bloom]      | builds a Bloom filter from lines of one text file, tests lines of another file on it | C
+| {t}ts[timeseries]    | a time series library, series comprised of arbitrary elements | C
+| {t}entropy[entropy]  | measuring entropy of a byte stream {e}[notes] | C
+| {t}zlib[zlib]        | example of implementing a simple gzip/gunzip using the zlib C API | C
+| {t}tconf[tconf]      | simple function to read key-value configuration file entries | C
+| {t}rw_wrap[rw_wrap]  | macros to wrap read/write, which loop until "len" bytes are read or written | C
+| {t}iconv[iconv]      | example of using the iconv library | C 
+| {t}iscan[iscan]      | an incremental grep that reads a stream piecemeal scanning for a pattern | C
+| {t}slurp[slurp]      | example of using `read` or `mmap` to "slurp" a whole file | C
+| {t}pexit[pexit]      | a C program that gets signalled when its parent exits using prctl | C
+| {t}utf8[utf8]        | macros for utf8 handling including character length, validity and utf32 conversion | C 
+| {t}looper[looper]    | example of iterating over lines of input from file or stdin using readline | C
+|=================================================================================================================
+
+:f: http://tkhanson.net/cgit.cgi/misc.git/plain/fifor/index.html
+:r: http://tkhanson.net/cgit.cgi/misc.git/plain/remember/index.html
+:m: http://tkhanson.net/cgit.cgi/misc.git/plain/md5watch/index.html
+:d: http://tkhanson.net/cgit.cgi/misc.git/plain/ditaa_example/ditaa_asciidoc.html
+
+Scripts
+~~~~~~~
+[width="90%",cols="10^m,70,5",grid="none"]
+|=================================================================================================================
+| {t}fifor[fifor]       | run commands whenever a fifo is readable (useful when triggered by a vim hotkey) {f}[notes] | Perl
+| {t}downsample[downsample] |  reduce a text file to x% of its lines (default 10%) | Perl
+| {t}md5watch[md5watch] | list files changed since last run {m}[notes] | Perl
+| {t}mailpl[mailpl]     | send email with attachments, configurable from address, etc | Perl
+| {t}anb[anb]           | list lines in file A but not in file B | Perl
+| {t}bin2hex[bin2hex]   | convert stdin to hex bytes | Perl
+| {t}hex2bin[hex2bin]   | convert hex args to binary bytes on stdout | Perl
+| {t}fcut[fcut]         | print region (from position s of length l) from a file | Perl
+| {t}pagehits[pagehits] | parse access.log and store daily hits for each url, or view cumulative hits | Perl
+| {t}remember[remember] | type "remember", run some commands you want to remember, then "remember -s" to save them {r}[notes] | sh
+| {t}rrd[rrd]           | sample of using rrdtool | Perl
+| {t}ditaa_example[ditaa] | embedding ditaa diagrams into Asciidoc documents {d}[notes] | ditaa
+| {t}setup[setup]       | configure some of my preferences in .bash_profile, .gdbinit, .vimrc and .inputrc | sh
+|=================================================================================================================
+
+Other resources
+~~~~~~~~~~~~~~~
+1. http://tkhanson.net/virtual_memory.pdf[Virtual Memory in a Nutshell] slides I wrote in 2009.
+
+// vim: set tw=80 wm=2 nowrap syntax=asciidoc: 

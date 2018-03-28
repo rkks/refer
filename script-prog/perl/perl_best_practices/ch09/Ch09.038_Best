@@ -1,0 +1,43 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 9 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $SPACE => q{ };
+
+Readonly my %PAD_DEFAULTS => (
+    cols     => 78,
+    centered => 0,
+    filler   => $SPACE,
+    # etc.
+);
+ 
+sub padded {
+    my ($text, $arg_ref) = @_;
+ 
+    # Unpack optional arguments and set defaults...
+    my %arg = ref $arg_ref eq 'HASH' ? (%PAD_DEFAULTS, %{$arg_ref})
+            :                           %PAD_DEFAULTS;
+ 
+    # Compute left and right spacings...
+    my $gap   = $arg{cols} - length $text;
+    my $left  = $arg{centered} ? int($gap/2) : 0;
+    my $right = $gap - $left;
+ 
+    # Prepend and append space...
+    return $arg{filler} x $left . $text . $arg{filler} x $right;
+}
+
+
+print '[', padded( 'cell' ), "]\n";

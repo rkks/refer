@@ -1,0 +1,6 @@
+#! /usr/bin/perl -wl
+
+(undef, $minutes, $hour)=localtime;   # we don't care about seconds
+$am_pm='AM';
+$hour > 12  and  $am_pm='PM'  and  $hour=$hour-12;
+print "The time is $hour:$minutes $am_pm.";

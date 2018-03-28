@@ -1,0 +1,1 @@
+alias testcover='cover -delete; ./Build testcover; cover'

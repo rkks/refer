@@ -1,0 +1,1 @@
+  alias svk='/usr/bin/pperl -- --anyuser /usr/bin/svk'

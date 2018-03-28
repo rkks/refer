@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Long;
+
+sub usage {
+  print "usage: $0 [-p <pct>] <file>\n";
+  exit(-1);
+}
+
+our $pct = 10;
+our $help;
+usage unless GetOptions("pct=i",   => \$pct,
+                        "help"     => \$help);
+usage if $help;
+
+while (<>) {
+  print if ((int rand 100) < $pct);
+}

@@ -1,0 +1,1 @@
+alias realias='$EDITOR ~/.aliases; source ~/.aliases'

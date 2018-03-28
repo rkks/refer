@@ -1,0 +1,106 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;sig_purgechilds.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;The parent process pulls a child exit status whenever the OS notifies<br />
+&nbsp;* &nbsp;a child status change.<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 04/01/05.<br />
+&nbsp;* &nbsp;Original source file available at http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#236e25;">/* for printf() and fgetc() */</span><br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* for fork() */</span><br />
+<span style="color:#683821;">#include &lt;sys/types.h&gt;<br />
+#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* for srandom() and random() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><span style="color:#236e25;">/* for time() [seeding srandom()] */</span><br />
+<span style="color:#683821;">#include &lt;time.h&gt;<br />
+</span><span style="color:#236e25;">/* for waitpid() */</span><br />
+<span style="color:#683821;">#include &lt;sys/wait.h&gt;<br />
+</span><span style="color:#236e25;">/* for signal(), kill() and raise() */</span><br />
+<span style="color:#683821;">#include &lt;signal.h&gt;<br />
+</span><br />
+<span style="color:#236e25;">/* how many childs to raise */</span><br />
+<span style="color:#683821;">#define NUM_PROCS &nbsp;&nbsp;</span><span style="color:#0000ff;">5</span><span style="color:#683821;"><br />
+</span><br />
+<br />
+<span style="color:#236e25;">/* handler prototype for SIGCHLD */</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">child_handler</span>(<span style="color:#881350;">int</span>);<br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[])<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> i, exit_status;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* execute child_handler() when receiving a signal of type SIGCHLD */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">signal</span>(SIGCHLD, &amp;child_handler);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* initialize the random num generator */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">srandom</span>(<span style="color:#003369;">time</span>(<span style="color:#881350;">NULL</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Try to issue a \'ps\' while the process is running...\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* produce NUM_PROCS childs */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; NUM_PROCS; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(! <span style="color:#003369;">fork</span>()) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* child */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* choosing a random exit status between 0 and 99 */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit_status = (<span style="color:#881350;">int</span>)(<span style="color:#003369;">random</span>() % <span style="color:#0000ff;">100</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">" -&gt; New child %d, will exit with %d.\n"</span>, (<span style="color:#881350;">int</span>)<span style="color:#003369;">getpid</span>(), exit_status);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* try to skip signals overlapping */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>((<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)(<span style="color:#003369;">random</span>() % <span style="color:#0000ff;">3</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* choosing a value to exit between 0 and 99 */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(exit_status);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* father */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>((<span style="color:#881350;">unsigned</span> <span style="color:#881350;">int</span>)(<span style="color:#003369;">random</span>() % <span style="color:#0000ff;">2</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* checkpoint */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"parent: done with fork()ing.\n"</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* why this is not equivalent to sleep(20) here? */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">for</span><span style="color:#003369;"> </span>(i = <span style="color:#0000ff;">0</span>; i &lt; <span style="color:#0000ff;">10</span>; i++) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">sleep</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* all the child processes should be done now */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"I did not purge all the childs. Timeout; exiting.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* terminate myself =&gt; exit */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">kill</span>(<span style="color:#003369;">getpid</span>(), <span style="color:#0000ff;">15</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* this won't be actually executed */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+<br />
+<span style="color:#236e25;">/* handler definition for SIGCHLD */</span><br />
+<span style="color:#881350;">void</span> <span style="color:#003369;">child_handler</span>(<span style="color:#881350;">int</span> sig_type)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> child_status;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;pid_t child;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">static</span> <span style="color:#881350;">int</span> call_num = <span style="color:#0000ff;">0</span>;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* getting the child's exit status */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;child = <span style="color:#003369;">waitpid</span>(<span style="color:#0000ff;">0</span>, &amp;child_status, <span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"&lt;- &nbsp;Child %d exited with status %d.\n"</span>, child, <span style="color:#003369;">WEXITSTATUS</span>(child_status)); <br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* did we get all the childs? */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(++call_num &gt;= NUM_PROCS) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"I got all the childs this time. Going to exit.\n"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit </span>(<span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span>;<br />
+}<br />
+</div>

@@ -1,0 +1,2 @@
+alias pmver="perl -le'\$m = shift; eval qq(require \$m)
+   or die qq(module \"\$m\" is not installed\\n); print \$m->VERSION'"

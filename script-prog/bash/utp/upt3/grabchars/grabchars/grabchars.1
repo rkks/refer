@@ -1,0 +1,223 @@
+''' Man page for grabchars, uses Larry Wall's "patch" man page as
+''' a template.
+.de Sh
+.br
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.ie n \{\
+.tr \(bs-\*(Tr
+.ds -- \(bs-
+.if (\n(.H=4u)&(1m=24u) .ds -- \(bs\h'-12u'\(bs\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(bs\h'-12u'\(bs\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+.ds L' '
+.ds R' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds L' `
+.ds R' '
+'br\}
+.TH GRABCHARS 1 LOCAL
+.SH NAME
+grabchars - get keystrokes directly from user
+.SH SYNOPSIS
+.B grabchars
+[options]
+.SH DESCRIPTION
+\fBGrabchars\fP gets characters from the user as they are
+typed in, without having to wait for the return key to
+be pressed.  Among other things, this allows shell scripts
+to be written with highly interactive menus.
+.PP
+By default,
+.I grabchars
+will obtain one character from stdin, echo that character to stdout,
+and return with a status of one; meaning one character read.
+.TP 5
+.B \-b
+Both
+.I stdout
+and
+.I stderr
+are used for output.  This is useful for setting a variable in
+a shell script and echoing a keystroke to the screen at the
+same time.
+.TP 5
+.B \-c<valid characters>
+Only characters in
+.I <valid characters>
+are accepted.  Regular expressions such as [a-z]
+may be used to specify ranges.  All other characters are ignored.
+.TP 5
+.B \-d<char(s)>
+Default char or string to output if the user hits
+.B RETURN
+or lets
+.B grabchars
+timeout.  The status that is returned is the same as if the user had
+typed in the character or string, so this option may be used with
+the
+.B \-s
+(silent) flag.
+.TP 5
+.B \-e
+Output goes to
+.I stderr
+rather than
+.I stdout.
+.TP 5
+.B \-f
+Flush any previous input.  By default,
+.I grabchars
+will see any characters present in
+.I stdin,
+which allows for some typeahead in shell scripts.
+.TP 5
+.B \-h
+Help/usage screen.
+.TP 5
+.B \-p<prompt>
+Sets up a prompt for the user.  See
+.I EXAMPLES.
+.TP 5
+.B \-q<prompt>
+Sets up a prompt for the user, except it is printed to
+.I stderr
+rather than
+.I stdout.
+.TP 5
+.B \-r
+The
+.B RETURN
+key exits.  Use this with the -n option to allow for variable
+numbers of characters to be typed in.
+.TP 5
+.B \-n<number>
+Number of characters to read.  By default,
+.I grabchars
+looks for one character.
+.TP 5
+.B \-s
+Silent.  Do not output anything. Just return a status.
+.TP 5
+.B \-t<seconds>
+Time to allow the user to respond.  By default, the user
+can take as long as he or she wants to.  The timeout option allows
+you to write shell scripts where you can offer some assistance
+if it's obvious that the user might be stuck.
+.TP 5
+.B \-E
+Erase/kill processing is done.  You have use of the keys (usually
+DELETE and ^U or ^X) that you would normally have from the
+shell for deleting characters.  This is useful with the
+.B \-n
+option, where many characters are being typed in.  This code hasn't
+been thoroughly tested, and currently only applies to a BSD compiled
+version.
+.TP 5
+.B \-L
+Map characters to lower case.
+.TP 5
+.B \-L
+Map characters to upper case.  Note that if \fB-U\fP and \fB-L\fP
+are both specified on the command line, the last one that occurs
+will win out.  This is because it doesn't make sense to try to do
+both at once.
+.SH EXAMPLES
+.TP 5
+.B grabchars
+gets one keystroke
+.TP 5
+.B grabchars \-caeiou
+get one of the vowels
+.TP 5
+.B grabchars -c i
+get the letter 'i'
+.TP 5
+.B grabchars '\-penter a letter '
+print the prompt "enter a letter "
+.TP 5
+.B grabchars '\-qenter a letter '
+print the prompt ('q' for question) "enter a letter " through
+.I stderr.
+.TP 5
+.B grabchars \-n4
+get four characters.
+.TP 5
+.B grabchars \-d a
+If the first character typed is a
+.B RETURN,
+expand it to 'a'.
+.TP 5
+.B grabchars \-d gumby
+If the first character typed is a
+.B RETURN,
+expand it to "gumby".
+.TP 5
+.B grabchars \-r
+The
+.B RETURN
+key will exit
+.I grabchars.  You would use this with the
+.B -n
+option, so that variable numbers of characters may be entered.
+.TP
+.B grabchars \-n 4 \-r \-t 10
+Accept up to four characters, or exit when
+.B RETURN
+is hit, or exit when 10 seconds have elapsed.
+.TP 5
+.B grabchars \-t2
+timeout after two seconds.
+.TP 5
+.B grabchars \-d gumby \-t2
+If the first character typed is a
+.B RETURN,
+or if two seconds have gone by,
+pretend that the user typed in "gumby".
+.TP 5
+.B grabchars \-n3 \-p 'initials: '
+print a prompt and grab three characters.
+.TP 5
+.B grabchars \-c 0123456789 \-n2 \-t10
+get two numbers with a ten second timeout.
+.PP
+note that arguments like "-n4" or "-n 4" are handled the same way
+.SH SEE ALSO
+csh(1) and sh(1)
+for syntax of
+.I csh
+and
+.I sh
+scripts, respectively.
+See "The Unix Csh Field Guide", by Gail and Paul Anderson (Prentice Hall),
+for an excellent tour of csh and good examples of writing csh scripts.
+.SH DIAGNOSTICS
+.I
+Grabchars
+returns
+.B \-2
+if it times out, or
+.B \-1
+if it gives a usage statement.  Otherwise, it
+returns the number of characters successfully read.
+.SH AUTHOR
+.nf
+Dan Smith (daniel@island.uu.net or {ucbvax!ucbcad,well,sun}!island!daniel)

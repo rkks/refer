@@ -1,0 +1,109 @@
+##############################################################################
+## Example 16.1 (NOT RECOMMENDED) from Chapter 16 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-1. Making a hash of your psyche
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Generic base class confers an ID number and description attribute
+# on all derived classes...
+package Object;
+ 
+# Class attribute...
+my $next_id = 1;
+ 
+# Constructor expects description as argument, 
+# and automatically allocates ID number...
+sub new {
+    my ($class, $arg_ref) = @_;
+ 
+    # Create object representation...
+    my $new_object = bless {}, $class;
+ 
+    # Initialize attributes...
+    $new_object->{ id } = $next_id++;
+    $new_object->{desc} = $arg_ref->{desc};
+ 
+    return $new_object;
+}
+ 
+# and later...
+ 
+# Derived class for psychological modelling...
+package Psyche;
+ 
+# All instances need ID and description...
+use base qw( Object );
+ 
+# Constructor expects to be passed an ego representation,
+# but generates other psychological layer automatically...
+sub new {
+    my ($class, $arg_ref) = @_;
+ 
+    # Call base-class constructor to create object representation 
+    # and initialize identity attributes...
+    my $new_object = $class->SUPER::new($arg_ref);
+ 
+    # Initialize psyche-specific attributes...
+    $new_object->{super_ego} = Ego::Superstructure->new();
+    $new_object->{   ego   } = Ego->new($arg_ref->{ego});
+    $new_object->{   id    } = Ego::Substrate->new();    # Oops! Reused 'id' entry
+ 
+    return $new_object;
+}
+ 
+# Summarize a particular psyche...
+sub describe{
+    my ($self) = @_;
+ 
+    # List case number...
+    print "Case $self->{id}...\n";
+ 
+    # Describe pschological layers...
+    $self->{super_ego}->describe();
+    $self->{   ego   }->describe();
+    $self->{   id    }->describe();
+ 
+    return;
+}
+ 
+# and later still...
+ 
+my $psyche = Psyche->new({ desc=>'me!', ego=>'sum' });
+ 
+$psyche->{id} = 'est';
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $psyche ];
+
+
+package Ego::Superstructure;
+
+sub new {
+    return 1;
+}
+
+package Ego;
+
+sub new {
+    return 1;
+}
+
+package Ego::Substrate;
+
+sub new {
+    return 1;
+}

@@ -1,0 +1,43 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 2 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Don't use BSD style...
+my @names = 
+(
+    'Damian',    # Primary key
+    'Matthew',   # Disambiguator
+    'Conway',    # General class or category
+);
+ 
+for my $name (@names) 
+{
+    for my $word (anagrams_of(lc $name)) 
+    {
+        print "$word\n";
+    }
+}
+ 
+# And don't use GNU style either...
+ 
+for my $name (@names) 
+  {
+    for my $word (anagrams_of(lc $name)) 
+      {
+        print "$word\n";
+      }
+  }
+

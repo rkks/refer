@@ -1,0 +1,42 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 17 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Range of acceptable replacements for placeholders in template...
+my @letter = ('A'..'Z');
+ 
+# Given a template, fill it in randomly, making sure the file doesn't exist...
+sub tempfile {
+    my ($template) = @_;
+    my $filename;
+ 
+    ATTEMPT:
+    while (1) {
+        $filename = $template;
+        $filename =~ s{ X }{$letter[rand @letter]}gexms;
+        last ATTEMPT if ! -e $filename;
+    }
+ 
+    return $filename;
+}
+ 
+my $filename = tempfile('.myapp_XXXXXX');
+# open my $fh, '>', $filename
+#     or croak "Couldn't open temp file: $filename";
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $filename ];
+

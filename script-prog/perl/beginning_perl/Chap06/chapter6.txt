@@ -1,0 +1,24 @@
+We're starting to write real programs now, and real
+programs need to be able to read and write files to and from your hard drive. At the moment, all we can do is ask the user for input using <STDIN> and print data on the screen using print. Pretty simple stuff, yes – but these two ideas actually form the basis of a great deal of the file handling you'll be doing in Perl.
+
+What we want to do in this chapter is extend
+ these techniques into reading from and writing to files, and we'll also look at the other techniques we have for handling files, directories and data.
+Filehandles
+First though, let's do some groundwork. When we're dealing with files, we need something that tells Perl which file we're talking about, which allows us to refer to and access a certain file on the disk. We need a label, something that will give us a 'handle' on the file we want to work on, and for this reason, the 'something' we want is known as a filehandle.
+
+We've actually already seen a filehandle: the STDIN of <STDIN>. This is a filehandle for the special file 'standard input', and whenever we've used the idiom <STDIN> to read a line, we've been reading from the standard input file. Standard input is the input provided by a user either directly as we've seen, by typing on the keyboard, or indirectly, through the use of a 'pipe' which (as we'll see) pumps input into the program.
+
+As a counterpart to standard input, there's also standard output: STDOUT. This is the exact opposite – it's the output we provide to a user, which at the moment we're doing by writing on the screen – every time we've used the function print so far, we've been implicitly using STDOUT:
+
+print STDOUT "Hello, world.\n";
+
+is just the same as our original example in Chapter 1. There's one more 'standard' filehandle: standard error, or STDERR, which is where we write the error messages when we die.
+
+Every program has these three filehandles available, at least at the beginning of the program. To read and write from other files, though, you'll want to open a filehandle of your own. Filehandles are usually one-way: you can't write to the user's keyboard, for instance, or read from his screen. Instead, filehandles are open either for reading or for writing, for input or for output. So, here's how you'd open a filehandle for reading:
+
+open FH, $filename or die $!;
+
+The operator for opening a filehandle is open, and it takes two arguments, the first being the name of the filehandle we want to open. Filehandles are slightly different from ordinary variables, and they do not need to be declared with my, even if you're using strict as you should. It's traditional to use all-capitals for a filehandle to distinguish them from keywords.
+
+The second argument is the file's name – either as a variable, as shown above, or as a string literal, like this:
+

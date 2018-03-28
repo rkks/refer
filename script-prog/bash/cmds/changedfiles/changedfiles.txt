@@ -1,0 +1,76 @@
+:
+##########################################################################
+# Title      :	changedfiles - show changed file names
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1995-02-06
+# Requires   :	xargs
+# Category   :	File Utilities
+# SCCS-Id.   :	@(#) changedfiles	1.2 04/02/18
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.2'
+: ${POSTMASTER:=${USER:-$LOGNAME}}
+: ${HOSTNAME:=`uname -n`}
+Dirs="/ /usr"				# Searched directories
+: ${ChangeList:=/var/adm/changedfiles}	# Used with find -newer
+Tmp=${TMPDIR:=/tmp}/cf$$
+Tmp2=${TMPDIR:=/tmp}/cf$$1
+# Determine mail program knowing "-s" argument
+Mail=mail
+[ -x /bin/mailx ] && Mail=mailx
+Usage () {
+    echo "$PN - show changed files since last invocation, $VER (stv '95)
+usage: $PN [directory ...]
+Compares all files with a file list, and reports differences.
+Searched directories:	$Dirs
+Changed files list:	ChangeList=$ChangeList
+The output is mailed to user POSTMASTER=$POSTMASTER" >&2
+    exit 1
+}
+Msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+[ $# -lt 1 ] && set -- $Dirs
+[ -f "$ChangeList" ] || { touch "$ChangeList" || exit 1; }
+# Convert directory names to absulute path names
+Dirs=
+for Dir
+do
+    [ -d "$Dir" ] && Dirs="$Dirs `cd $Dir; pwd`"
+done
+set -- $Dirs
+# Remove temporary file after signal or exit
+trap "rm -f $Tmp $Tmp2 > /dev/null 2>&1" 0
+trap "exit 2" 1 2 3 15
+find "$@" -xdev -newer "$ChangeList" -print | sort -u > $Tmp
+if [ -s "$ChangeList" ]
+then
+    comm -23 $Tmp "$ChangeList" | grep -v $Tmp > $Tmp2
+fi
+mv $Tmp "$ChangeList"
+if [ -s $Tmp2 ]
+then
+    xargs ls -lgad < $Tmp2 > $Tmp
+    cat - $Tmp <<! | $Mail -s "changed files on $HOSTNAME" $POSTMASTER
+*** Output from program $0
+Changed files on $HOSTNAME since `ls -l "$ChangeList" | awk '{print $5, $6, $7}'`:
+!
+fi
+touch "$ChangeList"
+exit 0

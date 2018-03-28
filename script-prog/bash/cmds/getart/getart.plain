@@ -1,0 +1,52 @@
+:
+##########################################################################
+# Title      :	getart - get news article by file name
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1995
+# Requires   :	icat
+# Category   :	News
+# SCCS-Id.   :	@(#) getart	1.2 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+: ${NEWSSPOOL:=/var/spool/news}
+usage () {
+    echo >&2 "$PN - get news article by file name $VER (stv '95)
+usage: $PN newsgroup.article [...]
+i.e. $PN comp.unix.shell.10023"
+    exit 1
+}
+msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+# Check arguments before setting them
+getopt h "$@" > /dev/null 2>&1	|| usage
+set -- `getopt h "$@"`
+while [ $# -gt 0 ]
+do
+    case "$1" in
+					# your flags here
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# first file name
+    esac
+    shift
+done
+for Article
+do
+    File=`echo "$Article" | sed 's:\.:/:g'`
+    [ -r "$File" ] || File=$NEWSSPOOL/$File
+    if [ -r "$File" ]
+    then
+	icat "$File"
+    else
+        fatal "cannot get article $File"
+    fi
+done

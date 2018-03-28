@@ -1,0 +1,76 @@
+##############################################################################
+## Example 16.4 (NOT RECOMMENDED) from Chapter 16 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 16-4. Adding extra positional arguments to constructors
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Client;
+use Class::Std::Utils;
+{
+    my %client_num_of; 
+    my %name_of;         # New attribute in base class
+ 
+    sub new {
+        # Expect extra positional argument to constructor...
+        my ($class, $client_num, $client_name) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;   
+ 
+        $client_num_of{ident $new_object} = $client_num;
+        $name_of{ident $new_object}       = $client_name;
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of, \%name_of ];
+    }
+}
+ 
+package Client::Corporate;
+use base qw( Client );
+use Class::Std::Utils;
+{
+    my %corporation_of;
+    my %position_of;        # New attribute in derived class
+    sub new {
+        # Expect extra positional arguments to constructor...
+        my ($class, $client_num, $corp_name, $client_name, $position) = @_;
+ 
+        # Pass extra positional argument to base class constructor...
+        my $new_object = $class->SUPER::new($client_num, $client_name);
+ 
+        $corporation_of{ident $new_object} = $corp_name;
+        $position_of{ident $new_object}    = $position;
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%corporation_of, \%position_of ];
+    }
+}
+ 
+# and later...
+ 
+my $new_client 
+    = Client::Corporate->new( '124C1', 'Florin', 'Humperdinck',  'CEO' );
+

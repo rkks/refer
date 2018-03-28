@@ -1,0 +1,34 @@
+I am writing a document on the performance of gnu make and various
+makefiles and came across something I can't explain.
+
+To measure the speed of gnu make $(subst...) versus a sed call I
+wrote this simple makefile:
+
+  p1000 := ...<1000 character string with periodic semicolons>...
+  # This simple assignment 10000 times.
+  x := $(subst ;, ,$(p1000))
+  ...
+
+I then run this makefile 10 times and average the times.  I ran the
+makefile on Windows XP with Cygwin and a Linux system with RedHat 9:
+
+  Windows XP     1.8 GHz/P4/512MB	 82644 assignments / second
+  Linux	  	 450 MHz/P2/256MB	111111 assignments / second
+
+As you can see the puny 450 MHz P2 managed to kick Windows ass.  I'm
+at a total loss to explain why, though.  For instance,
+
+* Both systems were idle, with no memory hogging apps running (the
+  Windows machine was freshly booted)
+
+* The test runs the makefile only 10 times, for only 10 process
+  create/loads and 100000 assignments
+
+* The test seems to be entirely cpu bound, with both executables
+  compiled by gcc (albeit different versions)
+
+Could this be entirely explained by the difference in process
+creation times?
+
+Thanks,
+Robert

@@ -1,0 +1,54 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $ONE_YEAR => 365;
+
+my %client_named = (
+    IBN   => 'IBN_Info',
+    Zerox => 'Zerox_Info',
+);
+
+
+while (my ($name, $client_info) = each %client_named) {         # Iterate key/value
+    print "Checking client $name\n";                            # Use key
+    if ($client_info->inactivity() > $ONE_YEAR) {               # Use value
+        $client_info                                            # Change copy (!)
+            = Client::Moribund->new({ from => $client_info });  # ...using value
+    }
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ \%client_named ];
+
+
+package IBN_Info;
+
+sub inactivity { return 22 }
+
+package Zerox_Info;
+
+sub inactivity { return 422 }
+
+package Client::Moribund;
+use Carp;
+
+sub new {
+    my ($class, $opt_ref) = @_;
+    carp "Calling $class->new()";
+    return "$class\[$opt_ref->{from}]";
+}

@@ -1,0 +1,9 @@
+#! /usr/bin/perl -wpl
+
+s/\bSun\b/Sunday/g;
+s/\bMon\b/Monday/g;
+s/\bTue\b/Tuesday/g;
+s/\bWed\b/Wednesday/g;
+s/\bThu\b/Thursday/g;
+s/\bFri\b/Friday/g;
+s/\bSat\b/Saturday/g;

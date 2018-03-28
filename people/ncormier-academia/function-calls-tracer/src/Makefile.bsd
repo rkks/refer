@@ -1,0 +1,36 @@
+##
+## Makefile for  in /home/nico/lang/c/ftrace/src
+## 
+## Made by nicolas
+## Mail   <n.cormier@gmail.com>
+## 
+## Started on  Thu Mar 23 22:12:27 2006 nicolas
+## Last update Wed Apr 12 21:33:01 2006 nicolas
+##
+
+NAME		= ftrace
+SRC		= ftrace.c error.c bin.c brkps.c loop.c warning.c \
+		  core.c verbose.c
+OBJ		= $(SRC:.c=.o)
+CC		= gcc
+RM		= rm -f
+CFLAGS		= -Iincludes -I. \
+		  -Wall -W -Wstrict-prototypes -Wno-trigraphs \
+		  -D__FTRACE__  -g
+
+$(NAME):	$(OBJ)
+		$(CC) -o $(NAME) $(OBJ) -Llib -lftrace
+
+$(OBJ):		includes/ftrace.h includes/tracee.h \
+		includes/bin.h \
+		lib/libftrace.a
+
+all:		$(NAME)
+
+clean:
+		$(RM) $(OBJ)
+
+fclean:		clean
+		$(RM) $(NAME)
+
+re:		fclean all

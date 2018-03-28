@@ -1,0 +1,25 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 4 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+use bignum;
+my $PI = 3.141592_653589_793238_462643_383279_502884_197169_399375;
+ 
+my $subnet_mask= 0xFF_FF_FF_80;
+
+use Data::Dumper 'Dumper';
+warn "PI = $PI\n";
+warn "subnet_mask = $subnet_mask\n";

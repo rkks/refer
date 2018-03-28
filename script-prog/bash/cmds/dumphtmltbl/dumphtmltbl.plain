@@ -1,0 +1,231 @@
+:
+##########################################################################
+# Title      :	dumphtmltbl - extract ASCII data from HTML table
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	2000-02-25
+# Requires   :	[gnm]awk
+# Category   :	HTML, File Conversion
+# SCCS-Id.   :	@(#) dumphtmltbl	1.6 04/01/02
+##########################################################################
+# Description
+#   Reads from standard input, searches for HTML tables (starting
+#   with "<TABLE>"), and extracts all information contained in
+#   "<TD>" and "<TH>" elements. The table data is then printed
+#   with columns separated by "TAB" (ASCII 9) characters.
+#
+#    o	HTML tags are stripped from the input
+#    o	Multiple HTML tables are printed as one
+#    o  The table data is printed without any formatting. No
+#	attempt is made to process tag attributes like
+#	"ALIGN=CENTER", "WIDTH=..." etc.
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.6'
+Usage () {
+    echo >&2 "$PN - extract ASCII data from HTML table, $VER
+usage: $PN [-fp] [file ...]
+    -f:	force recognition of table data elements outside of tables
+    -p: preserve whitespace within table data
+The -f option is useful if parts of a HTML page are given as input."
+    exit 1
+}
+Msg () {
+    for MsgLine
+    do echo "$PN: $MsgLine" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+set -- `getopt fhp "$@"` || Usage
+[ $# -lt 1 ] && Usage			# "getopt" detected an error
+Force=no
+PreserveWS=no				# Preserve whitspace
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -f)	Force=yes;;	# recognize <TD> elements outside of tables
+	-p)	PreserveWS=yes;;
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+# We need a "new" AWK implementation with functions, "getline()",
+# "match()". GNU awk is better for long input lines, but "mawk" is faster.
+if [ -z "$NAWK" ]
+then
+    for awk in mawk gawk nawk
+    do
+	for path in `echo "$PATH" | sed 's/^:/.:/;s/:$/:./;s/:/ /g'`
+	do
+	    [ -x $path/$awk ] || continue
+	    NAWK=$path/$awk
+	    break 2
+	done
+    done
+    : ${NAWK:=awk}
+fi
+$NAWK '
+    #####################################################################
+    # getchar - read one character, return -1 on EOF
+    #####################################################################
+    function getchar () {
+    	if ( getchar_pos >= getchar_len || !getchar_line ) {
+	    if ( getline > 0 ) {
+	    	getchar_line = $0 " "
+		getchar_len  = length (getchar_line)
+		getchar_pos  = 1
+	    } else {
+	    	return -1
+	    }
+	}
+	#print "GETCHAR: " substr (getchar_line, getchar_pos, 1)
+	return substr (getchar_line, getchar_pos++, 1)
+    }
+    #####################################################################
+    # ungets - "unget" a string
+    #
+    # The characters of the string will be returned at subsequent
+    # calls of getchar()
+    #####################################################################
+    function ungets (s) {
+    	#print "BEFORE: " getchar_line, getchar_len
+    	ungets_buf = substr (getchar_line, 1, getchar_pos - 1) s	\
+			substr (getchar_line, getchar_pos,
+				getchar_len - getchar_pos)
+	getchar_line = ungets_buf
+	getchar_len += length (s)
+    	#print " AFTER: " getchar_line, getchar_len
+    }
+    #####################################################################
+    # readtag - read a tag until closing ">"
+    #
+    # The leading "<" was already read. Ignores all tag
+    # attributes.
+    #
+    # Returns the tag without "<" ">"
+    #####################################################################
+    function readtag () {
+    	readtag_result = ""
+	while ( (readtag_c = getchar()) != ">" && readtag_c != -1 ) {
+	    if ( match (readtag_c, /[ 	]/) ) {
+	    	# end of tag name, start of attributes
+		while ( (readtag_c = getchar()) != ">"  && readtag_c != -1 ) {
+		    # ignore character
+		}
+		return readtag_result
+	    }
+	    readtag_result = readtag_result readtag_c
+	}
+	return readtag_result
+    }
+    #####################################################################
+    # readword - read one (whitespace delimited) word of input
+    #
+    # A word is delimited by whitespace or tags
+    #
+    # Returns
+    #	the word read
+    #####################################################################
+    function readword() {
+        readword_result = ""
+	#print "readword: START: <" readword_result ">"
+    	while ( (readword_c = getchar()) != -1				\
+		&& readword_c != "<" 					\
+		&& (PreserveWS || readword_c !~ /[ 	]/) ) {
+	    readword_result = readword_result readword_c
+	}
+	if ( readword_c != -1 ) ungets(readword_c)
+	#print "readword:  END: <" readword_result ">"
+	return readword_result
+    }
+    #####################################################################
+    # nexttoken - reads the next token of the input stream
+    #
+    # Global variables:
+    #	token_type	TOK_WORD|TOK_TAG
+    #	token_value	text or tag name
+    #
+    # Returns
+    #	TOK_WORD, TOK_TAG	token type
+    #	-1			EOF
+    #####################################################################
+    function nexttoken () {
+    	while ( (nexttoken_c = getchar()) != -1 ) {
+	    if ( nexttoken_c == "<" ) {
+		token_value = readtag()
+	    	return token_type = TOK_TAG
+	    } else if ( nexttoken_c ~ /[ 	]/ && !PreserveWS ) {
+	    	continue
+	    } else {
+	    	#print "nexttoken: read word starting with <" nexttoken_c ">"
+		ungets(nexttoken_c)
+	    	token_value = readword()
+		return token_type = TOK_WORD
+	    }
+	}
+	return -1
+    }
+    BEGIN {
+    	ForceTable = ("'"$Force"'" == "yes")
+	PreserveWS = ("'"$PreserveWS"'" == "yes")
+    	# Return values for the "nexttoken()" function:
+    	TOK_TAG  = "TAG"	# got a HTML tag (i.e. "TABLE")
+	TOK_WORD = "WORD"	# got a (whitespace delimited) word
+        COLSEP	= "	"	# output column separator (TAB)
+	WORDSEP = " "		# output word separator (BLANK)
+	#rowno			# current row number [1...]
+	#row[]			# all table data for this row
+	#readdata {0 | 1}	# currently reading <TD> or <TH> data element?
+    	while ( (tok = nexttoken()) != -1 ) {
+	    # print tok "	" token_value
+	    if ( ForceTable ||
+	    	    (tok==TOK_TAG && token_value ~ /^[tT][aA][bB][lL][eE]$/) ){
+	    	do {
+		    if ( tok == TOK_TAG ) {
+			if ( readdata ) {
+			    # The following tags terminate a <TD> element:
+			    if ( token_value ~ /^\/[tT][dDhH]/		\
+				|| token_value ~ /^\/[tT][rR]$/		\
+				|| token_value ~ /^[tT][dDhHrR]$/	\
+				|| token_value ~ /^\/[tT][aA][bB][lL][eE]$/) {
+				#print "READDATA: END: " token_value
+				if ( row [rowno] ) {
+				    row [rowno] = row [rowno] COLSEP
+				}
+				row [rowno] = row [rowno] td
+				#print "READDATA:  TD: " row [rowno]
+				readdata = 0
+			    }
+			}
+		    	if ( token_value ~ /^[tT][rR]$/ ) {
+			    #print "TR: START"
+			    row [++rowno] = ""		# Start a new table row
+			} else if ( token_value ~ /^[tT][dDhH]$/ ) {
+			    #print "TD: START"
+			    td       = ""		# New <TD>/<TH> column
+			    readdata = 1
+			} 
+		    } else if ( tok == TOK_WORD ) {
+		    	if ( readdata ) {
+			    # Retain word boundaries
+			    if ( td && td !~ /[ 	]$/ ) td = td WORDSEP
+			    td = td token_value
+			    #print "TD: DATA <" td ">"
+			}
+		    }
+		} while ( (tok = nexttoken()) != -1 )
+	    }
+	}
+    }
+    END {
+    	#print "END: number of rows: " rowno
+    	for ( i=1; i<=rowno; ++i ) {
+	    print row [i]
+	    #line = row [i]
+	    #nfields = split (line, F, COLSEP)
+	    #print nfields " <" line ">"
+	}
+    }
+' "$@"

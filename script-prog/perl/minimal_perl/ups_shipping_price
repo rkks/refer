@@ -1,0 +1,32 @@
+#! /usr/bin/perl -s -wl
+
+use strict;                     # needed because of nested loops
+
+use Business::UPS;
+
+our ($origin, $dest, $pounds);  # switch variables
+
+my $Usage="Usage: $0 -origin=zip -dest=zip -pounds=weight";
+
+# Check for required switches
+defined $origin  and  defined $dest  and  defined $pounds  or
+  warn "$Usage\n"  and  exit 1;
+
+my $pricey='1DM';       # 1DM delivers on morning of next day
+my $cheap='2DAL';       # 2DAL delivers on second day
+
+foreach my $service ( $cheap, $pricey ) {
+  my ( $price, undef, $error )=
+    getUPS( $service, $origin, $dest, $pounds );
+
+  if ( $error ) {
+      warn "$0: ERROR: $error\n";
+  }
+  else {
+    my $service2=$service;
+    length $service2 < 4  and  $service2=" $service";  # align
+
+    print "$service2 service to ship $pounds pounds",
+      " from $origin to $dest is \$$price";
+  }
+}

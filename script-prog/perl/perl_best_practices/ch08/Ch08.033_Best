@@ -1,0 +1,66 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $sales_data = \*DATA;
+my @sales;
+
+sub translate_ID {
+    my ($id) = @_;
+    return $id;
+}
+
+use Text::CSV_XS;
+ 
+# Specify format...
+my $csv_format 
+    = Text::CSV_XS->new({
+          sep_char    => q{,},   # Fields are comma-separated
+          escape_char => q{\\},  # Backslashed chars are always data
+          quote_char  => q{"},   # Fields can be double-quoted
+      });
+ 
+# Grab each line/record...
+RECORD:
+while (my $record = <$sales_data>) {
+    # Verify record is correctly formatted (or skip it)...
+    if (!$csv_format->parse($record)) {
+         warn 'Record ', $sales_data->input_line_number(), " not valid: '$record'";
+         next RECORD;
+    }
+ 
+    # Extract all fields...
+
+    my ($ident, $sales, $price) = $csv_format->fields(); 
+ 
+    # Append each record, translating ID codes and
+    # normalizing sales (which are stored in 1000s)...
+    push @sales, { 
+        ident => translate_ID($ident),
+        sales => $sales * 1000,
+        price => $price,
+    };
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @sales ];
+
+
+__DATA__
+X123-S,"0000013247",00000199
+SFG-AT,0000000102,00009099
+"Y811,Q",0000100300,00000033

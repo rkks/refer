@@ -1,0 +1,48 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @clients = (
+    {name=>'J.B.', volume=>1000, activity=> 10, rate=>20, volatility=>0.4},
+    {name=>'E.F.', volume=> 100, activity=>100, rate=>3, volatility=>0.9},
+    {name=>'H.G.', volume=>9000, activity=>  1, rate=>10, volatility=>0.5},
+);
+
+my $total;
+
+Readonly my $WATCH_LEVEL => 10_000;
+Readonly my $KEEP_LEVEL  => 20_000;
+
+CLIENT:
+for my $client (@clients) {
+    # Verify active client...
+    next CLIENT if !$client->{activity};
+ 
+    # Compute current client value and verify client is worth watching...
+    my $value = $client->{volume} * $client->{rate};
+    next CLIENT if $value < $WATCH_LEVEL;
+ 
+    # Compute likely client future value and verify client is worth keeping...
+    my $projected = $client->{activity}* $value;
+    next CLIENT if $projected < $KEEP_LEVEL;
+ 
+    # Add in client's expected contribution...
+    $total += $projected * $client->{volatility};
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $total ];

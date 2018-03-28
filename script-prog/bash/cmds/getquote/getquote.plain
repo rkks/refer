@@ -1,0 +1,102 @@
+:
+##########################################################################
+# Title      :	getquote - get stock quote
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	2001-11-09
+# Requires   :	wget, urlencode, dumphtmltbl, html2iso
+# Category   :	WWW
+# SCCS-Id.   :	@(#) getquote	1.7 03/11/29
+##########################################################################
+# Description
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.7'
+: ${NAWK:=nawk}
+URL="http://finance.yahoo.com/q/cq?d=v1&s="	# stock quotes
+URL2="http://finance.yahoo.com/q/cq?d=e&s="	# realtime quotes
+if [ -z "$GETURL" ]
+then
+    GETURL=wget
+    GETURLFLAGS="-q -O-"
+fi
+Usage () {
+    echo >&2 "$PN - get stock quote, $VER
+usage: $PN [-r] stock_symbol ...
+    -r:  print real-time quotes"
+    exit 1
+}
+Msg () {
+    for MsgLine
+    do echo "$PN: $MsgLine" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+addslashes ()
+{
+    sed 's/[^a-zA-Z0-9_ 	]/\\&/g' "$@"
+}
+set -- `getopt :hr "$@"` || Usage
+[ $# -lt 1 ] && Usage			# "getopt" detected an error
+RealTime=false
+while [ $# -gt 0 ]
+do
+    case "$1" in
+    	-r)	RealTime=true;;
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+[ $# -lt 1 ] && Usage
+# Create a regular expression matching the requested symbols in the
+# output. Use "addslashes" to escape characters that could be mistaken
+# for regular expression meta characters.
+regexp="("`echo "$@" | addslashes | tr ' [a-z]' '|[A-Z]'`")"
+quotes=`echo "$@" | urlencode`
+if $RealTime
+then
+    $GETURL $GETURLFLAGS "$URL2${quotes}" |
+	dumphtmltbl |
+	$NAWK -F"	" '
+	    function printcols(startcol,endcol,		i) {
+		for ( i=startcol; i<=endcol && i<=NF; ++i ) {
+		    if ( i>1 ) printf "\t"
+		    printf "%s", $i
+		}
+		print ""
+	    }
+	
+	#/^Symbol.*Change.*Volume/ {
+	/^Symbol.*Time.*Trade.*Change/ {
+		printcols(1, 3)
+		while ( getline && $1 ~ /^'"$regexp"'$/ ) {
+		    printcols(1, 5)
+		}
+		exit (0);
+	    }
+	' |
+	html2iso
+else
+    $GETURL $GETURLFLAGS "$URL${quotes}" |
+	dumphtmltbl |
+	$NAWK -F"	" '
+	    function printcols(startcol,endcol,		i) {
+		for ( i=startcol; i<=endcol && i<=NF; ++i ) {
+		    if ( i>1 ) printf "\t"
+		    printf "%s", $i
+		}
+		print ""
+	    }
+	
+	/^Symbol.*Change.*Volume/ {
+		printcols(1, 4)
+		while ( getline && $1 ~ /^'"$regexp"'$/ ) {
+		    printcols(1, 6)
+		}
+		exit (0);
+	    }
+	' |
+	html2iso
+fi

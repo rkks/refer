@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScaleTextToViewport", "ScaleTextToViewport\ScaleTextToViewport\ScaleTextToViewport.csproj", "{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "ScaleTextToViewportContent", "ScaleTextToViewport\ScaleTextToViewportContent\ScaleTextToViewportContent.contentproj", "{4EA5F680-AC01-48E9-9285-3B7A2A19005A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{79DB5B3A-38F8-4938-B52B-F2A1E73F8D15}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{4EA5F680-AC01-48E9-9285-3B7A2A19005A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA5F680-AC01-48E9-9285-3B7A2A19005A}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{4EA5F680-AC01-48E9-9285-3B7A2A19005A}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA5F680-AC01-48E9-9285-3B7A2A19005A}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

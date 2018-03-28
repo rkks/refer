@@ -1,0 +1,57 @@
+<taglib
+  xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+    http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+  version="2.0">
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>2.0</jsp-version>
+  <short-name>Example TLD</short-name>
+  <uri>http://www.jspbook.com/example.tld</uri>
+  <tag>
+    <name>foo</name>
+    <tag-class>com.jspbook.FooTag</tag-class>
+    <body-content>empty</body-content>
+  </tag>
+  <tag>
+    <name>hello</name>
+    <tag-class>com.jspbook.HelloSimpleTag</tag-class>
+    <body-content>empty</body-content>
+  </tag>
+  <tag>
+    <name>date</name>
+    <tag-class>com.jspbook.FormatDateTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>format</name>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>dynamicAttribute</name>
+    <tag-class>com.jspbook.DynamicAttributeTag</tag-class>
+    <dynamic-attributes>true</dynamic-attributes>
+  </tag>
+  <tag>
+    <name>body</name>
+    <tag-class>com.jspbook.BodySimpleTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+  <tag>
+    <name>date</name>
+    <tag-class>com.jspbook.DateTag</tag-class>
+    <body-content>empty</body-content>
+  </tag>
+  <tag>
+    <name>iterateLinks</name>
+    <tag-class>com.jspbook.LinkIterationTag</tag-class>
+    <teiclass>com.jspbook.LinkIterationTEI</teiclass>
+    <body-content>JSP</body-content>
+<!--
+    <variable>
+      <name-given>link</name-given>
+      <variable-class>String</variable-class>
+    </variable>
+-->
+  </tag>
+</taglib>

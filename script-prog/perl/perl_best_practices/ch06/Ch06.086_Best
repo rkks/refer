@@ -1,0 +1,42 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $MAX_NUMBER_OF_ATTEMPTS => 10;
+
+sub get_big_int {
+
+    my $int = 0;   # Small value so while loop has to iterate at least once
+ 
+    TRY:
+    while ($int < 10) {
+        print 'Enter a large integer: ';
+        $int = <>;
+ 
+        next TRY if $int !~ /\A [-+]? \d+ \n? \z/xms;
+ 
+        chomp $int;
+    } 
+ 
+    return $int;
+}
+
+ 
+# and later...
+ 
+for (1..$MAX_NUMBER_OF_ATTEMPTS) {
+    print '[', sqrt get_big_int(), "]\n";
+}
+

@@ -1,0 +1,89 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Find the user's videos...
+my $vid_lib = File::Hierarchy->new('~/videos');
+ 
+# Replace the first three with titles that aren't
+# actually in the directory (bwah-ha-ha-hah!!!!)...
+$vid_lib->{files}[0]  = q{Phantom Menace};
+$vid_lib->{files}[1]  = q{The Man Who Wasn't There};
+$vid_lib->{files}[2]  = q{Ghost};
+
+
+package File::Hierarchy;
+use Class::Std::Utils;
+{
+    # Objects of this class have the following attributes...
+    my %root_of;   # The root directory of the file hierarchy
+    my %files_of;  # An array storing an object for each file in the root directory
+    
+    # Constructor takes path of file system root directory...
+    sub new {
+        my ($class, $root) = @_;
+    
+        # Bless a scalar to instantiate the new object...
+        my $new_object = bless \do{my $anon_scalar}, $class;
+    
+        # Initialize the object's "root" attribute...
+        $root_of{ident $new_object} = $root;
+    
+        return $new_object;
+    }
+    
+    # Retrieve files from root directory...
+    sub get_files {
+        my ($self) = @_;
+    
+        # Load up the "files" attribute, if necessary...
+        if (!exists $files_of{ident $self}) {
+            $files_of{ident $self} 
+                = File::System->list_files($root_of{ident $self});
+        }
+    
+        # Flatten the "files" attribute's array to produce a file list...
+        return @{ $files_of{ident $self} };
+    }
+}
+ 
+package File::Hierarchy::File;
+use Class::Std::Utils;
+{    
+    # Objects of this class have the following attributes...
+    my %name_of;  # the name of the file
+    
+    # Constructor takes name of file...
+    sub new {
+        my ($class, $filename) = @_;
+    
+        # Bless a scalar to instantiate the new object...
+        my $new_object = bless \do{my $anon_scalar}, $class;
+    
+        # Initialize the object's "name" attribute...
+        $name_of{ident $new_object} = $filename;
+    
+        return $new_object;
+    }
+    
+    # Retrieve name of file...
+    sub get_name {
+        my ($self) = @_;
+    
+        return $name_of{ident $self};
+    }
+}
+

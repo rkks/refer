@@ -1,0 +1,33 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 8 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my $addr = '1600 Pennsylvania Avenue, Washington DC, USA';
+
+my $country_pos  = 41;
+my $COUNTRY_LEN  = 3;
+my $country_code = 'USA';
+
+my %country_name = (
+    USA => 'The United States of America',
+);
+
+substr $addr, $country_pos, $COUNTRY_LEN , $country_name{$country_code};
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $addr ];
+
+

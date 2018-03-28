@@ -1,0 +1,4 @@
+read_serial: reads the serial port device provided as the first argument 
+read_serial.js: a version of the same written for node.js
+
+See also libftdi, for USB-to-serial communication using the FTDI chipset.

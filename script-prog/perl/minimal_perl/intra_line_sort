@@ -1,0 +1,14 @@
+#! /usr/bin/perl -s -wn
+
+our ($debug);           # make switch optional
+
+$debug  and  chomp;     # so "<-" appears on same line as $_
+$debug  and  print "$_ <- Original\n";
+
+$,=' ';                 # separate printed words by a space
+
+# split lines of numbers on whitespace, and sort them
+print sort { $a <=> $b } split;  # numeric sort
+
+$debug  and  print " <- Sorted\n";
+print "\n";             # separate records in output

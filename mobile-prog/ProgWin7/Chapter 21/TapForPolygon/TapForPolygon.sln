@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TapForPolygon", "TapForPolygon\TapForPolygon\TapForPolygon.csproj", "{066D9698-A796-4E75-BDEB-661C94BA09CF}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TapForPolygonContent", "TapForPolygon\TapForPolygonContent\TapForPolygonContent.contentproj", "{7879714F-E66B-4245-AC75-EB5EC42FED73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{066D9698-A796-4E75-BDEB-661C94BA09CF}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{066D9698-A796-4E75-BDEB-661C94BA09CF}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{066D9698-A796-4E75-BDEB-661C94BA09CF}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{066D9698-A796-4E75-BDEB-661C94BA09CF}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{066D9698-A796-4E75-BDEB-661C94BA09CF}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{066D9698-A796-4E75-BDEB-661C94BA09CF}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{7879714F-E66B-4245-AC75-EB5EC42FED73}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{7879714F-E66B-4245-AC75-EB5EC42FED73}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

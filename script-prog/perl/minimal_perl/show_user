@@ -1,0 +1,10 @@
+#! /usr/bin/perl -wl
+
+use Shell::POSIX::Select;
+
+# Get list of who's logged in
+@users=`who | perl -wnla -e ' print \$F[0]; ' | sort -u`;
+chomp @users;   # remove newlines
+
+# Let program user select Unix user to monitor
+select ( @users ) { system "w $_"; }

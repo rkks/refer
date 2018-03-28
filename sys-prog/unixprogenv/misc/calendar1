@@ -1,0 +1,5 @@
+# calendar:  version 1 -- today only
+awk <$HOME/calendar '
+	BEGIN { split("'"`date`"'", date) }
+	$1 == date[2] && $2 == date[3]
+' | mail $NAME

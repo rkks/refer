@@ -1,0 +1,31 @@
+##########################################################################
+# Title      :	freq - word frequencies
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-08-05
+# Requires   :	awk
+# Category   :	Text Utilities
+# SCCS-Id.   :	@(#) freq	1.3 03/12/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.3'
+usage () {
+    echo >&2 "$PN - count word frequencies, version $VER (stv '94)
+usage: $PN [file ...]
+The input is separated in words, and the frequency of every
+word is written to the standard output. The words are sorted
+by decreasing frequency.
+If no file name is given, $PN reads from standard input."
+    exit 1
+}
+[ $# -gt 0 -a X"$1" = X"-h" ] && usage
+awk '
+    {
+    	for (i=1;i<=NF;i++) Freq [$i]++
+    }
+    END {
+    	for ( i in Freq ) print i "	" Freq [i]
+    }' "$@" |
+    sort -n +1 -r

@@ -1,0 +1,3 @@
+# Prune all except text files
+bin/
+.DS_Store

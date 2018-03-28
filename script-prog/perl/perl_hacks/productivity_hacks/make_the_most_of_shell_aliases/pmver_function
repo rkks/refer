@@ -1,0 +1,1 @@
+function pmver () { perl -M$1 -le"print $1->VERSION"; }

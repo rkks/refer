@@ -1,0 +1,15 @@
+Language: BlooP
+
+Author: Douglas R. Hofstadter
+Note: Hofstadter invented this language for his book, Godel, Escher Bach.
+There is a compiler available, but I don't know whether it supports the 
+following program.  I include it for completeness--besides, it is a very
+readable version.
+
+DEFINE PROCEDURE "ENIUQ" [TEMPLATE]: PRINT [TEMPLATE, LEFT-BRACKET,
+QUOTE-MARK, TEMPLATE, QUOTE-MARK, RIGHT-BRACKET, PERIOD]. 
+
+ENIUQ
+[DEFINE PROCEDURE "ENIUQ" [TEMPLATE]: PRINT [TEMPLATE, LEFT-BRACKET,
+QUOTE-MARK, TEMPLATE, QUOTE-MARK, RIGHT-BRACKET, PERIOD].
+ENIUQ'].

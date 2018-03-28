@@ -1,0 +1,33 @@
+Language: Objective CAML
+
+
+Author: Christopher Oliver
+Note: Learn about Objective CAML at http://pauillac.inria.fr:80/caml/
+
+Overview: This program is written in the form AqABqB where q denotes
+the string literal delimiter, AB is constructed a posteriori from A and
+B, and the program contains no metacharacters with the exception of the
+delimiters.  The program prints the left substring from prog (A), the
+opening delimiter (q), prog itself (AB), the closing delimiter (q), and
+then the right substring from prog (B).
+
+let prog = "let prog =  in
+  print_string (String.sub prog 0 11);
+  print_char (Char.chr 34); print_string prog; print_char (Char.chr 34);
+  print_string (String.sub prog 11 158);;
+" in
+  print_string (String.sub prog 0 11);
+  print_char (Char.chr 34); print_string prog; print_char (Char.chr 34);
+  print_string (String.sub prog 11 158);;
+
+
+Author: Christopher Oliver
+Note: The return value of
+the 0-arity function is a string containing the source of the function.
+
+let gen() = let prog = "let gen() = let prog =  in
+(String.sub prog 0 23) ^ (Char.escaped (Char.chr 34)) ^ prog ^
+(Char.escaped (Char.chr 34)) ^ (String.sub prog 23 125);;
+" in
+(String.sub prog 0 23) ^ (Char.escaped (Char.chr 34)) ^ prog ^
+(Char.escaped (Char.chr 34)) ^ (String.sub prog 23 125);;

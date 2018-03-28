@@ -1,0 +1,50 @@
+
+trap 'print \\'Thank you for playing!\\'' EXIT
+
+magicnum=$(($RANDOM%10+1))
+print 'Guess a number between 1 and 10:'
+while read guess'?number> '; do
+    sleep 10
+    if (( $guess == $magicnum )); then
+	print 'Right!'
+        exit
+    fi
+    print 'Wrong!'
+done
+
+
+
+function errtrap {
+    es=$?
+    print "ERROR: Command exited with status $es."
+}
+
+trap errtrap ERR
+
+
+\f(CIscriptname\f(CW[\f(CIN\f(CW]: lskdjfafd:  not found
+ERROR: command exited with status 1.
+
+
+function errtrap {
+    es=$?
+    print "ERROR: Command exited with status $es."
+}
+
+trap errtrap ERR
+
+function bad {
+    return 17
+}
+
+bad
+
+
+function errtrap {
+    es=$?
+    print "ERROR line $1: Command exited with status $es."
+}
+
+trap 'errtrap $LINENO' ERR
+\&...
+

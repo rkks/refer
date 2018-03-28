@@ -1,0 +1,37 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $ACCEPTANCE_THRESHOLD => 9;
+my $measurement = 0;
+
+my %is_exception;
+@is_exception{11..18} = (1) x 8;
+
+VALIDITY_CHECK: 
+while ($measurement < $ACCEPTANCE_THRESHOLD && $is_exception{$measurement}) {
+    $measurement = get_next_measurement();
+    redo VALIDITY_CHECK if !defined $measurement || $measurement eq '[null]';
+    # etc.
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $measurement ];
+
+sub get_next_measurement {
+    return int rand 20;
+}

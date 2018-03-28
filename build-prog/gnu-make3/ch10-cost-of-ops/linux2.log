@@ -1,0 +1,132 @@
+make --no-print-directory --silent -f make-bash.mk
+1.62
+1.62
+1.61
+1.61
+1.62
+1.62
+1.63
+1.61
+1.62
+1.62
+make --no-print-directory --silent -f make-ash.mk
+1.51
+1.52
+1.52
+1.52
+1.51
+1.51
+1.51
+1.51
+1.51
+1.52
+make --no-print-directory --silent -f make-sh.mk
+1.59
+1.59
+1.60
+1.59
+1.59
+1.59
+1.59
+1.59
+1.59
+1.59
+make --no-print-directory --silent -q -f assign.mk
+0.09
+0.09
+0.09
+0.09
+0.10
+0.09
+0.09
+0.09
+0.09
+0.09
+make --no-print-directory --silent -q -f subst-short.mk
+0.26
+0.26
+0.26
+0.26
+0.26
+0.26
+0.26
+0.26
+0.26
+0.26
+make --no-print-directory --silent -q -f subst-long.mk
+1.41
+1.42
+1.42
+1.42
+1.42
+1.42
+1.43
+1.42
+1.42
+1.42
+make --no-print-directory --silent -f sed-bash.mk
+3.43
+3.42
+3.43
+3.40
+3.45
+3.45
+3.41
+3.42
+3.41
+3.41
+make --no-print-directory --silent -f sed-ash.mk
+0.69
+0.69
+0.69
+0.69
+0.69
+0.69
+0.69
+0.70
+0.69
+0.69
+make --no-print-directory --silent -f sed-sh.mk
+1.39
+1.39
+1.41
+1.38
+1.39
+1.39
+1.39
+1.40
+1.39
+1.39
+make --no-print-directory --silent -f shell-bash.mk
+2.60
+2.61
+2.60
+2.60
+2.60
+2.63
+2.60
+2.65
+2.59
+2.61
+make --no-print-directory --silent -f shell-ash.mk
+0.18
+0.18
+0.18
+0.18
+0.18
+0.18
+0.18
+0.18
+0.18
+0.18
+make --no-print-directory --silent -f shell-sh.mk
+0.50
+0.51
+0.52
+0.50
+0.50
+0.50
+0.50
+0.50
+0.50
+0.50

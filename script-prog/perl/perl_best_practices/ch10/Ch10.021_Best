@@ -1,0 +1,70 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 10 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+
+sub get_config {
+    my ($config_file) = @_;
+ 
+    # Access config file or signal failure...
+    open my $fh, '<', $config_file 
+        or croak "Can't open '$config_file': $OS_ERROR";
+
+ 
+    # Load file contents and close file...
+    my @lines = <$fh>;
+    close $fh 
+        or croak "Can't close '$config_file' after reading: $OS_ERROR";
+ 
+    # [Decode config data and return, as before]
+    # Storage for config data...
+    my %config;
+    my $curr_section = $EMPTY_STR;
+ 
+    CONFIG: 
+    for my $line (@lines) {
+        # Section markers change the second level hash destination...
+        if (my ($section_name) = $line =~ m/ \A \[ ([^]]+) \] /xms) {
+            $curr_section = $section_name;
+            next CONFIG;
+        }
+ 
+        # Key/value pairs are stored in the current second level hash...
+        if (my ($key, $val) = $line =~ m/ \A \s* (.*?) \s* : \s* (.*?) \s* \z/xms) {
+            $config{$curr_section}{$key} = $val;
+            next CONFIG;
+        }
+ 
+        # Ignore everything else
+    }
+ 
+    return \%config;
+}
+
+
+my $data = do{ local $/; <DATA> };
+
+use Data::Dumper 'Dumper';
+warn Dumper [
+    get_config( \$data )
+];
+
+__DATA__
+foo: food is good
+bar: a bar is better
+
+[FILM]
+baz: luhrman is a director

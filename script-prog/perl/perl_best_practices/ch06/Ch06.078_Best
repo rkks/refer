@@ -1,0 +1,56 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+package Debugging;
+ 
+use Carp;
+use Log::Stdlog  { level => 'debug' };
+ 
+BEGIN {
+
+# Choice of actions when debugging...
+my %debug_mode = (
+  # MODE           DEBUGGING ACTION
+    off    => sub {},
+    logged => sub { return print {*STDLOG} debug =>  @_; },
+    loud   => sub {                  carp 'DEBUG: ', @_; },
+    fatal  => sub {                 croak 'DEBUG: ', @_; },
+);
+ 
+# Change debugging behaviour whenever module is used...
+sub import {
+    my $package = shift;
+    my $mode    = @_ > 0 ? shift : 'loud';   # Default to carping
+ 
+    # Locate appropriate behaviour, or die trying...
+    my $debugger = $debug_mode{$mode};
+    croak "Unknown debugging mode ('$mode')" if !defined $debugger;
+ 
+    # Install new behaviour...
+    use Sub::Installer;
+    caller()->reinstall_sub(debug  => $debugger);
+ 
+    return;
+}  
+
+}
+
+
+BEGIN { Debugging->import(); }
+
+
+debug "Oops!";

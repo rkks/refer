@@ -1,0 +1,21 @@
+Newsgroups: comp.sources.misc
+subject: v12i049: Grabchars 1.9, get keystrokes direct from user BSD/SYSV part 1
+From: daniel@island.UUCP (Dan Smith "Happy Birthday James Brown G.O.S.")
+Sender: allbery@uunet.UU.NET (Brandon S. Allbery - comp.sources.misc)
+
+Posting-number: Volume 12, Issue 49
+Submitted-by: daniel@island.UUCP (Dan Smith "Happy Birthday James Brown G.O.S.")
+Archive-name: grabchars-1.9/part01
+
+	Here is a long overdue update to grabchars.  I now have
+SYS V support.  Grabchars lets you write highly interactive shell
+scripts, by allowing you to grab one or more keystrokes. See the
+README for more.  I have also included a script which allows you
+to generate csh menu-based scripts; you lay out the menu in your
+favorite editor, it writes the skeleton script.  Enjoy!
+
+			Daniel
+
+   dansmith@well.sf.ca.us   daniel@island.uu.net   unicom!daniel@pacbell.com
+ph: (415) 332 3278 (h), 491 1000 (w) disclaimer: Island's coffee was laced :-)
+

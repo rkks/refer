@@ -1,0 +1,93 @@
+#! /bin/awk -f
+
+function summarize(root)
+{
+  wtitle = "windows3.log" root
+  ltitle = "linux2.log" root
+
+  if ( ! root in factor ) print root " is missing"
+
+  count[wtitle] *= factor[root]
+  count[ltitle] *= factor[root]
+
+  printf "      <row>\n"
+  printf "       <entry>%s</entry>\n", title[root]
+  printf "       <entry>%d</entry>\n", count[wtitle]
+  printf "       <entry>%.4f</entry>\n", secs[wtitle]/count[wtitle]
+  printf "       <entry>%d</entry>\n", count[wtitle]/secs[wtitle]
+  printf "       <entry>%.4f</entry>\n", secs[ltitle]/count[ltitle]
+  printf "       <entry>%d</entry>\n", count[ltitle]/secs[ltitle]
+  printf "      </row>\n"
+}
+
+BEGIN {
+  printf "   <table id=\"mp_ta_performance\">\n"
+  printf "    <title>Cost of Operations</title>\n"
+  printf "    <tgroup cols=\"6\">\n"
+  printf "     <thead>\n"
+  printf "      <row>\n"
+  printf "       <entry>Operation</entry>\n"
+  printf "       <entry>Executions</entry>\n"
+  printf "       <entry>Seconds per Execution (Windows)</entry>\n"
+  printf "       <entry>Executions per Second (Windows)</entry>\n"
+  printf "       <entry>Seconds per Execution (Linux)</entry>\n"
+  printf "       <entry>Executions per Second (Linux)</entry>\n"
+  printf "      </row>\n"
+  printf "     </thead>\n"
+  printf "     <tbody>\n"
+
+  factor["make-bash.mk"] = 100
+  factor["make-ash.mk"]  = 100
+  factor["make-sh.mk"]   = 100
+  factor["sed-bash.mk"]  = 100
+  factor["sed-ash.mk"]   = 100
+  factor["sed-sh.mk"]    = 100
+  factor["shell-bash.mk"]= 100
+  factor["shell-ash.mk"] = 100
+  factor["shell-sh.mk"]  = 100
+  factor["assign.mk"]    = 1000
+  factor["subst-short.mk"] = 1000
+  factor["subst-long.mk"]  = 1000
+
+  title["make-bash.mk"]  = "make (bash)"
+  title["make-ash.mk"]   = "make (ash)"
+  title["make-sh.mk"]    = "make (sh)"
+  title["sed-bash.mk"]   = "sed (bash)"
+  title["sed-ash.mk"]    = "sed (ash)"
+  title["sed-sh.mk"]     = "sed (sh)"
+  title["shell-bash.mk"] = "shell (bash)"
+  title["shell-ash.mk"]  = "shell (ash)"
+  title["shell-sh.mk"]   = "shell (sh)"
+  title["assign.mk"]     = "assignment"
+  title["subst-short.mk"] = "subst (short)"
+  title["subst-long.mk"]  = "subst (long)"
+}
+
+/^make/ {
+  root = FILENAME $NF
+  next
+}
+
+{
+  secs[root] += $1
+  count[root]++
+}
+
+END {
+  summarize("make-bash.mk")
+  summarize("make-ash.mk")
+  summarize("make-sh.mk")
+  summarize("assign.mk")
+  summarize("subst-short.mk")
+  summarize("subst-long.mk")
+  summarize("sed-bash.mk")
+  summarize("sed-ash.mk")
+  summarize("sed-sh.mk")
+  summarize("shell-bash.mk")
+  summarize("shell-ash.mk")
+  summarize("shell-sh.mk")
+
+  printf "     </tbody>\n"
+  printf "    </tgroup>\n"
+  printf "   </table>\n"
+}

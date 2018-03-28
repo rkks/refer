@@ -1,0 +1,87 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 16 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+my $new_client 
+    = Client::Corporate->new( {
+          calient_name => 'Humperdinck',          # Diantre!
+          corp_name    => 'Florin', 
+          position     => 'CEO',
+ 
+          'Client'            => { client_num  => '124C1'  }, 
+          'Client::Corporate' => { client_num  => 'F_1692' },
+      });
+
+
+
+package Client;
+use Class::Std::Utils;
+use Carp;
+{
+    my %client_num_of;
+    my %name_of;
+
+ 
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;   
+ 
+        # Initialize this class's attributes with the appropriate argument set...
+        my %init = extract_initializers_from($arg_ref);
+ 
+        $client_num_of{ident $new_object} = $init{client_num};
+        $name_of{ident $new_object}       = $init{client_name};
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of, \%name_of ];
+    }
+}
+ 
+package Client::Corporate;
+use base qw( Client );
+use Class::Std::Utils;
+{
+    my %client_num_of;
+    my %corporation_of;
+    my %position_of; 
+ 
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = $class->SUPER::new($arg_ref);
+        my $ident = ident($new_object);
+ 
+        # Initialize this class's attributes with the appropriate argument set...
+        my %init = extract_initializers_from($arg_ref);
+        $client_num_of{$ident}  = $init{client_num};
+        $corporation_of{$ident} = $init{corp_name};
+        $position_of{$ident}    = $init{position};
+ 
+        return $new_object;
+    }
+ 
+    # etc.
+    END { 
+        use Data::Dumper 'Dumper';
+        warn Dumper [ \%client_num_of, \%corporation_of, \%position_of ];
+    }
+}

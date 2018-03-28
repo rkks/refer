@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradientBackground", "GradientBackground\GradientBackground\GradientBackground.csproj", "{9D0FDD07-4660-4E27-A397-7510966D70DE}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "GradientBackgroundContent", "GradientBackground\GradientBackgroundContent\GradientBackgroundContent.contentproj", "{5B68F21D-8986-4D20-B618-821C4530C4DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{9D0FDD07-4660-4E27-A397-7510966D70DE}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{5B68F21D-8986-4D20-B618-821C4530C4DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B68F21D-8986-4D20-B618-821C4530C4DF}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{5B68F21D-8986-4D20-B618-821C4530C4DF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B68F21D-8986-4D20-B618-821C4530C4DF}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,31 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @generated_lines = (undef, "A LINE\n", undef, "cmd: Another line\n");
+my @non_cmds;
+
+for my $line (@generated_lines) {
+    if (defined $line) {
+        print lc $line;
+        $line =~ s{\A cmd}{}xms;
+        push @non_cmds, $line;
+    }
+}
+
+
+
+print @non_cmds;
+

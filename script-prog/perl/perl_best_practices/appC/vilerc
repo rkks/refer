@@ -1,0 +1,31 @@
+;############################################################################
+;#    Vile config (Recommended) from Appendix C of "Perl Best Practices"    #
+;#     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      #
+;#  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  #
+;############################################################################
+
+;Preserve current indent on new lines
+set autoindent
+ 
+;Wrap at the 78th column
+set fillcol=78
+set wrapwords 
+ 
+; Use 4-space indents, not tabs
+set tabspace=4
+set shiftwidth=4
+set noti
+ 
+;Allow % to bounce between angles too
+set fence-pairs="()[]{}<>"
+ 
+;Inserting these abbreviations inserts the corresponding Perl statement...
+abb phbp  #! /usr/bin/perl -w      
+abb pdbg  use Data::Dumper 'Dumper';warn Dumper [];hi
+abb pbmk  use Benchmark qw( cmpthese );cmpthese -10, {};O     
+abb pusc  use Smart::Comments;### 
+abb putm  use Test::More qw( no_plan );
+ 
+abb papp  :r ~/.code_templates/perl_application.pl
+abb pmod  :r ~/.code_templates/perl_module.pm
+

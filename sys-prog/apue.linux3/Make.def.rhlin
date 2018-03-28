@@ -1,0 +1,23 @@
+# Common make definitions for GNU make under 386BSD.
+
+# Definitions required in all program directories to compile and link
+# C programs using gcc.  We also have to get rid of Sun's "-target" options,
+# as gcc doesn't grok it.
+
+CC=gcc
+COMPILE.c=$(CC) $(CFLAGS) $(CPPFLAGS) -c
+NOANSICOMPILE.c=$(CC) $(NOANSICFLAGS) $(CPPFLAGS) -c
+LINK.c=$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
+LDLIBS=/home/thanlon/apue/libmisc.a		#th
+
+# Common definitions
+
+CFLAGS	= -ggdb -Wall -Wstrict-prototypes -O		#th
+CFLAGSO	= -ggdb -Wall -Wstrict-prototypes -O		#th
+# We don't normally use -O with gcc on the sparc.
+
+LIB	= /home/thanlon/apue/libmisc.a		#th
+# Our library that almost every program needs.
+
+TEMPFILES = core core.* *.o temp.* *.out typescript*
+# Common temp files to delete from each directory.

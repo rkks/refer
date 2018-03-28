@@ -1,0 +1,61 @@
+CAVEATS
+=======
+
+Please do NOT send me email with your "make" output, asking me what to
+do to get the source code working on your system.  You would not believe
+the volume of email that I get like this, and I just don't have the
+time to even respond to these any more.  My suggestion is to get someone
+locally to help (at work or at school) or to ask on some vendor-specific
+Usenet newsgroup.
+
+My publisher graciously allows all the code to be made available (to save
+you from having to type it in), but the code is provided "as is" with no
+support implied.
+
+I use tab stops every four columns, not the more usual eight.  Use "ts=4"
+in vi for the formatting to be correct.
+
+
+BUILDING THE EXAMPLES
+=====================
+
+If you are using Sun's compiler, building the examples is as simple as
+running ./build from inside this directory.  The build script determines
+which version of Solaris you are using, and calls make with an appropriate
+target.
+
+If you are using gcc, you will have to edit four lines in Make.defines first
+(this file contains instructions with the necessary changes), and then set
+the CC variable to gcc.  Running the command "CC=gcc ./build" will do the
+trick.
+
+Whatever compiler you use, if you're attempting to build these examples
+on Solaris 2.5 or Solaris 2.5.1, you will need to uncomment a line in
+Make.defines and another in lib/Makefile before running the build script.
+
+If you prefer, you can run make manually; without a specific target,
+make will try to compile all the examples (the targets are sol-2.5 for
+Solaris 2.5, sol-2.5.1 for Solaris 2.5.1, and so on, up to sol-9 for
+Solaris 9 and later).  This will fail if you're not using Solaris 9 or
+later.  You can also run make from any of the subdirectories, if you
+want to build the examples for that chapter--in this case, make sure
+that the library (lib/ssp.a) is built first.  Note that if you want to do
+this, the horizontal lines at the beginning and end of each listing in
+the book contain the directory and filename.
+
+The build process is pretty quiet by default, just saying which directory
+is being processed.  Setting the VERBOSE variable to "y" before running
+make or the build script will result in a line of output for every program.
+For example,
+
+	VERBOSE=y make sol-8
+
+will verbosely build all of the examples that compile on Solaris 8.
+(It is possible to set multiple variables at once, so constructs like
+"CC=gcc VERBOSE=y make sol-8" are valid.)
+
+ALL of the programs compile without warning when using Sun's compiler.
+If you're using gcc, a small number of warnings will appear; all of these
+are benign and can be safely ignored.  (These appear because I always run
+gcc with -Wall, which causes it to perform certain lint-like checks;
+similarly, I always run Sun's compiler with -v.)

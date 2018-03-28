@@ -1,0 +1,56 @@
+<project name="MPClient" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="MPClient" />
+    <property name="tmp" value="anttmp" />
+    <property name="tmpclasses" value="${tmp}/tmpclasses" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${tmp}" />
+    <delete file="bin/${projname}.jar" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${tmp}" />
+    <mkdir dir="${tmpclasses}" />
+
+    <unzip dest="${tmpclasses}">
+      <fileset dir="lib">
+        <include name="**/*.zip"/>
+        <include name="**/*.jar"/>
+      </fileset>
+    </unzip>
+    <delete dir="${tmpclasses}/META-INF" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src" destdir="${tmpclasses}">
+      <classpath>
+        <pathelement path="${tmpclasses}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile">
+    <copy todir="${tmpclasses}">
+      <fileset dir="res" />
+    </copy>
+    <jar jarfile="bin/${projname}.jar"
+         basedir="${tmpclasses}"
+    />
+  </target>
+
+  <target name="run" depends="init" >
+    <java classname="com.enterprisej2me.MapPoint.Client.awt.AWTMap"
+          fork="true">
+      <classpath>
+        <pathelement path="bin/${projname}.jar"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

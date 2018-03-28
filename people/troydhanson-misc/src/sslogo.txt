@@ -1,0 +1,5 @@
+ifdef::backend-xhtml11[]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+<a style="float: right; padding-right: 50px" href="http://tkhanson.net/misc"><img style="border: 0" src="sslogo.png" alt="scripts and snippets" /></a>
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+endif::backend-xhtml11[]

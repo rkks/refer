@@ -1,0 +1,35 @@
+:
+##########################################################################
+# Shellscript:	hgrep - grep with highlighted match
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1994-05-16
+# Category   :	Text Utilities
+# SCCS-Id.   :	@(#) hgrep	1.2 06/01/06
+##########################################################################
+# Note:
+#    Based on an idea from
+#	Peek, Jerry: Unix Power Tools. O'Reilly 1993
+#
+# o  The option "-i" will be passed to "grep", but "sed" will not
+#    highlight matches in wrong character case
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+: ${GREP:=grep}
+SMSO=`tput smso`			# "reverse mode" on
+RMSO=`tput rmso`			# "reverse mode" off
+Args=
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	    -*)	Args="$Args $1";;
+	    *)	break;;
+	esac
+	shift
+done
+# Use "grep" to search the files. The trailing /dev/null file
+# ensures, that "grep" starts all matching line with the file
+# name. The start of the "sed" command skips this filename,
+# because the pattern should not be matched there.
+$GREP $Args "$@" /dev/null |
+    sed "s^\\([^:]*:.*\\)\\($1\\)\\1$SMSO\\2$RMSOg"

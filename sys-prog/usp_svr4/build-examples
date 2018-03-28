@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# build-examples
+#
+# Use this script to invoke make with the correct options to build the
+# examples on your system.
+#
+
+MAKE=make
+
+case "`uname -s -r`" in
+HP-UX\ *.10.*)
+	$MAKE OSNAME=hpux $*
+	;;
+IRIX\ 5.*)
+	$MAKE OSNAME=irix $*
+	;;
+SunOS\ 5.*)
+	$MAKE OSNAME=solaris $*
+	;;
+*)
+	echo "These examples have not been ported to `uname -s -r`."
+	;;
+esac

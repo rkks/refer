@@ -1,0 +1,4 @@
+todo:
+ - backtrace on kernel panic
+ - assert for kernel heap and kernel stack collision
+ - create an object for ref counting (thread-safe)

@@ -1,0 +1,52 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 17 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+sub _Class::cannot {
+    # What kind of coercion cannot be done?
+    my ($coerce) = @_;
+ 
+    # Build a subroutine with the corresponding error message...
+    return sub {
+        my ($self) = @_;
+        croak sprintf qq{Can't $coerce}, ref $self;
+    };
+}
+ 
+sub _Class::allows_no_coercions {
+    return (
+        q{""}   => _Class::cannot('stringify a %s'),
+        q{0+}   => _Class::cannot('numerify a %s'),
+        q{bool} => _Class::cannot('get the boolean value of a %s'),
+    );
+}
+ 
+# and later...
+ 
+package Process::Queue;
+{
+    # Type coercions don't make sense for process queues...
+    use overload  _Class::allows_no_coercions();
+}
+ 
+# and later still...
+ 
+package Socket;
+{
+    # Type coercions don't make sense for sockets...
+    use overload  _Class::allows_no_coercions();
+}
+

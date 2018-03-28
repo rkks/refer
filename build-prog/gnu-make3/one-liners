@@ -1,0 +1,29 @@
+# find all the java files
+$(shell find . -name '*.java')
+
+# convert java file into fully qualified name
+$(subst /,.,$(patsubst %.java,,$(sources)))
+$(subst /,.,$(subst %.java,,$(sources)))
+
+# determine if there are duplicate programs in the path.
+$(shell find $(subst :, ,$(PATH)) -name ls)
+
+# A non-caching replacement for wildcard.
+file-exists = $(shell test -e $1 && echo $1)
+
+# Generate an output file name.
+RELEASE_TAR := mpwm-$(shell date +%F).tar.gz
+
+# Convert dos file path to unix.
+drive-letter-to-slash = /$(subst :,,$1)
+
+# Handling file names with spaces
+
+# add version suffix to file
+get-release-dir = $(release-path)$(if $(all-release-path),_$(words $(all-release-path)))
+
+# determine if a list has duplicates
+$(findstring $(words $(list)) $(words $(sort $(list))))
+
+# determine if a file list contains illegal suffix
+$(if $(filter-out $1,$2),$(warning Illegal suffixes in list.))

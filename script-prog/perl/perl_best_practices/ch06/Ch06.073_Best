@@ -1,0 +1,49 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @file_paths = qw(
+    dev/null
+    dev/null/nuller
+    localized
+    etc/etc/ad/nauseam
+    dev/some
+);
+my @dir_paths;
+
+# Track directory paths to ensure uniqueness...
+my %seen_dir;
+ 
+FILE_PATH:
+for my $file (@file_paths) {
+    # Default to current directory...
+    my $dir_path = './';
+ 
+    # Capture and remove any actual directory path and use it as the path...
+    if ($file =~ s{ \A (.*/) }{}xms) {
+        $dir_path = $1;
+    }
+ 
+    # Reject repeated directory paths...
+    next FILE_PATH if $seen_dir{$dir_path}++;
+ 
+    # Record the extracted path...
+    push @dir_paths, $dir_path;
+} 
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ @dir_paths ];
+warn Dumper [ @file_paths ];

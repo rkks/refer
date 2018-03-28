@@ -1,0 +1,36 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my @operatives = (
+    'Maxwell Smart',
+    'Simon Templar',
+    'James Bond',
+    'Mata Hari',
+);
+
+my %on_disavowed_list = (
+    'Maxwell Smart' => 1,
+    'James Bond'    => 1,
+);
+
+for my $agent_num (0..$#operatives) {                        # Iterate indices
+    my $agent = $operatives[$agent_num];                     # Extract value once
+ 
+    print "Checking agent $agent_num\n";                     # Use index
+    if ($on_disavowed_list{$agent}) {                        # Use value
+        print "\t...$agent disavowed!\n";                    # Use value again
+    } 
+}

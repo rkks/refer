@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhreeCell", "PhreeCell\PhreeCell\PhreeCell.csproj", "{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "PhreeCellContent", "PhreeCell\PhreeCellContent\PhreeCellContent.contentproj", "{572FD71E-6FAC-4D77-BA11-4A735302E84A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{F7A7B587-3FB2-4076-B0BB-2FE45B731A8E}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{572FD71E-6FAC-4D77-BA11-4A735302E84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{572FD71E-6FAC-4D77-BA11-4A735302E84A}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{572FD71E-6FAC-4D77-BA11-4A735302E84A}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{572FD71E-6FAC-4D77-BA11-4A735302E84A}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,109 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    findstr - recursively search for a string
+#
+# SYNOPSIS
+#    findstr [-iv] string [filename]
+#
+# DESCRIPTION
+#    This command searches the files in the current
+#    directory and its subdirectories for the string.  The
+#    name of each file that contains the string is listed.
+#
+#    The string may be a simple string or it may be any
+#    regular expression accepted by the grep command.  If
+#    the string contains whitespace or any other
+#    metacharacter, it must be quoted.
+#
+#    The search can be restricted to files with a particular
+#    name by specifying the file name parameter.  This
+#    parameter may contain wildcard characters to restrict
+#    the search to file names that match a pattern, but the
+#    file name must be quoted so that the wildcard
+#    characters can be processed inside this command file
+#    rather than being expanded into file names on the
+#    command line.
+#
+#    -i   Ignore the case of the string.
+#
+#    -v   Verbose; list the lines that contain the string.
+#         Without this option, only the names of the files
+#         containing the string will be printed.
+#
+# RETURN VALUE
+#    0    Successful completion
+#    1    Usage error
+#
+############################################################
+CMDNAME=`basename $0`
+USAGE="Usage: $CMDNAME [-iv] string [filename]"
+STRING=                  # String to search for
+FILENAME=                # Name of the files to check
+I=                       # Option for grep; Ignore case
+L=-l                     # Option for grep; List names only
+
+#
+# Parse command options.
+#
+if [ "$OPTIND" = 1 ]; then
+     while getopts iv OPT
+     do
+          case $OPT in
+               i)   I=-i      # Ignore case
+                    ;;
+               v)   L=        # Verbose
+                    ;;
+               \?)  echo "$USAGE" 1>&2
+                    exit 1
+                    ;;
+          esac
+     done
+     shift `expr $OPTIND - 1`
+else
+     USAGE="Usage: $CMDNAME [-i][-v] string [filename]"
+     while :
+     do
+          case $1 in
+               -i)  I=-i      # Ignore case
+                    shift
+                    ;;
+               -v)  L=        # Verbose
+                    shift
+                    ;;
+               --)  shift
+                    break
+                    ;;
+               -*)  echo "$USAGE" 1>&2
+                    exit 1
+                    ;;
+               *)   break
+                    ;;
+          esac
+     done
+fi
+
+#
+# Make sure the number of parameters is reasonable.
+#
+if [ $# -lt 1 -o $# -gt 2 ]; then
+     echo "$USAGE" 1>&2
+     exit 1
+fi
+
+STRING=$1
+FILENAME=${2:-"*"}
+
+find . \( -type f -o -type l \) -name "$FILENAME" -print |
+     xargs -e grep $I $L -- "$STRING" /dev/null
+
+exit 0

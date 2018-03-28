@@ -1,0 +1,35 @@
+
+trap "trap \f(CItrapcode SIG\f(CW" EXIT
+
+
+function trap_handler {
+    trap "trap second_handler INT" EXIT
+    print 'Interrupt: one more to abort.'
+}
+
+function second_handler {
+    print 'Aborted.'
+    exit 
+}
+
+
+
+file=$1
+shift
+for dest in "$@"; do
+    cp $file $dest &
+done
+wait
+
+
+
+dc |&
+
+while read line'?adc> '; do
+    print -p "$(alg2rpn $line)"
+    read -p answer
+    print "    = $answer"
+done
+
+
+

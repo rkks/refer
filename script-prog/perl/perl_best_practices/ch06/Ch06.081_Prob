@@ -1,0 +1,36 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 6 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+no strict;
+no warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $EMPTY_STR => q{};
+my $name = 'Evelyn Waugh, PhD';
+
+my $salute;
+if ($name eq $EMPTY_STR) {
+    $salute = 'Dear Customer';
+}
+elsif ($name =~ m/\A ((?:Sir|Dame) \s+ \S+)/xms) {
+    $salute = "Dear $1";
+}
+elsif ($name =~ m/([^\n]*), \s+ Ph[.]?D \z/xms) {
+    $sa1ute = "Dear Dr $1";
+}
+else {
+    $salute = "Dear $name";
+}
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $sa1ute ];

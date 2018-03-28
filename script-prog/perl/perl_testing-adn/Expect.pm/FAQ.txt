@@ -1,0 +1,111 @@
+
+	Here's a couple answers to questions I've gotten recently.
+
+Q: I just want to read the output of a process without expect()ing
+anything. How can I do this?
+
+A: By using expect without any patterns to match.
+	$process->expect(undef); # Forever until EOF
+	$process->expect($timeout); # For a few seconds
+	$process->expect(0); # Is there anything ready on the handle now?
+
+Q: Ok, so now how do I get what was read on the handle?
+
+A:	$read = $process->exp_before();
+
+Q: Where's IO::Pty/Tty?
+
+A:	In Graham Barr's CPAN directory. It requires Perl 5.004_01 or
+higher!
+
+Q: How come when I automate the passwd program to change passwords for me
+passwd dies before changing the password sometimes/every time?
+
+A:	What's happening is you are closing the handle before passwd exits.
+When you close the handle to a process it is sent a signal (SIGPIPE?) telling
+it that STDOUT has gone away. The default behavior for processes is to die
+in this circumstance. Two ways you can make this not happen are:
+
+	$process->soft_close();
+
+	Which is new in 1.04.  This will wait 15 seconds for a process to
+finish up before killing it. 
+	
+	$process->expect(undef); 
+
+	This will wait forever for the process to match an empty set of
+patterns. It will return when the process hits an EOF.
+
+Q: How come when I try to make a logfile with set_group() it doesn't print
+anything after the last time I run expect()?
+
+A:	Output is only printed to the group when Expect reads from the
+proces, during expect(), send_slow() and interconnect().
+	One way you can force this is to make use of
+
+	$process->expect(undef); 
+	and
+	$process->expect(0); 
+
+	which will make expect() run with an empty pattern set forever
+or just for an instant to capture the output of $process. The output
+is available in the accumulator, so you can grab it using
+$process->exp_before().
+
+
+Q: How come I can't match regular expressions any more? How come expect()
+isn't working right in this version?
+
+A:	The internals of expect() have been significantly cleaned up and
+a couple of features have been added since the 1.01 release. Two cool
+(my opinion of course) things have changed that break the old method of
+doing this.
+
+	'-re' must be passed to expect directly before a string you want
+to match as a regular expression. This obsoletes use of the 
+$process->use_regexps() feature. This is cool because it allows for
+matching regexps and literals in the same expect() call. It is also
+closer in behavior to tcl's expect.
+	Multiline matching has been added. This makes it so you can
+match a line in the middle of a page without doing any work, as in:
+
+$process=Expect->spawn("cat /etc/passwd");
+# Let's look for my entry. My shell is bash.
+$process->expect(undef,'-re','^tex.*bash\r?$');
+
+	The reason I look for \r?$ instead of just $ at the end is because
+in normal terminal mode \r\n is returned to you, not just \n. This can
+be changed by changing your stty setting. The ? is so if the line you
+are looking for is the last one it will match even though is isn't
+followed by a carriage return.
+	You can turn off multiline matching by setting
+$Expect::Multiline_Matching=0;
+	this will make ^ and $ only match at the beginning and end of the
+buffer.
+	One of the caveats here is that because input is read in chunks
+it is possible for $ to match a string that may not necessarily be what you
+want.
+
+
+Q:	How come Expect.pm doesn't run properly under HP-UX?
+
+A:	There seems to be a bug in IO::Tty. More to the point, HP-UX. When a
+process dies the parent end of it's tty does not receive an EOF, or so I have
+been told. I do not have a machine to test this on.
+	One solution is when you spawn a process, follow it with a unique
+string that would indicate the process is finished.
+
+        $process = Expect->spawn('telnet somehost;echo ____END____');
+
+	And then $process->expect($timeout,'____END____','other','patterns');
+
+	If someone has an HP they wouldn't mind lending or lending an account
+on I'd be happy to see if I can't find some other solutuion...
+
+Q:	How come occasionally my script will stop functioning under xBSD?
+
+A:	I've only tried FreeBSD. What appears to happen is that ptys are
+getting reused before they are ready. This causes process to receive premature
+EOFs. A workaround is to sleep() a few seconds between process. Be sure you
+soft_close() or hard_close() the process when you are finished.
+

@@ -1,0 +1,13 @@
+#
+# $Header$
+#
+# IRIX 5.x makefile definitions.
+#
+# $Log$
+#
+
+#
+# Compiler selection.
+#
+CC=		cc
+CFLAGS=		-O -xansi

@@ -1,0 +1,226 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename sic.info
+@settitle Dynamic Modular Interpreter Prototyping
+@setchapternewpage odd
+@c %**end of header
+@c @finalout
+@headings 	    double
+
+@include version.texi
+
+@dircategory Programming
+@direntry
+* sic: (sic).		The dynamic modular interpreter prototyping tool.
+@end direntry
+
+@ifinfo
+This file documents sic.
+
+Copyright (C) 2000 Gary V. Vaughan
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission notice
+identical to this one except for the removal of this paragraph
+
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Foundation.
+@end ifinfo
+
+@titlepage
+@sp 10
+@title Sic
+@subtitle Edition @value{EDITION}, @value{UPDATED}
+@subtitle $Id: sic.texi,v 1.2 2000/05/23 09:07:01 bje Exp $
+@author Gary V. Vaughan
+@author @email{gary@@oranda.demon.co.uk}
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2000 Gary V. Vaughan
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Authors.
+@end titlepage
+
+@ifnottex
+@c    name next   previous  up
+@node Top, Introduction, (dir), (dir)
+@top  Dynamic Modular Interpreter Prototyping
+@end ifnottex
+
+@iftex
+@unnumbered Forward
+@end iftex
+
+This is Sic.
+
+@menu
+* Introduction::
+* Syntax::
+* Index::
+@end menu
+
+@node Introduction
+@chapter Introduction
+
+Sic Is Cumulative.
+
+@node Syntax
+@chapter Syntax
+
+@cindex tokeniser
+The key to writing syntax extensions for sic is understanding how the
+syntax analyser tokenises its input.  As each line of the input stream
+is examined, each character is looked up in the syntax table -- if there 
+is a handler function registered for that character, the handler is
+called, otherwise the character is simply copied from the input buffer
+to the output buffer.
+
+@cindex syntax handlers
+Without any handlers, the tokeniser will return a single token
+consisting of the entire input line.  Handlers can be associated with
+any character or characters that might arrive in the input buffer:
+
+@deftypefn {Function Pointer} {int} SyntaxHandler (@w{Sic *@var{sic},} @w{BufferIn *@var{in},} @w{BufferOut *@var{out}})
+Syntax handler functions must be of this type in order to be registerd
+in the syntax table.  Function of this type have access to both the
+input buffer, @var{in}, and the output buffer, @var{out} as well as the
+parent interpreter state data, @var{sic}.
+
+Each of the buffers has @var{lim} bytes of memory allocated to the
+@var{buf.start} field.  The @var{buf.i} field of @var{in} is the offset
+to the character which triggered the handler, and the @var{buf.i} field
+of @var{out} is the offset to the next unused character.
+
+A simple @dfn{null} handler would have the following body:
+
+@smallexample
+out->buf.start[out->buf.i] = in->buf.start[in->buf.i];
+@end smallexample
+
+This copies the current character into the output buffer.  The calling
+loop takes care of incrementing the offsets for you before dispatching
+the next character.
+
+A handler can manipulate @var{out} in whatever way it pleases, but the
+goal is to populate the @var{offv} field with an array of @var{offc}
+integers which are the offsets at which to start each token of the
+generated @samp{char *} vector that will be passed to the builtins.
+
+The macro returned by the handler affects what the process does with the 
+rest of the input:
+
+@table @samp
+@item SIC_CONTINUE
+Continue processing the characters remaining (i.e. beyond
+@samp{out->buf.i} offset) in the input buffer, copying and calling
+handlers as appropriate.
+@item SIC_INCOMPLETE
+The input buffer is not a complete command.  Fetch another line from the
+input stream and add it to the end of the input buffer, before
+continuing to process the buffer.
+@item SIC_OKAY
+No more processing is necessary, convert @var{out->offv} to a @samp{char 
+*} vector and evaluate it.
+@end table
+@end deftypefn
+
+@deftypefn {structure} {struct} BufferIn @{ @w{Buffer @var{buf};} @w{char *@var{start};} @}
+Use @var{start} to point to the first character of interest in the
+current token, when skipping leading whitespace for example.
+@end deftypefn
+
+@deftypefn {structure} {struct} BufferOut @{@w{Buffer @var{buf};} @w{int *@var{offv};} @w{size_t @var{offc};} @w{size_t @var{argind};}@}
+You must populate @var{offv} with the offsets into @var{buf} of the
+start of each of the tokens to use when building the @samp{char *}
+vector for evaluation.  @var{offc} is simply a count of the number of
+elements allocated to @var{offv} to prevent buffer overruns. You can
+use @var{argind} to store interesting offsets -- say the first
+character after a run of whitespace for later addition to @var{offv}.
+@end deftypefn
+
+@example
+@group
+BufferIn:  start     --------------.
+                                   v
+                        ,--------------------------.
+           buf.start -> |f|o|o| | |b|a|r| |b|a|z|\0|
+                        `--------------------------'
+                                           ^
+           buf.i     ----------------------'
+@end group
+
+@group
+BufferOut: argind    -------------.
+                                  v
+                        ,---------------------------.
+           buf.start -> |f|o|o|\0|b|a|r|\0|b| | | | |
+                        `---------------------------'
+                         ^        ^        ^
+                    ,--. |        |        |
+           offv   ->| ---'        |        |
+                    |--|          |        |
+                    | ------------'        |
+                    `--'                   |
+                                           |
+           buf.i   ------------------------'
+@end group                  
+@end example
+
+In the example above, the non-space characters have been copied into the 
+output buffer, and strings of spaces have been replaced by ascii
+@samp{0}, so that when the @samp{char *} vector is generated, each entry 
+can point directly into the same block of memory.
+
+@deftypefn {Function Pointer} {int} SyntaxInit (@w{Sic *@var{sic}})
+In addition to the processing you want to do in your syntax handlers,
+@dfn{sic} will call any number of initialisation functions that have
+been registered by the module loader before tokenising a line.
+@end deftypefn
+
+@deftypefn {Function Pointer} {int} SyntaxFinish (@w{Sic *@var{sic},} @w{BufferIn *@var{in},} @w{BufferOut *@var{out}})
+Similarly any number of registered finishing functions will be called
+each time a complete line has been tokenised.
+@end deftypefn
+
+@page
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@c summarycontents
+@contents
+@bye
+
+@ignore
+Local Variables:
+fill-column: 72
+End:
+@end ignore

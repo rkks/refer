@@ -1,0 +1,77 @@
+#!/bin/sh
+#
+# Copyright 1995, by Hewlett-Packard Company
+#
+# The code in this file is from the book "Shell Programming
+# Examples" by Bruce Blinn, published by Prentice Hall.
+# This file may be copied free of charge for personal,
+# non-commercial use provided that this notice appears in
+# all copies of the file.  There is no warranty, either
+# expressed or implied, supplied with this code.
+#
+# NAME
+#    findcmd - search for a command
+#
+# SYNOPSIS
+#    findcmd command
+#
+# DESCRIPTION
+#    This command searches the directories listed in the
+#    PATH variable for the command.  It makes a reasonable
+#    attempt to find the same command as would be found by
+#    the shell, except that it does not find functions or
+#    built-in commands:
+#
+#    1. If the command name contains a /, the PATH variable
+#       is not used.
+#    2. The directories in the PATH variable are searched in
+#       order, from left to right.
+#    3. Files without execute access are ignored even if the
+#       file name matches the command name.
+#    4. The search concludes when the first match is found.
+#
+# RETURN VALUE
+#    0    Command was found
+#    1    Usage error
+#    2    Command was not found
+#
+############################################################
+CMDNAME=`basename $0`
+if [ $# -ne 1 ]; then
+     echo "Usage: $CMDNAME command" 1>&2
+     exit 1
+fi
+
+FOUND=FALSE
+COMMAND=$1
+
+case $COMMAND in
+     */* )     if [ -x "$COMMAND" -a ! -d "$COMMAND" ]; then
+                    echo "$COMMAND"
+                    FOUND=TRUE
+               fi
+               ;;
+
+     * )       IFS=:
+               for dir in `echo "$PATH"           |
+                           sed -e 's/^:/.:/'      \
+                               -e 's/::/:.:/g'    \
+                               -e 's/:$/:./'`
+               do
+                    if [ -x "$dir/$COMMAND" -a ! \
+                         -d "$dir/$COMMAND" ]
+                    then
+                         echo "$dir/$COMMAND"
+                         FOUND=TRUE
+                         break
+                    fi
+               done
+               ;;
+esac
+
+if [ "$FOUND" = "FALSE" ]; then
+     echo "$COMMAND not found"
+     exit 2
+else
+     exit 0
+fi

@@ -1,0 +1,115 @@
+:
+##########################################################################
+# Title      :	getmimetype - determine MIME type of file
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1999-08-24
+# Requires   :	[ngm]awk
+# Category   :	Mail
+# SCCS-Id.   :	@(#) getmimetype	1.7 06/07/19
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.7'
+: ${LOCALLIB:=/usr/local/lib}
+# We need a new version of AWK, i.e. "nawk" or "gawk"
+awk=
+for path in `echo "$PATH" | sed 's/^:/.:/;s/:$/:./;s/:/ /g'`
+do
+    for p in mawk gawk nawk
+    do
+    	[ -x "$path/$p" ] || continue
+	awk=$path/$p; break 2
+    done
+done
+: ${NAWK:=${awk:=awk}}
+Usage () {
+    echo >&2 "$PN - determine MIME type of file, $VER
+usage: $PN file [file ...]
+Reads the files
+	$LOCALLIB/mimetypes
+	$HOME/.mimetypes"
+    exit 1
+}
+Msg () {
+    for MsgLine
+    do echo "$PN: $MsgLine" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+set -- `getopt h "$@"`
+[ $# -lt 1 ] && Usage			# "getopt" detected an error
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+MimeTypes=${TMPDIR:=/tmp}/pmt$$
+trap 'rm -f "$MimeTypes" >/dev/null 2>&1' 0
+trap "exit 2" 1 2 3 15
+> "$MimeTypes"
+for file in $LOCALLIB/mimetypes $HOME/.mimetypes
+do
+    if [ -r "$file" ]
+    then
+    	cat "$file" >> "$MimeTypes"
+    fi
+done
+# Define some MIME type defaults
+cat <<-EOT >> "$MimeTypes"
+	# MIME type		File Extensions
+	text/plain		.*\.[tT][eE][xX][tT]$ .*\.[tT][xX][tT]$
+	text/html		.*\.[hH][tT][mM]$ .*\.[hH][tT][mM][lL]$
+	image/jpeg		.*\.[jJ][pP][eE][gG]$ .*\.[jJ][pP][gG]$
+	image/gif		.*\.[gG][iI][fF]$		
+	image/png		.*\.[pP][nN][gG]$		
+	video/mpeg		.*\.[mM][pP][eE][gG]$ .*\.[mM][pP][gG]$
+	video/avi		.*\.[aA][vV][iI]$
+	application/postscript	.*\.[pP][sS]$	
+	application/pdf		.*\.[pP][dD][fF]$
+	audio/basic		.*\.[aA][uU]$
+	audio/wav		.*\.[wW][aA][vV]$
+	audio/mp3		.*\.[mM][pP]3$
+	EOT
+for file
+do
+    [ -f "$file" ] || continue
+    if file "$file" | grep -i text >/dev/null
+    then defaulttype=text/plain
+    else defaulttype=application/octet-stream
+    fi
+    echo "$defaulttype	$file"
+done |
+    $NAWK '
+    	BEGIN {
+	    # Read the MIME type table
+	    mimetypes = "'"$MimeTypes"'"
+	    while ( getline < mimetypes ) {
+	    	if ( $1 ~ /^\#/ ) continue		# ignore comments
+		if ( $0 ~ /^[ 	]*$/ ) continue	# ignore empty lines
+		if ( (k = split ($0, f)) > 1 ) {
+		    mimetype = f [1]
+		    for ( i=2; i<=k; i++ ) typeOf [$i] = mimetype
+		}
+	    }
+	    close (mimetypes)
+	    #for ( i in typeOf ) print "<" i ">", typeOf [i]
+	}
+	{
+	    mimetype = ""
+	    for ( t in typeOf )  {
+	    	if ( $0 ~ t ) {
+		    mimetype = typeOf [t]
+		    break
+		}
+	    }
+	    if ( mimetype == "" ) mimetype = $1
+	    print mimetype
+	}
+    '

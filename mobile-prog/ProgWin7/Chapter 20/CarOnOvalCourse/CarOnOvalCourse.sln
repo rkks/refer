@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarOnOvalCourse", "CarOnOvalCourse\CarOnOvalCourse\CarOnOvalCourse.csproj", "{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "CarOnOvalCourseContent", "CarOnOvalCourse\CarOnOvalCourseContent\CarOnOvalCourseContent.contentproj", "{20A5EA41-93F0-4FA8-BD15-657E98CA6FF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Any CPU = Release|Any CPU
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{88452AD7-2C9C-44A8-9A20-4EBE6C35DF7E}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{20A5EA41-93F0-4FA8-BD15-657E98CA6FF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20A5EA41-93F0-4FA8-BD15-657E98CA6FF2}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{20A5EA41-93F0-4FA8-BD15-657E98CA6FF2}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{20A5EA41-93F0-4FA8-BD15-657E98CA6FF2}.Release|Windows Phone.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,22 @@
+#! /usr/bin/perl -wnl
+# Extracts and displays "Oops" errors reported by Linux kernel
+# User should run "ksymoops" command on each report to decode it
+
+BEGIN {
+    @ARGV='/var/log/messages';     # set filename argument
+}
+
+# Sample first line of "Oops" report, for Linux kernel v2.4.26:
+#   Apr 16 19:30:04 floss kernel: Oops: 0001
+
+# Print lines between first and last (inclusive) of the Oops report
+$status=/^[A-Z]\w+ +\d+ \d+:\d+:\d+ \w+ kernel: Oops: \d+/
+    ...   # <-- range operator
+/^[A-Z]\w+ +\d+ \d+:\d+:\d+ \w+ kernel: Code:( [a-f0-9][a-f0-9]){20}/
+    and  print;
+
+# If range operator returned E0, we just printed last line of
+# report; print empty string to get blank line before next report
+
+$status =~ /E0$/  and  print "";
+

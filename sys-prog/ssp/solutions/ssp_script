@@ -1,0 +1,5 @@
+#!/bin/sh
+
+( echo "Script started on" `date`;
+../pseudo_terms/pty "${SHELL:-/bin/sh}";
+echo "Script done on" `date` ) | tee typescript

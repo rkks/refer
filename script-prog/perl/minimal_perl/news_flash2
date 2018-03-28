@@ -1,0 +1,47 @@
+#! /usr/bin/perl -s -wl
+
+our ($debug);                     # make switch optional
+
+$file=shift;                      # get filename of news article
+if (! defined $file  or  ! -T $file) {
+    die "Usage: $0 filename\n";
+}
+
+# Get the display control sequences
+$REV=(   `tput smso`  or  "");    # use null string by default
+$NO_REV=(`tput rmso`  or  "");
+$UL=(    `tput smul`  or  "");
+$NO_UL=( `tput rmul`  or  "");
+
+# Get the terminal's width
+$width=( `tput cols`  or  80);     # supply standard default
+chomp $width;                      # remove tput's newline
+$line='-' x $width;           # make a line the width of screen
+
+$heading='NEWS FLASH:';            # store heading string
+$date=`date '+%X'`;                # store date string
+chomp $date;                       # remove date's newline
+
+# Calculate needed offset from left, to center the string
+$msg_length=length "$heading $date";
+$offset=($width - $msg_length) / 2;
+
+# Offset may have decimal component, but Perl will
+# convert to integer automatically for use with "x" operator
+$padding=' ' x $offset; # generate spaces for calculated offset
+
+print $line;                                   # dashed line
+print $padding, $REV, $heading, $NO_REV, " ", 
+    $UL, $date, $NO_UL;                        # the heading 
+print $line;                                   # dashed line
+
+# Assemble command in string
+$command="fmt -$width '$file'";  # e.g.,  "fmt -62 Reuters.txt"
+
+$debug  and  warn "Command is:\n\t$command\n\n" and
+    $command="set -x; $command"; # enable Shell execution trace
+
+system  $command;                # format to fit on screen
+
+# show error if necessary
+! $? or  warn "$0: This command failed: $command\n";

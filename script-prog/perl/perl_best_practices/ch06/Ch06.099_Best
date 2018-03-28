@@ -1,0 +1,57 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 6 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $advert = 'GT YR MED NEEDS @ GRT PRICES';
+
+CLIENT:
+while (my $client_ref = get_client()) {
+    my $preferred_phone;
+ 
+    # Retrieve phone number (clients can now have more than one)...
+    PHONE_NUMBER:
+    for my $phone ( @{ $client_ref->{phones} } ) {
+        # Skip client if "do not call" was requested...
+        next CLIENT if $phone =~ m/do \s+ not \s+ call/ixms;
+ 
+        # Select phone number...
+        $preferred_phone = $phone;
+        last PHONE_NUMBER;
+    }
+ 
+    # Profit!
+    send_sms_to($preferred_phone, $advert);
+}
+
+
+
+BEGIN {
+
+my @clients = (
+    { client => 'Smith', phones => [ '867-0309', '867-0310'               ] },
+    { client => 'Jones', phones => [ '567-6717 [do not call]', '567-6718' ] },
+    { client => 'Wang',  phones => [ '677-0555', '677-0556'               ] },
+);
+
+sub get_client {
+    return shift @clients;
+}
+
+sub send_sms_to {
+    my ($phone, $advert) = @_;
+    print "To: $phone\n$advert\n";
+}
+
+}

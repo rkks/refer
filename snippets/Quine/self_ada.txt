@@ -1,0 +1,8 @@
+Language: Ada
+
+Author: Eli Biham
+
+with text_io;procedure self is q:character:='"';a:string(1..132):="with
+text_io;procedure self is q:character:='';a:string(1..132):=;begin
+text_io.put_line(a(1..45)&q&a(46..65)&q&a&q&a(66..132));end;";begin
+text_io.put_line(a(1..45)&q&a(46..65)&q&a&q&a(66..132));end; 

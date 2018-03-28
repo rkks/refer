@@ -1,0 +1,21 @@
+#!/usr/bin/perperl -- -M1
+
+use strict;
+use Test::PerPerlHelper;
+
+my $script;
+while (my $arg = shift)
+{
+    # if the arg is a -I switch, add the directory to @INC
+    # unless it already exists
+    if ($arg =~ /^-I(.*)/ and -d $1)
+    {
+        unshift @INC, $1 unless grep { $_ eq $1 } @INC;
+    }
+    else
+    {
+        $script = $arg;
+    }
+}
+
+do $script or die $@;

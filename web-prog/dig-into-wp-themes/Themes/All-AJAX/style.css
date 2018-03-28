@@ -1,0 +1,193 @@
+/* 
+
+Theme Name: All AJAX
+Theme URI: http://digwp.com/
+Description: Theoretical test of AJAXing a theme
+Author: Chris Coyier 
+Author URI: http://chriscoyier.net/ 
+
+*/ 
+
+/*
+    RESET
+*/
+* { margin: 0; padding: 0; }
+body { font-size: 14px; line-height: 1.5; font-family: Helvetica, Sans-Serif; }
+.screen-reader-text { position: absolute; left: -9999px; }
+
+
+/*
+    TYPOGRAPHY
+*/
+a { color: black; outline: 0; }
+a:hover { text-decoration: none; }
+h1, h2, h3, h4, h5 { font-weight: 400; font-family: 'HelveticaNeue-UltraLight','Helvetica Neue UltraLight','Helvetica Neue', Arial, Helvetica, sans-serif; }
+h1 { font-size: 28px; font-weight: 100; margin: 0 0 5px 0; }
+h1 a { text-decoration: none; }
+h2 { font-weight: 400; font-size: 22px; border-bottom: 1px solid black; margin: 0 0 5px 0; }
+h3 { font-weight: 800; font-size: 18px; }
+h4 { font-weight: 400; font-size: 16px; }
+h5 { font-weight: 400; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; }
+
+
+
+
+/*
+    BASIC STRUCTURE
+*/
+#page-wrap { width: 960px; margin: 20px auto; border: 1px solid black; }
+#main-content { width: 560px; padding: 30px 60px; float: left; }
+#column-wrap { background: url(images/blackline.png) 680px 0 repeat-y; position: relative; overflow: hidden; }
+#ajax-loader { position: absolute; display: none; top: 50px; left: 250px; }
+
+
+
+/*
+    HEADER
+*/
+#header { height: 160px; position: relative; }
+#logo { display: block; }
+#header p { position: absolute; right: 60px; top: 62px; width: 300px; text-align: right; }
+#header h1 { font-size: 54px; position: absolute; left: 60px; top: 40px; }
+#header h1 a { background: white !important; }
+
+
+
+
+/*
+    NAVIGATION
+*/
+#main-nav { padding: 0 0 0 60px; border-top: 1px solid black; border-bottom: 1px solid black; overflow: hidden; list-style: none; }
+#main-nav li { display: inline; }
+#main-nav li a { border-right: 1px solid black; display: block; float: left; padding: 6px 10px; text-decoration: none; text-transform: uppercase; }
+.home #main-nav li.home a, #main-nav li a:hover, 
+#main-nav li.current_page_item a, li.current_page_item a, a.current_link { background: #eee; }
+#main-nav li:first-child a { border-left: 1px solid black; }
+
+
+
+/*
+    SEARCH FORM
+*/
+#searchform { margin: 30px 0; border-top: 1px solid black; border-bottom: 1px solid black; }
+#s { width: 217px; border: 0; font-style: italic; font-size: 15px; padding: 8px; }
+#searchsubmit { border-left: 1px solid black; font-size: 14px; border-top: 0; border-right: 0; border-bottom: 0; background: white; padding: 8px; }
+#searchsubmit:hover { background: #eee; }
+
+
+
+
+/*
+    SIDEBAR
+*/
+#sidebar { width: 279px; float: right; text-align: center; padding: 0 0 20px 0; }
+#sidebar h3 { border-bottom: 1px solid black; margin: 40px 0 0 0; }
+
+.widget_categories { overflow: hidden; }
+.widget_categories ul { list-style: none; }
+.widget_categories ul li { display: inline; }
+.widget_categories ul li a { float: left; display: block; width: 139px; border-bottom: 1px solid black; text-decoration: none; }
+.widget_categories ul li:nth-child(odd) a { border-right: 1px solid black; }
+
+.widget_tag_cloud { overflow: hidden; }
+.widget_tag_cloud a { float: left; display: block; width: 139px; border-bottom: 1px solid black; text-decoration: none; font-size: 14px !important; }
+.widget_tag_cloud a:nth-child(even) { border-right: 1px solid black; }
+
+
+.widget_links ul { list-style: none; }
+.widget_links ul li a { border-bottom: 1px solid black; display: block; text-decoration: none; }
+
+.widget a:link:hover, .widget a:visited:hover { background: #eee; }
+
+
+
+
+
+
+/*
+    POSTS
+*/
+.meta { font-size: 12px; text-transform: uppercase; position: relative; border-top: 1px solid black; border-bottom: 1px solid black; padding: 2px 0; margin: 0 0 20px 0; padding-right: 150px; }
+.meta span { position: absolute; right: 0; top: 1px; }
+.meta a { text-decoration: none; }
+.meta a:hover { text-decoration: underline;}
+
+.article-content p:first-child:first-letter { font: 50px/1 Georgia, Serif; float: left; margin: 0 5px 1px 0; }
+.article-content blockquote p:first-child:first-letter { font: 14px Helvetica, Sans-Serif; float: none; margin: 0; }
+.article-content p { margin: 0 0 15px 0; }
+.article-content ul, .article-content ol { margin: 0 0 10px 20px; }
+.article-content ul ul, .article-content ol ol { margin-top: 5px; }
+.article-content li { margin: 0 0 5px 0; }
+.article-content code { font: 12px Monaco, Courier, Sans-Serif; }
+.article-content pre { border: 1px solid black; padding: 10px; margin: 0 0 15px 0; }
+
+.post { margin: 0 0 40px 0; }
+
+
+
+/*
+    PAGINATION
+*/
+.pagination { overflow: hidden; }
+.pagination .newer { float: right; }
+.pagination .older { float: left; }
+
+
+
+
+/*
+    COMMENTS
+*/
+ol.commentlist { list-style: none; }
+ol.commentlist li { }
+ol.commentlist li.alt { }
+ol.commentlist li.bypostauthor { }
+ol.commentlist li.byuser { }
+ol.commentlist li.comment-author-admin {}
+ol.commentlist li.comment { border-bottom: 1px solid black; padding: 10px 10px 25px 10px; position: relative; font-size: 12px; }
+ol.commentlist li.comment div.comment-author { }
+ol.commentlist li.comment div.vcard { margin: 0 0 5px 0; font-size: 15px; }
+ol.commentlist li.comment div.vcard cite.fn { font-style:normal; }
+ol.commentlist li.comment div.vcard cite.fn a.url {}
+ol.commentlist li.comment div.vcard img.avatar { border: 1px solid black; float: right; margin: 0 0 15px 15px; padding: 5px; }
+ol.commentlist li.comment div.vcard img.avatar-32 { }
+ol.commentlist li.comment div.vcard img.photo { }
+ol.commentlist li.comment div.vcard span.says { }
+ol.commentlist li.comment div.commentmetadata { position: absolute; top: 10px; right: 60px; }
+ol.commentlist li.comment div.comment-meta { font-size:9px; }
+ol.commentlist li.comment div.comment-meta a { color:#ccc; }
+ol.commentlist li.comment div.comment-meta a:hover { color: black; }
+ol.commentlist li.comment p {  margin: 0 0 0 10px 0; }
+ol.commentlist li.comment ul, ol.commentlist li.comment ol { margin: 0 0 15px 20px; }
+ol.commentlist li.comment div.reply { font-size:11px; position: absolute; bottom: 5px; right: 10px; }
+ol.commentlist li.comment div.reply a { }
+ol.commentlist li.comment ul.children { list-style: none; margin:1em 0 0; text-indent:0; }
+ol.commentlist li.comment ul.children li { }
+ol.commentlist li.comment ul.children li.alt { }
+ol.commentlist li.comment ul.children li.bypostauthor { }
+ol.commentlist li.comment ul.children li.byuser { }
+ol.commentlist li.comment ul.children li.comment { }
+ol.commentlist li.comment ul.children li.comment-author-admin { }
+ol.commentlist li.comment ul.children li.depth-2 { border-left:5px solid #ccc; margin:0 0 .25em .25em; }
+ol.commentlist li.comment ul.children li.depth-3 { border-left:5px solid #999; margin:0 0 .25em .25em; }
+ol.commentlist li.comment ul.children li.depth-4 { border-left:5px solid #bbb; margin:0 0 .25em .25em; }
+ol.commentlist li.comment ul.children li.depth-5 { }
+ol.commentlist li.comment ul.children li.odd { }
+ol.commentlist li.even {  }
+ol.commentlist li.odd { }
+ol.commentlist li.parent { }
+ol.commentlist li.thread-alt { }
+ol.commentlist li.thread-even { }
+ol.commentlist li.thread-odd { }
+
+#commentform { }
+#commentform div { margin: 0 0 5px 0; }
+#commentform input[type=text] { border: 1px solid black; font: 12px Helvetica, Sans-Serif; padding: 3px; }
+#commentform #submit { border: 1px solid black; padding: 4px; background: white; font: 14px Helvetica, Sans-Serif; }
+#commentform #submit:hover { background: #eee; }
+#commentform textarea { width: 400px; padding: 3px; border: 1px solid black; }
+
+/*
+    FOOTER
+*/
+#footer { clear: both; padding: 30px 60px; border-top: 1px solid black; }

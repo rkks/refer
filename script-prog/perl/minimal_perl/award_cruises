@@ -1,0 +1,21 @@
+#! /usr/bin/perl -wl
+
+# Note: This script isn't shown in the book, for two reasons:
+#
+# 1. It's introduced in Chapter 2 to illustrate the benefits of a switch-
+#    based interface over its argument-position based one
+#
+# 2. It uses array-handling techniques that aren't covered until later
+#    in the book (Chapter 5).
+#
+# Nevertheless, the script is provided here to satisfy your
+#    curiosity about how it was written.
+
+($panama, $alaska, $perlistan)=@ARGV;   # load arguments into variables
+
+print "'$alaska' awarded Alaska cruise";
+print "'$panama' awarded Panama Canal cruise";
+print "'$perlistan' awarded Perlistan Rivera cruise";
+
+# NOTE: To gracefully handle invocations lacking three arguments, this
+#       script should avoid printing undefined variables (see award_cruises3).

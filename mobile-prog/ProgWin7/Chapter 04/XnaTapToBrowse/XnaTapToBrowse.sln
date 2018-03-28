@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XnaTapToBrowse", "XnaTapToBrowse\XnaTapToBrowse\XnaTapToBrowse.csproj", "{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "XnaTapToBrowseContent", "XnaTapToBrowse\XnaTapToBrowseContent\XnaTapToBrowseContent.contentproj", "{B4D409FF-D95C-4F9D-B22D-8628C273CC46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{A107098E-1BE6-41E0-8F4B-8FE800EEDDB1}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{B4D409FF-D95C-4F9D-B22D-8628C273CC46}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{B4D409FF-D95C-4F9D-B22D-8628C273CC46}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

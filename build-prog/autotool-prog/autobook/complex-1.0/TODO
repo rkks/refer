@@ -1,0 +1,25 @@
+-*- Outline -*-
+
+For the Book
+
+* cygwin compatibility -- library dependencies: in particular evalline
+* a flow control builtin dynamic module (with several builtins)
+
+Wishlist
+
+* documentation
+* free table contents at exit to analyse memory usage
+* functions
+* dictionary data type
+* file globbing
+* file redirection
+* environment manipulation - this could be stored in a dictionary?
+* process pipes
+* job control
+* aliases
+* script cli parameters should be stored in $1...
+* history saving and restoring
+* cache commands discovered in $PATH - using a dictionary?
+* autoloading of builtin dynamic modules
+* set module search path and initial module cli parameters
+* a readline completer dynamic module

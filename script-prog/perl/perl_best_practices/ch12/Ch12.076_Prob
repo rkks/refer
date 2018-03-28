@@ -1,0 +1,63 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 12 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+# Table of irregular plurals...
+my %irregular_plural_of = (
+    'child'       => 'children',
+    'brother'     => 'brethren',
+    'money'       => 'monies',
+    'mongoose'    => 'mongooses',
+    'ox'          => 'oxen',
+    'cow'         => 'kine',
+    'soliloquy'   => 'soliloquies',
+    'prima donna' => 'prime donne',
+    'octopus'     => 'octopodes',
+    'tooth'       => 'teeth',
+    'toothfish'   => 'toothfish',
+);
+ 
+# Pattern matching any of those irregular plurals...
+my $has_irregular_plural = qr{
+    child     | brother     | mongoose 
+  | ox        | cow         | monkey 
+  | soliloquy | prima donna | octopus
+  | tooth(?:fish)?
+}xms;
+ 
+# Form plurals...
+while (my $word = <DATA>) {
+    chomp $word;
+    if ($word =~ m/ ($has_irregular_plural) /xms) {
+        print $irregular_plural_of{$word}, "\n";
+    }
+    else {
+        print form_regular_plural_of($word), "\n";
+    }
+}
+
+
+sub form_regular_plural_of {
+    my ($word) = @_;
+    return $word.'s';
+}
+
+__DATA__
+cat
+dog
+money
+mongoose
+tooth

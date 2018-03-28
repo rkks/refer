@@ -1,0 +1,88 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* &nbsp;shm_msgserver.c<br />
+&nbsp;* &nbsp;<br />
+&nbsp;* &nbsp;Illustrates memory mapping and persistency, with POSIX objects.<br />
+&nbsp;* &nbsp;This process produces a message leaving it in a shared segment.<br />
+&nbsp;* &nbsp;The segment is mapped in a persistent object meant to be subsequently<br />
+&nbsp;* &nbsp;open by a shared memory "client".<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* &nbsp;Created by Mij &lt;mij@bitchx.it&gt; on 27/08/05.<br />
+&nbsp;* &nbsp;Original source file available at http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*<br />
+&nbsp;*/</span><br />
+<br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* shm_* stuff, and mmap() */</span><br />
+<span style="color:#683821;">#include &lt;sys/mman.h&gt;<br />
+#include &lt;sys/types.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() etc */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+#include &lt;fcntl.h&gt;<br />
+#include &lt;sys/stat.h&gt;<br />
+</span><span style="color:#236e25;">/* for random() stuff */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+#include &lt;time.h&gt;<br />
+</span><br />
+<br />
+<span style="color:#236e25;">/* Posix IPC object name [system dependant] - see<br />
+http://mij.oltrelinux.com/devel/unixprg/index2.html#ipc__posix_objects */</span><br />
+<span style="color:#683821;">#define SHMOBJ_PATH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/foo1423"<br />
+</span><span style="color:#236e25;">/* maximum length of the content of the message */</span><br />
+<span style="color:#683821;">#define MAX_MSG_LENGTH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">50</span><span style="color:#683821;"><br />
+</span><span style="color:#236e25;">/* how many types of messages we recognize (fantasy) */</span><br />
+<span style="color:#683821;">#define TYPES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">8</span><span style="color:#683821;"><br />
+</span><br />
+<span style="color:#236e25;">/* message structure for messages in the shared segment */</span><br />
+<span style="color:#881350;">struct</span> msg_s {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> type;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> content[MAX_MSG_LENGTH];<br />
+};<br />
+<br />
+<br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>(<span style="color:#881350;">int</span> argc, <span style="color:#881350;">char</span> *argv[]) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> shmfd;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> shared_seg_size = (<span style="color:#0000ff;">1</span> * <span style="color:#881350;">sizeof</span>(<span style="color:#881350;">struct</span> msg_s)); &nbsp;&nbsp;<span style="color:#236e25;">/* want shared segment capable of storing 1 message */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> msg_s *shared_msg; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* the shared segment, and head of the messages list */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* creating the shared memory object &nbsp;&nbsp;&nbsp;-- &nbsp;shm_open() &nbsp;*/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;shmfd = <span style="color:#003369;">shm_open</span>(SHMOBJ_PATH, O_CREAT | O_EXCL | O_RDWR, S_IRWXU | S_IRWXG);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(shmfd &lt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In shm_open()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">fprintf</span>(stderr, <span style="color:#760f15;">"Created shared memory object %s\n"</span>, SHMOBJ_PATH);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* adjusting mapped file size (make room for the whole segment to map) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;ftruncate() */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">ftruncate</span>(shmfd, shared_seg_size);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* requesting the shared segment &nbsp;&nbsp;&nbsp;-- &nbsp;mmap() */</span> &nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;shared_msg = (<span style="color:#881350;">struct</span> msg_s *)<span style="color:#003369;">mmap</span>(<span style="color:#881350;">NULL</span>, shared_seg_size, PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, <span style="color:#0000ff;">0</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(shared_msg == <span style="color:#881350;">NULL</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In mmap()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">fprintf</span>(stderr, <span style="color:#760f15;">"Shared memory segment allocated correctly (%d bytes).\n"</span>, shared_seg_size);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">srandom</span>(<span style="color:#003369;">time</span>(<span style="color:#881350;">NULL</span>));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* producing a message on the shared segment */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;shared_msg-&gt;type = <span style="color:#003369;">random</span>() % TYPES;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">snprintf</span>(shared_msg-&gt;content, MAX_MSG_LENGTH, <span style="color:#760f15;">"My message, type %d, num %ld"</span>, shared_msg-&gt;type, <span style="color:#003369;">random</span>());<br />
+<br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* [uncomment if you wish] requesting the removal of the shm object &nbsp;&nbsp;&nbsp;&nbsp;-- &nbsp;shm_unlink() */</span><br />
+<span style="color:#236e25;">/*<br />
+&nbsp;&nbsp;&nbsp;&nbsp;if (shm_unlink(SHMOBJ_PATH) != 0) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;perror("In shm_unlink()");<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(1);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+*/</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+<br />
+</div>

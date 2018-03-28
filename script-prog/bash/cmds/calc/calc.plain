@@ -1,0 +1,59 @@
+#! /bin/ksh
+##########################################################################
+# Title      :	calc - calculate expressions
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1996-05-11
+# Requires   :	bc, ksh
+# Category   :	Desktop
+# SCCS-Id.   :	@(#) calc	1.2 03/12/19
+##########################################################################
+PN=${0##*/}				# Program name
+VER='1.2'
+Scale=2					# Default precision
+function Usage
+{
+    print -u2 "$PN - calculate expressions, $VER (hs '96)
+usage: $PN [-p precision] [expr ...]
+    -p set the precision to the given number of decimal digits
+If no expressions are given on the command line, $PN reads
+from stdin."
+    exit 1
+}
+function Calc 
+{
+    set -e				# Terminate at errors
+    print -p -r -- "$@"		# Write expression to "bc"
+    # The result can take more than one line.
+    # Make "bc" return a unique string as terminator
+    # at the end of the calculation:
+    print -p '"GNUELPF\n"'
+    while read -p
+    do
+	[[ $REPLY = GNUELPF ]] && break
+	print -- "$REPLY"
+    done
+    set +e
+}
+if (( $# > 0 ))
+then					# Process options
+    while getopts p:h Opt
+    do
+	case "$Opt" in
+	    (p)	Scale="$OPTARG";;
+	    (h)	Usage;;
+	    (*)	Usage;;
+	esac
+    done
+    shift OPTIND-1
+fi
+bc |&					# Start bc as co-process
+[[ -n $Scale ]] && Calc "scale=$Scale"
+if (( $# >= 1 ))
+then					# Process arguments
+    Calc "$@"
+else					# Read from stdin
+    while read Expr
+    do
+	Calc "$Expr"
+    done
+fi

@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightInsertData", "SilverlightInsertData\SilverlightInsertData.csproj", "{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5A4B529-D7D2-42C5-8EC8-420B39EFB6DB}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

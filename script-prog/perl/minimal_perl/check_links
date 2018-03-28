@@ -1,0 +1,68 @@
+#! /usr/local/bin/perl -wl
+
+use strict;
+use LWP::Simple;
+
+my $VERBOSE=0; # file scope
+defined $ENV{CL_VERBOSE}  and  $ENV{CL_VERBOSE} =~ /^\d+$/  and
+  $VERBOSE=$ENV{CL_VERBOSE}; # if numeric value, assign
+
+{  # MAIN program
+  foreach my $url ( @ARGV ) { check_link( $url ) };
+}
+
+END {
+  # If propeller was last thing written to screen,
+  # will need \n before shell's upcoming prompt to STDERR
+  print STDERR "";
+}
+
+sub check_link {
+  my ( $url, @links, $link, @h, $counter, $output );
+  $url=shift;
+
+  # use lwp-request command, based on LWP, to get links
+  if( @links=`lwp-request -o links '$url'` ) {
+    $VERBOSE  and
+      print "\nGot ", scalar @links, " links for $url";
+  }
+  else {
+    warn "$!\n";   # show OS error message
+  }
+  @links=uniquify ( @links );  # eliminate duplicate links
+  $VERBOSE  and  @links  and   # if link count > 0, show count
+    print scalar @links, " links are unique";
+
+  foreach $link ( @links ) {   # test each link
+    $link =~ /^(A|LINK)\s+mailto:/i  and  next; # skip mailto
+    $link =~ s/^\w+\s+//;  # strip A/IMG in "A/IMG  http://"
+    $link =~ s/\s+//g;     # eliminate any remaining WS in link
+
+    $VERBOSE > 1  and  printf "\nChecking '$link'";
+    if ( @h=head $link ) { # run LWP's head() on link
+      if ( $VERBOSE > 1 ) {
+        print  ": OKAY";
+        $VERBOSE > 2  and
+          printf "  Type: %s\tSize: %s\tServer: %s\n",
+            $h[0], ( $h[1]  or  "N/A" ), ( $h[4]  or  "N/A" );
+      }   # Line above enhanced to print N/A for $h[4] as neeeded
+      else {
+        # Show "propeller" as activity indicator;
+        # printf prints backspace, then one of - \ | /
+        # to STDERR, so stays on screen if output redirected
+        printf STDERR "\b%s",  # %s prints next arg as string
+          ('-', '\\', '|', '/')[$counter++ % 4];
+      }
+    }
+    else {      # report links for which "head" request fails
+      $output = "\nBAD: '$link', in '$url'";
+      $output =~ s|http://||g;  # save space by deleting http:
+    }
+  }
+}
+
+sub uniquify {  # sort and "uniquify" the arguments
+  my %unique;
+  foreach ( @_ ) { $unique{$_}++; };
+  return sort keys %unique;
+}

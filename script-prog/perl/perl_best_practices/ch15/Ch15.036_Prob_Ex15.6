@@ -1,0 +1,101 @@
+##############################################################################
+## Example 15.6 (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+#  Example 15-6. The usual way accessor methods are implemented
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $SPACE => q{ };
+
+# Create the new military record...
+my $dogtag = Dogtag->new({ serial_num => 'AGC10178B' });
+ 
+$dogtag->name( 'MacArthur', 'Dee' );    # Called with args, so store name attr
+$dogtag->rank( 'General' );             # Called with arg, so store rank attr
+ 
+# Called without arg, so just retrieve attribute values...
+print 'Your new commander is: ', 
+      $dogtag->rank(), $SPACE, $dogtag->name()->{surname},
+      "\n";
+ 
+print 'Her serial number is:  ', $dogtag->serial_num(), "\n";
+
+
+package Dogtag;
+use Class::Std::Utils;
+{
+    # Attributes...
+    my %name_of;
+    my %rank_of;
+    my %serial_num_of;
+ 
+    # The usual inside-out constructor...
+    sub new {
+        my ($class, $arg_ref) = @_;
+ 
+        my $new_object = bless anon_scalar(), $class;
+ 
+        $serial_num_of{ident $new_object} =  $arg_ref->{serial_num},
+ 
+        return $new_object;
+    }
+ 
+    # Control access to the name attribute...
+    sub name {
+        my ($self, $new_surname, $new_first_name) = @_;
+        my $ident = ident($self);          # Factor out repeated calls to ident()
+ 
+        # No argument means return the current value...
+        return $name_of{$ident} if @_ == 1;
+ 
+        # Otherwise, store the two components of the new value...
+        $name_of{$ident}{surname}    = $new_surname;
+        $name_of{$ident}{first_name} = $new_first_name;
+ 
+        return;
+    }
+ 
+    # Same deal for accessing the rank attribute...
+    sub rank {
+        my ($self, $new_rank) = @_;
+ 
+        return $rank_of{ident $self} if @_ == 1;
+ 
+        $rank_of{ident $self} = $new_rank;
+ 
+        return;
+    }
+ 
+    # Serial numbers are read-only, so this accessor is much simpler...
+    sub serial_num {
+        my ($self) = @_;
+ 
+        return $serial_num_of{ident $self};
+    }
+ 
+    # [Other methods of the class here]
+ 
+    sub DESTROY {
+        my ($self) = @_;
+        my $ident = ident($self);     # Factor out repeated calls to ident()
+ 
+        for my $attr_ref (\%name_of, \%rank_of, \%serial_num_of) {
+            delete $attr_ref->{$ident };
+        };
+ 
+        return;
+    }
+}
+

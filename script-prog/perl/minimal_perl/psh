@@ -1,0 +1,22 @@
+#! /usr/bin/perl -wnl
+
+BEGIN {
+    $ON=`tput smso`;        
+    $OFF=`tput rmso`;
+    $prompt="${ON}psh>$OFF ";
+    printf $prompt;          # print initial prompt
+}
+
+eval;   # uses $_ as argument, loaded by -n loop
+
+$@ ne ""  and  warn $@;      # if eval produced error, show it
+
+printf $prompt;              # print prompt for next input
+
+END {
+    # If user pressed <^D> to the prompt, which leaves $_ 
+    # undefined, we need to print a newline so the shell's
+    # prompt will start on a fresh line.
+
+    ! defined  and  print "";   # -l appends newline after ""
+}

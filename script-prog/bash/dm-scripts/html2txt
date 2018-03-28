@@ -1,0 +1,122 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="html2txt"
+       HTML_="html to text"
+    PURPOSE_="convert html file to ascii text; write the converted file to disk"
+   SYNOPSIS_="$NAME_ [-vhmlr] <file> [file...]"
+   REQUIRES_="standard GNU commands, lynx"
+    VERSION_="1.1"
+       DATE_="2004-04-18; last update: 2005-03-03"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="www"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -r, remove input file after conversion
+     -v, verbose
+     -h, usage and options (help)
+     -m, manual
+     -l, see this script"
+exit 1
+}
+
+manual () { echo >&2 "
+
+NAME
+
+    $NAME_ $VERSION_ - $PURPOSE_
+
+SYNOPSIS
+
+    $SYNOPSIS_
+
+DESCRIPTION
+
+    $NAME_ converts ascii files with html content to plain text. It replaces the
+    previous suffix, if any, with a \"txt\" suffix. It skips the following files:
+
+    - binary files
+    - directories
+    - files that already have the same name as <input_file>.txt
+
+    Option -r, removes the input file after conversion.
+
+EXAMPLES
+
+    Use find with xargs to run the script recursively on multiple files. For
+    example, to convert all html files to text recursively:
+
+    find . -name \"*.html\" | xargs $NAME_
+
+AUTHOR
+
+    $AUTHOR_ Suggestions and bug reports are welcome.
+    For updates and more scripts visit $URL_
+
+"; exit 1; }
+
+# arg check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# var initializing
+rm_html=
+verbose=
+
+# option and argument handling
+while getopts vhmlr options; do
+
+    case $options in
+        r) rm_html=on ;;
+        v) verbose=on ;;
+        h) usage ;;
+        m) manual | more; exit 1 ;;
+        l) more $0 ;;
+       \?) echo invalid or missing argument, type $NAME_ -h for help; exit 1 ;;
+    esac
+
+done
+
+shift $(( $OPTIND - 1 ))
+
+# check if required command is in $PATH variable
+which lynx &> /dev/null
+[[ $? != 0 ]] && { echo >&2 the required \"lynx\" command is not in your PATH; exit 1; }
+
+# main
+for a in "$@"; do
+
+    file $a | grep -q text # testing if input file is an ascii file
+    [ $? == 0 ] && is_text=0 || is_text=1
+
+    if [ -f $a ] && [[ ${a#*.} != txt ]] && (( $is_text == 0 )); then
+
+        if [ -f ${a%.*}.txt ]; then
+            echo ${NAME_}: skipping: ${a%.*}.txt file already exist
+            continue
+        else
+            [[ $verbose ]] && echo "${NAME_}: converting: $a -> ${a%.*}.txt"
+            lynx -dump $a > ${a%.*}.txt
+            [[ $? == 0 ]] && stat=0 || stat=1
+            [[ $stat == 0 ]] && [[ $verbose ]] && [[ $rm_html ]] && echo ${NAME_}: removing: $a
+            [[ $stat == 0 ]] && [[ $rm_html ]] && rm -f -- $a
+        fi
+
+    else
+
+        [[ $is_text == 1 ]] && echo ${NAME_}: skipping: $a not an ascii file
+
+    fi
+
+done

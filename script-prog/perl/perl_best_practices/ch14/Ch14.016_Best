@@ -1,0 +1,38 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 14 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub transform {
+    my ($datum) = @_;
+    return uc $datum;
+}
+
+my $destination;
+my $source_file = \'Eat at Joes';
+my $destination_file = \$destination;
+
+# Open both filehandles...
+use IO::InSitu;
+my ($src, $dest) = open_rw($source_file, $destination_file);
+ 
+# Read, process, and output data, line-by-line...
+while (my $line = <$src>) {
+    print {$dest} transform($line);
+}
+
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $destination ];

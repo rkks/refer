@@ -1,0 +1,8 @@
+2000-05-23  Ben Elliston  <bje@redhat.com>
+
+	* doc/sic.texi: Use RCS Id keyword, not id.
+
+2000-01-15  Gary V. Vaughan  <gvv@techie.com>
+
+        * For hysterical reasons, this is when I first started sic.
+

@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Example HTML Form</title>
+  </head>
+  <body>
+  <p>The ShowForm Servlet will display the content
+  posted by an HTML form. Try it out by choosing a 
+  file (smaller size is preferred) to reference the
+  ShowParameters Servlet.</p>
+  <form action="http://127.0.0.1/jspbook/ShowForm"
+    method="post" enctype="multipart/form-data">
+    Name: <input type="text" name="name"><br>
+    File: <input type="file" name="file"><br>
+    <input value="Submit" type="submit">
+  </form>
+  </body>
+</html>

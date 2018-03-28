@@ -1,0 +1,67 @@
+<project name="GoogleAPI2" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="projname" value="GoogleAPI2" />
+    <property name="outdir" value="./build" />
+    <property name="bindir" value="./bin" />
+    <property name="classes" value="./work/classes" />
+    <property name="res" value="./work/res" />
+    <property name="WTK" value="/home/juntao/J2ME/J2MEWTK/WTK104" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${outdir}" />
+    <delete dir="${bindir}" />
+    <delete>
+      <fileset dir="work/src" includes="**/*.java~"/>
+      <fileset dir="work/src" includes="**/*.class"/>
+    </delete>
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${outdir}" />
+    <mkdir dir="${bindir}" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="./work/src" destdir="${outdir}"
+           classpath="${classes}:${WTK}/lib/midpapi.zip"
+           bootclasspath="${WTK}/lib/midpapi.zip" 
+    />
+  </target>
+
+  <target name="preverify" depends="compile">
+    <copy todir="${outdir}">
+      <fileset dir="${classes}" />
+    </copy>
+    <exec executable="${WTK}/bin/preverify"
+          dir="${outdir}"
+    >
+      <arg line="-classpath ${WTK}/lib/midpapi.zip ." />
+    </exec>
+  </target>
+
+  <target name="package" depends="preverify">
+    <copy todir="${outdir}/output">
+      <fileset dir="${res}" />
+    </copy>
+    <jar jarfile="${bindir}/${projname}.jar"
+         basedir="${outdir}/output"
+         manifest="./work/meta/${projname}.mf"
+    />
+    <copy file="./work/meta/${projname}.jad" 
+          tofile="${bindir}/${projname}.jad"
+    />
+  </target>
+
+  <target name="run" depends="init" >
+    <exec executable="${WTK}/bin/emulator">
+      <arg value="-classpath ${bindir}/${projname}.jar" />
+      <arg value="-Xdescriptor:${bindir}/${projname}.jad" />
+    </exec>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

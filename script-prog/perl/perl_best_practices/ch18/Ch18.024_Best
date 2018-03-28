@@ -1,0 +1,31 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 18 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+
+use Digest::SHA qw( sha512_base64 );
+ 
+# use Sub::Tracking ;
+# track_sub('sha512_base64');
+ 
+# and later...
+ 
+my $original_text = 'Now is the winter of our discontent...';
+
+my $text_key 
+    = sha512_base64($original_text);  # Use of subroutine automatically logged
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $text_key ];

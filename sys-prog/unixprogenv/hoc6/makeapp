@@ -1,0 +1,13 @@
+cd hoc6
+for i in hoc.y hoc.h symbol.c code.c init.c math.c makefile
+do
+	echo "
+*****   $i   ****************************************************************
+"
+sed 's/\\/\\e/g
+     s/^$/.sp .5/'  $i |
+awk '
+	{ print }
+/(^	;$)|(^})|(^%%)/ { print ".P3" }
+'
+done

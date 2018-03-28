@@ -1,0 +1,101 @@
+#!/bin/csh -f
+clear
+cat << GUMBY
+
+	Grabchars demo...
+
+	get one character with "grabchars"
+GUMBY
+grabchars
+echo " status returned was $status"
+
+cat << POKEY
+
+	grab a vowel with "grabchars -caeiou"
+
+	Type something that isn't a vowel at first...
+
+POKEY
+grabchars -caeiou
+echo " status returned was $status"
+
+cat << WILMA
+
+	prompt the user  with "grabchars -p 'give me any character >> '"
+WILMA
+grabchars -p 'give me any character >> '
+echo " status returned was $status"
+
+cat << FRED
+
+	prompt through stderr  with "grabchars -q 'give me any character >> '",
+so that we can set the variable "user_char"...
+FRED
+set user_char=`grabchars -q 'give me any character >> '`
+echo " status returned was $status"
+echo '$user_char = '$user_char
+
+cat << BETTY
+
+	enter three characters...  "grabchars -n3"
+
+BETTY
+grabchars -n3
+echo " status returned was $status"
+
+cat << DINO
+
+	map 5 characters to upper case.... "grabchars -n5 -U"
+
+DINO
+grabchars -n5 -U
+
+cat <<  BARNEY
+
+	enter 10 characters within 3 seconds... "grabchars -n10 -t3"
+
+
+BARNEY
+grabchars -n10 -t3
+set really_typed=$status
+if ($really_typed == 10) then
+	echo 'hey\! you got 10\!?'
+else
+	echo "    $really_typed returned...means that grabchars timed out..."
+endif
+
+def_test:
+cat << RADRED
+
+	let the user pick a default...
+	using "grabchars -d yes -p 'just hit return '...
+
+RADRED
+#	the '-f' here is used to flush any previous input...
+grabchars -f -d yes -p 'just hit return '
+if ($status != 3) then
+	echo whoops\!  Let\'s try that again...
+	goto def_test
+endif
+
+cat << MUSKRAT
+
+	same idea, but let this timeout in four seconds...
+	using "grabchars -f -d always -t 4"
+
+	(don't type anything...)
+
+MUSKRAT
+grabchars -f -d always -t 4
+
+cat << PEBBLES
+
+
+	The last one...  get two numbers with a ten second timeout...
+	trying "grabchars -c 0123456789 -n2 -t10 -p 'give me 2 numbers >> '
+
+PEBBLES
+grabchars -c 0123456789 -n2 -t10 -p 'give me 2 numbers >> '
+echo " status returned was $status"
+echo ""
+echo test/demo done...enjoy\!

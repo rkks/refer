@@ -1,0 +1,81 @@
+:
+##########################################################################
+# Title       :	doscopy - file name patterns for "doscp"
+# Author      :	Heiner Steven <heiner.steven@odn.de>
+# Date        :	1994-04-19
+# Requires    :	doscp, dosls, shellpat
+# Category    : SCO UNIX
+# SCCS-Id.    :	@(#) doscopy	1.2 03/12/19
+##########################################################################
+# Description:
+#    o	Wrapper to the SCO Unix "doscp" command, that cannot generate
+#	file names of files on DOS disks
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+usage () {
+    echo >&2 "$PN - \"doscp\" with file name patterns, $VER (stv '94)
+usage: $PN sourcefile [sourcefile ...] targetdir
+The source files may contain meta-characters, i.e.
+    $PN a:*.c /tmp"
+    exit 1
+}
+fatal () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+    exit 1
+}
+Tmp=${TMPDIR:=/tmp}/dc$$		# Directory listing
+Drives=a:				# Driver containing source file(s)
+[ $# -lt 2 ] && usage
+# Get source file names and target directory/drive
+Files=
+while [ $# -gt 1 ]
+do
+    case "$1" in
+	[a-zA-Z/]*:)			# Source drive
+	    D=`echo "$1" | sed -n -e  's%^\([a-zA-Z/][^:]*:\).*%\1%p'`
+	    [ -n "$D" ] && Drives="$Drives $D";;
+    esac
+    if [ -z "$Files" ]
+    then Files="$1"
+    else Files="$Files $1"
+    fi
+    shift
+done
+Ziel="$1"
+[ -z "$Ziel" ] && fatal "please specify a target directory"
+case "$Ziel" in
+    [a-zA-Z/]*:)			# Unix file to dos drive
+	echo >&2 "$PN: $Files -> $Ziel"
+	doscp $Files "$Ziel" || exit 1
+	exit 0
+	;;				# not reached
+esac
+# Remove temporary files at exit or after receipt of a signal
+trap "rm -f $Tmp" 0
+trap "exit 1" 1 2 3 15
+dosls $Drives | tr '[A-Z]' '[a-z]' > $Tmp ||
+    fatal "could not read directory listing from drive $Drives"
+n=0
+for pattern in $Files
+do
+    # Split source specification into drive and file name
+    Drive=`echo "$pattern" | sed -ne 's%^\([a-zA-Z/][^:]*:\).*%\1%p'`
+    File=`echo "$pattern" | sed  -e 's%^[a-zA-Z/][^:]*:\(.*\)%\1%g'`
+    # Source AND target are on local file system
+    [ -z "$Drive" ] &&
+	fatal "use \"cp\" to copy UNIX files"
+    # Convert sh pattern to egrep(1) expression
+    searchpattern="`shellpat \"$File\"`"
+    # Copy all files matching the pattern
+    for Match in `egrep "$searchpattern" "$Tmp"`
+    do
+	echo $Drive$Match >&2
+	doscp "$Drive$Match" "$Ziel" || exit 1
+	n=`expr $n + 1`
+    done
+done
+echo "copied $n file(s)." >&2
+exit 0

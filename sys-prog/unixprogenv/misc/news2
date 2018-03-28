@@ -1,0 +1,15 @@
+# news:  print news files, version 2
+
+HOME=.		# debugging only
+cd .		# place holder for /usr/news
+IFS='
+'		# just a newline
+for i in  `ls -t * $HOME/.news_time 2>&1`
+do
+	case $i in
+	*' not found')	;;
+	*/.news_time)	break ;;
+	*)		echo news: $i ;;
+	esac
+done
+touch $HOME/.news_time

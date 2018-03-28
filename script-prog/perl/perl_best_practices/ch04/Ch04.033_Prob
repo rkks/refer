@@ -1,0 +1,50 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 4 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+use constant VERBOSE => 1;
+
+package Reveal;
+sub desc { return 'reveal event' }
+
+package Close;
+sub desc  { return 'close event' }
+
+package Quit;
+sub desc   { return 'quit event' }
+
+package main;
+
+BEGIN {
+    my @events = qw( Reveal Close Quit );
+
+    sub get_next_event {
+        return shift @events;
+    }
+}
+
+EVENT:
+while (1) {
+    use constant EVENT => get_next_event();
+    
+    last EVENT if not defined EVENT;
+    
+    if (VERBOSE) {
+        print EVENT->desc(), "\n";
+    }
+ 
+    # process event here...
+} 
+

@@ -1,0 +1,25 @@
+#! /usr/bin/perl -wl
+# Usage: compress_image2 image [image2 ...]
+
+$DEBUG=1;     # for extra feedback during testing
+$qual=80;     # starting quality value
+
+foreach $fname (@ARGV) {
+  # Copy original image to another directory
+  ! system "cp '$fname' '/tmp/$fname'"  or
+      die "$0: cp failed; $!\n";
+  $DEBUG  and  # show initial size
+    print "Size of $fname: ", -s $fname, ' bytes';
+
+  while ( -s $fname > 25_000 )  {  # 25_000 means 25,000
+    # Compress copy using $qual; store under original name
+    ! system "convert -quality $qual " .
+      " '/tmp/$fname' 'jpg:$fname' "  or  # Shell-quote fname
+        die "$0: convert failed\n";
+
+    $DEBUG  and   # show new size
+      print "Size of $fname: ", -s $fname, ' bytes';
+
+    $qual=$qual - 5;    # reduce for next iteration
+  }
+}

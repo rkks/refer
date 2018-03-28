@@ -1,0 +1,35 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 15 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my %selector_of;
+my %data_of;
+
+sub new {
+    my ($invocant, $arg_ref) = @_;
+ 
+    # Work out the actual class name...
+    my $class = ref($invocant)||$invocant;
+ 
+    # Build the object...
+    my $new_object = bless anon_scalar(), $class;
+ 
+    # And initialize its attributes...
+    $selector_of{ident $new_object} = $arg_ref->{selector};
+    $data_of{ident $new_object}     = $arg_ref->{data};
+ 
+    return $new_object;
+}
+

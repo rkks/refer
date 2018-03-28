@@ -1,0 +1,41 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 5 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use Data::Alias;
+use Readonly;
+
+Readonly my $STD_HEADER => '<html><head>Std header</head>';
+
+my $html = <<'END_BODY';
+Non-standard header.
+
+<body>
+    Body here
+</body>
+
+Other stuff here
+END_BODY
+
+sub verify_body {
+    my ($body) = @_;
+    return $body;
+}
+
+$html =~ s{.*? (<body> .* </body>) .*}      # Locate components of page
+          {   $STD_HEADER                   # Ensure standard header is used
+            . verify_body($1)               # Check contents
+            . '</html>'                     # Remove any trailing extras
+          }exms;
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $html ];

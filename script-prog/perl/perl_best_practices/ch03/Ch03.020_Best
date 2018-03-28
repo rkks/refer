@@ -1,0 +1,32 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 3 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $next_book;
+my $target;
+
+
+my %option;
+my %title_of;
+my %count_for;
+my %is_available;
+ 
+# and later...
+ 
+if ($option{'count_all'} && $title_of{$next_book} =~ m/$target/xms) {
+    $count_for{$next_book}++;
+    $is_available{$next_book} = 1;
+}
+

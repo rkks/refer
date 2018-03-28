@@ -1,0 +1,116 @@
+1.15
+  - file type descriptions
+  - multi-byte editing (press 2 or 4)
+  - case insensitive search
+  - better backspace support
+  - improved large-file support
+  - units (K,M,G) support for jump command
+  - -L / --length option
+  - -n / --nofollow if --enable-nofollow configure option used (pretty useless)
+
+1.14
+  - experimental largefile support
+  - --hex command line option
+  - little interface fix for cygwin
+
+1.13
+  - binary editing (bit toggling)
+  - minor interface improvments
+
+1.12
+  - read from stdin
+  - fix for searching for values greater than 127 (duh!)
+  - ^W added for search to be like pico (thought it was like that already)
+  - ^H added for deleting input (should I be looking up the configured
+    key from the env?)
+  - minor fix in spacing
+  - fixed bug when doing a repeat search by entering an empty string.
+  - dump progress
+  - --start fix
+
+1.11
+  - ^c handling (you can cancel when asked for input)
+  - ^o save message :-)
+  - --readonly option
+  - --start option
+  - preview mode (nice idea, but came out ugly, but have left it in anyway)
+  - added extended ascii character display (also ugly!)
+  - interface tidying
+  - new keypresses!
+  - more beeping on errors (can't remember what specifically)
+  - ported to c
+  - bit of code refactoring
+  - added proper 'missing', 'install-sh' and 'mkinstalldirs' needed for RPM
+    making. (not that I actually make one, but in case you do. Thanks to
+    Dennis Bjorklund for info.
+
+1.10
+  - Fixed serious dump bug, where it would dump to the input file, overwriting
+    its contents as it went.
+
+1.09
+  - Compiling with g++ 3.2 gave me a good screenful or two about some
+    iostream deprectation, so all IO is now done with stdio (probably
+    faster anyway)
+  - Fixed bug with files whose size could not be obtained (devices etc).
+  - Ignoring of ^C to prevent accidental quitting (see TODO)
+  - Added configure script.
+
+1.08
+  - Added "repeat previous search" on R
+  - Added handling of invalid digits when inputting numbers
+  - Added checking for out-of-range inputs
+
+1.07
+  - Fixed some major search bugs (Thanks to Keith Williams for pointing them
+    out)
+  - Added ^L refresh
+  - Added a very simple man page
+
+1.06
+  - Now a previous search string for each column
+  - Improved error message when file could not be 'stat'ed
+  - Pressing 'f' (find) now does search too
+
+1.05
+  - Fixed bug with toggling dec/hex mode on large files
+  - Now checks if the argument is a directory. Before it would try and open
+    the directory as a file and wouldn't do much.
+  - On files where the file size could not be obtained (devices etc). offset
+    column is now set to big
+
+1.04
+  - Made jump-to code more efficient - On large files it was taking a couple of
+    seconds to jump from start to end
+
+1.03
+  - Fixed problem where screen wouldn't be redrawn after a resize
+  - Tidied up redraw when resize takes place with cursor near EOF
+  - Improved makefile's make install option. (I was using cp and chmod because
+    I didn't know the install command :-) )
+
+1.02
+  - Fixed bug when using jump to end
+
+1.01
+  - Added <stdlib.h> for similar reasons as below
+
+1.00
+  - Same as 0.92, but decided it was ready for 1.00, as I can't
+    be bothered to do any of the ideas at the moment. Only change
+    was adding <string.h> to includes, because on my system it was
+    getting included through another header. I tried building on
+    another system and string.h wasn't getting included so needed
+    to be explicitly included.
+
+0.92
+  - Support for read-only files.
+  - Beeping when cursor is at a boundary, or when trying to
+    edit a readonly file
+
+0.91
+  - Search strings can now be entered in any of the bases
+
+0.90
+  - First release to celebrate(?) it getting on sourceforge
+

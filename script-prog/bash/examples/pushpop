@@ -1,0 +1,16 @@
+
+pushd ()
+{
+    dirname=$1
+    cd ${dirname:?"missing directory name."}
+    DIRSTACK="$dirname ${DIRSTACK:-$PWD' '}"
+    echo "$DIRSTACK"
+}
+ 
+popd ()
+{
+    DIRSTACK=${DIRSTACK#* }
+    cd ${DIRSTACK%% *}
+    echo "$PWD"
+}
+

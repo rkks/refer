@@ -1,0 +1,31 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 2 of "Perl Best Practices"    ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+use List::Util qw( max );
+
+my $predicted_val;
+my $minimum          = 0;
+my $maximum          = 20;
+my $predicted_change = 1;
+my $fudge_factor     = 0.3;
+my $local_epsilon    = 0.01;
+
+$predicted_val 
+    = ($minimum + $maximum) / 2 
+      + $predicted_change * max($fudge_factor, $local_epsilon);
+
+
+use Data::Dumper 'Dumper';
+warn Dumper [ $predicted_val ];

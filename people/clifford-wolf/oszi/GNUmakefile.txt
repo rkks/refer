@@ -1,0 +1,26 @@
+
+CFLAGS = -std=gnu99 -O0 -ggdb -Wall
+LDLIBS = -lSDL -lSDL_ttf -lfftw3 -lm
+LDFLAGS = -ggdb
+
+CFLAGS += -DHAVE_OSS
+
+LDLIBS += -lasound
+CFLAGS += -DHAVE_ALSA
+
+LDLIBS += -lportaudio
+CFLAGS += -DHAVE_PORTAUDIO
+
+LDFLAGS += -pthread
+CFLAGS += -pthread -DWITH_SOUNDOUT
+
+oszi: capture.o gui.o main.o dft.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+%.o: %.c oszi.h
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+clean:
+	rm -f *.o oszi
+	rm -f core
+

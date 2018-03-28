@@ -1,0 +1,76 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span style="color:#236e25;">/*<br />
+&nbsp;* udpserv.c<br />
+&nbsp;*<br />
+&nbsp;* listens on an UDP port, accept one message and displays its content and<br />
+&nbsp;* who's the sender<br />
+&nbsp;*<br />
+&nbsp;*<br />
+&nbsp;* Created by Mij &lt;mij@bitchx.it&gt; on 18/12/05.<br />
+&nbsp;* Original source file available on http://mij.oltrelinux.com/devel/unixprg/<br />
+&nbsp;*/</span><br />
+<br />
+<span style="color:#683821;">#include &lt;stdio.h&gt;<br />
+</span><span style="color:#236e25;">/* socket(), bind(), recvfrom() */</span><br />
+<span style="color:#683821;">#include &lt;sys/types.h&gt;<br />
+#include &lt;sys/socket.h&gt;<br />
+</span><span style="color:#236e25;">/* sockaddr_in */</span><br />
+<span style="color:#683821;">#include &lt;netinet/in.h&gt;<br />
+</span><span style="color:#236e25;">/* inet_addr() */</span><br />
+<span style="color:#683821;">#include &lt;arpa/inet.h&gt;<br />
+</span><span style="color:#236e25;">/* memset() */</span><br />
+<span style="color:#683821;">#include &lt;string.h&gt;<br />
+</span><span style="color:#236e25;">/* close() */</span><br />
+<span style="color:#683821;">#include &lt;unistd.h&gt;<br />
+</span><span style="color:#236e25;">/* exit() */</span><br />
+<span style="color:#683821;">#include &lt;stdlib.h&gt;<br />
+</span><br />
+<span style="color:#236e25;">/* maximum size available for an incoming message payload */</span><br />
+<span style="color:#683821;">#define MAX_MSGLEN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">100</span><span style="color:#683821;"><br />
+</span><br />
+<span style="color:#881350;">int</span> <span style="color:#003369;">main</span>() {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> sock, err;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">char</span> messagebuf[MAX_MSGLEN+<span style="color:#0000ff;">1</span>];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">struct</span> sockaddr_in saddr, fromaddr;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">int</span> fromaddr_len = <span style="color:#881350;">sizeof</span>(fromaddr);<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* create a INET-domain, disconnected (datagram) socket */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;sock = <span style="color:#003369;">socket</span>(AF_INET, SOCK_DGRAM, IPPROTO_UDP);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(sock &lt; <span style="color:#0000ff;">0</span>) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In socket()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* bind the following attributes to the socket: */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;saddr.sin_family = AF_INET;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;saddr.sin_addr.s_addr = <span style="color:#003369;">inet_addr</span>(<span style="color:#760f15;">"127.0.0.1"</span>); &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* localhost address */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;saddr.sin_port = <span style="color:#003369;">htons</span>(<span style="color:#0000ff;">61321</span>); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* use port 61321 (with correct network byte-order */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">memset</span>(&amp;saddr.sin_zero, <span style="color:#0000ff;">0</span>, <span style="color:#881350;">sizeof</span>(saddr.sin_zero)); <span style="color:#236e25;">/* always zero-fill this field! */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;err = <span style="color:#003369;">bind</span>(sock, (<span style="color:#881350;">struct</span> sockaddr *)&amp;saddr, <span style="color:#881350;">sizeof</span>(saddr));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(err) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"In bind()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* receive a message in "messagebuf" at most MAX_MSGLEN bytes long (1 is<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* spared for the trailing '\0'; store sender info in "fromaddr" */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;err = <span style="color:#003369;">recvfrom</span>(sock, messagebuf, MAX_MSGLEN-<span style="color:#0000ff;">1</span>, <span style="color:#0000ff;">0</span>, (<span style="color:#881350;">struct</span> sockaddr *)&amp;fromaddr, &amp;fromaddr_len);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">if</span><span style="color:#003369;"> </span>(err &lt;= <span style="color:#0000ff;">0</span>) { &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* otherwise, "err" tells how many bytes have been written in "messagebuf" */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">perror</span>(<span style="color:#760f15;">"in recvfrom()"</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">exit</span>(<span style="color:#0000ff;">1</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;messagebuf[err] = '\<span style="color:#0000ff;">0</span>'; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* NULL-terminator */</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* close the socket */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">close</span>(sock);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* displaying message length and content */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Message:\n\t@bytes: %d\n\t@payload: %s\n"</span>, err, messagebuf);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#236e25;">/* displaying sender info: */</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003369;">printf</span>(<span style="color:#760f15;">"Sender:\n\t@address: %s\n\t@port: %d\n"</span>, <span style="color:#003369;">inet_ntoa</span>(fromaddr.sin_addr), <span style="color:#003369;">ntohs</span>(fromaddr.sin_port));<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#881350;">return</span> <span style="color:#0000ff;">0</span>;<br />
+}<br />
+<br />
+</div>

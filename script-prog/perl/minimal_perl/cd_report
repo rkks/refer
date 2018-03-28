@@ -1,0 +1,41 @@
+#! /usr/bin/perl -s -wnlaF'\t+'
+
+our ( $search, $a, $t, $r );        # make switches optional
+ 
+BEGIN {
+  $num_fields=3;                    # number of fields per line
+  $sel_cds=0;  # so won't be undefined in END, if no selections
+
+  $options=( defined $r  or  defined $a  or      # any options?
+    defined $t  or  defined $search );
+
+  print "TITLE\t\t\tARTIST\t\tRATING";  # print column headings
+}
+
+ #####  BODY OF PROGRAM, EXECUTED FOR EACH LINE OF INPUT  #####
+( $title, $artist, $rating )=@F;   # load fields into variables
+$fcount=@F;                        # get field-count for line
+if ( $fcount != $num_fields ) {    # line improperly formatted
+  warn "\n\tBad field count of $fcount on line #$.; skipping!";
+}
+else {                             # line properly formatted
+  $selected=(        # T/F to indicate status of current record
+    defined $t  and  $title  =~ /$t/i  or  # match with title?
+    defined $a  and  $artist =~ /$a/i  or  # match with artist?
+    defined $search  and  /$search/i   or  # match with record?
+    ! $options          # without options, all records selected
+  );
+  if ( $selected ) {              # the current CD was selected
+    $sel_cds++;                   # increment #CDs_selected
+    $sum_ratings+=$rating;        # needed for -r option
+    print;                        # print the selected line
+  }
+}
+END {
+  $num_cds=$.;              # maximum line number = #lines read
+  if ( $r  and  $sel_cds > 0 ) {
+    $ave_rating=$sum_ratings / $sel_cds;
+    print "\n\tAverage Rating for $sel_cds CDs: $ave_rating";
+  }
+  print "\nProcessed $num_cds CD records";       # report stats
+}

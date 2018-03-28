@@ -1,0 +1,10 @@
+#! /usr/bin/perl -s -i.bak -wpl
+# Inserts contact info for script author after shebang line
+BEGIN {
+    $author  or
+        warn "Usage: $0 -author='Author info' f1 [f2 ...]\n"  and
+            exit 255;
+}
+# Append contact-info line to shebang line
+$. == 1  and
+    s|^#!.*/bin/.+$|$&\n# Author: $author|g;

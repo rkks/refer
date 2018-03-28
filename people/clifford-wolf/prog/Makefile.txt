@@ -1,0 +1,83 @@
+
+CFLAGS += -Os -Wall -Wextra -Wno-unused-result -std=gnu99 -ggdb
+
+all: iomem rpn rpn64 utf8purify teletype systime clfindent
+
+rpn64: rpn.c
+	$(CC) -o rpn64 $(CFLAGS) -DRPN64 rpn.c
+
+iomem: LDLIBS += -lreadline -ltermcap
+bclone: CFLAGS += -pthread
+
+install: all
+	install indt.sh /usr/local/bin/indt
+	install bked.sh /usr/local/bin/bked
+	install xdiff.sh /usr/local/bin/xdiff
+	install svnpurge.sh /usr/local/bin/svnpurge
+	install svnclean.sh /usr/local/bin/svnclean
+	install svnemboss.sh /usr/local/bin/svnemboss
+	install svnbranch.sh /usr/local/bin/svnbranch
+	install svnfind.sh /usr/local/bin/svnfind
+	install svngrep.sh /usr/local/bin/svngrep
+	install svnlist.sh /usr/local/bin/svnlist
+	install svnlast.sh /usr/local/bin/svnlast
+	install svncache.sh /usr/local/bin/svncache
+	install svnignore.sh /usr/local/bin/svnignore
+	install svnemptydir.sh /usr/local/bin/svnemptydir
+	install svnbrowse.spl /usr/local/bin/svnbrowse
+	install git-commit-dir.sh /usr/local/bin/git-commit-dir
+	install git-kickin.sh /usr/local/bin/git-kickin
+	install git-last.sh /usr/local/bin/git-last
+	install git-register.sh /usr/local/bin/git-register
+	install kcfgdiff.sh /usr/local/bin/kcfgdiff
+	install htmlenc.pl /usr/local/bin/htmlenc
+	install htmldec.pl /usr/local/bin/htmldec
+	install leet.pl /usr/local/bin/leet
+	install umlfix.pl /usr/local/bin/umlfix
+	install umlcheck.sh /usr/local/bin/umlcheck
+	install bindiffprep.pl /usr/local/bin/bindiffprep
+	install utf8purify /usr/local/bin/utf8purify
+	install iomem /usr/local/sbin/iomem
+	install rpn /usr/local/bin/rpn
+	install rpn64 /usr/local/bin/rpn64
+	install teletype /usr/local/bin/teletype
+	install systime /usr/local/bin/systime
+	install clfindent /usr/local/bin/clfindent
+
+uninstall:
+	rm -f /usr/local/bin/bked
+	rm -f /usr/local/bin/xdiff
+	rm -f /usr/local/bin/svnpurge
+	rm -f /usr/local/bin/svnclean
+	rm -f /usr/local/bin/svnemboss
+	rm -f /usr/local/bin/svnbranch
+	rm -f /usr/local/bin/svnfind
+	rm -f /usr/local/bin/svngrep
+	rm -f /usr/local/bin/svnlist
+	rm -f /usr/local/bin/svnlast
+	rm -f /usr/local/bin/svncache
+	rm -f /usr/local/bin/svnignore
+	rm -f /usr/local/bin/svnemptydir
+	rm -f /usr/local/bin/svnbrowse
+	rm -f /usr/local/bin/git-commit-dir
+	rm -f /usr/local/bin/git-kickin
+	rm -f /usr/local/bin/git-last
+	rm -f /usr/local/bin/git-register
+	rm -f /usr/local/bin/kcfgdiff
+	rm -f /usr/local/bin/htmlenc
+	rm -f /usr/local/bin/htmldec
+	rm -f /usr/local/bin/leet
+	rm -f /usr/local/bin/umlfix
+	rm -f /usr/local/bin/umlcheck
+	rm -f /usr/local/bin/bindiffprep
+	rm -f /usr/local/bin/utf8purify
+	rm -f /usr/local/sbin/iomem
+	rm -f /usr/local/bin/rpn
+	rm -f /usr/local/bin/rpn64
+	rm -f /usr/local/bin/teletype
+	rm -f /usr/local/bin/systime
+	rm -f /usr/local/bin/clfindent
+
+clean:
+	rm -f utf8purify iomem rpn rpn64 teletype systime clfindent
+

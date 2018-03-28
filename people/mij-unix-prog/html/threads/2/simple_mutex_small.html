@@ -1,0 +1,129 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/********************************************************
+ * An example source module to accompany...
+ *
+ * "Using POSIX Threads: Programming with Pthreads"
+ *     by Brad nichols, Dick Buttlar, Jackie Farrell
+ *     O'Reilly &amp; Associates, Inc.
+ *
+ ********************************************************
+ * simple_mutex.c
+ *
+ * Simple multi-threaded example with a mutex lock.
+ * Does the same as the example above (see the link below)
+ * but with mutual exclusion. Any time a thread starts, it
+ * request the thread lock. Just one thread is executing
+ * anytime. The others must wait it to unlock before proceeding.
+ * quickly comment out by Mij &lt;mij@bitchx.it&gt; for
+ * http://mij.oltrelinux.com/devel/unixprg/
+ *
+ * (also modified a bit on the code itself for clarity and
+ * expressiveness purposes)
+ */</span>
+<span class="cpdr">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;pthread.h&gt;
+</span>
+<span class="ctyp">void</span> <span class="cfun">do_one_thing</span>(<span class="ctyp">int</span> *);       <span class="ccom">/* first thread */</span>
+<span class="ctyp">void</span> <span class="cfun">do_another_thing</span>(<span class="ctyp">int</span> *);       <span class="ccom">/* second thread */</span>
+<span class="ctyp">void</span> <span class="cfun">do_wrap_up</span>(<span class="ctyp">int</span>, <span class="ctyp">int</span>);
+
+<span class="ctyp">int</span> r1 = <span class="cval">0</span>, r2 = <span class="cval">0</span>, r3 = <span class="cval">0</span>;
+pthread_mutex_t r3_mutex=PTHREAD_MUTEX_INITIALIZER; <span class="ccom">/* for mutex locking */</span>
+
+<span class="ctyp">extern</span> <span class="ctyp">int</span>
+<span class="cfun">main</span>(<span class="ctyp">int</span> argc, <span class="ctyp">char</span> **argv)
+{
+   <span class="ccom">/* thread ids */</span>
+  pthread_t thread1, thread2;
+
+  <span class="ctyp">if</span><span class="cfun"> </span>(argc &gt; <span class="cval">1</span>) 
+    r3 = <span class="cfun">atoi</span>(argv[<span class="cval">1</span>]);
+
+   <span class="ccom">/* creating the first thread */</span>
+  <span class="ctyp">if</span><span class="cfun"> </span>(<span class="cfun">pthread_create</span>(&amp;thread1, 
+         <span class="ctyp">NULL</span>,
+         (<span class="ctyp">void</span> *) do_one_thing,
+         (<span class="ctyp">void</span> *) &amp;r1) != <span class="cval">0</span>)
+    <span class="cfun">perror</span>(<span class="cstr">"pthread_create"</span>),<span class="cfun">exit</span>(<span class="cval">1</span>); 
+
+   <span class="ccom">/* creating the second thread */</span>
+  <span class="ctyp">if</span><span class="cfun"> </span>(<span class="cfun">pthread_create</span>(&amp;thread2, 
+         <span class="ctyp">NULL</span>, 
+         (<span class="ctyp">void</span> *) do_another_thing,
+         (<span class="ctyp">void</span> *) &amp;r2) != <span class="cval">0</span>)
+    <span class="cfun">perror</span>(<span class="cstr">"pthread_create"</span>),<span class="cfun">exit</span>(<span class="cval">1</span>); 
+  
+   <span class="ccom">/* expecting the first thread to terminate */</span>
+  <span class="ctyp">if</span><span class="cfun"> </span>(<span class="cfun">pthread_join</span>(thread1, <span class="ctyp">NULL</span>) != <span class="cval">0</span>)
+    <span class="cfun">perror</span>(<span class="cstr">"pthread_join"</span>), <span class="cfun">exit</span>(<span class="cval">1</span>);
+  
+   <span class="ccom">/* expecting the second thread to terminate */</span>
+  <span class="ctyp">if</span><span class="cfun"> </span>(<span class="cfun">pthread_join</span>(thread2, <span class="ctyp">NULL</span>) != <span class="cval">0</span>)
+    <span class="cfun">perror</span>(<span class="cstr">"pthread_join"</span>), <span class="cfun">exit</span>(<span class="cval">1</span>);
+
+  <span class="cfun">do_wrap_up</span>(r1, r2);
+
+  <span class="ctyp">return</span> <span class="cval">0</span>; 
+}
+
+<span class="ctyp">void</span> <span class="cfun">do_one_thing</span>(<span class="ctyp">int</span> *pnum_times)
+{
+  <span class="ctyp">int</span> i, j, x;
+  pthread_t ti;
+
+  ti = <span class="cfun">pthread_self</span>();      <span class="ccom">/* which's our id? */</span>
+  <span class="cfun">pthread_mutex_lock</span>(&amp;r3_mutex);
+   <span class="ccom">/* this is the segment containing sensitive operations.
+    * So we need to keep it alone from concurrency for safeness. */</span>
+  <span class="ctyp">if</span>(r3 &gt; <span class="cval">0</span>) {
+    x = r3;
+    r3--;
+  } <span class="ctyp">else</span> {
+    x = <span class="cval">1</span>;
+  }
+   <span class="ccom">/* sensitive code end */</span>
+  <span class="cfun">pthread_mutex_unlock</span>(&amp;r3_mutex); 
+
+  <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>;  i &lt; <span class="cval">4</span>; i++) {
+    <span class="cfun">printf</span>(<span class="cstr">"doing one thing\n"</span>); 
+      <span class="ctyp">for</span><span class="cfun"> </span>(j = <span class="cval">0</span>; j &lt; <span class="cval">10000</span>; j++) x = x + i;
+      <span class="cfun">printf</span>(<span class="cstr">"thread %d: got x = %d\n"</span>, (<span class="ctyp">int</span>)ti, x);
+    (*pnum_times)++;
+  }
+
+}
+
+<span class="ctyp">void</span> <span class="cfun">do_another_thing</span>(<span class="ctyp">int</span> *pnum_times)
+{
+  <span class="ctyp">int</span> i, j, x;
+  pthread_t ti;
+    
+  ti = <span class="cfun">pthread_self</span>();
+  <span class="cfun">pthread_mutex_lock</span>(&amp;r3_mutex);
+  <span class="ctyp">if</span>(r3 &gt; <span class="cval">0</span>) {
+        x = r3;
+        r3--;
+  } <span class="ctyp">else</span> {
+        x = <span class="cval">1</span>;
+  }
+  <span class="cfun">pthread_mutex_unlock</span>(&amp;r3_mutex);
+
+  <span class="ctyp">for</span><span class="cfun"> </span>(i = <span class="cval">0</span>;  i &lt; <span class="cval">4</span>; i++) {
+    <span class="cfun">printf</span>(<span class="cstr">"doing another \n"</span>); 
+    <span class="ctyp">for</span><span class="cfun"> </span>(j = <span class="cval">0</span>; j &lt; <span class="cval">10000</span>; j++) x = x + i;
+    <span class="cfun">printf</span>(<span class="cstr">"thread %d: got x = %d\n"</span>, (<span class="ctyp">int</span>)ti, x);
+    (*pnum_times)++;
+  }
+
+}
+
+<span class="ctyp">void</span> <span class="cfun">do_wrap_up</span>(<span class="ctyp">int</span> one_times, <span class="ctyp">int</span> another_times)
+{
+  <span class="ctyp">int</span> total;
+
+  total = one_times + another_times;
+  <span class="cfun">printf</span>(<span class="cstr">"All done, one thing %d, another %d for a total of %d\n"</span>,
+    one_times, another_times, total);
+}
+</div>

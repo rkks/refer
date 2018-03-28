@@ -1,0 +1,42 @@
+remember
+--------
+Troy D. Hanson <tdh@tkhanson.net>
+
+Back to http://tkhanson.net/misc[Scripts and Snippets].
+
+This is an easy way to record shell commands you might want to remember in the
+future. For example if you're installing a package, it's helpful to remember
+what build options you used. Run `remember` once before your shell
+commands, then run your commands, then run `remember -s` afterwards. The
+intervening commands will be copied from your bash history (so, you need to be
+using bash with history enabled). The copied lines get appended to a file 
+(readable only to you) called `$HOME/.remember`.
+
+  % remember how I installed curl
+  % wget http://curl.haxx.se/download/curl-7.19.7.tar.bz2
+  % tar xjf curl-7.19.7.tar.bz2
+  % cd curl-7.19.7
+  % ./configure --prefix=/home/local
+  % make
+  % make install
+  % remember -s
+
+This is what would be appended to your `$HOME/.remember` file:
+
+--------------------------------------------------------------------------------
+Sat Dec 19 21:45:31 PST 2009
+  remember how I installed curl
+  wget http://curl.haxx.se/download/curl-7.19.7.tar.bz2
+  tar xjf curl-7.19.7.tar.bz2
+  cd curl-7.19.7
+  ./configure --prefix=/home/local
+  make
+  make install
+--------------------------------------------------------------------------------
+
+NOTE: `remember` is not a script but rather a bash function that you paste into
+your `.bashrc` or `.bash_profile`. 
+
+For another description of 'remember', see this
+http://troydhanson.wordpress.com/2010/01/28/scripts-and-snippets/[blog post].
+

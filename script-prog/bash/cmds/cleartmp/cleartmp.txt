@@ -1,0 +1,66 @@
+:
+##########################################################################
+# Title      :	cleartmp - remove temporary files/directories
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1992
+# Category   :	System Administration
+# Requires   :	xargs
+# SCCS-Id.   :	@(#) cleartmp	1.2 03/12/19
+##########################################################################
+# Description
+#	Delete files older than a specified number of days.
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+Days=7					# remove files older than 7 days
+usage () {
+    echo "$PN - remove temporary files/directories, $VER (stv '92)
+usage: $PN [-d days] directory [directory ...]
+All files and subdirectories older than the specified number of days
+(default $Days) are deleted." >&2
+    exit 1
+}
+msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+fatal () { msg "$@"; exit 1; }
+set -- `getopt hd: "$@"` || usage
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	-d)	case "$2" in
+		    [0-9]*)	Days="$2"; shift;;
+		    *)		fatal "illegal number of days: $2";;
+		esac;;
+	--)	shift; break;;
+	-h)	usage;;
+	-*)	usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+[ $# -lt 1 ] && usage
+for i
+do
+    if [ ! -d "$i" ]
+    then msg "no directory: $i"
+    elif [ ! -r "$i" -o ! -w "$i" ]
+    then msg "access denied (need read- and write access): $i"
+    else
+	# Find files, links, FIFOs or sockets
+	find "$i" ! -type d -mtime +$Days -print | xargs rm -f > /dev/null 2>&1
+	# remove all empty subdirectories
+	[ -d "$i" ] || continue
+	(cd $i || continue
+	for d in *
+	do
+	    [ -d "$d" ] || continue
+	    find . -depth -type d -mtime +$Days -print |
+		 xargs rmdir > /dev/null 2>&1
+	done
+	)
+    fi
+done
+exit 0

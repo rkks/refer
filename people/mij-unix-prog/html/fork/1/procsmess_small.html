@@ -1,0 +1,98 @@
+<div style="text-align:left;color:#000000; background-color:#ffffff; border:solid black 1px; padding:0.5em 1em 0.5em 1em; overflow:auto;font-size:small; font-family:monospace; "><span class="ccom">/*
+ *  procsmess.c
+ *
+ *  A completely meaningless example for tasks.
+ *  The parent process forks, then wait() for output
+ *  the exit status of who exited. The child forks
+ *  and does the same with waitpid(). The grandchild
+ *  finally forks and suddendly terminate.
+ *
+ *
+ *  Created by Mij &lt;mij@bitchx.it&gt; on Wed Dec 31 2003.
+ *  Original source file available on http://mij.oltrelinux.com/devel/unixprg/
+ */</span>
+
+ <span class="ccom">/* for printf() and perror() */</span>
+<span class="cpdr">#include &lt;stdio.h&gt;
+</span> <span class="ccom">/* for fork() */</span>
+<span class="cpdr">#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+</span> <span class="ccom">/* for wait*() */</span>
+<span class="cpdr">#include &lt;sys/wait.h&gt;
+</span>
+<span class="ctyp">int</span> <span class="cfun">main</span>() {
+    pid_t mypid, childpid;
+    <span class="ctyp">int</span> status;
+    
+     <span class="ccom">/* what's our pid? */</span>
+    mypid = <span class="cfun">getpid</span>();
+    <span class="cfun">printf</span>(<span class="cstr">"Hi. I'm the parent process. My pid is %d.\n"</span>, mypid);
+    
+     <span class="ccom">/* create the child */</span>
+    childpid = <span class="cfun">fork</span>();
+    <span class="ctyp">if</span><span class="cfun"> </span>( childpid == -<span class="cval">1</span> ) {
+        <span class="cfun">perror</span>(<span class="cstr">"Cannot proceed. fork() error"</span>);
+        <span class="ctyp">return</span> <span class="cval">1</span>;
+    }
+    
+    
+    <span class="ctyp">if</span><span class="cfun"> </span>(childpid  == <span class="cval">0</span>) {
+         <span class="ccom">/* then we're the child process "Child 1" */</span>
+        <span class="cfun">printf</span>(<span class="cstr">"Child 1: I inherited my parent's pid as %d.\n"</span>, mypid);
+        
+         <span class="ccom">/* get our pid: notice that this doesn't touch the value of parent's "mypid" value */</span>
+        mypid = <span class="cfun">getpid</span>();
+        <span class="cfun">printf</span>(<span class="cstr">"Child 1: getppid() tells my parent is %d. My own pid instead is %d.\n"</span>, <span class="cfun">getppid</span>(), mypid);
+        
+        
+         <span class="ccom">/* forks another child */</span>
+        childpid = <span class="cfun">fork</span>();
+        <span class="ctyp">if</span><span class="cfun"> </span>( childpid == -<span class="cval">1</span> ) {
+            <span class="cfun">perror</span>(<span class="cstr">"Cannot proceed. fork() error"</span>);
+            <span class="ctyp">return</span> <span class="cval">1</span>;
+        }
+        
+        <span class="ctyp">if</span><span class="cfun"> </span>(childpid == <span class="cval">0</span>) {
+             <span class="ccom">/* this is the child of the first child, thus "Child 2" */</span>
+            <span class="cfun">printf</span>(<span class="cstr">"Child 2: I hinerited my parent's PID as %d.\n"</span>, mypid);
+            
+            mypid = <span class="cfun">getpid</span>();
+            <span class="cfun">printf</span>(<span class="cstr">"Child 2: getppid() tells my parent is %d. My own pid instead is %d.\n"</span>, <span class="cfun">getppid</span>(), mypid);
+            
+            childpid = <span class="cfun">fork</span>();
+            <span class="ctyp">if</span><span class="cfun"> </span>( childpid == -<span class="cval">1</span> ) {
+                <span class="cfun">perror</span>(<span class="cstr">"Cannot proceed. fork() error"</span>);
+                <span class="ctyp">return</span> <span class="cval">1</span>;
+            }
+            
+            <span class="ctyp">if</span><span class="cfun"> </span>(childpid == <span class="cval">0</span>) {
+                 <span class="ccom">/* "Child 3" sleeps 30 seconds then terminates 12, hopefully before its parent "Child 2" */</span>
+                <span class="cfun">printf</span>(<span class="cstr">"Child 3: I hinerited my parent's PID as %d.\n"</span>, mypid);
+                
+                mypid = <span class="cfun">getpid</span>();
+                <span class="cfun">printf</span>(<span class="cstr">"Child 3: getppid() tells my parent is %d. My own pid instead is %d.\n"</span>, <span class="cfun">getppid</span>(), mypid);
+                
+                <span class="cfun">sleep</span>(<span class="cval">30</span>);
+                <span class="ctyp">return</span> <span class="cval">12</span>;
+            } <span class="ctyp">else</span>   <span class="ccom">/* the parent "Child 2" suddendly returns 15 */</span>  <span class="ctyp">return</span> <span class="cval">15</span>;
+        } <span class="ctyp">else</span> {
+             <span class="ccom">/* this is still "Child 1", which waits for its child to exit */</span>
+            <span class="ctyp">while</span><span class="cfun"> </span>( <span class="cfun">waitpid</span>(childpid, &amp;status, WNOHANG) == <span class="cval">0</span> ) <span class="cfun">sleep</span>(<span class="cval">1</span>);
+            
+            <span class="ctyp">if</span><span class="cfun"> </span>( <span class="cfun">WIFEXITED</span>(status) ) <span class="cfun">printf</span>(<span class="cstr">"Child1: Child 2 exited with exit status %d.\n"</span>, <span class="cfun">WEXITSTATUS</span>(status));
+            <span class="ctyp">else</span> <span class="cfun">printf</span>(<span class="cstr">"Child 1: child has not terminated correctly.\n"</span>);
+        }
+    } <span class="ctyp">else</span> {
+         <span class="ccom">/* then we're the parent process, "Parent" */</span>
+        <span class="cfun">printf</span>(<span class="cstr">"Parent: fork() went ok. My child's PID is %d\n"</span>, childpid);
+         
+         <span class="ccom">/* wait for the child to terminate and report about that */</span>
+        <span class="cfun">wait</span>(&amp;status);
+        
+        <span class="ctyp">if</span><span class="cfun"> </span>( <span class="cfun">WIFEXITED</span>(status) ) <span class="cfun">printf</span>(<span class="cstr">"Parent: child has exited with status %d.\n"</span>, <span class="cfun">WEXITSTATUS</span>(status));
+        <span class="ctyp">else</span> <span class="cfun">printf</span>(<span class="cstr">"Parent: child has not terminated normally.\n"</span>);
+    }
+    
+    <span class="ctyp">return</span> <span class="cval">0</span>;
+}
+</div>

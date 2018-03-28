@@ -1,0 +1,123 @@
+:
+##########################################################################
+# Shellscript:	diskcopy - duplicate a 3.5" floppy disk
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1995-06-03
+# Category   :	System Administration
+# SCCS-Id.   :	@(#) diskcopy	1.3 04/02/18
+##########################################################################
+# Portability
+#	Tested with Solaris 2.5, (SuSE) Linux 5.2.
+#	Should work with AT&T System V Release 4
+##########################################################################
+PN=`basename "$0"`			# program name
+VER='1.3'
+# Determine the device name of a 3.5" floppy device
+# (Solaris, Linux, System V Release 4)
+for floppydev in "$FLOPPY" /dev/rfd0 /dev/fd0 /dev/dsk/f03ht
+do
+    [ -c "$floppydev" ] || [ -b "$floppydev" ] || continue
+    FLOPPY=$floppydev
+    break
+done
+: ${FLOPPY:=/dev/rfd0}
+: ${EJECT:=eject}		# Command to eject floppy from drive
+DiskBS=18k
+FileBS=18k
+Tmp=${TMPDIR:=/tmp}/dc$$
+Usage () {
+    echo "$PN - duplicate 3.5\" floppy disks, $VER (hs '95)
+usage: $PN source target
+The default source device is FLOPPY=$FLOPPY. If no target
+device is specified, a temporary file is used. If a target
+device is given, a two-drive-copy is assumed." >&2
+    exit 1
+}
+Msg () {
+    for i
+    do echo "$i" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+# echon - "echo" without newline
+echon () {
+    if [ X"$ECHON" = X ]
+    then
+	# Determine how to "echo" without newline: "echo -n" or "echo ...\c"
+	if [ X`echo -n` = X-n ]
+	then ECHON=echo; NNL="\c"
+	else ECHON="echo -n"; NNL=""
+	fi
+    fi
+    $ECHON "$*$NNL"
+}
+GetYN () {
+    while :
+    do
+        echo >&2
+	echon >&2 "$@"
+    	read answer || exit 2
+	case "$answer" in
+	    [yYjJ]*)	return 0;;
+	    [nN]*)	return 1;;
+	    [qQ]*)	exit 0;
+	esac
+	Msg "" "Enter 'y' for yes or 'n' for no" "Please try again"
+    done
+}
+# Try to eject floppy disk. If the eject command fails, do not try
+# again (Linux/SVR4 do not have an "eject" command)
+EjectFloppy () { ($EJECT) >/dev/null 2>&1|| EJECT=; }
+Out="$Tmp"
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+if [ $# -gt 2 ]
+then Usage
+elif [ $# -ge 2 ]
+then Out="$2"
+elif [ $# -ge 1 ]
+then FLOPPY="$1"
+fi
+[ "$FLOPPY" = "$Out" ] && Fatal "cannot read and write to the same device"
+trap "rm -f $Tmp > /dev/null 2>&1" 0
+trap "exit 2" 1 2 3 15
+n=1
+while GetYN "Copy Disk $n (y/n, q)? "
+do
+    Msg "Reading Disk $n..."
+    if dd if=$FLOPPY of=$Out ibs=$DiskBS obs=$FileBS
+    then
+	EjectFloppy
+	if [ "$Out" = "$Tmp" ]
+	then
+	    Copy=1
+	    while GetYN "WRITE new Copy $Copy (y/n, q)? "
+ 	    do
+	        Msg "Writing copy $Copy..."
+	    	if dd if=$Out ibs=$FileBS of=$FLOPPY obs=$DiskBS
+	    	then
+		    Msg "Copy $Copy successfully written."
+		    Copy=`expr ${Copy:-1} + 1`
+	    	else
+		    Msg "" "Could not write to floppy disk!" \
+		    	"Please check the disk drive, and try again"
+	    	fi
+		EjectFloppy
+	    done
+	fi
+    else
+	Msg "" "Cannot read floppy disk!" \
+	    "Please check the disk drive, and try again"
+	EjectFloppy
+	continue
+    fi
+    n=`expr ${n:-1} + 1`
+done

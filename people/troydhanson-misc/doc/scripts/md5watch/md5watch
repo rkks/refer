@@ -1,0 +1,76 @@
+#!/usr/bin/perl
+
+# scan a hierarchy of files and update an MD5 database for each file (if -u)
+# and print a list of files that have changed since last run.
+#
+# install in cron by running crontab -e and adding this line :
+# 5 0 * * *       $HOME/md5watch | mail -s "Updated files" your@email.address
+
+use strict;
+use warnings;
+use File::Find;
+use DB_File;
+use Digest::MD5 qw(md5_hex);
+use Getopt::Long;
+
+sub usage {
+  print "usage: $0 [-v] [-u] [-d <dbmfile>] [-e <pfx>] file/dir [...]\n";
+  print "   -v verbose\n";
+  print "   -u update\n";
+  print "   -d <dbmfile> (use specified dbmfile)\n";
+  print "   -e <pfx> skip paths starting with <pfx> (may be repeated)\n";
+  exit -1;
+}
+
+our %HIST;
+our $verbose = 0;
+our $dbmfile = $ENV{HOME} . "/.md5hist";
+our $update = 0;
+our $help = 0;
+our @exclude_pfxs;
+usage unless GetOptions( "verbose+" => \$verbose,
+                         "update"   => \$update,
+                         "dbmfile"  => \$dbmfile,
+                         "exclude=s"=> \@exclude_pfxs,
+                         "help"     => \$help);
+usage if $help;
+push @ARGV, "." unless @ARGV;
+chomp(my $pwd = `pwd`);
+my %h;
+my $H = tie %h, "DB_File", $dbmfile, O_RDWR|O_CREAT, 0666, $DB_HASH or die "Can't open $dbmfile: $!\n";
+
+sub process_file {
+  my $f = shift;
+  my $ff = $File::Find::name;
+  local $/;
+  open F, "<$f" or return;
+  my $data = <F>; # slurp
+  my $md5 = md5_hex $data;
+  close F;
+  my ($lastmd5,$lastchange) = (0,0);
+  ($lastmd5,$lastchange) = split /,/, $h{$ff} if (defined $h{$ff});
+  return if $md5 eq $lastmd5;
+  print "$ff ", ($lastchange ? ("changed since ".localtime($lastchange)) : "new");
+  print " ...updated." if $update;
+  print "\n";
+  if ($update) {
+    my @attr = stat($f) or die "can't stat $ff: $!\n";
+    my $modtime = $attr[9];
+    $h{$ff} = "$md5,$modtime";
+  }
+}
+
+sub find_exec_fcn {
+  $File::Find::prune = 1 unless -r;
+  for my $pfx (@exclude_pfxs) { if ($File::Find::name =~ m/^$pfx/) {$File::Find::prune=1;} }
+  return unless -f; # skip dirs
+  process_file $_;
+}
+
+for my $f (@ARGV) {
+  process_file $f if -f $f;           # file
+  find(\&find_exec_fcn, $f) if -d $f; #dir
+}
+undef $H;
+untie %h;
+

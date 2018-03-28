@@ -1,0 +1,18 @@
+#! /usr/bin/perl -wnlaF':'
+
+BEGIN {
+    @ARGV=( '/etc/passwd' );        # Specify input file
+}
+
+# Separate users of "human" oriented shells from others
+if ( $F[-1] =~ /sh$/ ) {
+    push    @human, $F[0];
+}
+else {
+    push  @inhuman, $F[0];
+}
+END {
+    $"=', ';
+    print "\UThese accounts use human shells: \E\n@human\n";
+    print "\UThese accounts use inhuman shells:\E\n@inhuman";
+}

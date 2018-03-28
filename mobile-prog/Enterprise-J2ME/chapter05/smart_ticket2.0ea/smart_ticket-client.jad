@@ -1,0 +1,12 @@
+SmartTicket-Servlet-URL: http://localhost:8000/smartticket/midp/service
+MIDlet-Jar-Size: 87275 
+MIDlet-1: SmartTicket, , com.sun.j2me.blueprints.smartticket.client.midp.SmartTicketMIDlet 
+MIDlet-Jar-URL: smart_ticket-client.jar 
+MicroEdition-Configuration: CLDC-1.0 
+SmartTicket-Locale: en_US 
+MIDlet-Version: 1.2 
+MIDlet-Name: Smart Ticket 1.2
+MIDlet-Description: A movie ticketing service 
+MIDlet-Data-Size: 256 
+MIDlet-Vendor: Java Software, Sun Microsystems 
+MicroEdition-Profile: MIDP-1.0 

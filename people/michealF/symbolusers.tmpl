@@ -1,0 +1,130 @@
+<!-- HTML TEMPLATE -->
+<HEAD>
+<TITLE><TMPL_VAR NAME="TITLE"></TITLE>
+<META NAME="KEYWORDS" CONTENT="<TMPL_VAR NAME="KEYWORDS">>
+<META NAME="DESCRIPTION" CONTENT="<TMPL_VAR NAME="DESCRIPTION">">
+<STYLE TYPE="text/css" MEDIA="all">
+	@import "/css/newwireless.css";
+</STYLE>
+</HEAD>
+
+<!-- HTML -->
+<HTML>
+
+<!-- HEADER -->
+<table style="background-color : #006699;height:50px; width:100%;" cellpadding="0" cellspacing="0" border="0"> 
+<tr> 
+<td class="header" style="{width:35px;}" align="LEFT" nowrap="nowrap">&nbsp;</TD>
+<td align="LEFT" nowrap="nowrap"><a href="http://intranet"><img src="http://madmax.mdc.mlhs.org/logo.gif" width="156" height="22" border="0" align="left" alt="Main Line Health"></a></TD>
+<td class="header" style="{width:150px;}" align="LEFT" nowrap="nowrap"></TD>
+<td align="right" nowrap="nowrap"><img src="http://madmax.mdc.mlhs.org/Image2.gif" border=0 alight="right" alt="Technology Infrastructure Team"></TD></tr>
+</table>
+
+<!-- HTML NAVIGATION MENU -->
+<!-- ** NAVIGATION MENU DISABLED -->
+
+<!-- HTML BODY -->
+<BODY>
+<p>
+<!-- CSS ID=CONTENT -->
+<div id="Content">
+
+<!-- IF THERE IS A QUERY THEN RETURN THE RESULTS ELSE JUST -->
+<!-- DISPLAY FORM TO ALLOW A QUERY TO BE SUBMITTED -->
+
+<TMPL_IF NAME="STANDBY">
+ <B><FONT COLOR="FF0000">ALERT:</FONT> This switch appears to be in HA standby mode, all APs will appear offline.</FONT></B>
+</TMPL_IF>
+
+<TMPL_IF NAME="APHELP">
+ <BR>
+ <TMPL_LOOP NAME="APLOOP">
+  <B><FONT COLOR="FF0000">ALERT:</FONT></B>
+  Access Port <TMPL_VAR NAME="INDEX"> is offline (<TMPL_VAR NAME="APLOC">).<BR>
+ </TMPL_LOOP> 
+</TMPL_IF>
+
+
+<TMPL_IF NAME="SUBMIT">
+ <BR>Please select a Symbol Wireless LAN switch to query below.<BR>
+<TMPL_ELSE>
+ <BR>Let's have a look at that switch (<TMPL_VAR NAME="SWITCH">) for ya...
+<P>
+
+<TABLE BORDER=0 WIDTH=95%>
+ <TR HALIGN=CENTER>
+  <TH>#</TH>
+  <TH>MAC</TH>
+  <TH>IP</TH>
+  <TH>WLAN</TH>
+  <TH>ESSID</TH>
+  <TH>ACCESS POINT</TH>
+  <TH>USER NAME</TH>
+  <!-- <TH>AP STATE</TH> -->
+  <TH>AUTH STATE</TH>
+  <TH>ENCR</TH>
+  <TH>RSSI</TH>
+  <TH>TIME</TH>
+ </TR>
+ <TMPL_LOOP NAME="USERLOOP">
+ <TR>
+  <TD><TMPL_VAR NAME="INDEX"></TD>
+  <TD><TMPL_VAR NAME="MUMAC"></TD>
+  <TD NOWRAP><TMPL_VAR NAME="MUIP"><BR><TMPL_VAR NAME="DNSHOST"></TD>
+  <TD><TMPL_VAR NAME="WLAN"></TD>
+  <TD><TMPL_VAR NAME="ESSID"></TD>
+  <TD><TMPL_VAR NAME="APMAC"><BR><TMPL_VAR NAME="APLOC"></TD>
+  <TD NOWRAP><TMPL_VAR NAME="USER"></TD>
+  <!-- <TD><TMPL_VAR NAME="APSTATE"></TD> -->
+  <TD><TMPL_VAR NAME="AUTHSTATE"></TD>
+  <TD><TMPL_VAR NAME="ENCRTYPE"></TD>
+  <TD><TMPL_VAR NAME="RSSI"></TD>
+  <TD><TMPL_VAR NAME="ASOCTIME"><BR><TMPL_VAR NAME="LASTACT"></TD>
+ </TR>
+ </TMPL_LOOP>
+</TABLE>
+<P>
+Would you like to examine the system logs for this device?
+<A TARGET="_blank" HREF="http://madmax.mdc.mlhs.org/cgi-bin/syslog-view.pl?device=<TMPL_VAR NAME="SWITCH">">Click here to open a new window with the syslog.</A>
+</TMPL_IF>
+
+<P>
+
+
+<!-- HTML FORM -->
+<P>
+<FORM METHOD="POST" enctype="application/x-www-form-urlencoded" action="http://madmax.mdc.mlhs.org/cgi-bin/newwireless.pl">
+<P>
+Symbol Wireless LAN Switch&nbsp;&nbsp;
+<SELECT SIZE="1" NAME="switch">
+<OPTION>the FQDN of your wireless switch here</OPTION>
+</SELECT>
+Select a switch
+<INPUT TYPE="CHECKBOX" NAME="debug" VALUE="no">DEBUG
+<P>
+<INPUT TYPE="SUBMIT" VAULE="Query" name="B1" CLASS="altButtonFormat"><INPUT TYPE="reset" value="Reset" name="B2" CLASS="altButtonFormat"></p>
+</FORM>
+<A HREF="http://madmax.mdc.mlhs.org/cgi-bin/newwireless.pl?switch=<TMPL_VAR NAME="SWITCH">">Refresh Display?</A>
+<P>
+<P>
+Number of access points detected = <TMPL_VAR NAME="NUMBER_APS"><BR>
+Number of wireless devices detected = <TMPL_VAR NAME="NUMBER_MUS"><BR>
+<P>
+High Availability Standby Mode   = <TMPL_VAR NAME="HAMODE"><BR>
+High Availability Standby Status = <TMPL_VAR NAME="HASTATUS"><BR>
+High Availability Standby State  = <TMPL_VAR NAME="HASTATE"><BR>
+High Availability Standby Failover reason = <TMPL_VAR NAME="HAFAIL"><BR>
+<P>
+<!-- HTML FOOTER -->
+Last Updated by <TMPL_VAR NAME="AUTHOR"> on <TMPL_VAR NAME="LASTCHANGE"><br>
+<I><TMPL_VAR NAME="DATE"></I><BR>
+<IMG SRC=http://localhost/images/powered_by_advx.png>
+<IMG SRC=http://localhost/images/powered_by_mandrake.png><BR>
+<P>
+<TMPL_IF DEBUG>
+<FONT SIZE=1>URL=<TMPL_VAR NAME="SWITCH"></FONT><BR>
+</TMPL_IF>
+</DIV>
+
+</BODY>
+</HTML>

@@ -1,0 +1,31 @@
+:
+##########################################################################
+# Shellscript:	7bit2asc - convert 7 bit chars to german "umlaute"
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	1992-01-17
+# Category   :	File Conversion
+# SCCS-Id.   :	@(#) 7bit2asc	1.2 04/02/18
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.2'
+Usage () {
+    echo >&2 "$PN - convert 7 bit chars to german \"Umlaute\", $VER
+usage: $PN [-h] [file ...]
+    -h:  print this information
+The \"Umlaut\" equivalents of the ASCII 7-bit character set
+are convertet to \"Umlaute\" of the code pages 850/437,
+i.e. '{' -> 'ae', ..."
+    exit 1
+}
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+cat "$@" |
+    tr '\{\|\}\[\\\]~' '\204\224\201\216\231\232\341'

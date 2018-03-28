@@ -1,0 +1,151 @@
+:
+##########################################################################
+# Title      :	currencycvt - convert currencies
+# Author     :	Heiner Steven <heiner.steven@odn.de>
+# Date       :	2002-08-06
+# Requires   :	wget, urlencode
+# Category   :	WWW, Desktop
+# SCCS-Id.   :	@(#) currencycvt	1.6 07/04/18
+##########################################################################
+# Description
+#
+##########################################################################
+PN=`basename "$0"`			# Program name
+VER='1.6'
+: ${GETURL:=wget}
+: ${GETURLFLAGS="-q -O-"}
+: ${AWK:=awk}
+CurrencyListURL=http://www.oanda.com/convert/classic
+CurrencyListCache=/tmp/$PN.cache
+# The following URL may contain the variables $incode, $outcode, $value, and
+# $date which will be replaced with the values the user specified
+CurrencyConvertURL='http://www.oanda.com/convert/classic?value=$value&exch=$incode&expr=$outcode&date=$date'
+FROMCODE=USD				# Defaults
+TOCODE=EUR
+today=`date +%m/%d/%y`
+Usage () {
+    echo >&2 "$PN - convert currencies, $VER
+usage: $PN [-i fromcode] [-o tocode] [-d date] [amount ...]
+   or  $PN searchpattern
+options:
+    -i:  input currency code (default $FROMCODE)
+    -o:  output currency code (default $TOCODE)
+    -d:  date in the format YYYY-MM-DD (default: today)
+The first usage converts the given amount (default: 1) from
+the input currency into the output currency.
+The second form is used to look up currency codes: the searchpattern
+is assumed to be the name of a country or a currency.
+This script uses the excellent service of OANDA.com:
+	$CurrencyListURL"
+    exit 1
+}
+Msg () {
+    for MsgLine
+    do echo "$PN: $MsgLine" >&2
+    done
+}
+Fatal () { Msg "$@"; exit 1; }
+# canonws - "canonical" white space
+# replace sequences of tab and blank characters with one blank
+canonws () {
+    sed 's/	/ /g; s/  */ /g; s/^ *//; s/ $//' "$@"
+}
+GetCurrencyList () {
+    if [ -s "$CurrencyListCache" ]
+    then				# Use cached version
+    	cat "$CurrencyListCache"
+    else
+    	Msg "retrieving currency list (will be saved in $CurrencyListCache)"
+	# The complicated looking "sed" expressions search for HTML code
+	# of the form <option value="EUR">...</a> with all possibilities
+	# of character case and white space.
+	"$GETURL" $GETURLFLAGS "$CurrencyListURL" |
+	    sed -n -e '/[ 	]*<[oO][pP][tT][iI][oO][nN][ 	][ 	]*[vV][aA][lL][uU][eE][ 	]*=[ 	]*"*[A-Z][A-Z][A-Z]"*[^>]*>/{s/.*<[oO][pP][tT][iI][oO][nN][ 	][ 	]*[vV][aA][lL][uU][eE][ 	]*=[ 	]*"*\([A-Z][A-Z][A-Z]\)"*.*>\(.*\)/\1	\2/;p;}' |
+	    sed 's/[ 	]*\.[ 	]*[A-Z][A-Z][A-Z][ 	
+]*$//g;s/^[ 	]*//;s/[ 	]*$//' |
+	    # Print each currency code once
+	    "$AWK" -F'	' '
+		{ n [$1] = $2 }
+		END { for (c in n) print c "	" n[c] }
+	    ' |
+	    sort -u |
+	    tee "$CurrencyListCache" |
+	    grep .  ||
+		Fatal "could not retrieve currency list: $CurrencyListURL"
+    fi
+}
+ConvertCurrency () {
+    [ $# -ge 2 ] || Fatal "usage: ConvertCurrency in out"
+    incode=`echo "$1" | urlencode`
+    outcode=`echo "$2" | urlencode`
+    value=`echo "${3:-1}" | urlencode`
+    # Quote ampersant ("&") characters within the URL for the subsequent
+    # "eval". This is a constant string, so we only want to do it once.
+    [ -z "$urlprocessed" ] &&
+    	urlprocessed=`echo "$CurrencyConvertURL" | sed 's/&/\\\&/g'`
+    eval "urlencoded=$urlprocessed"
+    "$GETURL" $GETURLFLAGS "$urlencoded" |
+    	canonws |
+	egrep '<[a-zA-Z][a-zA-Z]* .*="*result_val"*[^>]*>' |
+	striphtml |
+	awk '
+	    {
+	    	for (col = 1; col < NF; col++) {
+		    if ($col == "=") {
+		    	print $(col + 1)
+			break
+		    }
+		}
+	    }
+	'
+	return 0
+}
+set -- `getopt :hd:i:o: "$@" || exit 1` || Usage
+[ $# -lt 1 ] && Usage			# "getopt" detected an error
+while [ $# -gt 0 ]
+do
+    case "$1" in
+    	-d)
+	    case "$2" in
+	    	[12][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9])
+		    Date=`echo "$2" | awk -F- '{printf ("%02d/%02d/%02d", \
+		    	    $2,$3,$1 % 100) }'`;;
+		*)  Fatal "date not in YYYY-MM-DD format: $2";;
+	    esac
+	    shift;;
+    	-i)	InCur=$2; shift;;
+	-o)	OutCur=$2; shift;;
+	--)	shift; break;;
+	-h)	Usage;;
+	-*)	Usage;;
+	*)	break;;			# First file name
+    esac
+    shift
+done
+: ${InCur:=$FROMCODE}
+: ${OutCur:=$TOCODE}
+: ${Date:=$today}
+[ $# -lt 1 ] && set -- 1
+date=$Date
+for key
+do
+    case "$key" in
+    	*[!0-9.,]*)		# no valid number: country or currency name
+	    #echo >&2 "DEBUG: country name: $key"
+	    # At first check if the key is a valid currency code. If that
+	    # fails, check for a country / currency name.
+	    GetCurrencyList |
+	    	egrep "^$key	" ||
+		GetCurrencyList |
+		    egrep -i "$key" |
+		    grep . || Fatal "no country or currency matching \"$key\""
+	    ;;
+	*)
+	    #echo >&2 "DEBUG: denomination: $key"
+	    converted=`ConvertCurrency "$InCur" "$OutCur" "$key"`
+	    [ -n "$converted" ] ||
+	    	Fatal "could not convert $key $InCur to $OutCur"
+	    echo "$key $InCur = $converted $OutCur"
+	    ;;
+    esac
+done

@@ -1,0 +1,97 @@
+#! /bin/sh
+# #############################################################################
+
+       NAME_="okurl"
+       HTML_="validate url links"
+    PURPOSE_="validate a list of urls for their existence"
+   SYNOPSIS_="$NAME_ [-hml] -i <url_list>"
+   REQUIRES_="standard GNU commands, curl"
+    VERSION_="1.0"
+       DATE_="2004-06-17; last update: 2004-06-22"
+     AUTHOR_="Dawid Michalczyk <dm@eonworks.com>"
+        URL_="www.comp.eonworks.com"
+   CATEGORY_="www"
+   PLATFORM_="Linux"
+      SHELL_="bash"
+ DISTRIBUTE_="yes"
+
+# #############################################################################
+# This program is distributed under the terms of the GNU General Public License
+
+usage () {
+
+echo >&2 "$NAME_ $VERSION_ - $PURPOSE_
+Usage: $SYNOPSIS_
+Requires: $REQUIRES_
+Options:
+     -i, file with url addresses; one url per line
+     -h, usage and options (this help)
+     -l, see this script"
+exit 1
+}
+
+# args check
+[ $# -eq 0 ] && { echo >&2 missing argument, type $NAME_ -h for help; exit 1; }
+
+# tmp file set up
+tmp_1=/tmp/tmp.${RANDOM}$$
+
+# signal trapping and tmp file removal
+trap 'rm -f $tmp_1 >/dev/null 2>&1' 0
+trap "exit 1" 1 2 3 15
+
+# var init
+inputf=
+
+# options and arg handling
+while getopts hli: options; do
+
+    case $options in
+
+        i) inputf=$OPTARG ;;
+        h) usage ;;
+        l) more $0; exit 1 ;;
+       \?) echo invalid argument, type $NAME_ -h for help; exit 1 ;;
+
+    esac
+
+done
+shift $(( $OPTIND - 1 ))
+
+# check if command is in $PATH variable
+which curl &> /dev/null
+[[ $? != 0 ]] && { echo >&2 the required command \"curl\" is not in your path; exit 1; }
+
+# does input file exist
+[ ! -f $inputf ] && { echo >&2 $inputf does not exist, exiting; exit 1; }
+
+http_response() {
+
+    # check http response code
+    response=$(sed -n -e 's/\o015//' -e '1p' < $1)
+    code=$(echo $response | { read prot code msg; echo $code; })
+    if [[ $code != 200 ]];then
+        echo "$response (when accessing) $2"
+        continue
+    fi
+
+}
+
+curl_exit_status() {
+
+    # if curl gives none 0 exit code
+    if [[ $1 != 0 ]];then
+        echo "curl exited with code ${1}, when accessing: $2 (man curl for info on exit codes)"
+        continue
+    fi
+
+}
+
+# main
+while read line;do
+
+    curl -sI --connect-timeout 120 ${line} -o $tmp_1 # getting the HTTP header
+    curl_exit_status $? $line
+    http_response $tmp_1 $line
+
+done < $inputf

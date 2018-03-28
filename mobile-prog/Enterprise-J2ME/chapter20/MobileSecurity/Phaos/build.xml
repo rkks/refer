@@ -1,0 +1,77 @@
+<project name="PhaosMobile" default="all">
+
+  <target name="init">
+    <tstamp/>
+    <property name="outdir" value="build" />
+    <property name="bindir" value="bin" />
+    <property name="resdir" value="work/res" />
+    <property name="WTK_path" value="/home/juntao/J2ME/J2MEWTK/WTK104" />
+    <property name="phaosLib" value="work/classes" />
+    <property name="phaosLicense" value="work/lib/Phaos_MF_Eval_Key_12-9-2002.jar" />
+    <property name="phaosKeyGenLib" value="work/lib/Phaos_MF_CDC_Eval.jar" />
+    <property name="projname" value="PhaosMobile" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="${outdir}" />
+    <delete dir="${bindir}" />
+  </target>
+
+  <target name="prepare" depends="clean">
+    <mkdir dir="${outdir}" />
+    <mkdir dir="${bindir}" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="./work/src" destdir="${outdir}"
+           classpath="${WTK_path}/lib/midpapi.zip:${phaosLib}"
+           bootclasspath="${WTK_path}/lib/midpapi.zip" 
+    />
+  </target>
+
+  <target name="preverify" depends="compile">
+    <copy todir="${outdir}">
+      <fileset dir="${phaosLib}" />
+    </copy>
+    <exec executable="${WTK_path}/bin/preverify"
+          dir="${outdir}"
+    >
+      <arg line="-classpath ${WTK_path}/lib/midpapi.zip ." />
+    </exec>
+  </target>
+
+  <target name="keygen" depends="preverify">
+    <delete dir="${resdir}/keys" />
+    <mkdir dir="${resdir}/keys" />
+    <javac srcdir="work/keygensrc" destdir="work/keygensrc"
+           classpath="${phaosKeyGenLib}:${phaosLicense}"
+    />
+    <java classname="GenerateAllKeys"
+          classpath="work/keygensrc:${phaosKeyGenLib}:${phaosLicense}"
+    >
+      <arg value="${resdir}/keys/" />
+    </java>
+  </target>
+
+  <target name="package" depends="keygen">
+    <copy todir="${outdir}/output">
+      <fileset dir="${resdir}" />
+    </copy>
+    <jar jarfile="${bindir}/${projname}.jar"
+         basedir="${outdir}/output"
+         manifest="./work/meta/${projname}.mf"
+    />
+    <copy file="./work/meta/${projname}.jad" 
+          tofile="${bindir}/${projname}.jad"
+    />
+  </target>
+
+  <target name="run" depends="init" >
+    <exec executable="${WTK_path}/bin/emulator">
+      <arg line="-classpath ${bindir}/${projname}.jar:${phaosLicense} -Xdescriptor:${bindir}/${projname}.jad" />
+    </exec>
+  </target>
+
+  <target name="all" depends="package" />
+
+</project>

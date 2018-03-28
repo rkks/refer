@@ -1,0 +1,35 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 9 of "Perl Best Practices"  ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+sub demo {
+    use Fcntl ':flock'; # import LOCK_* constants
+
+    my ($file, $text, $text_url);
+
+    sub lock {
+        my ($file) = @_; 
+        return flock $file, LOCK_SH;
+    }
+    
+    sub link {
+        my ($text, $url) = @_;
+        return qq{<a href="$url">$text</a>};
+    }
+    
+    lock($file);                   # calls 'lock' subroutine; built-in 'lock' hidden
+    print link($text, $text_url);  # calls built-in 'link'; 'link' subroutine hidden
+
+}

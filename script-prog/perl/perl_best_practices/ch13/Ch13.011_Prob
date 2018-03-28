@@ -1,0 +1,35 @@
+##############################################################################
+## Code fragment (NOT RECOMMENDED) from Chapter 13 of "Perl Best Practices" ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+my $filename = '';
+
+use Fatal qw( :void open close );
+ 
+if (open my $out, '>', $filename) {     # call to open() in non-void context so
+                                        #     open() returns false on failure
+ 
+    open my $in, '<', '$filename.dat';  # call to open() in void context so
+                                        #     open() throws exception on failure
+ 
+    print {$out} <$in>;   
+ 
+    close $out or warn $!;              # call close() in non-void context so
+                                        #     close() returns false on failure
+ 
+    close $in;                          # call close() in void context so
+                                        #     close() throws exception on failure
+}
+

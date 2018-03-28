@@ -1,0 +1,39 @@
+##############################################################################
+##   Code fragment (Recommended) from Chapter 13 of "Perl Best Practices"   ##
+##     Copyright (c) O'Reilly & Associates, 2005. All Rights Reserved.      ##
+##  See: http://www.oreilly.com/pub/a/oreilly/ask_tim/2001/codepolicy.html  ##
+##############################################################################
+
+
+# Standard modules...
+use strict;
+use warnings;
+use IO::Prompt;
+use Carp;
+use English qw( -no_match_vars );
+use Data::Alias;
+use Readonly;
+
+Readonly my $REPORT_CONTEXT_LEN => 10;
+my $source = '<BLINK</body>';
+my $filename = $PROGRAM_NAME;
+my @tag_stack = ('<body>', '<em>' );
+
+if (0) {}
+
+# Otherwise parsing has failed...
+else {
+    # So grab up to $REPORT_CONTEXT_LEN characters on the same line,
+    # from the point in the data where things went wrong... 
+    my ($context) 
+        = $source =~ m/ \G [^\n]{0,$REPORT_CONTEXT_LEN} /gcxms;
+ 
+    # And throw an exception explaining what/why/where/whence...
+    croak( 
+        qq{File '$filename' is not valid DAXML.\n},
+        qq{Missing "$tag_stack[-1]" tag.\n},
+        qq{Problem detected near "$context".\n},
+        qq{Failed},
+    );
+}
+

@@ -1,0 +1,23 @@
+iFeedBack is a single sign-on, instant feedback survey tool for college students.
+
+You need
+-----
+
+1. URLs for one or more course servers. You should also assign a nickname for each server. An example URL is http://128.83.62.11:8000/iFeedBackSurvey/servlet/Server
+
+2. A pair of username and password for the single sign-on server. An example pair is test01/pass01
+
+Main menu
+-----
+
+Choose Course: Choose a course server from a list and fetch the current questionair from that server. You can then fill out the answers and use the "Save" button to cache the answers on device.
+
+Update Token: Update the single sign-on authentication token. Fill out the username and password fields and click on the "Update" button. You need this token to access any course server.
+
+Add Course: Add a course server URL with its nickname. The added server will be available under the "Choose Course" menu.
+
+Submit Answers: Submit and erase all the cached answers.
+
+Erase Cache: Erase all cache including course list, authentication information and cached answers.
+
+Help: This screen.
