@@ -1,0 +1,50 @@
+language: python
+python:
+- '3.5'
+sudo: required
+before_install:
+    - sudo apt-get update
+    - sudo apt-get install -y --no-install-recommends texlive-base
+    - sudo apt-get install -y --no-install-recommends texlive-latex-base
+    - sudo apt-get install -y --no-install-recommends texlive-latex-recommended 
+    - sudo apt-get install -y --no-install-recommends texlive-latex-extra
+    - sudo apt-get install -y --no-install-recommends texlive-fonts-recommended
+    - sudo apt-get install -y --no-install-recommends aspell aspell-en
+script:
+- pip install sphinxcontrib-manpage
+- pip install sphinx sphinx-bootstrap-theme
+- mkdir -p _build/latex/
+- cd _build/latex/
+- wget http://math.sut.ac.th/lab/software/texlive/texmf-dist/tex/latex/caption/newfloat.sty
+- cd ../../
+- #make latexpdf
+- make examples
+- make check-spelling
+- make
+- cp -a _build/html /tmp/
+- git clone "https://${GH_TOKEN}@github.com/containerbook/containerbook" /tmp/cbook
+- cd /tmp/cbook
+- git config user.name "Travis CI"
+- git config user.email "jonatan.p@gmail.com"
+- git fetch --all
+- git checkout gh-pages
+- git fetch origin gh-pages
+- git clean -xfd
+- cp -a /tmp/html/* .
+- git add .
+- git commit -a -m "Regenerate page"
+- git push --quiet "https://${GH_TOKEN}@github.com/containerbook/containerbook" gh-pages origin/gh-pages --force
+env:
+    global:
+        - secure: "lWzSZJwnQEE+eY4jnCssdgpJYzXZ+xYgraEbzLUMsdm3T2uzYTURUR4lL1FANfwWlbkQyWdH7ZIrhPZdxcXxY1tQgDgiRq43tBmR8uIL8Ab7v7CQwR8MHNNrbAaag3sfDC6bZSubGcGsPkqpAaZRW4i1JfbazAsLxRwWtB3+SadGVSm8xGFnP18Hjz8wVwpTaxdTE+BUT67hopRJsiVr6KtIe9a6qrNxAZcmBva2a9TffdgfQx+FGWy52B/401frYtIauPNR6FmyTQPVBlw2eNGwYvJy66j7P8rUFEdASBtiE/EO1Li/mYYZeQKBBJB0Fjn97VcU1ZgJXC1k/WjXc5GMXiyNUZCSwFOZcoZj0bh8imMGMFQ1uAo8Ku7A4iy7o81nYoB/S3FxL01AC6eRC1RSV82bMCIzGhGsGZVYm255fHFwpzc3wGhUR5eH7svn5mKdeSrrvW1czN4YfQ38YLrZ4MrT5ynBjQkczHrZqAuG1poOHBm5CUpLSsjarnw6hIayJf/hVrSPnEnz4jrwgPRGE/K2VI9qoDqKWrUrtm5H4CogXelF1a+huw2CU+7V1gyn1pg1byQvV96e4Cug486jTRJcnMbnGq2aJPu9NEZ87S6P5GL/HmbdVNmPIziFei10egDEjK131QhWcIsExvIlWBdlARN4gofA2mpA52I="
+install: true
+deploy:
+  provider: releases
+  api_key:
+    secure: Dixo/SPOEiTzKiOBMqCtFxgH5+C4pisFHf8rEUg6a3kTOUNrf9cpNUmM8OSmjKDP+/2jlJNAVrSibz1gkZd9yH+g9oVz41kd6c0PDuOr8u8e44IRpUuoWmy5l++St+fQfwM6iVHEz7hVafyGL/3OI/6GeP9D9BHT8kna7pNSU0YL8+WREpD7c4Rc46qgtaJEtaY4PWLbyJrqt2doPy2oK32Zk8b8A16EmeoGRFT83RFee23SrL/FScUZwP6CN76A3ldsh9/B4dphNH2Dd6OCEa7qDsUfkBohhGmlBPEI+JLqXQl4fFmTQjRIlSxnIE+ZlWTCNamcsenFsCdayPg6uLnscsws+jS2UQaWqIQDXpbJjk4jyv5qcUxUh/F2FMCJ4VZVx8njDnza5ojcwO/RFdmt6nIMCGEjl14s6NJFInclbl+L22AxsxYjzruawQE3J+C61WSc0z/XfIO9adjkbKrfNSegOgIvjPRIrA+9XooO7/8MRkdWer/yicOD0k4b7iRLhtKoygAgyLSiDwHm9YYMJ29pdkHKZhkuxldBUs6M6XXss3VbzwQyIEeaxIHvlS5s1Yk0DfC6ojHiZSmbpA+4QNB1+jH439/lfGBMvODWIMAKdyOQtt2/8lG9mnKbqrXMrbEms5ij5JJ53eJzT1apMuO+5tP0hYkuY0rED8U=
+  file:
+      - _build/latex/container_book.pdf
+  skip_cleanup: true
+  on:
+      tags: true
+      repo: containerbook/containerbook

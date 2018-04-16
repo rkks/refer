@@ -1,0 +1,22 @@
+# This will attach an extra disk to VirtualBox. Two variables need to be
+# defined in the Vagrantfile;
+# - disk_name: The name of the file to create for the disk
+# - disk_size_gb: The size of the new disk in GB
+
+disk_already_exists = File.exist?(disk_name)
+
+config.vm.provider "virtualbox" do |vb|
+
+    if not disk_already_exists
+        vb.customize ['createhd',
+                      '--filename', disk_name,
+                      '--size', disk_size_gb * 1024]
+    end
+
+    vb.customize ['storageattach', :id,
+                  '--storagectl', 'SATA Controller',
+                  '--port', 1,
+                  '--device', 0,
+                  '--type', 'hdd',
+                  '--medium', disk_name]
+end

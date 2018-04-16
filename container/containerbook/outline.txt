@@ -1,0 +1,65 @@
+* introduction
+** virtualisation vs containers
+** what is containers
+** what is cgroups
+** what is namespaces
+** other security mechanisms
+*** seccomp
+*** selinux / smack
+*** XXX
+** what is XXX ?
+** How do they relate
+
+* Brief history of containers
+** where to expect availability
+** Does the API's move etc
+
+* Hello world example
+** Commands necessary to run etc
+** Networking
+** Security
+** Something useful, a django server "or something"
+** 
+
+* Security 
+** What security aspects are there
+** compare to full virtualisation
+** compare to simply running services on their own UID etc
+** Why would you use it
+** 
+
+* Toolsets providing containers
+** LXC
+** Docker
+** Vagrant
+** etc
+
+* Toolsets providing container orchestration
+** LXD
+** Docker?
+** Vagrant?
+
+* In-depth
+** namespaces
+*** IPC
+*** Network
+*** Mount
+*** PID
+*** User
+*** UTS
+** cgroups
+
+* API reference
+** C-API?
+** Kernel APIs (e.g. /sys/fs/cgroup/*)
+** Other API?
+
+* Advanced examples
+** test network layouts
+** compartmentalize applications
+** Q&A testing environments
+** reproducible build environments
+** 
+
+
+
