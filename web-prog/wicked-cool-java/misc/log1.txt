@@ -1,0 +1,5 @@
+entry 2005 04 02 1043 meeting Smith, John
+exit 2005 04 02 1204 Smith, John
+entry 2005 04 02 1300 work Eubanks, Brian
+exit 2005 04 02 2120 Eubanks, Brian
+alarm 2005 06 02 2301 fire This was a drill

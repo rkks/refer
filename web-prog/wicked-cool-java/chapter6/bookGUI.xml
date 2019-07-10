@@ -1,0 +1,24 @@
+<frame Size="400,400" Title="A Simple Frame" id="theFrame" plaf="com.sun.java.swing.plaf.windows.WindowsLookAndFeel">
+  <panel Border="EtchedBorder">
+    <panel Constraints="BorderLayout.NORTH">
+      <label Font="Times-BOLD-24">Book Details</label>
+    </panel>
+    <hbox Constraints="BorderLayout.CENTER">
+      <vbox Constraints="BorderLayout.WEST">
+        <label Font="Times-BOLD-14" Foreground="black">Title</label>
+        <label Font="Times-BOLD-14" Foreground="black">Author</label>
+        <label Font="Times-BOLD-14" Foreground="black">Subject</label>
+        <label Font="Times-BOLD-14" Foreground="black">Publisher</label>
+      </vbox>
+      <vbox Constraints="BorderLayout.EAST">
+        <textfield id="title" Columns="30"/>
+        <textfield id="author" Columns="30"/>
+        <textfield id="subject" Columns="30"/>
+        <textfield id="publisher" Columns="30"/>
+      </vbox>
+    </hbox>
+    <panel constraints="BorderLayout.SOUTH">
+      <button id="btn1" Text="Press this" ActionCommand="PressThis"/>
+    </panel>
+  </panel>
+</frame>

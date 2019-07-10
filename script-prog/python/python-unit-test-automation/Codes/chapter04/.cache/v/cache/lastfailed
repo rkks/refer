@@ -1,0 +1,8 @@
+{
+  "test/test_Module05.py::test_case01": true,
+  "test/test_Module05.py::test_case02": true,
+  "test/test_Module06.py::test_case03": true,
+  "test/test_Module06.py::test_case04": true,
+  "test/test_Module07.py::test_case02": true,
+  "test/test_Module08.py::test_case01": true
+}

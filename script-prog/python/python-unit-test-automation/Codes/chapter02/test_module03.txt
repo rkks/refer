@@ -1,0 +1,9 @@
+>>> from test_module02 import *
+>>> mul(2, 3)
+6
+>>> mul('a', 2)
+'aa'
+>>> add(2, 3)
+5
+>>> add('a', 'b')
+'ab'

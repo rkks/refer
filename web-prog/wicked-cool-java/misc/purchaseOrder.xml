@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  This is a version of the UBL purchase order example from
+  http://docs.oasis-open.org/ubl/cd-UBL-1.0/xml/office/UBL-Order-1.0-Office-Example.xml
+  but without the namespace or the URN schema reference. It is intended 
+  for educational purposes only. For real-world use, please work with the 
+  correct and complete version, and read the documentation at 
+  http://docs.oasis-open.org/ubl/cd-UBL-1.0/
+  for more information.
+-->
+<Order>
+	<BuyersID>20031234-1</BuyersID>
+	<IssueDate>2003-01-23</IssueDate>
+	<LineExtensionTotalAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">438.50</LineExtensionTotalAmount>
+	<BuyerParty>
+		<Party>
+			<PartyName>
+				<Name>Bills Microdevices</Name>
+			</PartyName>
+			<Address>
+				<StreetName>Spring St</StreetName>
+				<BuildingNumber>413</BuildingNumber>
+				<CityName>Elgin</CityName>
+				<PostalZone>60123</PostalZone>
+				<CountrySubentityCode>IL</CountrySubentityCode>
+			</Address>
+			<Contact>
+				<Name>George Tirebiter</Name>
+			</Contact>
+		</Party>
+	</BuyerParty>
+	<SellerParty>
+		<Party>
+			<PartyName>
+				<Name>Joes Office Supply</Name>
+			</PartyName>
+			<Address>
+				<StreetName>Lakeshore Dr</StreetName>
+				<BuildingNumber>32 W.</BuildingNumber>
+				<CityName>Chicago</CityName>
+				<PostalZone>60022</PostalZone>
+				<CountrySubentityCode>IL</CountrySubentityCode>
+			</Address>
+		</Party>
+	</SellerParty>
+	<Delivery>
+		<RequestedDeliveryDateTime>2003-02-14T14:00:00</RequestedDeliveryDateTime>
+		<DeliveryAddress>
+			<StreetName>Spring St</StreetName>
+			<BuildingNumber>413 N</BuildingNumber>
+			<CityName>Elgin</CityName>
+			<PostalZone>60123</PostalZone>
+			<CountrySubentityCode>IL</CountrySubentityCode>
+		</DeliveryAddress>
+	</Delivery>
+	<DeliveryTerms>
+		<SpecialTerms>Signature Required</SpecialTerms>
+	</DeliveryTerms>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>1</BuyersID>
+			<Quantity quantityUnitCode="PKG">5</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">12.50</LineExtensionAmount>
+			<Item>
+				<Description>Pencils, box #2 red</Description>
+				<SellersItemIdentification>
+					<ID>32145-12</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">2.50</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>2</BuyersID>
+			<Quantity quantityUnitCode="PKG">10</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">300.00</LineExtensionAmount>
+			<Item>
+				<Description>Photocopy Paper- case</Description>
+				<SellersItemIdentification>
+					<ID>78-697-24</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">30.00</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>3</BuyersID>
+			<Quantity quantityUnitCode="CTN">10</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">50.00</LineExtensionAmount>
+			<Item>
+				<Description>Pens, box, blue finepoint</Description>
+				<SellersItemIdentification>
+					<ID>091356-3</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">5.00</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>4</BuyersID>
+			<Quantity quantityUnitCode="CTN">3</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">37.50</LineExtensionAmount>
+			<Item>
+				<Description>Tape, 1in case</Description>
+				<SellersItemIdentification>
+					<ID>543-165-1</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">12.50</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>5</BuyersID>
+			<Quantity quantityUnitCode="CTN">10</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">10.00</LineExtensionAmount>
+			<Item>
+				<Description>Staples, wire, box</Description>
+				<SellersItemIdentification>
+					<ID>984567-12</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">1.00</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>6</BuyersID>
+			<Quantity quantityUnitCode="PKG">5</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">22.50</LineExtensionAmount>
+			<Item>
+				<Description>Pens, box red felt tip </Description>
+				<SellersItemIdentification>
+					<ID>091344-5</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">5.00</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+	<OrderLine>
+		<LineItem>
+			<BuyersID>7</BuyersID>
+			<Quantity quantityUnitCode="UNIT">12</Quantity>
+			<LineExtensionAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">6.00</LineExtensionAmount>
+			<Item>
+				<Description>Mousepad, blue</Description>
+				<SellersItemIdentification>
+					<ID>21457-3</ID>
+				</SellersItemIdentification>
+				<BasePrice>
+					<PriceAmount amountCurrencyCodeListVersionID="0.3" amountCurrencyID="USD">.50</PriceAmount>
+				</BasePrice>
+			</Item>
+		</LineItem>
+	</OrderLine>
+</Order>

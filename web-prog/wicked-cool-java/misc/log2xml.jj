@@ -1,0 +1,119 @@
+PARSER_BEGIN(LogParser)
+import org.dom4j.DocumentHelper;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class LogParser 
+{
+
+   static Document doc = DocumentHelper.createDocument();
+   static Element root = doc.addElement("log");
+   static Element current = root;
+
+   public static void main(String[] args)
+   {
+     try {
+       // create a new XML document with <log> as the root element
+       LogParser parser = new LogParser(System.in);
+       // and construct the XML output document as we parse
+       parser.allLines();
+       // write the XML document to a file
+       FileWriter file = new FileWriter("log.xml");
+       doc.write(file);
+       file.flush();
+       file.close();
+     } catch (ParseException pe) {
+       System.err.println("Syntax error in log file input");
+     } catch (IOException ioe) {
+       System.err.println("Unable to write the XML file");
+     }
+   }
+}
+PARSER_END(LogParser)
+
+TOKEN:
+{
+    < ENTRY: "entry" >
+  | < EXIT: "exit" >
+  | < ALARM: "alarm" >
+  | < NUM: (["0"-"9"])+ >
+  | < CRLF: (["\r","\n"])+ >
+  | < WORD: (["a"-"z", "A"-"Z", ",", "0"-"9", "-"])+ >
+  | < SPC: ([" ", "\t"])+ >
+}
+
+void allLines():
+{}
+{
+   (anyLine())* 
+}
+
+void anyLine():
+{}
+{
+   lineOfText() (<CRLF> | <EOF>) 
+}
+
+void lineOfText():
+{}
+{
+   entryLine() | exitLine() | alarmLine()
+}
+
+void entryLine():
+{
+  Token purpose = null;
+  current = root.addElement("entry");
+}
+{
+   <ENTRY> <SPC> dateTime() <SPC>
+   purpose=<WORD> 
+       { current.addElement("purpose").setText(purpose.toString()); } 
+   <SPC> restOfLine() 
+}
+
+void exitLine():
+{
+   current = root.addElement("exit");
+}
+{
+   <EXIT> <SPC> dateTime() <SPC> restOfLine() 
+}
+
+void alarmLine():
+{
+  Token alarmType = null; 
+  current = root.addElement("alarm");
+}
+{
+   <ALARM> <SPC> dateTime() <SPC> 
+   alarmType=<WORD> 
+        { current.addElement("type").setText(alarmType.toString()); }
+   <SPC> restOfLine() 
+}
+
+void dateTime():
+{ Token year=null, month=null, day=null, time=null; }
+{
+  year=<NUM> <SPC> month=<NUM> <SPC> day=<NUM> <SPC> time=<NUM> 
+  {
+     current.addElement("year").setText(year.toString());
+     current.addElement("month").setText(month.toString());
+     current.addElement("day").setText(day.toString());
+     current.addElement("time").setText(time.toString());
+  }
+}
+
+void restOfLine():
+{
+  Token word = null;
+  current = current.addElement("comment"); 
+}
+{
+  (
+     word=<WORD> { current.addText(word.toString()); }
+|    word=<SPC>  { current.addText(word.toString()); }
+  )*
+}

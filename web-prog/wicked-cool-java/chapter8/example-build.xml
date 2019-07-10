@@ -1,0 +1,10 @@
+<project name="sample" default="run" basedir=".">
+	<target name="run" description="Run the program">
+		<java classname="org.example.MainProgram">
+			<classpath>
+				<pathelement location="lib/someapi.jar"/>
+				<pathelement path="classes"/>
+			</classpath>
+		</java>
+	</target>
+</project>

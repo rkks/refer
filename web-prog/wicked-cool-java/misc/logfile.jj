@@ -1,0 +1,74 @@
+PARSER_BEGIN(LogParser)
+
+public class LogParser 
+{
+   public static void main(String[] args)
+   {
+       try {
+         LogParser parser = new LogParser(System.in);
+         parser.allLines();
+       } catch (ParseException e) {
+         System.out.println("Error: This is not a valid file.");
+       }
+   }
+}
+PARSER_END(LogParser)
+
+TOKEN:
+{
+    < ENTRY: "entry" >
+  | < EXIT: "exit" >
+  | < ALARM: "alarm" >
+  | < NUM: (["0"-"9"])+ >
+  | < CRLF: (["\r","\n"])+ >
+  | < WORD: (["a"-"z", "A"-"Z", ",", "0"-"9", "-"])+ >
+  | < SPC: ([" ", "\t"])+ >
+}
+
+void allLines():
+{}
+{
+   (anyLine())* 
+}
+
+void anyLine():
+{}
+{
+   lineOfText() (<CRLF> | <EOF>) 
+}
+
+void lineOfText():
+{}
+{
+   entryLine() | exitLine() | alarmLine()
+}
+
+void entryLine():
+{}
+{
+   <ENTRY> <SPC> dateTime() <SPC> <WORD> <SPC> restOfLine() 
+}
+
+void exitLine():
+{}
+{
+   <EXIT> <SPC> dateTime() <SPC> restOfLine() 
+}
+
+void alarmLine():
+{}
+{
+   <ALARM> <SPC> dateTime() <SPC> <WORD> <SPC> restOfLine() 
+}
+
+void dateTime():
+{}
+{
+  <NUM> <SPC> <NUM> <SPC> <NUM> <SPC> <NUM> 
+}
+
+void restOfLine():
+{}
+{
+  ( <WORD> | <SPC> )*
+}

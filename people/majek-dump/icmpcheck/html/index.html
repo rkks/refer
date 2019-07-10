@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ICMP blackhole check</title>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+
+<link href="ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+<link href="sticky-footer.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+<div class="page-header">
+<h1>ICMP blackhole check</h1>
+</div>
+
+<h3>ICMP path MTU packet delivery</h3>
+<p class="leadicmp lead">Please enable javscript for this test to work...</p>
+<p>In this test your browser uploads a sizeable payload to our server, while
+your long TCP segments are being dropped. Our server
+will generate an ICMP message asking you to reduce the MTU to a
+laughingly small value.</p>
+
+<p>ICMP is critical to a well functioning Internet connections, yet networks are often misconfigured. Broken ICMP (being an <a href="https://en.wikipedia.org/wiki/Path_MTU_Discovery#Problems">ICMP blackhole</a>) can lead to serious issues:</p>
+<ol>
+<li>Slow DNS lookups.
+<li>Glitches and lag when playing games using UDP.
+<li>TCP connections failing occasionally for no apparent reason.
+</ol>
+<script>
+    document.getElementsByClassName("leadicmp")[0].innerHTML = "Testing your network now..."
+    var reqicmp = new XMLHttpRequest();
+    reqicmp.open('POST', '/icmp', true);
+
+    reqicmp.timeout = 8000; // ms
+    reqicmp.ontimeout = function () {
+         document.getElementsByClassName("leadicmp")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> The request timed out. Looks like the ICMP Path MTU message was not delivered to you."
+    }
+
+    reqicmp.onload = function() {
+      if (reqicmp.status >= 200 && reqicmp.status < 400) {
+        try {
+          var data = JSON.parse(reqicmp.responseText);
+        } catch(e){
+           document.getElementsByClassName("leadicmp")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> Something got messed up in transmission. This is a bad sign."
+           return
+        }
+        document.getElementsByClassName("leadicmp")[0].innerHTML = "<div class=bg-success><b style=color:green>&#x2713;</b> All good! ICMP path MTU message was successfully delivered to you."
+      } else {
+        // We reached our target server, but it returned an error
+        document.getElementsByClassName("leadicmp")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> Test failed!"
+      }
+    };
+
+    reqicmp.onerror = function() {
+        document.getElementsByClassName("lead")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> Test failed!"
+    };
+
+    // this string is toxic. Inbound with this will be -j DROPped!
+    var s = 'packettoolongyaithuji6reeNab4XahChaeRah1diej4';
+    while (s.length < 16384) {
+         s = s + s
+    }
+
+    setTimeout(function(){
+        reqicmp.send(s);
+    }, 2000);
+
+    </script>
+
+Run this test from your server:
+
+<pre>
+perl -e "print 'packettoolongyaithuji6reeNab4XahChaeRah1diej4' x 180" > payload.bin
+curl  -v -s http://icmpcheck.popcount.org/icmp --data @payload.bin
+</pre>
+You should see ICMP or ICMPv6 packet-too-big messages from the server:
+<pre>
+$ sudo tcpdump -ni any icmp or icmp6
+IP server > client: ICMP server unreachable - need to frag (mtu 905), length 136
+IP6 server > client: ICMP6, packet too big, mtu 1285, length 136
+</pre>
+
+<!--
+
+ip route get `dig +short icmpcheck.popcount.org`
+sudo ip route flush cache to `dig +short icmpcheck.popcount.org`
+
+# or
+ip -6 route get `dig +short AAAA icmpcheckv6.popcount.org`
+ip -6 route flush `dig +short AAAA icmpcheckv6.popcount.org` cache
+-->
+
+<h3>IP fragmented packet delivery</h3>
+<p class="leadfrag lead">Please enable javscript for this test to work...</p>
+<p>In this test we send a large payload from the server, to your
+browser. Each TCP segment sent by the server will be fragmented into multiple IP packets.</p>
+<p>A failure of this test means:</p>
+<ol>
+<li>Some UDP based protocols (like games, NTP) might occasionally fail.
+<li>Certain DNS queries may time out, slowing down your internet experience.
+<li>Your ISP, firewall or <a href="https://en.wikipedia.org/wiki/Customer-premises_equipment">CPE</a> is not supporting basic Internet Protocol features.
+</ol>
+
+Run this test from your server:
+<pre>
+curl -v -s http://icmpcheck.popcount.org/frag -o /dev/null
+</pre>
+
+You should see fragmented IP packets:
+<pre>
+$ sudo tcpdump -ni any '(ip[6] & (1<<5)) != 0 or (ip[7] != 0) or (ip[6] & ((1<<5)-1) != 0) or ip6[6] == 44'
+IP server.80 > client.36090: Flags [P.], seq ..., length 480: HTTP
+IP server > client: ip-proto-6
+IP server > client: ip-proto-6
+IP server > client: ip-proto-6
+IP server > client: ip-proto-6
+IP6 server > client: frag (0|512) 80 > 55660: Flags [.], seq ..., length 480: HTTP
+IP6 server > client: frag (512|512)
+IP6 server > client: frag (1024|221)
+</pre>
+
+<script>
+    document.getElementsByClassName("leadfrag")[0].innerHTML = "Testing your network now..."
+    var reqfrag = new XMLHttpRequest();
+    reqfrag.open('GET', '/frag', true);
+
+    reqfrag.timeout = 8000; // ms
+    reqfrag.ontimeout = function () {
+         document.getElementsByClassName("leadfrag")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> The request timed out. Looks like IP fragments failed to be delivered to you."
+    }
+
+    reqfrag.onload = function() {
+      if (reqfrag.status >= 200 && reqfrag.status < 400) {
+        try {
+           var data = JSON.parse(reqfrag.responseText);
+        } catch(e){
+           document.getElementsByClassName("leadfrag")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> Something got seriously messed up in transmission. This is a bad sign."
+           return
+        }
+        document.getElementsByClassName("leadfrag")[0].innerHTML = "<div class=bg-success><b style=color:green>&#x2713;</b> All good! IP fragments were successfully delivered to your host."
+      } else {
+        // We reached our target server, but it returned an error
+        document.getElementsByClassName("leadfrag")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> Test failed!"
+      }
+    };
+
+    reqfrag.onerror = function() {
+       document.getElementsByClassName("leadfrag")[0].innerHTML = "<div class=bg-danger><b style=color:red>&#x2717;</b> Test failed!"
+    };
+
+
+    setTimeout(function(){
+        reqfrag.send();
+    }, 4000);
+
+</script>
+
+
+</div>
+
+<footer class="footer">
+<div class="container">
+<p class="text-muted"></p>
+</div>
+
+</footer>
+
+<script src="ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>
+
