@@ -1,0 +1,1 @@
+java -classpath .;.. -Dmode=rt -DmanagerWorker=manager -DnumWorkers=1 -DserverPort=20021 RTDriver DistributedMutualExclusion

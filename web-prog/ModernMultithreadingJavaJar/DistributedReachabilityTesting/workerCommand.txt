@@ -1,0 +1,1 @@
+java -classpath .;.. -Dmode=rt -DmanagerWorker=worker -DworkerNumber=1 -DserverPort=20021 -DserverIP=LocalHost -Xmx450m RTDriver DistributedMutualExclusion
