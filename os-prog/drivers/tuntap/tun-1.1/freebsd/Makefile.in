@@ -1,0 +1,69 @@
+#
+#  Universal TUN/TAP device driver.
+#  Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  $Id: Makefile.in,v 1.4 2000/05/05 02:45:13 maxk Exp $
+#
+#  Based on original Makefile for if_tap module
+#    Copyright (c) 1999 Maksim Yevmenkin <m_evmenkin@yahoo.com>
+#
+CONFIGURE_FILES = Makefile config.status config.cache config.h config.log
+
+INSTALL = @INSTALL@
+
+ARCH = @ARCH@
+KDIR = @KDIR@
+KVER = @KVER@
+
+DESTDIR = /modules
+
+VNODE = @VNODE@
+DEFS = @DEFS@
+CFLAGS+=$(DEFS) $(COPTS) $(CWARNFLAGS) $(DEBUG_FLAGS) -DKLD_MODULE
+CFLAGS+=-nostdinc -I- -I. -I@ -I@/../include -I/usr/include
+
+KMOD = if_tap
+
+SRCS = if_tap.c if_tap.h vnode_if.h
+OBJS = ${SRCS:N*.h:R:S/$/.o/g}
+
+all: ${KMOD}.ko
+
+vnode_if.h:
+	$(VNODE)
+
+${KMOD}.kld:  ${SRCS} ${OBJS}
+.if ${OBJFORMAT} == elf
+	gensetdefs ${OBJS}
+	${CC} ${CFLAGS} -c setdef0.c
+	${CC} ${CFLAGS} -c setdef1.c
+	${LD} ${LDFLAGS} -r -o ${.TARGET} setdef0.o ${OBJS} setdef1.o
+.else
+	${LD} ${LDFLAGS} -r -o ${.TARGET} ${OBJS}
+.endif
+
+${KMOD}.ko:   ${KMOD}.kld
+	${LD} -Bshareable ${LDFLAGS} -o ${.TARGET} ${KMOD}.kld
+
+dev:
+	./create_dev
+
+inst:  all dev
+	${INSTALL} ${COPY} -o ${KMODOWN} -g ${KMODGRP} -m ${KMODMODE} \
+		${_INSTALLFLAGS} ${KMOD}.ko ${DESTDIR}
+clean:
+	rm -f *.o
+
+distclean:
+	rm -f *.h *.c *.ko *.kld @ machine
+	rm -f $(CONFIGURE_FILES)

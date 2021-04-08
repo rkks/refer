@@ -1,0 +1,165 @@
+DNET(8)                 OpenBSD System Manager's Manual                DNET(8)
+
+NAME
+     dnet - dumb networking library test program
+
+SYNOPSIS
+     dnet command args [...]
+
+DESCRIPTION
+     dnet is a simple test program for the dnet(3) library. It can be used to
+     compose and transmit network datagrams as a Unix-style filter (e.g. read-
+     ing from or writing to files and pipes) or modify the local system net-
+     work configuration (including the ARP cache, firewall ruleset, network
+     interfaces, and routing table).
+
+   Payload generation commands
+
+     addr address [...]
+          Convert the address (specified as a hostname, IP address, or MAC ad-
+          dress) into its binary representation on standard output.
+
+     hex string [...]
+          Convert the C-style escaped string (shellcode, for instance) into
+          its binary representation on standard output.
+
+     rand len
+          Write len random bytes to standard output.
+
+   Packet encapsulation commands
+
+     eth [type type] [src mac] [dst mac]
+          Prepend the data read from standard input with an Ethernet header on
+          standard output. The Ethernet type may be specified as `arp', `ip',
+          or as a hex, octal, or decimal number.
+
+     arp [op op] [sha mac] [spa host] [tha mac] [tpa host]
+          Prepend the data read from standard input with an ARP header on
+          standard output. The ARP op may be specified as `req', `rep',
+          `revreq', `revrep', or as a hex, octal, or decimal number.
+
+     ip [tos num] [id num] [off offset] [ttl num] [proto protocol] [src host]
+          [dst dst]
+          Prepend the data read from standard input with an IP header on stan-
+          dard output. The fragmentation offset may be specified as a decimal
+          number (optionally concatenated with `+' to indicate more fragments)
+          or as a hex number. The protocol may be specified by name, or as a
+          hex, octal, or decimal number.
+
+     icmp [type num] [code num]
+          Prepend the data read from standard input with an ICMP header on
+          standard output.
+
+     tcp [sport port] [dport port] [flags flags] [seq num] [ack num] [win num]
+          [urp num]
+          Prepend the data read from standard input with a TCP header on stan-
+          dard output. A port may be specified by name or hex, octal, or deci-
+          mal number. The TCP flags may be specified as some combination of
+          the characters in the set `SAFRPU' or as a hex number.
+
+     udp [sport port] [dport port]
+          Prepend the data read from standard input with a UDP header on stan-
+          dard output. A port may be specified by name or hex, octal, or deci-
+          mal number.
+
+   Packet transmission commands
+
+
+     send [device]
+          Read a packet from standard input and send it over the network. If
+          no device is specified, the packet is assumed to be an IP datagram
+          and routed to its destination. Otherwise, the packet is assumed to
+          be an Ethernet frame and is transmitted on the specified interface.
+
+   Kernel interface commands
+
+     arp show
+          Display the kernel ARP cache.
+
+     arp get host
+          Display the kernel ARP entry for host.
+
+     arp add host mac
+          Add an ARP entry mapping the mac address for host.
+
+     arp delete host
+          Delete the ARP entry for host.
+
+     fw show
+          Display the kernel firewall ruleset.
+
+     fw add|delete action direction device protocol src[:port[-max]]
+          dst[:port[-max]] [type[/code]]
+          Add a rule to or delete a rule from the active firewall ruleset. The
+          action must be either `allow' or `block'. The direction must be ei-
+          ther `in' or `out'. The device may specify an interface name, or
+          `any'. The protocol may be specified by name, or as a decimal num-
+          ber. For TCP and UDP protocols, a port (or range, if specified with
+          a max value) may be specified in decimal and appended to the source
+          and/or destination address. For ICMP, a type (and optional code) may
+          be specified in decimal.
+
+     intf show
+          Display the configuration of all network interfaces.
+
+     intf get device
+          Display the configuration for the interface specified by device.
+
+     intf set device [alias host] [dst host] [inet host] [link mac] [up|down]
+          [arp|noarp]
+          Configure the interface specified by device.
+
+     route show
+          Display the kernel routing table.
+
+     route get dst
+          Display the route for the destination dst, specified as a hostname,
+          IP address, or network prefix in CIDR notation.
+
+     route add dst gw
+          Add a route for the destination dst through the gateway gw.
+
+     route delete dst
+          Delete the route for the destination dst.
+
+EXAMPLES
+     Send a UDP datagram containing random shellcode:
+
+           dnet hex "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89" \
+           "\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80" \
+           "\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh" | \
+           dnet udp sport 555 dport 666 | \
+           dnet ip proto udp src 1.2.3.4 dst 5.6.7.8 | dnet send
+
+     Save an ARP request in a file and send it twice:
+
+           dnet arp op req sha 0:d:e:a:d:0 spa 10.0.0.3 tpa 10.0.0.4 | \
+           dnet eth type arp src 0:d:e:a:d:0 dst ff:ff:ff:ff:ff:ff > arp.pkt
+           dnet send fxp0 < arp.pkt
+           dnet send fxp0 < arp.pkt
+
+     Send a fragmented ping packet:
+
+           # Create ping packet with IP header, to set ICMP checksum
+           echo "monkey monkey monkey monkey" | dnet icmp type 8 code 0 | \
+           dnet ip proto icmp src 1.2.3.4 dst 5.6.7.8 > ping.pkt
+
+           # Chop off IP header
+           dd if=ping.pkt of=ping.data bs=20 skip=1
+
+           # Fragment IP payload
+           split -b 24 ping.data p.
+
+           # Send fragments
+           dnet ip id 1 off 0+ proto icmp src 1.2.3.4 dst 5.6.7.8 < p.aa | \
+           dnet send
+           dnet ip id 1 off 24 proto icmp src 1.2.3.4 dst 5.6.7.8 < p.ab | \
+           dnet send
+
+SEE ALSO
+     dnet(3)
+
+AUTHORS
+     Dug Song <dugsong@monkey.org>
+
+OpenBSD 3.0                    October 17, 2001                              3

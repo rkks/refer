@@ -1,0 +1,14 @@
+#
+!BASEDIR=/usr
+#
+i pkginfo=tun.solaris.info
+i version=tun.desc
+i postinstall=tun.solaris.postinst
+i postremove=tun.solaris.postrm
+#
+!search $BASEDIR/kernel $BASEDIR/kernel/drv
+!default 755 root sys
+d none kernel
+d none kernel/drv 
+f none kernel/drv/tun
+f none kernel/drv/tun.conf 0600 root root

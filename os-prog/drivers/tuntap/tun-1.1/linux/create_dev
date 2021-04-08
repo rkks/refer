@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+#  Universal TUN/TAP device driver.
+#  Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+#
+#  Create TUN and TAP devices in /dev
+#
+#  $Id: create_dev,v 1.2 2000/10/28 21:22:37 maxk Exp $
+#
+
+case $1 in
+   2.2*)
+	TUN_MAJOR=90
+
+	TUN_MINOR=0
+	TAP_MINOR=128
+	#
+	# TUN
+	rm -f /dev/tun*
+	for i in 0 1 2 3; do
+  	   mknod /dev/tun$i c ${TUN_MAJOR} $i
+	done  
+	#
+	# TAP
+	rm -f /dev/tap*
+	for i in 0 1 2 3; do
+  	   mknod /dev/tap$i c ${TUN_MAJOR} `expr $i + ${TAP_MINOR}`
+	done  
+	;;
+
+   2.4*)
+	TUN_MAJOR=10
+	TUN_MINOR=200
+
+	if [ ! -d /dev/net ]; then
+	   mkdir /dev/net
+	fi
+	rm -f /dev/net/tun
+  	mknod /dev/net/tun c ${TUN_MAJOR} ${TUN_MINOR}
+	;;
+
+   *)
+	echo "Unknown kernel version"
+	;;
+esac

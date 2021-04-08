@@ -1,0 +1,42 @@
+Universal TUN/TAP device driver ChangeLog.
+
+ver 1.1:
+	Massive Linux driver update: 2.4.x kernel support. New cloning 
+	interface, protocol indication. Statistics counting fixes.
+	Solaris driver update: Correct Ethernet header substitution.
+	Configure and Makefile updates. RPM package update.
+	Documentation update.
+	
+ver 1.0:
+	Final stable 1.0 release. CVS source tree access. Packages.
+	Solaris, Linux and FreeBSD drivers merged into one package.
+	Easy compilation and installation without patching a kernel.	
+	Smart configure script, autodetection of OS and kernel versions. 
+	Stable Solaris driver. Locking code rewrite, a lot of major fixes 
+	and optimizations. Support for Solaris 2.6, 7.0, 8.0. 
+	Linux driver support for latest 2.2.X and 2.3.X kernels.
+	FreeBSD driver support for 3.X, 4.X and 5.X FreeBSD releases.
+
+FreeBSD TAP driver ChangeLog.
+Maksim Yevmenkin <m_evmenkin@yahoo.com>
+
+Version 0.3a, April, 2000
+	- Standalone Makefile. Small code cleanup.
+
+Version 0.3, Ferbuary, 2000
+	- Ethernet MAC address generation fix
+
+Version 0.2a, January, 2000
+	- Switch to dynamic allocation
+	- Minor fixes
+	- All code put under cvs
+	- Separate branch for -current
+	
+Version 0.2, November, 1999
+	- Ethernet bridging (by Luigi Rizzo) support added
+
+Version 0.1a, October, 1999
+	- Removing address from the interface 
+
+Version 0.1, October 1999
+	- Initial release

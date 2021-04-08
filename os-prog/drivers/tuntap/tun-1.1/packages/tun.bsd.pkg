@@ -1,0 +1,16 @@
+@name tun-1.0
+
+@owner root
+@group wheel
+
+@cwd /
+
+@exec install -c -d -m 755 -o root -g wheel /modules
+
+@mode 555
+modules/if_tap.ko
+
+@mode 600
+dev/tap0
+dev/tap1
+dev/tap2

@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+#  Universal TUN/TAP device driver.
+#  Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+#
+#  Create TAP devices in /dev
+#
+#  $Id: create_dev,v 1.1 2000/05/05 02:45:13 maxk Exp $
+#
+TAP_MAJOR=200
+
+# TAP
+rm -f /dev/tap*
+for i in 0 1 2 3 4 5 6 7 8 9 10; do
+  mknod /dev/tap$i c $TAP_MAJOR $i
+done  

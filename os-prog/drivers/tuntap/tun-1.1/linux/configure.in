@@ -1,0 +1,112 @@
+dnl
+dnl  TUN - Universal TUN/TAP device driver.
+dnl  Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+dnl
+dnl  This program is free software; you can redistribute it and/or modify
+dnl  it under the terms of the GNU General Public License as published by
+dnl  the Free Software Foundation; either version 2 of the License, or
+dnl  (at your option) any later version.
+dnl
+dnl  This program is distributed in the hope that it will be useful,
+dnl  but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+dnl  GNU General Public License for more details.
+dnl
+dnl  $Id: configure.in,v 1.12 2001/02/02 03:51:35 maxk Exp $
+dnl
+dnl Process this file with autoconf to produce a configure script.
+dnl
+AC_INIT()
+
+AC_SUBST(KDIR)
+AC_SUBST(KVER)
+AC_SUBST(ARCH)
+AC_SUBST(UPGRADE)
+
+AC_PROG_CC
+AC_CHECK_PROG(KGCC, kgcc, kgcc, $CC)
+AC_PROG_AWK
+AC_PROG_INSTALL
+
+CC=$KGCC
+
+AC_ARG_WITH(kernel,
+   --with-kernel=DIR     Kernel source location,
+   KDIR="$withval",
+   KDIR=/usr/src/linux
+)
+AC_ARG_ENABLE(debug,
+   --enable-debug        Enable debuging,
+   AC_DEFINE(TUN_DEBUG, 1)
+)      
+
+# Check kernel sources
+AC_TEST_FILES(Makefile include/linux/if.h, $KDIR,  ,
+   AC_MSG_ERROR( Linux kernel source not found in $KDIR )
+)       
+AC_TEST_FILES(.config include/linux/version.h, $KDIR,  ,
+   AC_MSG_ERROR( Linux kernel $KDIR is not configured )
+) 
+      
+ARCH=`uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
+      -e s/arm.*/arm/ -e s/sa110/arm/`
+
+KVER=`cat $KDIR/Makefile | $AWK '			\
+	/^VERSION.*=/    { ver=$3   }			\
+        /^PATCHLEVEL.*=/ { patch=$3 }			\
+        /^SUBLEVEL.*=/   { slev=$3  }			\
+        /^EXTRAVER.*=/   { print ver "." patch "." slev $3 }' ` 
+
+TDIR=`echo $KVER | cut -d '.' -f 1,2`
+
+AC_TEST_FILES(tun.c if_tun.h, $TDIR, ,
+   AC_MSG_ERROR( Unsupported kernel version. )
+)
+
+UPGRADE=0
+
+case $TDIR in
+     2.2)
+ 	AC_MSG_CHECKING( for new kill_fasync call )
+        CPPFLAGS="$CPPFLAGS -D__KERNEL__ -I $KDIR/include"
+	AC_TRY_COMPILE( 
+	   [ #include <linux/fs.h> ], 
+	   [ kill_fasync(NULL, 1, 1) ],
+	   AC_DEFINE(NEW_FASYNC)
+	   AC_MSG_RESULT("yes"),
+	   AC_MSG_RESULT("no")
+	)
+
+	AC_DEFINE_UNQUOTED(TUN_VER, "$TUN_VER")
+        ;;
+
+     2.4)
+ 	AC_MSG_CHECKING( for kernel driver version )
+
+ 	# Check driver files 
+	AC_TEST_FILES(drivers/net/tun.c include/linux/if_tun.h, $KDIR,  ,
+	   AC_MSG_ERROR( Universal TUN/TAP driver was not found in $KDIR )
+	)
+
+        O_VER=`grep '#.*TUN_VER' $KDIR/drivers/net/tun.c | tr -d '\000-\057A-z'`
+        N_VER=`grep '#.*TUN_VER' $TDIR/tun.c | tr -d '\000-\057A-z'`
+
+        if test $N_VER -lt $O_VER; then
+	   AC_MSG_RESULT("newer")
+        elif test $N_VER -eq $O_VER; then
+	   AC_MSG_RESULT("same")
+        else  
+           AC_MSG_RESULT("older")
+	   UPGRADE=1
+        fi
+        ;;
+esac
+
+AC_LINK_FILES($TDIR/tun.c $TDIR/if_tun.h $TDIR/make_rules, tun.c if_tun.h make_rules)
+
+AC_OUTPUT(Makefile)
+
+if test $UPGRADE -eq 1; then
+   AC_MSG_RESULT()
+   AC_MSG_RESULT("Run 'make kernel' to upgrade kernel driver")
+fi

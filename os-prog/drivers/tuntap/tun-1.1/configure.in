@@ -1,0 +1,53 @@
+dnl
+dnl  TUN - Universal TUN/TAP device driver.
+dnl  Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+dnl
+dnl  This program is free software; you can redistribute it and/or modify
+dnl  it under the terms of the GNU General Public License as published by
+dnl  the Free Software Foundation; either version 2 of the License, or
+dnl  (at your option) any later version.
+dnl
+dnl  This program is distributed in the hope that it will be useful,
+dnl  but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+dnl  GNU General Public License for more details.
+dnl
+dnl  $Id: configure.in,v 1.5 2000/05/09 01:58:55 maxk Exp $
+dnl
+dnl Process this file with autoconf to produce a configure script.
+dnl
+AC_INIT()
+AC_SUBST(OS_DIR)
+
+dnl Guess host type.
+AC_CANONICAL_HOST
+AC_CANONICAL_SYSTEM
+
+dnl Check for programs.
+AC_PROG_CC
+AC_PROG_AWK
+AC_PROG_INSTALL
+
+case $host_os in
+	*linux*)
+	     OS_DIR="linux"
+	     ;;
+	*solaris*)
+	     OS_DIR="solaris"
+	     ;;
+	*freebsd*)
+	     OS_DIR="freebsd"
+	     ;;
+	*)
+	     AC_MSG_ERROR( Unsupported OS ) 
+	     ;;
+esac	     
+AC_CONFIG_SUBDIRS($OS_DIR)
+
+dnl Build release name
+changequote(<,>)
+REL=`echo 'substr($Name,0)$' | tr -d '$: \-' | sed 's/^[A-Za-z]*//' | sed 's/\_/\./'`
+TUN_VER="$REL `date '+%m/%d/%Y'`"; export TUN_VER
+changequote([,])
+
+AC_OUTPUT(Makefile)

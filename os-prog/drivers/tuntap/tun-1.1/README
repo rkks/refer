@@ -1,0 +1,67 @@
+Universal TUN/TAP device driver.
+Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+
+  Linux, Solaris drivers 
+  Copyright (C) 1999-2000 Maxim Krasnyansky <max_mk@yahoo.com>
+
+  FreeBSD TAP driver 
+  Copyright (c) 1999-2000 Maksim Yevmenkin <m_evmenkin@yahoo.com>
+
+1. Description
+  TUN/TAP provides packet reception and transmission for user space programs. 
+  It can be viewed as a simple Point-to-Point or Ethernet device, which 
+  instead of receiving packets from a physical media, receives them from 
+  user space program and instead of sending packets via physical media 
+  writes them to the user space program. 
+
+  When a program opens /dev/tunX or /dev/tapX, driver creates and 
+  registers corresponding net device tunX or tapX. After a program closed 
+  above devices, driver will automatically delete tunXX or tapXX device 
+  and all routes corresponding to it.
+
+  This package(http://vtun.sourceforge.net/tun) contains two simple example 
+  programs how to use tun and tap devices. Both programs work like 
+  bridge between two network interfaces.
+  br_select.c - bridge based on select system call.
+  br_sigio.c  - bridge based on async io and SIGIO signal.
+  However the best example is VTun http://vtun.sourceforge.net :))  
+
+2. Installation
+  Run './configure' to configure the driver.
+
+  Run 'make install' to compile and install driver module and to create 
+  proper device nodes.
+
+3. Loading driver module
+  Linux
+     To load TUN/TAP driver module run:
+	modprobe tun 
+
+     To configure automatic loading of the 'tun' module you have to modify
+     /etc/modules.conf
+     Add following line if you have 2.2.x kernel:
+    	alias char-major-90 tun		
+
+     Add following line if you have 2.4.x kernel:
+	alias char-major-10-200 tun
+
+     Run:
+        modprobe -a
+
+     TUN/TAP driver will be automatically loaded when application access
+     /dev/tunX, /dev/tapX or /dev/net/tun. 
+
+     If "Kernel module loader" - module auto-loading support is not enabled 
+     in your kernel then you can add 
+        modprobe tun 
+     to one of the startup rc files.
+
+  Solaris
+     Everything is done automatically under Solaris.
+
+  FreeBSD
+     To load TAP driver module run:
+	kldload if_tap
+     Add:
+	kldload if_tap
+     to one of the startup rc files.

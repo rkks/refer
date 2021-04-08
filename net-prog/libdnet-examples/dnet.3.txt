@@ -1,0 +1,660 @@
+DNET(3)                   OpenBSD Programmer's Manual                  DNET(3)
+
+NAME
+     dnet - dumb networking library
+
+SYNOPSIS
+     #include <dnet.h>
+
+   Network addressing
+
+     int
+     addr_cmp(const struct addr *a, const struct addr *b);
+
+     int
+     addr_bcast(const struct addr *a, struct addr *b);
+
+     int
+     addr_net(const struct addr *a, struct addr *b);
+
+     char *
+     addr_ntop(const struct addr *src, char *dst, size_t size);
+
+     int
+     addr_pton(const char *src, struct addr *dst);
+
+     char *
+     addr_ntoa(const struct addr *a);
+
+     int
+     addr_aton(const char *src, struct addr *dst);
+
+     int
+     addr_ntos(const struct addr *a, struct sockaddr *sa);
+
+     int
+     addr_ston(const struct sockaddr *sa, struct addr *a);
+
+     int
+     addr_btos(uint16_t bits, struct sockaddr *sa);
+
+     int
+     addr_stob(const struct sockaddr *sa, uint16_t *bits);
+
+     int
+     addr_btom(uint16_t bits, void *mask, size_t size);
+
+     int
+     addr_mtob(const void *mask, size_t size, uint16_t *bits);
+
+   Address Resolution Protocol
+
+     typedef int (*arp_handler)(const struct arp_entry *entry, void *arg);
+
+     arp_t *
+     arp_open(void);
+
+     int
+     arp_add(arp_t *a, const struct arp_entry *entry);
+
+     int
+     arp_delete(arp_t *a, const struct arp_entry *entry);
+
+     int
+     arp_get(arp_t *a, struct arp_entry *entry);
+
+     int
+     arp_loop(arp_t *a, arp_handler callback, void *arg);
+
+     arp_t *
+     arp_close(arp_t *a);
+
+   Binary buffers
+
+     blob_t *
+     blob_new(void);
+
+     int
+     blob_read(blob_t *b, void *buf, int len);
+
+     int
+     blob_write(blob_t *b, const void *buf, int len);
+
+     int
+     blob_seek(blob_t *b, int off, int whence);
+
+     int
+     blob_index(blob_t *b, const void *buf, int len);
+
+     int
+     blob_rindex(blob_t *b, const void *buf, int len);
+
+     int
+     blob_pack(blob_t *b, const void *fmt, ...);
+
+     int
+     blob_unpack(blob_t *b, const void *fmt, ...);
+
+     int
+     blob_print(blob_t *b, char *style, int len);
+
+     blob_t *
+     blob_free(blob_t *b);
+
+   Ethernet
+
+     eth_t *
+     eth_open(const char *device);
+
+     int
+     eth_get(eth_t *e, eth_addr_t *ea);
+
+     int
+     eth_set(eth_t *e, const eth_addr_t *ea);
+
+     ssize_t
+     eth_send(eth_t *e, const void *buf, size_t len);
+
+     eth_t *
+     eth_close(eth_t *e);
+
+   Firewalling
+
+     typedef int (*fw_handler)(const struct fw_rule *rule, void *arg);
+
+     fw_t *
+     fw_open(void);
+
+     int
+     fw_add(fw_t *f, const struct fw_rule *rule);
+
+     int
+     fw_delete(fw_t *f, const struct fw_rule *rule);
+
+     int
+     fw_loop(fw_t *f, fw_handler callback, void *arg);
+
+     fw_t *
+     fw_close(fw_t *f);
+
+   Network interfaces
+
+     typedef int (*intf_handler)(const struct intf_entry *entry, void *arg);
+
+     intf_t *
+     intf_open(void);
+
+     int
+     intf_get(intf_t *i, struct intf_entry *entry);
+
+     int
+     intf_get_src(intf_t *i, struct intf_entry *entry, struct addr *src);
+
+     int
+     intf_get_dst(intf_t *i, struct intf_entry *entry, struct addr *dst);
+
+     int
+     intf_set(intf_t *i, const struct intf_entry *entry);
+
+     int
+     intf_loop(intf_t *i, intf_handler callback, void *arg);
+
+     intf_t *
+     intf_close(intf_t *i);
+
+   Internet Protocol
+
+     ip_t *
+     ip_open(void);
+
+     ssize_t
+     ip_add_option(void *buf, size_t len, int proto, const void *optbuf,
+             size_t optlen);
+
+     void
+     ip_checksum(void *buf, size_t len);
+
+     ssize_t
+     ip_send(ip_t *i, const void *buf, size_t len);
+
+     ip_t *
+     ip_close(ip_t *i);
+
+   Internet Protocol Version 6
+
+     void
+     ip6_checksum(void *buf, size_t len);
+
+   Random number generation
+
+     rand_t *
+     rand_open(void);
+
+     int
+     rand_get(rand_t *r, void *buf, size_t len);
+
+     int
+     rand_set(rand_t *r, const void *seed, size_t len);
+
+     int
+     rand_add(rand_t *r, const void *buf, size_t len);
+
+     uint8_t
+     rand_uint8(rand_t *r);
+
+     uint16_t
+     rand_uint16(rand_t *r);
+
+     uint32_t
+     rand_uint32(rand_t *r);
+
+     int
+     rand_shuffle(rand_t *r, void *base, size_t nmemb, size_t size);
+
+     rand_t *
+     rand_close(rand_t *r);
+
+   Routing
+
+     typedef int (*route_handler)(const struct route_entry *entry, void *arg);
+
+     route_t *
+     route_open(void);
+
+     int
+     route_add(route_t *r, const struct route_entry *entry);
+
+     int
+     route_delete(route_t *r, const struct route_entry *entry);
+
+     int
+     route_get(route_t *r, struct route_entry *entry);
+
+     int
+     route_loop(route_t *r, route_handler callback, void *arg);
+
+     route_t *
+     route_close(route_t *r);
+
+   Tunnel interface
+
+     tun_t *
+     tun_open(struct addr *src, struct addr *dst, int mtu);
+
+     int
+     tun_fileno(tun_t *t);
+
+     const char *
+     tun_name(tun_t *t);
+
+     ssize_t
+     tun_send(tun_t *t, const void *buf, size_t size);
+
+     ssize_t
+     tun_recv(tun_t *t, void *buf, size_t size);
+
+     tun_t *
+     tun_close(tun_t *t);
+
+DESCRIPTION
+     dnet provides a simplified, portable interface to several low-level net-
+     working routines, including network address manipulation, kernel arp(4)
+     cache and route(4) table lookup and manipulation, network firewalling,
+     network interface lookup and manipulation, and raw IP packet and Ethernet
+     frame transmission. It is intended to complement the functionality pro-
+     vided by pcap(3).
+
+     In addition, dnet also provides platform-independent definitions of vari-
+     ous network protocol formats and values for portable low-level network
+     programming, as well as a simple binary buffer handling API.
+
+   Network addressing
+     Network addresses are described by the following structure:
+
+     struct addr {
+             uint16_t                addr_type;
+             uint16_t                addr_bits;
+             union {
+                     eth_addr_t      __eth;
+                     ip_addr_t       __ip;
+                     ip6_addr_t      __ip6;
+
+                     uint8_t         __data8[16];
+                     uint16_t        __data16[8];
+                     uint32_t        __data32[4];
+             } __addr_u;
+     };
+     #define addr_eth        __addr_u.__eth
+     #define addr_ip         __addr_u.__ip
+     #define addr_ip6        __addr_u.__ip6
+     #define addr_data8      __addr_u.__data8
+     #define addr_data16     __addr_u.__data16
+     #define addr_data32     __addr_u.__data32
+
+     The following values are defined for addr_type:
+
+     #define ADDR_TYPE_NONE          0       /* No address set */
+     #define ADDR_TYPE_ETH           1       /* Ethernet */
+     #define ADDR_TYPE_IP            2       /* Internet Protocol v4 */
+     #define ADDR_TYPE_IP6           3       /* Internet Protocol v6 */
+
+     The field addr_bits denotes the length of the network mask in bits.
+
+     addr_cmp() compares network addresses a and b, returning an integer less
+     than, equal to, or greater than zero if a is found, respectively, to be
+     less than, equal to, or greater than b.  Both addresses must be of the
+     same address type.
+
+     addr_bcast() computes the broadcast address for the network specified in
+     a and writes it into b.
+
+     addr_net() computes the network address for the network specified in a
+     and writes it into b.
+
+     addr_ntop() converts an address from network format to a string.
+
+     addr_pton() converts an address (or hostname) from a string to network
+     format.
+
+     addr_ntoa() converts an address from network format to a string, return-
+     ing a pointer to the result in static memory.
+
+     addr_aton() is a synonym for addr_pton().
+
+     addr_ntos() converts an address from network format to the appropriate
+     struct sockaddr.
+
+     addr_ston() converts an address from a struct sockaddr to network format.
+
+     addr_btos() converts a network mask length to a network mask specified as
+     a struct sockaddr.
+
+     addr_stob() converts a network mask specified in a struct sockaddr to a
+     network mask length.
+
+     addr_btom() converts a network mask length to a network mask in network
+     byte order.
+
+     addr_mtob() converts a network mask in network byte order to a network
+     mask length.
+
+   Address Resolution Protocol
+     ARP cache entries are described by the following structure:
+
+     struct arp_entry {
+             struct addr     arp_pa;         /* protocol address */
+             struct addr     arp_ha;         /* hardware address */
+     };
+
+     arp_open() is used to obtain a handle to access the kernel arp(4) cache.
+
+     arp_add() adds a new ARP entry.
+
+     arp_delete() deletes the ARP entry for the protocol address specified by
+     arp_pa.
+
+     arp_get() retrieves the ARP entry for the protocol address specified by
+     arp_pa.
+
+     arp_loop() iterates over the kernel arp(4) cache, invoking the specified
+     callback with each entry and the context arg passed to arp_loop().
+
+     arp_close() closes the specified handle.
+
+   Binary buffers
+     Binary buffers are described by the following structure:
+
+     typedef struct blob {
+             u_char          *base;          /* start of data */
+             int              off;           /* offset into data */
+             int              end;           /* end of data */
+             int              size;          /* size of allocation */
+     } blob_t;
+
+     blob_new() is used to allocate a new dynamic binary buffer, returning
+     NULL on failure.
+
+     blob_read() reads len bytes from the current offset in blob b into buf,
+     returning the total number of bytes read, or -1 on failure.
+
+     blob_write() writes len bytes from buf to blob b, advancing the current
+     offset. It returns the number of bytes written, or -1 on failure.
+
+     blob_seek() repositions the offset within blob b to off, according to the
+     directive whence (see lseek(2) for details), returning the new absolute
+     offset, or -1 on failure.
+
+     blob_index() returns the offset of the first occurence in blob b of the
+     specified buf of length len, or -1 on failure.
+
+     blob_rindex() returns the offset of the last occurence in blob b of the
+     specified buf of length len, or -1 on failure.
+
+     blob_pack() converts and writes, and blob_unpack() reads and converts da-
+     ta in blob b according to the given format fmt as described below, re-
+     turning 0 on success, and -1 on failure.
+
+     The format string is composed of zero or more directives: ordinary char-
+     acters (not % ), which are copied to / read from the blob, and conversion
+     specifications, each of which results in reading / writing zero or more
+     subsequent arguments.
+
+     Each conversion specification is introduced by the character %, and may
+     be prefixed by length specifier. The arguments must correspond properly
+     (after type promotion) with the length and conversion specifiers.
+
+     The length specifier is either a a decimal digit string specifying the
+     length of the following argument, or the literal character * indicating
+     that the length should be read from an integer argument for the argument
+     following it.
+
+     The conversion specifiers and their meanings are:
+
+     D       An unsigned 32-bit integer in network byte order.
+
+     H       An unsigned 16-bit integer in network byte order.
+
+     b       A binary buffer (length specifier required).
+
+     c       An unsigned character.
+
+     d       An unsigned 32-bit integer in host byte order.
+
+     h       An unsigned 16-bit integer in host byte order.
+
+     s       A C-style null-terminated string, whose maximum length must be
+             specified when unpacking.
+
+     Custom conversion routines and their specifiers may be registered via
+     blob_register_pack(), currently undocumented.
+
+     blob_print() prints len bytes of the contents of blob b from the current
+     offset in the specified style; currently only ``hexl'' is available.
+
+     blob_free() deallocates the memory associated with blob b and returns
+     NULL.
+
+   Ethernet
+     eth_open() is used to obtain a handle to transmit raw Ethernet frames via
+     the specified network device.
+
+     eth_get() retrieves the hardware MAC address for the interface specified
+     by e.
+
+     eth_set() configures the hardware MAC address for the interface specified
+     by e.
+
+     eth_send() transmits len bytes of the Ethernet frame pointed to by buf.
+
+     eth_close() closes the specified handle.
+
+   Firewalling
+     Firewall rules are described by the following structure:
+
+     struct fw_rule {
+             char            fw_device[INTF_NAME_LEN]; /* interface name */
+             uint8_t         fw_op;                    /* operation */
+             uint8_t         fw_dir;                   /* direction */
+             uint8_t         fw_proto;                 /* IP protocol */
+             struct addr     fw_src;                   /* src address / net */
+             struct addr     fw_dst;                   /* dst address / net */
+             uint16_t        fw_sport[2];              /* range / ICMP type */
+             uint16_t        fw_dport[2];              /* range / ICMP code */
+     };
+
+     The following values are defined for fw_op:
+
+     #define FW_OP_ALLOW     1
+     #define FW_OP_BLOCK     2
+
+     The following values are defined for fw_dir:
+
+     #define FW_DIR_IN       1
+     #define FW_DIR_OUT      2
+
+     fw_open() is used to obtain a handle to access the local network firewall
+     configuration.
+
+     fw_add() adds the specified firewall rule.
+
+     fw_delete() deletes the specified firewall rule.
+
+     fw_loop() iterates over the active firewall ruleset, invoking the speci-
+     fied callback with each rule and the context arg passed to fw_loop().
+
+     fw_close() closes the specified handle.
+
+   Network interfaces
+     Network interface information is described by the following structure:
+
+     #define INTF_NAME_LEN   16
+
+     struct intf_entry {
+             u_int           intf_len;                   /* length of entry */
+             char            intf_name[INTF_NAME_LEN];   /* interface name */
+             u_short         intf_type;                  /* interface type (r/o) */
+             u_short         intf_flags;                 /* interface flags */
+             u_int           intf_mtu;                   /* interface MTU */
+             struct addr     intf_addr;                  /* interface address */
+             struct addr     intf_dst_addr;              /* point-to-point dst */
+             struct addr     intf_link_addr;             /* link-layer address */
+             u_int           intf_alias_num;             /* number of aliases */
+             struct addr     intf_alias_addrs __flexarr; /* array of aliases */
+     };
+
+     The following bitmask values are defined for intf_type:
+
+     #define INTF_TYPE_OTHER         1       /* other */
+     #define INTF_TYPE_ETH           6       /* Ethernet */
+     #define INTF_TYPE_LOOPBACK      24      /* software loopback */
+     #define INTF_TYPE_TUN           53      /* proprietary virtual/internal */
+
+     The following bitmask values are defined for intf_flags:
+
+     #define INTF_FLAG_UP            0x01    /* enable interface */
+     #define INTF_FLAG_LOOPBACK      0x02    /* is a loopback net (r/o) */
+     #define INTF_FLAG_POINTOPOINT   0x04    /* point-to-point link (r/o) */
+     #define INTF_FLAG_NOARP         0x08    /* disable ARP */
+     #define INTF_FLAG_BROADCAST     0x10    /* supports broadcast (r/o) */
+     #define INTF_FLAG_MULTICAST     0x20    /* supports multicast (r/o) */
+
+     intf_open() is used to obtain a handle to access the network interface
+     configuration.
+
+     intf_get() retrieves an interface configuration entry, keyed on
+     intf_name.  For all intf_get() functions, intf_len should be set to the
+     size of the buffer pointed to by entry (usually sizeof(struct intf_en-
+     try), but should be larger to accomodate any interface alias addresses.
+
+     intf_get_src() retrieves the configuration for the interface whose prima-
+     ry address matches the specified src.
+
+     intf_get_dst() retrieves the configuration for the best interface with
+     which to reach the specified dst.
+
+     intf_set() sets the interface configuration entry.
+
+     intf_loop() iterates over all network interfaces, invoking the specified
+     callback with each interface configuration entry and the context arg
+     passed to intf_loop().
+
+     intf_close() closes the specified handle.
+
+   Internet Protocol
+     ip_open() is used to obtain a handle to transmit raw IP packets, routed
+     by the kernel.
+
+     ip_add_option() adds the header option for the protocol proto specified
+     by optbuf of length optlen and appends it to the appropriate header of
+     the IP packet contained in buf of size len, shifting any existing payload
+     and adding NOPs to pad the option to a word boundary if necessary.
+
+     ip_checksum() sets the IP checksum and any appropriate transport protocol
+     checksum for the IP packet pointed to by buf of length len.
+
+     ip_send() transmits len bytes of the IP packet pointed to by buf.
+
+     ip_close() closes the specified handle.
+
+   Internet Protocol Version 6
+     ip6_checksum() sets the appropriate transport protocol checksum for the
+     IPv6 packet pointed to by buf of length len.
+
+   Random number generation
+     rand_open() is used to obtain a handle for fast, cryptographically strong
+     pseudo-random number generation. The starting seed is derived from the
+     system random data source device (if one exists), or from the current
+     time and random stack contents.
+
+     rand_set() re-initializes the PRNG to start from a known seed value, use-
+     ful in generating repeatable sequences.
+
+     rand_get() writes len random bytes into buf.
+
+     rand_add() adds len bytes of entropy data from buf into the random mix.
+
+     rand_uint8(), rand_uint16(), and rand_uint32() return 8, 16, and 32-bit
+     unsigned random values, respectively.
+
+     rand_shuffle() randomly shuffles an array of nmemb elements of size
+     bytes, starting at base.
+
+     rand_close() closes the specified handle.
+
+   Routing
+     Routing table entries are described by the following structure:
+
+     struct route_entry {
+             struct addr     route_dst;      /* destination address */
+             struct addr     route_gw;       /* gateway address */
+     };
+
+     route_open() is used to obtain a handle to access the kernel route(4)
+     table.
+
+     route_add() adds a new routing table entry.
+
+     route_delete() deletes the routing table entry for the destination prefix
+     specified by route_dst.
+
+     route_get() retrieves the routing table entry for the destination prefix
+     specified by route_dst.
+
+     route_loop() iterates over the kernel route(4) table, invoking the speci-
+     fied callback with each entry and the context arg passed to route_loop().
+
+     route_close() closes the specified handle.
+
+   Tunnel interface
+     tun_open() is used to obtain a handle to a network tunnel interface, to
+     which IP packets destined for dst are delivered (with source addresses
+     rewritten to src ), where they may be read by a userland process and pro-
+     cessed as desired. IP packets written back to the handle are injected in-
+     to the kernel networking subsystem.
+
+     tun_fileno() returns a file descriptor associated with the tunnel handle,
+     suitable for select(2).
+
+     tun_name() returns a pointer to the tunnel interface name.
+
+     tun_send() submits a packet to the kernel networking subsystem for deliv-
+     ery.
+
+     tun_recv() reads the next packet delivered to the tunnel interface.
+
+     tun_close() closes the specified handle.
+
+RETURN VALUES
+     addr_ntop() returns a pointer to the dst argument, or NULL on failure.
+
+     addr_ntoa() returns a pointer to a static memory area containing the
+     printable address, or NULL on failure.
+
+     arp_open(), eth_open(), fw_open(), intf_open(), ip_open(), rand_open(),
+     and route_open() return a valid handle on success, or NULL on failure.
+
+     arp_close(), eth_close(), fw_close(), intf_close(), ip_close(),
+     rand_close(), and route_close() always return NULL.
+
+     eth_send() and ip_send() return the length of the datagram successfully
+     sent, or -1 on failure.
+
+     arp_loop(), fw_loop(), intf_loop(), and route_loop() return the status of
+     their callback routines. Any non-zero return from a callback will cause
+     the loop to exit immediately.
+
+     ip_add_option() returns the length of the inserted option (which may have
+     been padded with NOPs for memory alignment) or -1 on failure.
+
+     rand_uint8(), rand_uint16(), and rand_uint32() return 8, 16, and 32-bit
+     unsigned random values, respectively.
+
+     All other dnet routines return 0 on success, or -1 on failure.
+
+SEE ALSO
+     pcap(3)
+
+AUTHORS
+     Dug Song <dugsong@monkey.org>
+
+OpenBSD 3.6                     August 21, 2001                             10

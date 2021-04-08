@@ -1,0 +1,8 @@
+Universal Tunnel/Tap Driver
+
+Solaris + Linux + FreeBSD drivers merged to create single Tun/Tap driver.
+
+- A tap driver requires a process listening onto TAP interface for it to show
+  the carrier/link as UP.
+
+http://vtun.sourceforge.net/tun/
